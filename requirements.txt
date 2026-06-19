@@ -4,7 +4,6 @@ uvicorn[standard]>=0.35.0
 nicegui>=2.20.0
 
 # Database
-sqlmodel>=0.0.24
 sqlalchemy>=2.0.41
 psycopg2-binary>=2.9.10
 alembic>=1.16.2
