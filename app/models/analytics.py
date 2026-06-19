@@ -7,18 +7,18 @@ from datetime import datetime
 class Analytics(Base):
     __tablename__ = 'analytics'
     
-    id = Column(Integer, primary_key=True)
-    tool_id = Column(Integer, ForeignKey("tools.id"))
+    id = Column(String, primary_key=True)
+    tool_id = Column(String, ForeignKey("tools.id"))
     event_type = Column(String)
     timestamp = Column(DateTime)
     
 class AnalyticCreate(BaseModel):
-    tool_id: int
+    tool_id: str
     event_type: str
     
 class AnalyticResponse(BaseModel):
-    id: int
-    tool_id: int
+    id: str
+    tool_id: str
     event_type: str
     timestamp: datetime
     

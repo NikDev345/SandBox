@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, String, DateTime
 from database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
@@ -6,7 +6,7 @@ from datetime import datetime
 class Users(Base):
     __tablename__ = 'users'
     
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
     name = Column(String)
     email = Column(String, unique=True)
     password_hash = Column(String)
@@ -20,7 +20,7 @@ class UserCreate(BaseModel):
     password: str
         
 class UserResponse(BaseModel):
-    id: int
+    id: str
     name: str
     email: str
     provider: str
