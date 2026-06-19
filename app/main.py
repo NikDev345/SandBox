@@ -4,6 +4,7 @@ from models import *
 from database.engine import *
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
+from app.api.auth import router as auth_router
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -23,3 +24,5 @@ app.add_middleware(
 )
 
 models.Base.metadata.create_all(bind=engine)
+
+app.include_router(auth_router)

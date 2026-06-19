@@ -7,8 +7,8 @@ class Executions(Base):
     __tablename__ = 'executions'
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer)
-    tool_id = Column(Integer)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    tool_id = Column(Integer, ForeignKey("tools.id"))
     user_input = Column(String)
     output = Column(String)
     created_at = Column(DateTime)

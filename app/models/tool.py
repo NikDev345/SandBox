@@ -7,7 +7,7 @@ class Tools(Base):
     
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    slug = Column(String)
+    slug = Column(String, unique=True)
     category = Column(String)
     
 # Session Schemas-------------------------------------------------------------------

@@ -8,9 +8,10 @@ class Users(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    email = Column(String)
+    email = Column(String, unique=True)
+    password_hash = Column(String)
     provider = Column(String)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
     
 # Session Schemas-------------------------------------------------------------------
 class UserCreate(BaseModel):

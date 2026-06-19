@@ -8,7 +8,7 @@ class Analytics(Base):
     __tablename__ = 'analytics'
     
     id = Column(Integer, primary_key=True)
-    tool_id = Column(Integer)
+    tool_id = Column(Integer, ForeignKey("tools.id"))
     event_type = Column(String)
     timestamp = Column(DateTime)
     
