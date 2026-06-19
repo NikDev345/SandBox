@@ -1,4 +1,4 @@
-# app/ui/pages/login.py
+# app/ui/pages/profile.py
 
 from nicegui import ui
 
@@ -6,8 +6,8 @@ from app.ui.components.navbar import navbar
 from app.ui.components.footer import footer
 
 
-@ui.page('/login')
-def login_page():
+@ui.page('/profile')
+def profile_page():
 
     navbar()
 
@@ -16,27 +16,29 @@ def login_page():
     ):
 
         ui.label(
-            'Login'
+            'Profile'
         ).classes(
             'text-4xl font-bold'
         )
 
-        ui.button(
-            'Continue as Guest'
-        ).classes(
-            'w-64'
+        ui.label(
+            'Email: demo@example.com'
+        )
+
+        ui.label(
+            'Provider: Google'
+        )
+
+        ui.label(
+            'History Count: 0'
+        )
+
+        ui.label(
+            'Bookmarks Count: 0'
         )
 
         ui.button(
-            'Login with Google'
-        ).classes(
-            'w-64'
-        )
-
-        ui.button(
-            'Login with GitHub'
-        ).classes(
-            'w-64'
+            'Logout'
         )
 
     footer()
