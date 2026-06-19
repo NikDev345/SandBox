@@ -18,6 +18,7 @@ class UserCreate(BaseModel):
     name: str
     email: str
     password: str
+    provider: str
         
 class UserResponse(BaseModel):
     id: str
