@@ -1,0 +1,34 @@
+    # Web Framework
+fastapi>=0.116.0
+uvicorn[standard]>=0.35.0
+nicegui>=2.20.0
+
+# Database
+sqlmodel>=0.0.24
+sqlalchemy>=2.0.41
+psycopg2-binary>=2.9.10
+alembic>=1.16.2
+
+# Redis
+redis>=6.2.0
+
+# Authentication
+authlib>=1.6.0
+python-jose[cryptography]>=3.5.0
+passlib[bcrypt]>=1.7.4
+
+# Environment Variables
+python-dotenv>=1.1.1
+
+# Gemini
+google-generativeai>=0.8.5
+
+# Validation
+pydantic>=2.11.7
+email-validator>=2.2.0
+
+# File Processing
+pypdf>=5.7.0
+python-multipart>=0.0.20
+
+# HTTP Client
