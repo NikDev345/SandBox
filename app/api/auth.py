@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
-
 from sqlalchemy.orm import Session
+from app.utils.jwt import create_access_token
 
 from app.database.engine import get_db
 
@@ -65,10 +65,16 @@ def login(
             status_code=401,
             detail="Invalid credentials"
         )
+        
+    token = create_access_token(
+        {
+            "sub": user.id,
+            "email": user.email
+        }
+    )
 
     return {
-        "message":
-        "Login successful",
-        "user_id":
-        user.id
+        "access_token": token,
+        "token_type": "bearer",
+        "user_id": user.id
     }

@@ -1,12 +1,12 @@
 from sqlalchemy import Column, ForeignKey, String, DateTime
-from database.engine import Base
+from app.database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
-    
+
 class Executions(Base):
     __tablename__ = 'executions'
     
-    id = Column(String, primary_key=True, index=True)
+    id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id"))
     tool_id = Column(String, ForeignKey("tools.id"))
     user_input = Column(String)
