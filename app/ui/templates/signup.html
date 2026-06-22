@@ -1,4 +1,4 @@
-<main class="auth-shell" data-auth-page="login">
+<main class="auth-shell" data-auth-page="signup">
     <section class="auth-story" aria-label="ToolBox product overview">
         <a class="auth-brand" href="/" aria-label="ToolBox home">
             <span class="brand-mark" aria-hidden="true"></span>
@@ -6,11 +6,11 @@
         </a>
 
         <div class="auth-copy">
-            <p class="eyebrow">AI operations workspace</p>
-            <h1>Every utility your team needs, refined into one calm command center.</h1>
+            <p class="eyebrow">Built for modern teams</p>
+            <h1>Start with a sharper workspace for AI-assisted execution.</h1>
             <p>
-                Generate, repair, review, and ship faster with a focused toolbox designed
-                for teams that care about speed and polish.
+                Bring your favorite developer, content, productivity, and image utilities
+                into a premium interface that stays fast as the platform grows.
             </p>
         </div>
 
@@ -22,8 +22,8 @@
             </div>
             <div class="visual-command">
                 <span class="command-icon"></span>
-                <span>Search tools, prompts, and workflows</span>
-                <kbd>Ctrl K</kbd>
+                <span>Create workflow from prompt</span>
+                <kbd>New</kbd>
             </div>
             <div class="visual-grid">
                 <span></span>
@@ -34,23 +34,29 @@
         </div>
 
         <ul class="auth-benefits" aria-label="Product benefits">
-            <li>Secure sessions</li>
-            <li>Real-time ready analytics</li>
-            <li>Keyboard-first workflows</li>
+            <li>Premium tool library</li>
+            <li>Focused dashboard UX</li>
+            <li>Scalable frontend system</li>
         </ul>
     </section>
 
-    <section class="auth-panel" aria-label="Sign in">
+    <section class="auth-panel" aria-label="Create account">
         <div class="auth-card">
             <div class="auth-header">
-                <p class="eyebrow">Welcome back</p>
-                <h2>Sign in to ToolBox</h2>
-                <p>Use your workspace credentials to continue.</p>
+                <p class="eyebrow">Create workspace</p>
+                <h2>Create your account</h2>
+                <p>Set up your ToolBox profile in a few seconds.</p>
             </div>
 
             <div class="auth-alert" role="status" aria-live="polite"></div>
 
-            <form id="login-form" class="auth-form" novalidate>
+            <form id="signup-form" class="auth-form" novalidate>
+                <label class="field">
+                    <span>Name</span>
+                    <input type="text" id="name" name="name" autocomplete="name" placeholder="Nikhil Sharma" required minlength="2">
+                    <small></small>
+                </label>
+
                 <label class="field">
                     <span>Email</span>
                     <input type="email" id="email" name="email" autocomplete="email" placeholder="you@company.com" required>
@@ -59,30 +65,18 @@
 
                 <label class="field">
                     <span>Password</span>
-                    <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required minlength="6">
+                    <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Create a secure password" required minlength="6">
                     <small></small>
                 </label>
 
-                <div class="form-row">
-                    <label class="check-field">
-                        <input type="checkbox" id="remember">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="/login" class="text-link">Forgot password?</a>
-                </div>
-
-                <button type="submit" class="btn-auth btn-primary" data-loading-text="Signing in...">
-                    <span>Sign In</span>
+                <button type="submit" class="btn-auth btn-primary" data-loading-text="Creating account...">
+                    <span>Create Account</span>
                 </button>
             </form>
 
             <div class="divider"><span>or continue with</span></div>
 
-            <div class="social-grid">
-                <button id="guest-login" class="btn-auth btn-secondary" type="button">
-                    <span class="icon-user" aria-hidden="true"></span>
-                    Guest
-                </button>
+            <div class="social-grid two">
                 <button class="btn-auth btn-secondary" type="button" data-disabled-provider="Google">
                     <span class="icon-google" aria-hidden="true"></span>
                     Google
@@ -94,8 +88,8 @@
             </div>
 
             <p class="auth-switch">
-                New to ToolBox?
-                <a href="/signup">Create Account</a>
+                Already have an account?
+                <a href="/login">Login Instead</a>
             </p>
         </div>
     </section>

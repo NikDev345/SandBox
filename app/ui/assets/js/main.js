@@ -4,6 +4,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    if (document.querySelector('[data-dashboard]')) return;
+
     initializeCounters();
     initializeToolCards();
     initializeCommandPalette();
