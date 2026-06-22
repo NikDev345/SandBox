@@ -4,6 +4,9 @@ from app.database.engine import *
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
 from app.api.auth import router as auth_router
+from app.api.tools import router as tool_router
+from app.api.exec import router as exe_router
+from app.api.analytics import router as analytic_router
 
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
@@ -26,3 +29,6 @@ app.add_middleware(
 
 
 app.include_router(auth_router)
+app.include_router(tool_router)
+app.include_router(exe_router)
+app.include_router(analytic_router)

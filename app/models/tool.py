@@ -19,7 +19,7 @@ class ToolCreate(BaseModel):
     
 class ToolResponse(BaseModel):
     id: str
-    name: str
+    name: str   
     category: str
     slug: str
     

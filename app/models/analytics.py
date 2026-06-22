@@ -10,7 +10,7 @@ class Analytics(Base):
     id = Column(String, primary_key=True)
     tool_id = Column(String,ForeignKey("tools.id"))
     event_type = Column(String)
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime, default=datetime.utcnow)
     
 class AnalyticCreate(BaseModel):
     tool_id: str

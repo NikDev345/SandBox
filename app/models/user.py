@@ -3,7 +3,6 @@ from app.database.engine import Base
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
-
 class Users(Base):
     __tablename__ = 'users'
     
