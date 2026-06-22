@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
-from database.engine import Base
+from app.database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -8,7 +8,7 @@ class Analytics(Base):
     __tablename__ = 'analytics'
     
     id = Column(String, primary_key=True)
-    tool_id = Column(String, ForeignKey("tools.id"))
+    tool_id = Column(String,ForeignKey("tools.id"))
     event_type = Column(String)
     timestamp = Column(DateTime)
     

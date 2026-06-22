@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-
 from app.models.user import Users
 from app.utils.security import (
     hash_password,
     verify_password
 )
+import uuid
 
 
 class AuthService:
@@ -30,6 +30,7 @@ class AuthService:
             return None
 
         user = Users(
+            id = str(uuid.uuid4()),
             name=name,
             email=email,
             password_hash=hash_password(
