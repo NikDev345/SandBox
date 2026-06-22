@@ -4,7 +4,7 @@ from app.utils.security import (
     hash_password,
     verify_password
 )
-import uuid
+import uuid 
 
 
 class AuthService:

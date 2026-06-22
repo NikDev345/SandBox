@@ -26,7 +26,7 @@ def verify_token(token: str):
         payload = jwt.decode(
             token,
             SECRET_KEY,
-            algorithms={ALGORITHM}
+            algorithms=[ALGORITHM]
         )
         return payload
     

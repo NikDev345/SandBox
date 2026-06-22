@@ -11,10 +11,9 @@ class Executions(Base):
     tool_id = Column(String, ForeignKey("tools.id"))
     user_input = Column(String)
     output = Column(String)
-    created_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
     
 class ExecutionCreate(BaseModel):
-    user_id: str
     tool_id: str    
     user_input: str
     output: str
