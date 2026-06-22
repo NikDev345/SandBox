@@ -1,31 +1,31 @@
 document
-.getElementById('login-form')
-?.addEventListener(
-    'submit',
+.getElementById("login-form")
+.addEventListener(
+    "submit",
     async function(e){
 
         e.preventDefault();
 
         const email =
-            document.getElementById('email').value;
+            document.getElementById("email").value;
 
         const password =
-            document.getElementById('password').value;
+            document.getElementById("password").value;
 
         const response =
             await fetch(
-                '/auth/login',
+                "/auth/login",
                 {
-                    method:'POST',
+                    method: "POST",
 
-                    headers:{
-                        'Content-Type':
-                        'application/json'
+                    headers: {
+                        "Content-Type":
+                        "application/json"
                     },
 
-                    body:JSON.stringify({
-                        email,
-                        password
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
                     })
                 }
             );
@@ -33,29 +33,16 @@ document
         const data =
             await response.json();
 
-        console.log(data);
+        if(response.ok){
 
-    }
-);
+            alert("Login Successful");
 
-document
-.getElementById('guest-login')
-?.addEventListener(
-    'click',
-    async ()=>{
+            window.location.href = "/";
 
-        const response =
-            await fetch(
-                '/auth/guest',
-                {
-                    method:'POST'
-                }
-            );
+        }else{
 
-        const data =
-            await response.json();
-
-        console.log(data);
+            alert(data.detail);
+        }
 
     }
 );
