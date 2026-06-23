@@ -38,7 +38,3 @@ def verify_token(token: str):
     except JWTError:
         return None
 
-
-def revoke_token(token: str):
-    if token:
-        REVOKED_TOKENS.add(token)
