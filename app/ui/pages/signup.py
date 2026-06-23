@@ -1,8 +1,8 @@
 from nicegui import ui
 
 
-@ui.page('/login')
-def login_page():
+@ui.page('/signup')
+def signup_page():
 
     ui.add_head_html("""
     <link rel="stylesheet"
@@ -10,11 +10,11 @@ def login_page():
     """)
 
     ui.add_body_html("""
-    <script src="/assets/js/login.js"></script>
+    <script src="/assets/js/signup.js"></script>
     """)
 
     with open(
-        "app/ui/templates/login.html",
+        "app/ui/templates/signup.html",
         encoding="utf-8"
     ) as f:
 

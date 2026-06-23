@@ -1,190 +1,205 @@
-<body>
+<div class="dashboard-shell" data-dashboard>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
 
-    <aside class="sidebar">
+    <button class="mobile-menu" type="button" aria-label="Open navigation" aria-controls="dashboard-sidebar" aria-expanded="false">
+        <span></span>
+        <span></span>
+    </button>
 
-        <div class="logo">
-            ToolBox
-        </div>
+    <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Primary navigation">
+        <a class="sidebar-brand" href="/" aria-label="ToolBox dashboard">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">ToolBox</span>
+        </a>
 
-        <div class="nav-group">
-
-            <a class="nav-item active">
-                Dashboard
+        <nav class="sidebar-nav">
+            <p class="nav-section">Workspace</p>
+            <a class="nav-item active" href="/" data-section="dashboard">
+                <span class="nav-icon" data-icon="dashboard"></span>
+                <span>Dashboard</span>
+            </a>
+            <a class="nav-item" href="#developer-tools" data-section="developer">
+                <span class="nav-icon" data-icon="code"></span>
+                <span>Developer Tools</span>
+            </a>
+            <a class="nav-item" href="#content-tools" data-section="content">
+                <span class="nav-icon" data-icon="content"></span>
+                <span>Content Tools</span>
+            </a>
+            <a class="nav-item" href="#productivity-tools" data-section="productivity">
+                <span class="nav-icon" data-icon="bolt"></span>
+                <span>Productivity Tools</span>
+            </a>
+            <a class="nav-item" href="#image-tools" data-section="image">
+                <span class="nav-icon" data-icon="image"></span>
+                <span>Image Tools</span>
             </a>
 
-            <a class="nav-item">
-                Developer Tools
+            <p class="nav-section">Operations</p>
+            <a class="nav-item" href="#analytics" data-section="analytics">
+                <span class="nav-icon" data-icon="chart"></span>
+                <span>Analytics</span>
             </a>
-
-            <a class="nav-item">
-                Content Tools
+            <a class="nav-item" href="#history" data-section="history">
+                <span class="nav-icon" data-icon="history"></span>
+                <span>History</span>
             </a>
-
-            <a class="nav-item">
-                Productivity Tools
+            <a class="nav-item" href="#bookmarks" data-section="bookmarks">
+                <span class="nav-icon" data-icon="bookmark"></span>
+                <span>Bookmarks</span>
             </a>
-
-            <a class="nav-item">
-                Image Tools
+            <a class="nav-item" href="#settings" data-section="settings">
+                <span class="nav-icon" data-icon="settings"></span>
+                <span>Settings</span>
             </a>
-
-            <a class="nav-item">
-                Analytics
-            </a>
-
-            <a class="nav-item">
-                History
-            </a>
-
-            <a class="nav-item">
-                Bookmarks
-            </a>
-
-            <a class="nav-item">
-                Settings
-            </a>
-
-        </div>
-
+        </nav>
     </aside>
 
-    <main class="main">
-
-        <div class="topbar">
-
-            <input
-                class="search"
-                placeholder="Search tools..."
-            >
-
-            <div class="profile">
-                NR
+    <main class="dashboard-main">
+        <header class="dashboard-topbar">
+            <div class="command-search" role="search">
+                <span class="search-icon" aria-hidden="true"></span>
+                <input class="search" id="global-search" type="search" placeholder="Search tools, workflows, history..." autocomplete="off">
+                <kbd>Ctrl K</kbd>
             </div>
 
-        </div>
+            <div class="topbar-actions">
+                <button class="icon-button" type="button" aria-label="Create quick action" data-open-command>
+                    <span class="plus-icon" aria-hidden="true"></span>
+                </button>
+                <button class="icon-button" type="button" aria-label="Notifications">
+                    <span class="bell-icon" aria-hidden="true"></span>
+                </button>
+                <button class="icon-button" type="button" aria-label="Toggle theme" data-theme-toggle>
+                    <span class="theme-icon" aria-hidden="true"></span>
+                </button>
+                <div class="profile-menu">
+                    <button class="profile-trigger" type="button" aria-label="Open profile menu" aria-expanded="false">
+                        <span class="avatar" data-user-avatar>TB</span>
+                        <span class="profile-copy">
+                            <strong data-user-name>Workspace</strong>
+                            <small data-user-provider>Guest</small>
+                        </span>
+                    </button>
+                    <div class="profile-dropdown" role="menu">
+                        <p data-user-email>Not signed in</p>
+                        <a href="/login" role="menuitem">Sign in</a>
+                        <a href="/signup" role="menuitem">Create account</a>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-        <section class="hero">
-
-            <h1>
-                Build Faster.
-                Think Less.
-            </h1>
-
-            <p>
-                Developer tools, content tools,
-                productivity tools and image utilities
-                in one platform.
-            </p>
-
+        <section class="hero-panel">
+            <div>
+                <p class="eyebrow">AI ToolBox Command Center</p>
+                <h1>Build faster with a focused suite of intelligent tools.</h1>
+                <p>
+                    A premium workspace for developer, content, productivity, and image workflows.
+                    Data surfaces are wired for live API responses and graceful loading states.
+                </p>
+            </div>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="#developer-tools">Explore Tools</a>
+                <button class="btn btn-secondary" type="button" data-open-command>Command Search</button>
+            </div>
         </section>
 
-        <section class="stats">
-
-            <div class="stat-card">
-                <h3>35</h3>
-                <span>Total Tools</span>
-            </div>
-
-            <div class="stat-card">
-                <h3>14,523</h3>
-                <span>Executions</span>
-            </div>
-
-            <div class="stat-card">
-                <h3>1,254</h3>
-                <span>Users</span>
-            </div>
-
-            <div class="stat-card">
-                <h3>99.9%</h3>
-                <span>Uptime</span>
-            </div>
-
+        <section class="metric-grid" aria-label="Workspace metrics">
+            <article class="metric-card" data-metric-card="tools">
+                <span class="metric-label">Total Tools</span>
+                <strong data-metric="totalTools">--</strong>
+                <small data-metric-note="totalTools">Loading registry</small>
+            </article>
+            <article class="metric-card" data-metric-card="executions">
+                <span class="metric-label">Executions</span>
+                <strong data-metric="executions">--</strong>
+                <small data-metric-note="executions">Waiting for analytics API</small>
+            </article>
+            <article class="metric-card" data-metric-card="users">
+                <span class="metric-label">Users</span>
+                <strong data-metric="users">--</strong>
+                <small data-metric-note="users">Waiting for user API</small>
+            </article>
+            <article class="metric-card" data-metric-card="uptime">
+                <span class="metric-label">Uptime</span>
+                <strong data-metric="uptime">--</strong>
+                <small data-metric-note="uptime">Status endpoint not connected</small>
+            </article>
         </section>
 
-        <h2 class="section-title">
-            Popular Tools
-        </h2>
-
-        <section class="tool-grid">
-
-            <div class="tool-card">
-
-                <h3>
-                    SQL Generator
-                </h3>
-
-                <p>
-                    Generate optimized SQL queries
-                    from plain English.
-                </p>
-
-                <div class="tool-footer">
-
-                    <span class="tool-category">
-                        Developer
-                    </span>
-
-                    <span class="tool-link">
-                        Open →
-                    </span>
-
+        <section class="content-grid">
+            <div class="workspace-section" id="developer-tools">
+                <div class="section-header">
+                    <div>
+                        <p class="eyebrow">Popular Tools</p>
+                        <h2>Developer workflows</h2>
+                    </div>
+                    <span class="result-count" data-result-count>0 tools</span>
                 </div>
 
-            </div>
-
-            <div class="tool-card">
-
-                <h3>
-                    Regex Generator
-                </h3>
-
-                <p>
-                    Create regular expressions
-                    instantly.
-                </p>
-
-                <div class="tool-footer">
-
-                    <span class="tool-category">
-                        Developer
-                    </span>
-
-                    <span class="tool-link">
-                        Open →
-                    </span>
-
+                <div class="tool-grid" data-tool-grid>
+                    <a class="tool-card" href="/tools/sql-generator" data-tool-name="SQL Generator" data-tool-category="Developer">
+                        <span class="tool-icon" data-icon="database"></span>
+                        <h3>SQL Generator</h3>
+                        <p>Generate optimized SQL queries from plain English prompts.</p>
+                        <span class="tool-meta">Developer <b>Open</b></span>
+                    </a>
+                    <a class="tool-card" href="/tools/regex-generator" data-tool-name="Regex Generator" data-tool-category="Developer">
+                        <span class="tool-icon" data-icon="regex"></span>
+                        <h3>Regex Generator</h3>
+                        <p>Create precise regular expressions with examples and explanations.</p>
+                        <span class="tool-meta">Developer <b>Open</b></span>
+                    </a>
+                    <a class="tool-card" href="/tools/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer">
+                        <span class="tool-icon" data-icon="braces"></span>
+                        <h3>JSON Fixer</h3>
+                        <p>Repair malformed JSON and normalize structure automatically.</p>
+                        <span class="tool-meta">Developer <b>Open</b></span>
+                    </a>
+                    <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer">
+                        <span class="tool-icon" data-icon="review"></span>
+                        <h3>Code Reviewer</h3>
+                        <p>Review code for defects, readability, security, and maintainability.</p>
+                        <span class="tool-meta">Developer <b>Open</b></span>
+                    </a>
+                    <a class="tool-card" href="/tools/dockerfile-generator" data-tool-name="Dockerfile Generator" data-tool-category="Developer">
+                        <span class="tool-icon" data-icon="container"></span>
+                        <h3>Dockerfile Generator</h3>
+                        <p>Create clean Dockerfiles for common stacks and deployment targets.</p>
+                        <span class="tool-meta">Developer <b>Open</b></span>
+                    </a>
                 </div>
 
-            </div>
-
-            <div class="tool-card">
-
-                <h3>
-                    JSON Fixer
-                </h3>
-
-                <p>
-                    Repair malformed JSON
-                    automatically.
-                </p>
-
-                <div class="tool-footer">
-
-                    <span class="tool-category">
-                        Developer
-                    </span>
-
-                    <span class="tool-link">
-                        Open →
-                    </span>
-
+                <div class="empty-state" data-empty-state hidden>
+                    <h3>No tools found</h3>
+                    <p>Try another search term or open command search for the full workspace.</p>
                 </div>
-
             </div>
 
+            <aside class="insight-panel" id="analytics">
+                <div class="section-header compact">
+                    <div>
+                        <p class="eyebrow">System</p>
+                        <h2>Readiness</h2>
+                    </div>
+                </div>
+                <div class="readiness-list">
+                    <div>
+                        <span>Authentication</span>
+                        <strong class="status success">Connected</strong>
+                    </div>
+                    <div>
+                        <span>Tool registry</span>
+                        <strong class="status warning">Static fallback</strong>
+                    </div>
+                    <div>
+                        <span>Analytics</span>
+                        <strong class="status muted">API pending</strong>
+                    </div>
+                </div>
+            </aside>
         </section>
-
     </main>
-
-</body>
+</div>
