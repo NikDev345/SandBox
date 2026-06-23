@@ -8,13 +8,15 @@ app.add_static_files(
 
 app.include_router(auth_router)
 
+@ui.page('/')
+def home():
+    ui.label('Hello Toolbox')
+
 ui.add_head_html("""
-<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/assets/css/auth.css">
 """, shared=True)
 
-ui.add_body_html("""
-<script src="/assets/js/main.js"></script>
-""", shared=True)
+
 
 import app.ui.pages.dashboard
 import app.ui.pages.login
@@ -23,9 +25,9 @@ import app.ui.pages.dashboard
 import app.ui.pages.profile
 import app.ui.pages.tool_page
 
-ui.run(
-    title='ToolBox',
-    dark=True,
-    reload=True
-)
+# ui.run(
+#     title='ToolBox',
+#     dark=True,
+#     reload=True
+# )
 

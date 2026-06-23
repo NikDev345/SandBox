@@ -46,3 +46,6 @@ def get_tool(tool_id: str, db: Session = Depends(get_db)):
         
     return tool
     
+@router.get('/count')
+def get_tool_count(db: Session = Depends(get_db)):
+    return ToolService.get_tool_count(db)

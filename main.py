@@ -7,10 +7,11 @@ from app.api.auth import router as auth_router
 from app.api.tools import router as tool_router
 from app.api.exec import router as exe_router
 from app.api.analytics import router as analytic_router
+import app.main 
+from nicegui import ui
 
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
-print(Base.metadata.tables.keys())
 
 app = FastAPI()
 
@@ -20,15 +21,22 @@ app.add_middleware(
         "http://127.0.0.1:5500",
         "http://localhost:5500",
         "http://127.0.0.1:5501",
-        "http://localhost:5501"
+        "http://localhost:5501",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
 app.include_router(auth_router)
 app.include_router(tool_router)
 app.include_router(exe_router)
 app.include_router(analytic_router)
+
+ui.run_with(
+    app,
+    title="ToolBox",
+    mount_path="/"
+)

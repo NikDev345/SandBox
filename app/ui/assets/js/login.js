@@ -1,123 +1,125 @@
-const loginForm = document.getElementById("login-form");
-const guestButton = document.getElementById("guest-login");
-const authAlert = document.querySelector(".auth-alert");
+document.addEventListener("DOMContentLoaded", () => {
+
+
+const form = document.getElementById("login-form");
+
+if (!form) return;
+
+const alertBox = document.querySelector(".auth-alert");
+const submitBtn = form.querySelector('button[type="submit"]');
 
 function showAlert(message, type = "error") {
-    if (!authAlert) return;
-    authAlert.textContent = message;
-    authAlert.className = `auth-alert show ${type}`;
+    alertBox.textContent = message;
+    alertBox.classList.remove("success", "error");
+    alertBox.classList.add(type);
+    alertBox.style.display = "block";
 }
 
-function setButtonLoading(button, loading) {
-    if (!button) return;
-    const label = button.querySelector("[data-button-label]") || button.querySelector("span") || button;
-    if (!button.dataset.defaultText) {
-        button.dataset.defaultText = label.textContent;
-    }
-    label.textContent = loading ? button.dataset.loadingText : button.dataset.defaultText;
-    button.disabled = loading;
+function clearAlert() {
+    alertBox.textContent = "";
+    alertBox.classList.remove("success", "error");
+    alertBox.style.display = "none";
 }
 
-function setFieldError(input, message) {
-    const field = input.closest(".field");
-    const note = field?.querySelector("small");
-    field?.classList.toggle("invalid", Boolean(message));
-    if (note) note.textContent = message || "";
-}
+function setLoading(isLoading) {
+    if (isLoading) {
+        submitBtn.disabled = true;
 
-function validateLogin() {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    let valid = true;
+        submitBtn.dataset.originalText =
+            submitBtn.querySelector("span").textContent;
 
-    if (!email.value.trim() || !email.validity.valid) {
-        setFieldError(email, "Enter a valid email address.");
-        valid = false;
+        submitBtn.querySelector("span").textContent =
+            submitBtn.dataset.loadingText || "Signing in...";
     } else {
-        setFieldError(email, "");
-    }
+        submitBtn.disabled = false;
 
-    if (!password.value || password.value.length < 6) {
-        setFieldError(password, "Password must be at least 6 characters.");
-        valid = false;
-    } else {
-        setFieldError(password, "");
+        submitBtn.querySelector("span").textContent =
+            submitBtn.dataset.originalText;
     }
-
-    return valid;
 }
 
-document.querySelectorAll(".field input").forEach(input => {
-    input.addEventListener("input", () => setFieldError(input, ""));
-});
+form.addEventListener("submit", async (e) => {
 
-function persistAuthSession(data) {
-    localStorage.setItem("user_id", data.user_id);
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("toolbox_user", JSON.stringify(data.user));
-}
+    e.preventDefault();
 
-document.querySelectorAll("[data-oauth-provider]").forEach(button => {
-    button.addEventListener("click", () => {
-        window.location.href = `/auth/oauth/${button.dataset.oauthProvider}/login`;
-    });
-});
+    clearAlert();
 
-guestButton?.addEventListener("click", async () => {
-    setButtonLoading(guestButton, true);
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    if (!email) {
+        showAlert("Email is required");
+        return;
+    }
+
+    if (!password) {
+        showAlert("Password is required");
+        return;
+    }
 
     try {
-        const response = await fetch("/auth/guest", {
-            method: "POST"
-        });
-        const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.detail || "Unable to continue as guest.");
-        }
+        setLoading(true);
 
-        persistAuthSession(data);
-        window.location.href = "/";
-    } catch (error) {
-        showAlert(error.message);
-    } finally {
-        setButtonLoading(guestButton, false);
-    }
-});
-
-loginForm?.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    if (!validateLogin()) return;
-
-    const submitButton = loginForm.querySelector("button[type='submit']");
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    setButtonLoading(submitButton, true);
-
-    try {
-        const response = await fetch("/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, password })
-        });
+        const response = await fetch(
+            "/auth/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            }
+        );
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.detail || "Unable to sign in.");
+            throw new Error(
+                data.detail || "Invalid credentials"
+            );
         }
 
-        persistAuthSession(data);
+        localStorage.setItem(
+            "access_token",
+            data.access_token
+        );
 
-        showAlert("Signed in. Redirecting to your workspace...", "success");
-        window.location.href = "/";
+        localStorage.setItem(
+            "user_id",
+            data.user_id
+        );
+
+        showAlert(
+            "Login successful",
+            "success"
+        );
+
+        setTimeout(() => {
+            window.location.href = "/dashboard";
+        }, 1000);
+
     } catch (error) {
-        showAlert(error.message);
+
+        console.error(error);
+
+        showAlert(
+            error.message || "Login failed"
+        );
+
     } finally {
-        setButtonLoading(submitButton, false);
+
+        setLoading(false);
+
     }
+
+});
+
+
 });

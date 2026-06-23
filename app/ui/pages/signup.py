@@ -9,9 +9,9 @@ def signup_page():
     href="/assets/css/auth.css">
     """)
 
-    ui.add_body_html("""
-    <script src="/assets/js/signup.js"></script>
-    """)
+    ui.add_body_html(
+        '<script src="/assets/js/signup.js"></script>'
+    )
 
     with open(
         "app/ui/templates/signup.html",

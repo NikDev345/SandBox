@@ -1,7 +1,7 @@
 from nicegui import ui
 
 
-@ui.page('/')
+@ui.page('/dashboard')
 def dashboard():
 
     ui.add_head_html("""
