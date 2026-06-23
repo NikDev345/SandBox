@@ -1,205 +1,295 @@
 <div class="dashboard-shell" data-dashboard>
-    <div class="ambient ambient-one" aria-hidden="true"></div>
-    <div class="ambient ambient-two" aria-hidden="true"></div>
+  <!-- Grid texture layer -->
+  <div class="bg-grid" aria-hidden="true"></div>
 
-    <button class="mobile-menu" type="button" aria-label="Open navigation" aria-controls="dashboard-sidebar" aria-expanded="false">
-        <span></span>
-        <span></span>
-    </button>
+  <!-- Mobile hamburger -->
+  <button class="mobile-menu" type="button" aria-label="Open navigation" aria-controls="dashboard-sidebar" aria-expanded="false">
+    <span></span>
+    <span></span>
+  </button>
 
-    <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Primary navigation">
-        <a class="sidebar-brand" href="/" aria-label="ToolBox dashboard">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span class="brand-text">ToolBox</span>
+  <!-- ── SIDEBAR ── -->
+  <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Workspace navigation">
+
+    <!-- Logo -->
+    <a class="logo-only" href="/" aria-label="ToolBox home">
+      <div class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <path d="M12 6h18c6.6 0 12 5.4 12 12v18c0 3.3-2.7 6-6 6H18C11.4 42 6 36.6 6 30V12c0-3.3 2.7-6 6-6Z" fill="#e4e4e7"/>
+          <path d="M16 15h16v5H21v8h11v5H16V15Z" fill="#09090b"/>
+        </svg>
+      </div>
+      <span class="logo-wordmark">ToolBox</span>
+    </a>
+
+    <!-- Workspace switcher -->
+    <div class="workspace-switch">
+      <span class="avatar" data-user-avatar>TB</span>
+      <div>
+        <strong data-user-name>Workspace</strong>
+        <small data-user-provider>Guest</small>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <span class="nav-section-label">Navigate</span>
+
+      <a class="nav-item active" href="/" data-section="dashboard">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </span>
+        <span>Overview</span>
+      </a>
+
+      <a class="nav-item" href="#workspace" data-section="workspace">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <span>Workspace</span>
+      </a>
+
+      <a class="nav-item" href="#tools" data-section="tools">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </span>
+        <span>Tools</span>
+      </a>
+
+      <a class="nav-item" href="#account" data-section="account">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span>Account</span>
+      </a>
+
+      <span class="nav-section-label" style="margin-top:8px">Tools</span>
+
+      <a class="nav-item" href="/tools/sql-generator">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+        </span>
+        <span>SQL Generator</span>
+      </a>
+
+      <a class="nav-item" href="/tools/regex-generator">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </span>
+        <span>Regex Builder</span>
+      </a>
+
+      <a class="nav-item" href="/tools/json-fixer">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        </span>
+        <span>JSON Fixer</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar bottom -->
+    <div class="sidebar-bottom">
+      <a class="nav-item" href="/login" data-auth-link>
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </span>
+        <span>Sign In</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="dashboard-main">
+
+    <!-- Topbar -->
+    <header class="dashboard-topbar">
+      <div class="command-search" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input class="search" id="global-search" type="search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+        <kbd>⌘ K</kbd>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-button" type="button" aria-label="Open command palette" data-open-command>
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+
+        <button class="icon-button" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+
+        <div class="profile-menu">
+          <button class="profile-trigger" type="button" aria-label="Open profile" aria-expanded="false">
+            <span class="avatar" data-user-avatar>TB</span>
+          </button>
+          <div class="profile-dropdown" role="menu">
+            <div class="profile-dropdown-header">
+              <strong data-user-name>Workspace</strong>
+              <p data-user-email>Not signed in</p>
+            </div>
+            <a href="/login" role="menuitem" data-auth-link>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              Sign in
+            </a>
+            <a href="/signup" role="menuitem" data-auth-link>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              Create account
+            </a>
+            <div class="dropdown-sep"></div>
+            <button type="button" role="menuitem" data-logout hidden>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-panel anim-fade-up">
+      <div>
+        <p class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          Premium AI workspace
+        </p>
+        <h1>One calm place for every tool.</h1>
+        <p>Generate SQL, repair JSON, create regex, review code — without ever leaving your workspace.</p>
+      </div>
+      <button class="btn btn-primary" type="button" data-open-command>
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Open Tools
+      </button>
+    </section>
+
+    <!-- Metrics -->
+    <div class="metrics-row" aria-label="Workspace metrics">
+      <div class="metric-card anim-fade-up delay-1">
+        <div class="metric-label">Total Tools</div>
+        <div class="metric-value" data-metric="totalTools">--</div>
+        <div class="metric-note" data-metric-note="totalTools">Loading…</div>
+      </div>
+      <div class="metric-card anim-fade-up delay-2">
+        <div class="metric-label">Executions</div>
+        <div class="metric-value" data-metric="executions">--</div>
+        <div class="metric-note" data-metric-note="executions">Loading…</div>
+      </div>
+      <div class="metric-card anim-fade-up delay-3">
+        <div class="metric-label">Active Users</div>
+        <div class="metric-value" data-metric="users">--</div>
+        <div class="metric-note" data-metric-note="users">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Workspace panel -->
+    <section class="workspace-panel anim-fade-up delay-2" id="workspace">
+      <div class="workspace-copy">
+        <p class="eyebrow">Workspace</p>
+        <h2 data-workspace-title>Your active workspace</h2>
+        <p data-workspace-subtitle>Sign in to sync your tools, history, and saved workflows.</p>
+      </div>
+      <div class="workspace-metrics-area" aria-label="Workspace detail metrics">
+        <div class="workspace-metric-row">
+          <span>Tools</span>
+          <strong data-metric="totalTools">--</strong>
+        </div>
+        <div class="workspace-metric-row">
+          <span>Uptime</span>
+          <strong data-metric="uptime">--</strong>
+        </div>
+        <div class="workspace-metric-row">
+          <span>Executions</span>
+          <strong data-metric="executions">--</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tools section -->
+    <section class="tools-section anim-fade-up delay-3" id="tools">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Toolbox</p>
+          <h2>Featured tools</h2>
+        </div>
+        <span class="result-count" data-result-count>0 tools</span>
+      </div>
+
+      <div class="tool-grid" data-tool-grid>
+
+        <a class="tool-card" href="/tools/sql-generator" data-tool-name="SQL Generator" data-tool-category="Developer">
+          <svg class="tool-logo" viewBox="0 0 48 48">
+            <ellipse cx="24" cy="12" rx="15" ry="6"/>
+            <path d="M9 12v18c0 3.3 6.7 6 15 6s15-2.7 15-6V12"/>
+            <path d="M9 21c0 3.3 6.7 6 15 6s15-2.7 15-6"/>
+          </svg>
+          <h3>SQL Generator</h3>
+          <p>Turn plain English into clean, optimized SQL queries instantly.</p>
+          <div class="tool-meta">
+            <span class="tool-category">Developer</span>
+            <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
         </a>
 
-        <nav class="sidebar-nav">
-            <p class="nav-section">Workspace</p>
-            <a class="nav-item active" href="/" data-section="dashboard">
-                <span class="nav-icon" data-icon="dashboard"></span>
-                <span>Dashboard</span>
-            </a>
-            <a class="nav-item" href="#developer-tools" data-section="developer">
-                <span class="nav-icon" data-icon="code"></span>
-                <span>Developer Tools</span>
-            </a>
-            <a class="nav-item" href="#content-tools" data-section="content">
-                <span class="nav-icon" data-icon="content"></span>
-                <span>Content Tools</span>
-            </a>
-            <a class="nav-item" href="#productivity-tools" data-section="productivity">
-                <span class="nav-icon" data-icon="bolt"></span>
-                <span>Productivity Tools</span>
-            </a>
-            <a class="nav-item" href="#image-tools" data-section="image">
-                <span class="nav-icon" data-icon="image"></span>
-                <span>Image Tools</span>
-            </a>
+        <a class="tool-card" href="/tools/regex-generator" data-tool-name="Regex Generator" data-tool-category="Developer">
+          <svg class="tool-logo" viewBox="0 0 48 48">
+            <polyline points="8 30 16 18 24 30 32 18 40 30"/>
+            <circle cx="38" cy="14" r="4"/>
+          </svg>
+          <h3>Regex Builder</h3>
+          <p>Create precise regex patterns from a natural language description.</p>
+          <div class="tool-meta">
+            <span class="tool-category">Developer</span>
+            <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
 
-            <p class="nav-section">Operations</p>
-            <a class="nav-item" href="#analytics" data-section="analytics">
-                <span class="nav-icon" data-icon="chart"></span>
-                <span>Analytics</span>
-            </a>
-            <a class="nav-item" href="#history" data-section="history">
-                <span class="nav-icon" data-icon="history"></span>
-                <span>History</span>
-            </a>
-            <a class="nav-item" href="#bookmarks" data-section="bookmarks">
-                <span class="nav-icon" data-icon="bookmark"></span>
-                <span>Bookmarks</span>
-            </a>
-            <a class="nav-item" href="#settings" data-section="settings">
-                <span class="nav-icon" data-icon="settings"></span>
-                <span>Settings</span>
-            </a>
-        </nav>
-    </aside>
+        <a class="tool-card" href="/tools/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer">
+          <svg class="tool-logo" viewBox="0 0 48 48">
+            <path d="M18 10c-5 0-7 3-7 7v3c0 2-1 4-4 4 3 0 4 2 4 4v3c0 4 2 7 7 7"/>
+            <path d="M30 10c5 0 7 3 7 7v3c0 2 1 4 4 4-3 0-4 2-4 4v3c0 4-2 7-7 7"/>
+          </svg>
+          <h3>JSON Fixer</h3>
+          <p>Repair malformed JSON and reformat it into a clean, valid structure.</p>
+          <div class="tool-meta">
+            <span class="tool-category">Developer</span>
+            <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
 
-    <main class="dashboard-main">
-        <header class="dashboard-topbar">
-            <div class="command-search" role="search">
-                <span class="search-icon" aria-hidden="true"></span>
-                <input class="search" id="global-search" type="search" placeholder="Search tools, workflows, history..." autocomplete="off">
-                <kbd>Ctrl K</kbd>
-            </div>
+        <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer">
+          <svg class="tool-logo" viewBox="0 0 48 48">
+            <path d="M9 11h30v21H24l-8 7v-7H9z"/>
+            <path d="m17 22 4 4 10-10"/>
+          </svg>
+          <h3>Code Reviewer</h3>
+          <p>Detect risks, defects, and maintainability issues across your codebase.</p>
+          <div class="tool-meta">
+            <span class="tool-category">Developer</span>
+            <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
 
-            <div class="topbar-actions">
-                <button class="icon-button" type="button" aria-label="Create quick action" data-open-command>
-                    <span class="plus-icon" aria-hidden="true"></span>
-                </button>
-                <button class="icon-button" type="button" aria-label="Notifications">
-                    <span class="bell-icon" aria-hidden="true"></span>
-                </button>
-                <button class="icon-button" type="button" aria-label="Toggle theme" data-theme-toggle>
-                    <span class="theme-icon" aria-hidden="true"></span>
-                </button>
-                <div class="profile-menu">
-                    <button class="profile-trigger" type="button" aria-label="Open profile menu" aria-expanded="false">
-                        <span class="avatar" data-user-avatar>TB</span>
-                        <span class="profile-copy">
-                            <strong data-user-name>Workspace</strong>
-                            <small data-user-provider>Guest</small>
-                        </span>
-                    </button>
-                    <div class="profile-dropdown" role="menu">
-                        <p data-user-email>Not signed in</p>
-                        <a href="/login" role="menuitem">Sign in</a>
-                        <a href="/signup" role="menuitem">Create account</a>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <a class="tool-card" href="/tools/dockerfile-generator" data-tool-name="Dockerfile Generator" data-tool-category="DevOps">
+          <svg class="tool-logo" viewBox="0 0 48 48">
+            <path d="M10 26h29c-2 8-8 12-16 12-7 0-12-3-15-9"/>
+            <path d="M13 18h5v5h-5zM20 18h5v5h-5zM27 18h5v5h-5zM20 11h5v5h-5zM27 11h5v5h-5z"/>
+          </svg>
+          <h3>Dockerfile Generator</h3>
+          <p>Generate production-ready Dockerfiles tailored to your stack.</p>
+          <div class="tool-meta">
+            <span class="tool-category">DevOps</span>
+            <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </div>
+        </a>
 
-        <section class="hero-panel">
-            <div>
-                <p class="eyebrow">AI ToolBox Command Center</p>
-                <h1>Build faster with a focused suite of intelligent tools.</h1>
-                <p>
-                    A premium workspace for developer, content, productivity, and image workflows.
-                    Data surfaces are wired for live API responses and graceful loading states.
-                </p>
-            </div>
-            <div class="hero-actions">
-                <a class="btn btn-primary" href="#developer-tools">Explore Tools</a>
-                <button class="btn btn-secondary" type="button" data-open-command>Command Search</button>
-            </div>
-        </section>
+      </div>
 
-        <section class="metric-grid" aria-label="Workspace metrics">
-            <article class="metric-card" data-metric-card="tools">
-                <span class="metric-label">Total Tools</span>
-                <strong data-metric="totalTools">--</strong>
-                <small data-metric-note="totalTools">Loading registry</small>
-            </article>
-            <article class="metric-card" data-metric-card="executions">
-                <span class="metric-label">Executions</span>
-                <strong data-metric="executions">--</strong>
-                <small data-metric-note="executions">Waiting for analytics API</small>
-            </article>
-            <article class="metric-card" data-metric-card="users">
-                <span class="metric-label">Users</span>
-                <strong data-metric="users">--</strong>
-                <small data-metric-note="users">Waiting for user API</small>
-            </article>
-            <article class="metric-card" data-metric-card="uptime">
-                <span class="metric-label">Uptime</span>
-                <strong data-metric="uptime">--</strong>
-                <small data-metric-note="uptime">Status endpoint not connected</small>
-            </article>
-        </section>
+      <div class="empty-state" data-empty-state hidden>
+        <h3>No tools found</h3>
+        <p>Try a different search term.</p>
+      </div>
+    </section>
 
-        <section class="content-grid">
-            <div class="workspace-section" id="developer-tools">
-                <div class="section-header">
-                    <div>
-                        <p class="eyebrow">Popular Tools</p>
-                        <h2>Developer workflows</h2>
-                    </div>
-                    <span class="result-count" data-result-count>0 tools</span>
-                </div>
-
-                <div class="tool-grid" data-tool-grid>
-                    <a class="tool-card" href="/tools/sql-generator" data-tool-name="SQL Generator" data-tool-category="Developer">
-                        <span class="tool-icon" data-icon="database"></span>
-                        <h3>SQL Generator</h3>
-                        <p>Generate optimized SQL queries from plain English prompts.</p>
-                        <span class="tool-meta">Developer <b>Open</b></span>
-                    </a>
-                    <a class="tool-card" href="/tools/regex-generator" data-tool-name="Regex Generator" data-tool-category="Developer">
-                        <span class="tool-icon" data-icon="regex"></span>
-                        <h3>Regex Generator</h3>
-                        <p>Create precise regular expressions with examples and explanations.</p>
-                        <span class="tool-meta">Developer <b>Open</b></span>
-                    </a>
-                    <a class="tool-card" href="/tools/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer">
-                        <span class="tool-icon" data-icon="braces"></span>
-                        <h3>JSON Fixer</h3>
-                        <p>Repair malformed JSON and normalize structure automatically.</p>
-                        <span class="tool-meta">Developer <b>Open</b></span>
-                    </a>
-                    <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer">
-                        <span class="tool-icon" data-icon="review"></span>
-                        <h3>Code Reviewer</h3>
-                        <p>Review code for defects, readability, security, and maintainability.</p>
-                        <span class="tool-meta">Developer <b>Open</b></span>
-                    </a>
-                    <a class="tool-card" href="/tools/dockerfile-generator" data-tool-name="Dockerfile Generator" data-tool-category="Developer">
-                        <span class="tool-icon" data-icon="container"></span>
-                        <h3>Dockerfile Generator</h3>
-                        <p>Create clean Dockerfiles for common stacks and deployment targets.</p>
-                        <span class="tool-meta">Developer <b>Open</b></span>
-                    </a>
-                </div>
-
-                <div class="empty-state" data-empty-state hidden>
-                    <h3>No tools found</h3>
-                    <p>Try another search term or open command search for the full workspace.</p>
-                </div>
-            </div>
-
-            <aside class="insight-panel" id="analytics">
-                <div class="section-header compact">
-                    <div>
-                        <p class="eyebrow">System</p>
-                        <h2>Readiness</h2>
-                    </div>
-                </div>
-                <div class="readiness-list">
-                    <div>
-                        <span>Authentication</span>
-                        <strong class="status success">Connected</strong>
-                    </div>
-                    <div>
-                        <span>Tool registry</span>
-                        <strong class="status warning">Static fallback</strong>
-                    </div>
-                    <div>
-                        <span>Analytics</span>
-                        <strong class="status muted">API pending</strong>
-                    </div>
-                </div>
-            </aside>
-        </section>
-    </main>
+  </main>
 </div>
