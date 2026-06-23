@@ -9,7 +9,7 @@ function showAlert(message, type = "error") {
 
 function setButtonLoading(button, loading) {
     if (!button) return;
-    const label = button.querySelector("span") || button;
+    const label = button.querySelector("[data-button-label]") || button.querySelector("span") || button;
     if (!button.dataset.defaultText) {
         button.dataset.defaultText = label.textContent;
     }
@@ -58,9 +58,9 @@ document.querySelectorAll(".field input").forEach(input => {
     input.addEventListener("input", () => setFieldError(input, ""));
 });
 
-document.querySelectorAll("[data-disabled-provider]").forEach(button => {
+document.querySelectorAll("[data-oauth-provider]").forEach(button => {
     button.addEventListener("click", () => {
-        showAlert(`${button.dataset.disabledProvider} signup is ready for provider integration.`, "success");
+        window.location.href = `/auth/oauth/${button.dataset.oauthProvider}/login`;
     });
 });
 

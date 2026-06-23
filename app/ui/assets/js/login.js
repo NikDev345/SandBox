@@ -10,7 +10,7 @@ function showAlert(message, type = "error") {
 
 function setButtonLoading(button, loading) {
     if (!button) return;
-    const label = button.querySelector("span") || button;
+    const label = button.querySelector("[data-button-label]") || button.querySelector("span") || button;
     if (!button.dataset.defaultText) {
         button.dataset.defaultText = label.textContent;
     }
@@ -51,19 +51,38 @@ document.querySelectorAll(".field input").forEach(input => {
     input.addEventListener("input", () => setFieldError(input, ""));
 });
 
-document.querySelectorAll("[data-disabled-provider]").forEach(button => {
+function persistAuthSession(data) {
+    localStorage.setItem("user_id", data.user_id);
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("toolbox_user", JSON.stringify(data.user));
+}
+
+document.querySelectorAll("[data-oauth-provider]").forEach(button => {
     button.addEventListener("click", () => {
-        showAlert(`${button.dataset.disabledProvider} sign in is ready for provider integration.`, "success");
+        window.location.href = `/auth/oauth/${button.dataset.oauthProvider}/login`;
     });
 });
 
-guestButton?.addEventListener("click", () => {
-    localStorage.setItem("toolbox_user", JSON.stringify({
-        name: "Guest",
-        email: "guest@toolbox.local",
-        provider: "Guest"
-    }));
-    window.location.href = "/";
+guestButton?.addEventListener("click", async () => {
+    setButtonLoading(guestButton, true);
+
+    try {
+        const response = await fetch("/auth/guest", {
+            method: "POST"
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Unable to continue as guest.");
+        }
+
+        persistAuthSession(data);
+        window.location.href = "/";
+    } catch (error) {
+        showAlert(error.message);
+    } finally {
+        setButtonLoading(guestButton, false);
+    }
 });
 
 loginForm?.addEventListener("submit", async event => {
@@ -92,13 +111,7 @@ loginForm?.addEventListener("submit", async event => {
             throw new Error(data.detail || "Unable to sign in.");
         }
 
-        localStorage.setItem("user_id", data.user_id);
-        localStorage.setItem("access_token", data.access_token);
-        localStorage.setItem("toolbox_user", JSON.stringify({
-            name: email.split("@")[0],
-            email,
-            provider: "Local"
-        }));
+        persistAuthSession(data);
 
         showAlert("Signed in. Redirecting to your workspace...", "success");
         window.location.href = "/";

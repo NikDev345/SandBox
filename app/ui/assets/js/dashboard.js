@@ -11,6 +11,7 @@ const apiCandidates = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+    consumeOAuthCallback();
     initializeMetricCards();
     initializeSearch();
     initializeNavigation();
@@ -55,6 +56,29 @@ function authHeaders() {
     return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+function persistAuthSession(token, user) {
+    localStorage.setItem("access_token", token);
+    localStorage.setItem("user_id", user.id);
+    localStorage.setItem("toolbox_user", JSON.stringify(user));
+}
+
+function clearAuthSession() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("toolbox_user");
+}
+
+function consumeOAuthCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("auth_token");
+    const user = safeJson(params.get("auth_user"));
+
+    if (!token || !user) return;
+
+    persistAuthSession(token, user);
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
+
 async function loadDashboardData() {
     const [metrics, tools, me] = await Promise.all([
         fetchFirstAvailable(apiCandidates.metrics),
@@ -76,6 +100,10 @@ async function loadDashboardData() {
 
     if (me) {
         renderProfile(me);
+        localStorage.setItem("toolbox_user", JSON.stringify(me));
+    } else if (localStorage.getItem("access_token")) {
+        clearAuthSession();
+        renderSignedOut();
     }
 }
 
@@ -175,7 +203,13 @@ function initializeProfile() {
     });
 
     const storedUser = safeJson(localStorage.getItem("toolbox_user"));
-    if (storedUser) renderProfile(storedUser);
+    if (storedUser && localStorage.getItem("access_token")) {
+        renderProfile(storedUser);
+    } else {
+        renderSignedOut();
+    }
+
+    document.querySelector("[data-logout]")?.addEventListener("click", logout);
 }
 
 function renderProfile(user) {
@@ -190,10 +224,42 @@ function renderProfile(user) {
         .join("")
         .toUpperCase() || "TB";
 
-    document.querySelector("[data-user-avatar]") && (document.querySelector("[data-user-avatar]").textContent = initials);
-    document.querySelector("[data-user-name]") && (document.querySelector("[data-user-name]").textContent = name);
-    document.querySelector("[data-user-provider]") && (document.querySelector("[data-user-provider]").textContent = provider);
-    document.querySelector("[data-user-email]") && (document.querySelector("[data-user-email]").textContent = email);
+    document.querySelectorAll("[data-user-avatar]").forEach(target => target.textContent = initials);
+    document.querySelectorAll("[data-user-name]").forEach(target => target.textContent = name);
+    document.querySelectorAll("[data-user-provider]").forEach(target => target.textContent = provider);
+    document.querySelectorAll("[data-user-email]").forEach(target => target.textContent = email);
+    document.querySelector("[data-workspace-title]") && (document.querySelector("[data-workspace-title]").textContent = `${name}'s workspace`);
+    document.querySelector("[data-workspace-subtitle]") && (document.querySelector("[data-workspace-subtitle]").textContent = `${email} authenticated with ${provider}.`);
+    document.querySelectorAll("[data-auth-link]").forEach(link => link.hidden = true);
+    document.querySelector("[data-logout]") && (document.querySelector("[data-logout]").hidden = false);
+}
+
+function renderSignedOut() {
+    document.querySelectorAll("[data-user-avatar]").forEach(target => target.textContent = "TB");
+    document.querySelectorAll("[data-user-name]").forEach(target => target.textContent = "Workspace");
+    document.querySelectorAll("[data-user-provider]").forEach(target => target.textContent = "Signed out");
+    document.querySelectorAll("[data-user-email]").forEach(target => target.textContent = "Not signed in");
+    document.querySelector("[data-workspace-title]") && (document.querySelector("[data-workspace-title]").textContent = "Your active workspace");
+    document.querySelector("[data-workspace-subtitle]") && (document.querySelector("[data-workspace-subtitle]").textContent = "Sign in to sync your tools, history, and saved workflows.");
+    document.querySelectorAll("[data-auth-link]").forEach(link => link.hidden = false);
+    document.querySelector("[data-logout]") && (document.querySelector("[data-logout]").hidden = true);
+}
+
+async function logout() {
+    const token = localStorage.getItem("access_token");
+
+    try {
+        if (token) {
+            await fetch("/auth/logout", {
+                method: "POST",
+                headers: authHeaders()
+            });
+        }
+    } finally {
+        clearAuthSession();
+        renderSignedOut();
+        window.location.href = "/login";
+    }
 }
 
 function initializeCommandPalette() {
