@@ -7,7 +7,7 @@ from app.ui.components.footer import footer
 from app.ui.components.tool_card import tool_card
 
 
-@ui.page('/')
+@ui.page('/home')
 def home_page():
 
     navbar()
