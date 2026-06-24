@@ -2,10 +2,12 @@ import os
 from datetime import datetime, timedelta, timezone
 
 from jose import jwt, JWTError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 SECRET_KEY = os.getenv(
     "JWT_SECRET_KEY",
-    "3c6f54aee02ba7d1a9fb075b0658e1ffe72316e1eb8a1764b96a975fac9a09d3"
 )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 120

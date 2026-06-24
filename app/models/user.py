@@ -11,6 +11,8 @@ class Users(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=True)
     provider = Column(String, default='local', index=True, nullable=False)
+    provider_user_id = Column(String, nullable=True)
+    avatar_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     role = Column(String, default='user')
 

@@ -74,3 +74,4 @@ def get_profile(db: Session = Depends(get_db), current_user= Depends(get_current
     
     user = AuthService.get_profile(db, current_user)
     return user
+
