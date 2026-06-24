@@ -6,7 +6,7 @@ import uuid
 class ToolService:
     
     @staticmethod
-    def create_tool(db: Session, name: str, category: str):
+    def create_tool(db: Session, name: str, category: str, description: str, icon_url: str, source_path: str):
         slug = name.strip().upper().replace(' ', '-')
         existing_tool = (
             db.query(Tools).filter(Tools.slug == slug).first()
@@ -19,7 +19,10 @@ class ToolService:
             id = str(uuid.uuid4()),
             name = name,
             slug = slug,
-            category = category
+            description = description,
+            category = category,
+            icon_url = icon_url,
+            source_path = source_path
         )
         
         db.add(tool)
