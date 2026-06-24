@@ -37,3 +37,7 @@ class ToolService:
             return None
         
         return tool
+    
+    @staticmethod
+    def get_tool_count(db: Session):
+        return db.query(Tools).count()

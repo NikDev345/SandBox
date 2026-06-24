@@ -12,6 +12,7 @@ class Users(Base):
     password_hash = Column(String, nullable=True)
     provider = Column(String, default='local', index=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
     
 # Session Schemas-------------------------------------------------------------------
 class UserCreate(BaseModel):

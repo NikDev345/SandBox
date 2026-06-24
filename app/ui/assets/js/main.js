@@ -1,3 +1,4 @@
+console.log("SIGNUP JS LOADED");
 // ==========================================
 // TOOLBOX DASHBOARD
 // ==========================================
@@ -7,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('[data-dashboard]')) return;
 
     initializeCounters();
-    initializeToolCards();
+    initializeToolCards();  
     initializeCommandPalette();
     initializeSearch();
     initializeSidebar();

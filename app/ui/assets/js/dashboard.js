@@ -7,7 +7,7 @@ const resultCount = document.querySelector("[data-result-count]");
 const apiCandidates = {
     metrics: ["/analytics/summary", "/api/analytics/summary", "/admin/metrics"],
     tools: ["/tools", "/api/tools"],
-    me: ["/auth/me", "/api/auth/me"]
+    me: ["/auth/sigup", "/auth/login"]
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -81,8 +81,8 @@ function consumeOAuthCallback() {
 
 async function loadDashboardData() {
     const [metrics, tools, me] = await Promise.all([
-        fetchFirstAvailable(apiCandidates.metrics),
-        fetchFirstAvailable(apiCandidates.tools),
+        // fetchFirstAvailable(apiCandidates.metrics),
+        // fetchFirstAvailable(apiCandidates.tools),
         fetchFirstAvailable(apiCandidates.me)
     ]);
 
