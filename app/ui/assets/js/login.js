@@ -96,6 +96,11 @@ form.addEventListener("submit", async (e) => {
             data.user_id
         );
 
+        localStorage.setItem(
+            "role",
+            data.role
+        );
+
         showAlert(
             "Login successful",
             "success"

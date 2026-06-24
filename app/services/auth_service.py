@@ -31,7 +31,8 @@ class AuthService:
             password_hash=hash_password(
                 password
             ),
-            provider="local"
+            provider="local",
+            role='users'
         )
 
         db.add(user)
@@ -63,3 +64,16 @@ class AuthService:
             return None
 
         return user
+
+    @staticmethod
+    def get_profile(db: Session, current_user: Session):
+        user = db.query(Users).filter(Users.id == current_user['sub']).first()
+        
+        return {
+            'id': user.id,
+            
+            'name': user.name,
+            'email': user.email,
+            'role': user.role,
+            'provider': user.provider
+        }

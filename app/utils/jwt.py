@@ -33,6 +33,7 @@ def verify_token(token: str):
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
+        print(payload)
         return payload
     
     except JWTError:

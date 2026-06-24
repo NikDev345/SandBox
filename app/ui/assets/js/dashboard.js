@@ -7,7 +7,7 @@ const resultCount = document.querySelector("[data-result-count]");
 const apiCandidates = {
     metrics: ["/analytics/summary", "/api/analytics/summary", "/admin/metrics"],
     tools: ["/tools", "/api/tools"],
-    me: ["/auth/sigup", "/auth/login"]
+    me: ["/auth/me"]
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,6 +19,27 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCommandPalette();
     initializeMobileDrawer();
     loadDashboardData();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const role =
+        localStorage.getItem("role");
+
+    const addToolBtn =
+        document.getElementById("add-tool-btn");
+
+    if (!addToolBtn) return;
+
+    if (
+        role === "admin"
+    ) {
+        addToolBtn.style.display = "block";
+    }
+    else {
+        addToolBtn.style.display = "none";
+    }
+
 });
 
 function initializeMetricCards() {
@@ -80,31 +101,28 @@ function consumeOAuthCallback() {
 }
 
 async function loadDashboardData() {
-    const [metrics, tools, me] = await Promise.all([
-        // fetchFirstAvailable(apiCandidates.metrics),
-        // fetchFirstAvailable(apiCandidates.tools),
-        fetchFirstAvailable(apiCandidates.me)
-    ]);
 
-    const discoveredTools = normalizeTools(tools);
-    const totalTools = discoveredTools.length || toolCards.length;
+    const me =
+        await fetchFirstAvailable(
+            apiCandidates.me
+        );
 
-    setMetric("totalTools", totalTools.toLocaleString(), discoveredTools.length ? "Loaded from API" : "Using local tool registry");
-    setMetric("executions", formatMetric(metrics?.executions), metrics?.executions == null ? "Analytics API pending" : "Live analytics");
-    setMetric("users", formatMetric(metrics?.users), metrics?.users == null ? "User metric pending" : "Live users");
-    setMetric("uptime", metrics?.uptime || "--", metrics?.uptime ? "Status API connected" : "Status API pending");
-
-    if (discoveredTools.length) {
-        renderTools(discoveredTools);
-    }
+    console.log("USER:", me);
 
     if (me) {
         renderProfile(me);
-        localStorage.setItem("toolbox_user", JSON.stringify(me));
-    } else if (localStorage.getItem("access_token")) {
+
+        localStorage.setItem(
+            "toolbox_user",
+            JSON.stringify(me)
+        );
+    } else if (
+        localStorage.getItem("access_token")
+    ) {
         clearAuthSession();
         renderSignedOut();
     }
+
 }
 
 function normalizeTools(payload) {
@@ -213,6 +231,7 @@ function initializeProfile() {
 }
 
 function renderProfile(user) {
+    console.log("renderProfile called", user);
     const name = user.name || user.email?.split("@")[0] || "Workspace";
     const email = user.email || "Not signed in";
     const provider = user.provider || user.auth_provider || "Local";
