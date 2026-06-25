@@ -10,7 +10,7 @@ app.include_router(auth_router)
 
 @ui.page('/')
 def home():
-    ui.label('Hello Sandbox')
+    ui.label('Hello SandBox')
 
 ui.add_head_html("""
 <link rel="stylesheet" href="/assets/css/auth.css">

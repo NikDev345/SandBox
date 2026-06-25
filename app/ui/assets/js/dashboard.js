@@ -182,7 +182,7 @@ function consumeOAuthCallback() {
 async function fetchFirstAvailable(urls) {
     for (const url of urls) {
         try {
-            const response = await fetch(url, { headers: authHeaders() });
+            const response = await fetch(url, { headers: authHeaders(), credentials: "include" });
             if (response.ok) return await response.json();
         } catch (_) { continue; }
     }
@@ -776,12 +776,15 @@ function renderProfile(user) {
     const provider = user.provider || user.auth_provider || "Local";
     const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join("").toUpperCase() || "TB";
 
+    const DEFAULT_AVATAR = "/assets/default_avatar.png";
+
     document.querySelectorAll("[data-user-avatar]").forEach(img => {
-        if (user.avatar) {
-            img.src = user.avatar;
-        } else {
-            img.src = "/static/default-avatar.png";
-        }
+        img.src = user.avatar || DEFAULT_AVATAR;
+
+        // If the avatar URL is invalid or fails to load
+        img.onerror = function () {
+            this.src = DEFAULT_AVATAR;
+        };
     });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = name);
     document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = provider);
@@ -796,7 +799,11 @@ function renderProfile(user) {
 }
 
 function renderSignedOut() {
-    document.querySelectorAll("[data-user-avatar]").forEach(t => t.textContent = "TB");
+    const DEFAULT_AVATAR = "/assets/default_avatar.png";
+
+    document.querySelectorAll("[data-user-avatar]").forEach(img => {
+        img.src = DEFAULT_AVATAR;
+    });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = "Workspace");
     document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = "Signed out");
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = "Not signed in");
@@ -810,11 +817,11 @@ function renderSignedOut() {
 }
 
 async function logout() {
-    const token = localStorage.getItem("access_token");
     try {
-        if (token) {
-            await fetch("/auth/logout", { method: "POST", headers: authHeaders() });
-        }
+        await fetch("/auth/logout", {
+            method: "POST",
+            credentials: "include"
+        });
     } finally {
         clearAuthSession();
         renderSignedOut();
