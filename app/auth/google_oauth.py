@@ -16,6 +16,3 @@ oauth.register(
         "scope": "openid email profile"
     }
 )
-
-print("CLIENT_ID:", os.getenv("GOOGLE_CLIENT_ID"))
-print("CLIENT_SECRET:", os.getenv("GOOGLE_CLIENT_SECRET"))
