@@ -74,5 +74,6 @@ class AuthService:
             'name': user.name,
             'email': user.email,
             'role': user.role,
-            'provider': user.provider
+            'provider': user.provider,
+            'avatar': user.avatar_url
         }
