@@ -1,106 +1,169 @@
 document.addEventListener("DOMContentLoaded", () => {
-const form = document.getElementById("signup-form");
-const alertBox = document.querySelector(".auth-alert");
-const submitBtn = form.querySelector('button[type="submit"]');
 
+    const form = document.getElementById("signup-form");
+    if (!form) return;
 
-const API_BASE_URL = ""; // change if needed
+    const alertBox = document.querySelector(".auth-alert");
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-function showAlert(message, type = "error") {
-    alertBox.textContent = message;
-    alertBox.classList.remove("success", "error");
-    alertBox.classList.add(type);
-    alertBox.style.display = "block";
-}
+    // OAuth Buttons
+    const googleBtn = document.querySelector('[data-oauth-provider="google"]');
+    const githubBtn = document.querySelector('[data-oauth-provider="github"]');
 
-function clearAlert() {
-    alertBox.textContent = "";
-    alertBox.classList.remove("success", "error");
-    alertBox.style.display = "none";
-}
+    // Backend URL
+    const API_BASE_URL = "";
 
-function setLoading(isLoading) {
-    if (isLoading) {
-        submitBtn.disabled = true;
-        submitBtn.dataset.originalText =
-            submitBtn.querySelector("span").textContent;
+    // ----------------------------
+    // Alerts
+    // ----------------------------
 
-        submitBtn.querySelector("span").textContent =
-            submitBtn.dataset.loadingText || "Loading...";
-    } else {
-        submitBtn.disabled = false;
-        submitBtn.querySelector("span").textContent =
-            submitBtn.dataset.originalText;
-    }
-}
-
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    clearAlert();
-    const name = document.getElementById("full_name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    if (!name) {
-        showAlert("Name is required");
-        return;
+    function showAlert(message, type = "error") {
+        alertBox.textContent = message;
+        alertBox.className = `auth-alert ${type}`;
+        alertBox.style.display = "block";
     }
 
-    if (!email) {
-        showAlert("Email is required");
-        return;
+    function clearAlert() {
+        alertBox.textContent = "";
+        alertBox.className = "auth-alert";
+        alertBox.style.display = "none";
     }
 
-    if (password.length < 6) {
-        showAlert("Password must be at least 6 characters");
-        return;
+    // ----------------------------
+    // Loading State
+    // ----------------------------
+
+    function setLoading(loading) {
+
+        submitBtn.disabled = loading;
+
+        const span = submitBtn.querySelector("span");
+
+        if (loading) {
+
+            submitBtn.dataset.originalText = span.textContent;
+            span.textContent = "Creating...";
+
+        } else {
+
+            span.textContent =
+                submitBtn.dataset.originalText || "Create Account";
+
+        }
     }
 
-    try {
-        setLoading(true);
+    // ----------------------------
+    // OAuth
+    // ----------------------------
 
-        const response = await fetch(
-            `${API_BASE_URL}/auth/signup`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                }),
-            }
-        );
+    if (googleBtn) {
 
-        const data = await response.json();
+        googleBtn.addEventListener("click", () => {
 
-        if (!response.ok) {
-            throw new Error(
-                data.detail || "Failed to create account"
-            );
+            window.location.href = "/auth/google";
+
+        });
+
+    }
+
+    if (githubBtn) {
+
+        githubBtn.addEventListener("click", () => {
+
+            window.location.href = "/auth/github";
+
+        });
+
+    }
+
+    // ----------------------------
+    // Signup
+    // ----------------------------
+
+    form.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        clearAlert();
+
+        const payload = {
+
+            name: document.getElementById("full_name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value
+
+        };
+
+        if (!payload.name) {
+            return showAlert("Name is required");
         }
 
-        showAlert(
-            data.message || "Account created successfully",
-            "success"
-        );
+        if (!payload.email) {
+            return showAlert("Email is required");
+        }
 
-        form.reset();
+        if (payload.password.length < 6) {
+            return showAlert("Password must be at least 6 characters");
+        }
 
-        setTimeout(() => {
-            window.location.href = "/login";
-        }, 1500);
+        try {
 
-    } catch (error) {
-        console.error(error);
-        showAlert(error.message);
-    } finally {
-        setLoading(false);
-    }
-});
+            setLoading(true);
 
+            const response = await fetch(
+                `${API_BASE_URL}/auth/signup`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            let data = {};
+
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error("Invalid server response");
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "Signup failed"
+                );
+            }
+
+            showAlert(
+                data.message || "Account created successfully!",
+                "success"
+            );
+
+            form.reset();
+
+            setTimeout(() => {
+
+                window.location.href = "/login";
+
+            }, 1200);
+
+        } catch (err) {
+
+            console.error(err);
+
+            showAlert(
+                err.message || "Something went wrong."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    });
 
 });
