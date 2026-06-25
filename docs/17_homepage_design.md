@@ -38,7 +38,7 @@ Footer
 
 Title:
 
-AI Toolbox
+AI SandBox
 
 Subtitle:
 
@@ -93,7 +93,7 @@ Dark Mode
 
 # FAQ
 
-What is AI Toolbox?
+What is AI SandBox?
 
 How does it work?
 

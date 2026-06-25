@@ -16,7 +16,7 @@ class Users(Base):
     password_hash = Column(String, nullable=True)
     provider = Column(String, default='local', index=True, nullable=False)
     provider_user_id = Column(String, nullable=True)
-    avatar_url = Column(String, nullable=True)
+    avatar_url = Column(String, default='https://chatgpt.com/backend-api/estuary/content?id=file_00000000927c71f897c94b5f95be7d63&ts=495104&p=fs&cid=1&sig=2ca20ed163f9932cab6396fdf463b0561d9cf8d10487bda90e0d8381b063455f&v=0', nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     role = Column(String, default='user')
 
