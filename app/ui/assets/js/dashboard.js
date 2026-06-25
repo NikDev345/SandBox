@@ -1,5 +1,5 @@
 /* ============================================================
-   AI TOOLBOX — DASHBOARD + ADMIN TOOL MANAGEMENT
+   AI SandBox — DASHBOARD + ADMIN TOOL MANAGEMENT
    ============================================================ */
 
 const dashboard = document.querySelector("[data-dashboard]");
@@ -112,7 +112,7 @@ function initializeAdminControls() {
    ============================================================ */
 
 function applyAdminRole() {
-    const user = safeJson(localStorage.getItem("toolbox_user"));
+    const user = safeJson(localStorage.getItem("SandBox_user"));
     const role = user?.role || localStorage.getItem("role") || "";
 
     if (role === "admin") {
@@ -156,13 +156,13 @@ function authHeaders() {
 function persistAuthSession(token, user) {
     localStorage.setItem("access_token", token);
     localStorage.setItem("user_id", user.id);
-    localStorage.setItem("toolbox_user", JSON.stringify(user));
+    localStorage.setItem("SandBox_user", JSON.stringify(user));
 }
 
 function clearAuthSession() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_id");
-    localStorage.removeItem("toolbox_user");
+    localStorage.removeItem("SandBox_user");
     localStorage.removeItem("role");
 }
 
@@ -194,7 +194,7 @@ async function loadDashboardData() {
 
     if (me) {
         renderProfile(me);
-        localStorage.setItem("toolbox_user", JSON.stringify(me));
+        localStorage.setItem("SandBox_user", JSON.stringify(me));
         applyAdminRole();
     } else if (localStorage.getItem("access_token")) {
         clearAuthSession();
@@ -231,7 +231,7 @@ function normalizeTools(payload) {
         .map(tool => ({
             id: tool.id || tool.slug || slugify(tool.name || ""),
             name: tool.name || tool.title,
-            description: tool.description || "Open this workflow in ToolBox.",
+            description: tool.description || "Open this workflow in SandBox.",
             category: tool.category || "Developer Tools",
             slug: tool.slug || slugify(tool.name || tool.title || ""),
             is_active: tool.is_active !== false,
@@ -760,7 +760,7 @@ function initializeProfile() {
         }
     });
 
-    const storedUser = safeJson(localStorage.getItem("toolbox_user"));
+    const storedUser = safeJson(localStorage.getItem("SandBox_user"));
     if (storedUser && localStorage.getItem("access_token")) {
         renderProfile(storedUser);
     } else {

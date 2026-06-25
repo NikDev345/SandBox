@@ -7,7 +7,7 @@ def navbar():
     with ui.header().classes(
         'items-center justify-between px-6 bg-slate-900 text-white'
     ):
-        ui.label('AI Toolbox').classes(
+        ui.label('AI SandBox').classes(
             'text-xl font-bold text-cyan-400'
         )
 

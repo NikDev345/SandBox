@@ -10,7 +10,7 @@ app.include_router(auth_router)
 
 @ui.page('/')
 def home():
-    ui.label('Hello Toolbox')
+    ui.label('Hello Sandbox')
 
 ui.add_head_html("""
 <link rel="stylesheet" href="/assets/css/auth.css">
@@ -26,7 +26,7 @@ import app.ui.pages.profile
 import app.ui.pages.tool_page
 
 # ui.run(
-#     title='ToolBox',
+#     title='SandBox',
 #     dark=True,
 #     reload=True
 # )

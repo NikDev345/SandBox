@@ -51,6 +51,6 @@ app.include_router(google_router)
 
 ui.run_with(
     app,
-    title="ToolBox",
+    title="SandBox",
     mount_path="/"
 )
