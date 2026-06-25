@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from app.services.tool_service import ToolService
 from app.utils.auth import get_current_user
 from app.database.engine import get_db
-
-from app.models.tool import ToolCreate, ToolResponse
+from app.utils.permissions import require_admin
+from app.models.tool import ToolCreate
 
 router = APIRouter(
     prefix='/tool',
@@ -15,8 +15,8 @@ router = APIRouter(
 
 @router.post('/create')
 def create_tool(data: ToolCreate, db: Session = Depends(get_db), current_user= Depends(get_current_user)):
-    
-    tool = ToolService.create_tool(db, data.name, data.category)
+    require_admin(current_user)
+    tool = ToolService.create_tool(db, data.name, data.category, data.description, data.icon_url, data.source_path )
     
     if not tool:
         raise HTTPException(

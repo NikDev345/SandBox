@@ -6,6 +6,7 @@ from app.database.engine import get_db
 from app.models.user import UserCreate, UserLogin
 from app.services.auth_service import AuthService
 from app.utils.jwt import create_access_token
+from app.utils.auth import get_current_user
 
 
 router = APIRouter(
@@ -57,13 +58,19 @@ def login(
 
     token = create_access_token(
         {"sub": user.id,
-         "email": user.email}
+         "email": user.email,
+         'role': user.role}
         
     )
     return {
         "access_token": token,
         "token_type": "bearer",
-        "user_id": user.id
+        "user_id": user.id,
+        "role": user.role
     }
 
-
+@router.get('/me')
+def get_profile(db: Session = Depends(get_db), current_user= Depends(get_current_user)):
+    
+    user = AuthService.get_profile(db, current_user)
+    return user

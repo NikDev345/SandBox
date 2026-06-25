@@ -212,84 +212,245 @@
           <p class="eyebrow">Toolbox</p>
           <h2>Featured tools</h2>
         </div>
+        <div class="toolbar">
+          <span>
+          <button
+          
+            id="add-tool-btn"
+            title="Add Tool"
+            alt="add tool"
+            class="btn btn-ghost btn-add-tool"
+            type="button"
+            style="display: none;"
+          >
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          </span>
+        </div>
         <span class="result-count" data-result-count>0 tools</span>
       </div>
 
       <div class="tool-grid" data-tool-grid>
 
-        <a class="tool-card" href="/tools/sql-generator" data-tool-name="SQL Generator" data-tool-category="Developer">
-          <svg class="tool-logo" viewBox="0 0 48 48">
-            <ellipse cx="24" cy="12" rx="15" ry="6"/>
-            <path d="M9 12v18c0 3.3 6.7 6 15 6s15-2.7 15-6V12"/>
-            <path d="M9 21c0 3.3 6.7 6 15 6s15-2.7 15-6"/>
-          </svg>
+        <a class="tool-card" href="/tools/sql-generator" data-tool-name="SQL Generator" data-tool-category="Developer Tools" data-tool-id="static-1">
+          <div class="tool-card-header">
+            <svg class="tool-logo" viewBox="0 0 48 48">
+              <ellipse cx="24" cy="12" rx="15" ry="6"/>
+              <path d="M9 12v18c0 3.3 6.7 6 15 6s15-2.7 15-6V12"/>
+              <path d="M9 21c0 3.3 6.7 6 15 6s15-2.7 15-6"/>
+            </svg>
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </button>
+          </div>
           <h3>SQL Generator</h3>
           <p>Turn plain English into clean, optimized SQL queries instantly.</p>
           <div class="tool-meta">
-            <span class="tool-category">Developer</span>
+            <span class="tool-category-badge">Developer Tools</span>
             <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </a>
 
-        <a class="tool-card" href="/tools/regex-generator" data-tool-name="Regex Generator" data-tool-category="Developer">
-          <svg class="tool-logo" viewBox="0 0 48 48">
-            <polyline points="8 30 16 18 24 30 32 18 40 30"/>
-            <circle cx="38" cy="14" r="4"/>
-          </svg>
+        <a class="tool-card" href="/tools/regex-generator" data-tool-name="Regex Generator" data-tool-category="Developer Tools" data-tool-id="static-2">
+          <div class="tool-card-header">
+            <svg class="tool-logo" viewBox="0 0 48 48">
+              <polyline points="8 30 16 18 24 30 32 18 40 30"/>
+              <circle cx="38" cy="14" r="4"/>
+            </svg>
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </button>
+          </div>
           <h3>Regex Builder</h3>
           <p>Create precise regex patterns from a natural language description.</p>
           <div class="tool-meta">
-            <span class="tool-category">Developer</span>
+            <span class="tool-category-badge">Developer Tools</span>
             <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </a>
 
-        <a class="tool-card" href="/tools/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer">
-          <svg class="tool-logo" viewBox="0 0 48 48">
-            <path d="M18 10c-5 0-7 3-7 7v3c0 2-1 4-4 4 3 0 4 2 4 4v3c0 4 2 7 7 7"/>
-            <path d="M30 10c5 0 7 3 7 7v3c0 2 1 4 4 4-3 0-4 2-4 4v3c0 4-2 7-7 7"/>
-          </svg>
+        <a class="tool-card" href="/tools/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer Tools" data-tool-id="static-3">
+          <div class="tool-card-header">
+            <svg class="tool-logo" viewBox="0 0 48 48">
+              <path d="M18 10c-5 0-7 3-7 7v3c0 2-1 4-4 4 3 0 4 2 4 4v3c0 4 2 7 7 7"/>
+              <path d="M30 10c5 0 7 3 7 7v3c0 2 1 4 4 4-3 0-4 2-4 4v3c0 4-2 7-7 7"/>
+            </svg>
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </button>
+          </div>
           <h3>JSON Fixer</h3>
           <p>Repair malformed JSON and reformat it into a clean, valid structure.</p>
           <div class="tool-meta">
-            <span class="tool-category">Developer</span>
+            <span class="tool-category-badge">Developer Tools</span>
             <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </a>
 
-        <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer">
-          <svg class="tool-logo" viewBox="0 0 48 48">
-            <path d="M9 11h30v21H24l-8 7v-7H9z"/>
-            <path d="m17 22 4 4 10-10"/>
-          </svg>
+        <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer Tools" data-tool-id="static-4">
+          <div class="tool-card-header">
+            <svg class="tool-logo" viewBox="0 0 48 48">
+              <path d="M9 11h30v21H24l-8 7v-7H9z"/>
+              <path d="m17 22 4 4 10-10"/>
+            </svg>
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </button>
+          </div>
           <h3>Code Reviewer</h3>
           <p>Detect risks, defects, and maintainability issues across your codebase.</p>
           <div class="tool-meta">
-            <span class="tool-category">Developer</span>
+            <span class="tool-category-badge">Developer Tools</span>
             <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </a>
 
-        <a class="tool-card" href="/tools/dockerfile-generator" data-tool-name="Dockerfile Generator" data-tool-category="DevOps">
-          <svg class="tool-logo" viewBox="0 0 48 48">
-            <path d="M10 26h29c-2 8-8 12-16 12-7 0-12-3-15-9"/>
-            <path d="M13 18h5v5h-5zM20 18h5v5h-5zM27 18h5v5h-5zM20 11h5v5h-5zM27 11h5v5h-5z"/>
-          </svg>
+        <a class="tool-card" href="/tools/dockerfile-generator" data-tool-name="Dockerfile Generator" data-tool-category="Developer Tools" data-tool-id="static-5">
+          <div class="tool-card-header">
+            <svg class="tool-logo" viewBox="0 0 48 48">
+              <path d="M10 26h29c-2 8-8 12-16 12-7 0-12-3-15-9"/>
+              <path d="M13 18h5v5h-5zM20 18h5v5h-5zM27 18h5v5h-5zM20 11h5v5h-5zM27 11h5v5h-5z"/>
+            </svg>
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </button>
+          </div>
           <h3>Dockerfile Generator</h3>
           <p>Generate production-ready Dockerfiles tailored to your stack.</p>
           <div class="tool-meta">
-            <span class="tool-category">DevOps</span>
+            <span class="tool-category-badge">Developer Tools</span>
             <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </div>
         </a>
 
       </div>
 
+      <!-- Empty state -->
       <div class="empty-state" data-empty-state hidden>
+        <svg viewBox="0 0 48 48" width="40" height="40" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3;margin-bottom:4px"><rect x="6" y="6" width="36" height="36" rx="4"/><line x1="16" y1="16" x2="32" y2="16"/><line x1="16" y1="24" x2="24" y2="24"/></svg>
         <h3>No tools found</h3>
-        <p>Try a different search term.</p>
+        <p id="empty-state-msg">Try a different search term.</p>
+        <button id="empty-create-btn" class="btn btn-ghost admin-only" type="button" style="display:none;margin-top:8px">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Create First Tool
+        </button>
       </div>
     </section>
 
   </main>
 </div>
+
+<!-- ── TOOL CONTEXT MENU ── -->
+<div id="tool-context-menu" class="tool-context-menu" role="menu" aria-hidden="true">
+  <button class="ctx-item" type="button" data-action="open">
+    <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    Open Tool
+  </button>
+  <button class="ctx-item" type="button" data-action="edit">
+    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Edit Tool
+  </button>
+  <div class="ctx-sep"></div>
+  <button class="ctx-item ctx-danger" type="button" data-action="disable">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+    Disable Tool
+  </button>
+  <button class="ctx-item ctx-danger" type="button" data-action="delete">
+    <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    Delete Tool
+  </button>
+</div>
+
+<!-- ── ADD / EDIT TOOL MODAL ── -->
+<div id="tool-modal" class="modal-backdrop" data-modal-id="tool-modal" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h3 id="modal-title">Add Tool</h3>
+      <button class="modal-close" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="tool-name-input">Tool Name</label>
+        <input id="tool-name-input" class="form-input" type="text" placeholder="e.g. PDF Summarizer" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tool-category-select">Category</label>
+        <div class="select-wrap">
+          <select id="tool-category-select" class="form-select">
+            <option value="">Select category…</option>
+            <option value="Developer Tools">Developer Tools</option>
+            <option value="Content Tools">Content Tools</option>
+            <option value="Productivity Tools">Productivity Tools</option>
+            <option value="Image Tools">Image Tools</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tool-logo-input">Logo PNG</label>
+        <div class="file-drop-zone" id="logo-drop-zone">
+          <input id="tool-logo-input" type="file" accept="image/png,image/svg+xml,image/jpeg" class="file-input-hidden">
+          <div class="file-drop-content">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span id="logo-filename">Click to upload or drag PNG here</span>
+          </div>
+          <img id="logo-preview" class="logo-preview" alt="Logo preview" hidden>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tool-description-input">Description</label>
+        <textarea id="tool-description-input" class="form-textarea" placeholder="Briefly describe what this tool does…" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tool-file-select">Python Tool File</label>
+        <div class="select-wrap">
+          <select id="tool-file-select" class="form-select">
+            <option value="">Loading available files…</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <p class="form-hint">Files scanned from <code>app/tools/</code> directory</p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" type="button">Cancel</button>
+      <button class="btn btn-primary" type="button" id="modal-submit-btn">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Create Tool
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DELETE CONFIRM MODAL ── -->
+<div id="delete-modal" class="modal-backdrop" data-modal-id="delete-modal" aria-hidden="true">
+  <div class="modal-box modal-box--sm" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+    <div class="modal-header">
+      <h3 id="delete-modal-title">Delete Tool?</h3>
+      <button class="modal-close" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="delete-warning-text">This action cannot be undone. The tool <strong id="delete-tool-name-display"></strong> will be permanently removed.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" type="button">Cancel</button>
+      <button class="btn btn-danger" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST CONTAINER ── -->
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
