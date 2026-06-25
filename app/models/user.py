@@ -2,11 +2,15 @@ from sqlalchemy import Column, String, DateTime
 from app.database.engine import Base
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
+import uuid
+
 
 class Users(Base):
     __tablename__ = 'users'
+    def generate_uuid():
+        return str(uuid.uuid4())
     
-    id = Column(String, primary_key=True)
+    id = Column(String, primary_key=True, default= generate_uuid(), nullable=False)
     name = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=True)

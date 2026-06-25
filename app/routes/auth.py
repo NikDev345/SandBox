@@ -66,9 +66,12 @@ async def google_callback(
     )
 
     response.set_cookie(
-        "access_token",
-        jwt_token,
-        httponly=True
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        samesite="lax",
+        secure=False,   # True only with HTTPS
+        path="/"
     )
 
     return response
