@@ -1,130 +1,189 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    const form = document.getElementById("login-form");
+    if (!form) return;
 
-const form = document.getElementById("login-form");
+    const alertBox = document.querySelector(".auth-alert");
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-if (!form) return;
+    // OAuth Buttons
+    const googleBtn = document.querySelector('[data-oauth-provider="google"]');
+    const githubBtn = document.querySelector('[data-oauth-provider="github"]');
 
-const alertBox = document.querySelector(".auth-alert");
-const submitBtn = form.querySelector('button[type="submit"]');
+    // ----------------------------
+    // Alerts
+    // ----------------------------
 
-function showAlert(message, type = "error") {
-    alertBox.textContent = message;
-    alertBox.classList.remove("success", "error");
-    alertBox.classList.add(type);
-    alertBox.style.display = "block";
-}
-
-function clearAlert() {
-    alertBox.textContent = "";
-    alertBox.classList.remove("success", "error");
-    alertBox.style.display = "none";
-}
-
-function setLoading(isLoading) {
-    if (isLoading) {
-        submitBtn.disabled = true;
-
-        submitBtn.dataset.originalText =
-            submitBtn.querySelector("span").textContent;
-
-        submitBtn.querySelector("span").textContent =
-            submitBtn.dataset.loadingText || "Signing in...";
-    } else {
-        submitBtn.disabled = false;
-
-        submitBtn.querySelector("span").textContent =
-            submitBtn.dataset.originalText;
-    }
-}
-
-form.addEventListener("submit", async (e) => {
-
-    e.preventDefault();
-
-    clearAlert();
-
-    const email =
-        document.getElementById("email").value.trim();
-
-    const password =
-        document.getElementById("password").value;
-
-    if (!email) {
-        showAlert("Email is required");
-        return;
+    function showAlert(message, type = "error") {
+        alertBox.textContent = message;
+        alertBox.className = `auth-alert ${type}`;
+        alertBox.style.display = "block";
     }
 
-    if (!password) {
-        showAlert("Password is required");
-        return;
+    function clearAlert() {
+        alertBox.textContent = "";
+        alertBox.className = "auth-alert";
+        alertBox.style.display = "none";
     }
 
-    try {
+    // ----------------------------
+    // Loading State
+    // ----------------------------
 
-        setLoading(true);
+    function setLoading(loading) {
 
-        const response = await fetch(
-            "/auth/login",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-            }
-        );
+        submitBtn.disabled = loading;
 
-        const data = await response.json();
+        const span = submitBtn.querySelector("span");
 
-        if (!response.ok) {
-            throw new Error(
-                data.detail || "Invalid credentials"
-            );
+        if (loading) {
+
+            submitBtn.dataset.originalText = span.textContent;
+            span.textContent = "Signing in...";
+
+        } else {
+
+            span.textContent =
+                submitBtn.dataset.originalText || "Sign In";
+
+        }
+    }
+
+    // ----------------------------
+    // Google OAuth
+    // ----------------------------
+
+    if (googleBtn) {
+
+        googleBtn.addEventListener("click", () => {
+
+            window.location.href = "/auth/google";
+
+        });
+
+    }
+
+    // ----------------------------
+    // GitHub OAuth
+    // ----------------------------
+
+    if (githubBtn) {
+
+        githubBtn.addEventListener("click", () => {
+
+            window.location.href = "/auth/github";
+
+        });
+
+    }
+
+    // ----------------------------
+    // Login
+    // ----------------------------
+
+    form.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        clearAlert();
+
+        const payload = {
+
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value
+
+        };
+
+        if (!payload.email) {
+            return showAlert("Email is required");
         }
 
-        localStorage.setItem(
-            "access_token",
-            data.access_token
-        );
+        if (!payload.password) {
+            return showAlert("Password is required");
+        }
 
-        localStorage.setItem(
-            "user_id",
-            data.user_id
-        );
+        try {
 
-        localStorage.setItem(
-            "role",
-            data.role
-        );
+            setLoading(true);
 
-        showAlert(
-            "Login successful",
-            "success"
-        );
+            const response = await fetch(
+                "/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
 
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 1000);
+            let data = {};
 
-    } catch (error) {
+            try {
 
-        console.error(error);
+                data = await response.json();
 
-        showAlert(
-            error.message || "Login failed"
-        );
+            } catch {
 
-    } finally {
+                throw new Error("Invalid server response");
 
-        setLoading(false);
+            }
 
-    }
+            if (!response.ok) {
 
-});
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "Invalid credentials"
+                );
 
+            }
+
+            // Save Session
+            localStorage.setItem(
+                "access_token",
+                data.access_token
+            );
+
+            localStorage.setItem(
+                "user_id",
+                data.user_id
+            );
+
+            if (data.role) {
+
+                localStorage.setItem(
+                    "role",
+                    data.role
+                );
+
+            }
+
+            showAlert(
+                "Login successful!",
+                "success"
+            );
+
+            setTimeout(() => {
+
+                window.location.href = "/";
+
+            }, 1000);
+
+        } catch (err) {
+
+            console.error(err);
+
+            showAlert(
+                err.message || "Login failed."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    });
 
 });
