@@ -776,7 +776,13 @@ function renderProfile(user) {
     const provider = user.provider || user.auth_provider || "Local";
     const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join("").toUpperCase() || "TB";
 
-    document.querySelectorAll("[data-user-avatar]").forEach(t => t.textContent = initials);
+    document.querySelectorAll("[data-user-avatar]").forEach(img => {
+        if (user.avatar) {
+            img.src = user.avatar;
+        } else {
+            img.src = "/static/default-avatar.png";
+        }
+    });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = name);
     document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = provider);
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = email);
