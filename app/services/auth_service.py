@@ -70,9 +70,12 @@ class AuthService:
         user = db.query(Users).filter(Users.id == current_user['sub']).first()
         
         return {
-            'id': user.id,
-            'name': user.name,
-            'email': user.email,
-            'role': user.role,
-            'provider': user.provider
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role,
+        "provider": user.provider,
+        "avatar": user.avatar_url,
+        "bio": user.bio,
+        "created_at": user.created_at
         }

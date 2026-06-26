@@ -7,6 +7,12 @@ from app.api.auth import router as auth_router
 from app.api.tools import router as tool_router
 from app.api.exec import router as exe_router
 from app.api.analytics import router as analytic_router
+from app.routes.auth import router as google_router
+from starlette.middleware.sessions import SessionMiddleware
+import os
+from dotenv import load_dotenv
+from app.routes.user import router as user_router
+
 import app.main 
 from nicegui import ui
 
@@ -14,6 +20,12 @@ warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
 app = FastAPI()
+
+load_dotenv()
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("JWT_SECRET_KEY")
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,9 +46,13 @@ app.include_router(auth_router)
 app.include_router(tool_router)
 app.include_router(exe_router)
 app.include_router(analytic_router)
+app.include_router(google_router)
+app.include_router(user_router)
+
 
 ui.run_with(
     app,
-    title="ToolBox",
-    mount_path="/"
+    title="SandBox",
+    mount_path="/",
+    favicon="app/ui/assets/logo.png"
 )

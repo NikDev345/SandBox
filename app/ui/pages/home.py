@@ -17,7 +17,7 @@ def home_page():
     ):
 
         ui.label(
-            'AI TOOLBOX'
+            'AI SandBox'
         ).classes(
             'text-5xl font-bold text-cyan-400'
         )

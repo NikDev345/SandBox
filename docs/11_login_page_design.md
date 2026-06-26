@@ -14,7 +14,7 @@ Allow users to:
 
 +------------------------------------+
 
-AI TOOLBOX
+AI SandBox
 
 One Platform.
 Many Tools.
@@ -35,7 +35,7 @@ Many Tools.
 
 Text:
 
-AI TOOLBOX
+AI SandBox
 
 ---
 

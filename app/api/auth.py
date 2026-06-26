@@ -1,6 +1,7 @@
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from sqlalchemy.orm import Session
+from fastapi.responses import JSONResponse
 
 from app.database.engine import get_db
 from app.models.user import UserCreate, UserLogin
@@ -74,3 +75,18 @@ def get_profile(db: Session = Depends(get_db), current_user= Depends(get_current
     
     user = AuthService.get_profile(db, current_user)
     return user
+
+@router.post("/logout")
+def logout():
+    response = JSONResponse(
+        content={"message": "Logged out successfully"}
+    )
+
+    response.delete_cookie(
+        key="access_token",
+        path="/"
+    )
+    response.delete_cookie("access_token", path="/")
+    response.delete_cookie("token", path="/")
+
+    return response

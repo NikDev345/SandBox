@@ -8,5 +8,5 @@ def footer():
         'bg-slate-900 text-white justify-center'
     ):
         ui.label(
-            '© AI Toolbox 2026'
+            '© AI SandBox 2026'
         ).classes('text-sm')

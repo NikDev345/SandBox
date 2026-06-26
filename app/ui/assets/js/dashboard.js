@@ -1,5 +1,5 @@
 /* ============================================================
-   AI TOOLBOX — DASHBOARD + ADMIN TOOL MANAGEMENT
+   AI SandBox — DASHBOARD + ADMIN TOOL MANAGEMENT
    ============================================================ */
 
 const dashboard = document.querySelector("[data-dashboard]");
@@ -112,7 +112,7 @@ function initializeAdminControls() {
    ============================================================ */
 
 function applyAdminRole() {
-    const user = safeJson(localStorage.getItem("toolbox_user"));
+    const user = safeJson(localStorage.getItem("SandBox_user"));
     const role = user?.role || localStorage.getItem("role") || "";
 
     if (role === "admin") {
@@ -156,13 +156,13 @@ function authHeaders() {
 function persistAuthSession(token, user) {
     localStorage.setItem("access_token", token);
     localStorage.setItem("user_id", user.id);
-    localStorage.setItem("toolbox_user", JSON.stringify(user));
+    localStorage.setItem("SandBox_user", JSON.stringify(user));
 }
 
 function clearAuthSession() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_id");
-    localStorage.removeItem("toolbox_user");
+    localStorage.removeItem("SandBox_user");
     localStorage.removeItem("role");
 }
 
@@ -182,7 +182,7 @@ function consumeOAuthCallback() {
 async function fetchFirstAvailable(urls) {
     for (const url of urls) {
         try {
-            const response = await fetch(url, { headers: authHeaders() });
+            const response = await fetch(url, { headers: authHeaders(), credentials: "include" });
             if (response.ok) return await response.json();
         } catch (_) { continue; }
     }
@@ -194,7 +194,7 @@ async function loadDashboardData() {
 
     if (me) {
         renderProfile(me);
-        localStorage.setItem("toolbox_user", JSON.stringify(me));
+        localStorage.setItem("SandBox_user", JSON.stringify(me));
         applyAdminRole();
     } else if (localStorage.getItem("access_token")) {
         clearAuthSession();
@@ -231,7 +231,7 @@ function normalizeTools(payload) {
         .map(tool => ({
             id: tool.id || tool.slug || slugify(tool.name || ""),
             name: tool.name || tool.title,
-            description: tool.description || "Open this workflow in ToolBox.",
+            description: tool.description || "Open this workflow in SandBox.",
             category: tool.category || "Developer Tools",
             slug: tool.slug || slugify(tool.name || tool.title || ""),
             is_active: tool.is_active !== false,
@@ -760,7 +760,7 @@ function initializeProfile() {
         }
     });
 
-    const storedUser = safeJson(localStorage.getItem("toolbox_user"));
+    const storedUser = safeJson(localStorage.getItem("SandBox_user"));
     if (storedUser && localStorage.getItem("access_token")) {
         renderProfile(storedUser);
     } else {
@@ -776,7 +776,16 @@ function renderProfile(user) {
     const provider = user.provider || user.auth_provider || "Local";
     const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join("").toUpperCase() || "TB";
 
-    document.querySelectorAll("[data-user-avatar]").forEach(t => t.textContent = initials);
+    const DEFAULT_AVATAR = "/assets/default_avatar.png";
+
+    document.querySelectorAll("[data-user-avatar]").forEach(img => {
+        img.src = user.avatar || DEFAULT_AVATAR;
+
+        // If the avatar URL is invalid or fails to load
+        img.onerror = function () {
+            this.src = DEFAULT_AVATAR;
+        };
+    });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = name);
     document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = provider);
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = email);
@@ -790,7 +799,11 @@ function renderProfile(user) {
 }
 
 function renderSignedOut() {
-    document.querySelectorAll("[data-user-avatar]").forEach(t => t.textContent = "TB");
+    const DEFAULT_AVATAR = "/assets/default_avatar.png";
+
+    document.querySelectorAll("[data-user-avatar]").forEach(img => {
+        img.src = DEFAULT_AVATAR;
+    });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = "Workspace");
     document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = "Signed out");
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = "Not signed in");
@@ -804,11 +817,11 @@ function renderSignedOut() {
 }
 
 async function logout() {
-    const token = localStorage.getItem("access_token");
     try {
-        if (token) {
-            await fetch("/auth/logout", { method: "POST", headers: authHeaders() });
-        }
+        await fetch("/auth/logout", {
+            method: "POST",
+            credentials: "include"
+        });
     } finally {
         clearAuthSession();
         renderSignedOut();
