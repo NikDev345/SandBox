@@ -543,3 +543,152 @@ body::after {
   .social-grid, .social-grid.two { grid-template-columns: 1fr; }
   .form-row { flex-direction: column; align-items: flex-start; }
 }
+
+/* ============================================================
+   OTP MODAL
+   ============================================================ */
+
+.otp-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+  backdrop-filter: blur(12px); /* Stronger blur for elements behind the modal */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px; /* Prevents the card from touching screen edges on small devices */
+}
+
+.otp-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 32px;
+  
+  /* Increased opacity and added inner blur to prevent see-through */
+  background: rgba(15, 15, 16, 0.95); 
+  backdrop-filter: blur(20px);
+  
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg), 0 20px 40px rgba(0, 0, 0, 0.4);
+  
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  
+  /* Flexbox guarantees perfect centering and symmetry */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-card h2 {
+  text-align: center;
+  margin: 0 0 8px 0;
+  font-size: var(--text-2xl); /* Matches your auth-header h2 */
+  font-weight: var(--weight-bold);
+  color: var(--ink-0);
+  letter-spacing: -0.03em;
+}
+
+.otp-card p {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.otp-email {
+  display: block;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 32px;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--text);
+}
+
+.otp-input-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.otp-box {
+  /* CRITICAL FIX: This allows the boxes to share space and shrink if needed */
+  flex: 1 1 0px;
+  min-width: 0; 
+  max-width: 52px; /* Prevents them from getting too huge on desktop */
+  height: 60px;
+  
+  /* Existing styles */
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-1);
+  background: var(--surface-1);
+  color: var(--text);
+  text-align: center;
+  
+  /* Responsive font size so text doesn't clip when boxes shrink */
+  font-size: clamp(18px, 5vw, 24px); 
+  font-weight: var(--weight-bold);
+  outline: none;
+  transition: border-color var(--dur-base) var(--ease),
+              background var(--dur-base) var(--ease),
+              box-shadow var(--dur-base) var(--ease);
+}
+
+.otp-box:focus {
+  border-color: var(--border-focus);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+/* Optional but recommended: give the card itself a bit more breathing room on mobile */
+@media (max-width: 480px) {
+  .otp-card {
+    padding: 32px 16px; 
+  }
+}
+
+#verify-otp-btn {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+#resend-otp-btn {
+  width: 100%;
+  margin: 0;
+}
+
+.otp-card {
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.otp-card.error-state {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  box-shadow: 0 0 32px rgba(239, 68, 68, 0.2) !important;
+} 
+
+#otp-alert {
+    display: none;
+    margin-bottom: 15px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+#otp-alert.error {
+    background: rgba(255, 0, 0, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+#otp-alert.success {
+    background: rgba(0, 255, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(0, 255, 128, 0.3);
+} 
