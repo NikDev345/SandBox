@@ -48,9 +48,9 @@ app.include_router(analytic_router)
 app.include_router(google_router)
 
 
-
 ui.run_with(
     app,
     title="SandBox",
-    mount_path="/"
+    mount_path="/",
+    favicon='app/ui/assets/logo.png'
 )
