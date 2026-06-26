@@ -28,7 +28,7 @@ async def google_callback(
     token = await oauth.google.authorize_access_token(
         request
     )
-
+    print(token.items())
     user_info = token["userinfo"]
 
     email = user_info["email"]
