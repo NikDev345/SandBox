@@ -51,7 +51,7 @@
         <p>Set up your SandBox profile in a few seconds.</p>
       </div>
 
-      <div class="auth-alert" role="status" aria-live="polite"></div>
+      <div id="signup-alert" class="auth-alert" role="status" aria-live="polite"></div>
 
       <form id="signup-form" class="auth-form" novalidate>
 
@@ -78,6 +78,57 @@
         </button>
 
       </form>
+
+      <!-- OTP Verification Modal -->
+      <div
+          id="otp-modal"
+          class="otp-modal"
+          hidden
+      >
+
+          <div class="otp-card">
+
+              <h2>Verify Email</h2>
+              <div id="otp-alert" class="auth-alert"></div>
+              <p>
+                  Enter the OTP sent to
+              </p>
+
+              <p
+                  id="otp-email"
+                  class="otp-email"
+              ></p>
+
+              <div class="otp-input-container">
+
+                  <input class="otp-box" maxlength="1" type="text">
+                  <input class="otp-box" maxlength="1" type="text">
+                  <input class="otp-box" maxlength="1" type="text">
+                  <input class="otp-box" maxlength="1" type="text">
+                  <input class="otp-box" maxlength="1" type="text">
+                  <input class="otp-box" maxlength="1" type="text">
+
+              </div>
+
+              <button
+                  id="verify-otp-btn"
+                  class="btn-auth btn-primary"
+                  type="button"
+              >
+                  Verify OTP
+              </button>
+
+              <button
+                  id="resend-otp-btn"
+                  class="btn-auth btn-secondary"
+                  type="button"
+              >
+                  Resend OTP
+              </button>
+
+          </div>
+
+      </div>
 
       <div class="divider"><span>or continue with</span></div>
       <div class="social-grid two">

@@ -53,9 +53,6 @@ ui.run_with(
     app,
     title="SandBox",
     mount_path="/",
-<<<<<<< HEAD
     favicon='app/ui/assets/logo.png'
-=======
-    favicon="app/ui/assets/logo.png"
->>>>>>> 19895b82d796f3daf0d54c8d5c433395576ba243
+
 )
