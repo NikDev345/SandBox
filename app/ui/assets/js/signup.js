@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("signup-form");
     if (!form) return;
 
-    const alertBox = document.querySelector(".auth-alert");
     const submitBtn = form.querySelector('button[type="submit"]');
 
     // OAuth Buttons
@@ -12,21 +11,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Backend URL
     const API_BASE_URL = "";
+    let signupEmail = "";
 
+    const otpBoxes = document.querySelectorAll(".otp-box");
+
+    otpBoxes.forEach((box, index) => {
+
+        box.addEventListener("input", () => {
+
+            box.value = box.value.replace(/\D/g, "");
+
+            if (
+                box.value &&
+                index < otpBoxes.length - 1
+            ) {
+                otpBoxes[index + 1].focus();
+            }
+
+        });
+
+        box.addEventListener("keydown", e => {
+
+            if (
+                e.key === "Backspace" &&
+                !box.value &&
+                index > 0
+            ) {
+                otpBoxes[index - 1].focus();
+            }
+
+        });
+
+    });
     // ----------------------------
     // Alerts
     // ----------------------------
 
-    function showAlert(message, type = "error") {
-        alertBox.textContent = message;
-        alertBox.className = `auth-alert ${type}`;
-        alertBox.style.display = "block";
+    function showSignupAlert(message, type = "error") {
+        const alert = document.getElementById("signup-alert");
+        alert.textContent = message;
+        alert.className = `auth-alert ${type}`;
+        alert.style.display = "block";
+    }
+
+    function showOtpAlert(message, type = "error") {
+        const alert = document.getElementById("otp-alert");
+        alert.textContent = message;
+        alert.className = `auth-alert ${type}`;
+        alert.style.display = "block";
     }
 
     function clearAlert() {
-        alertBox.textContent = "";
-        alertBox.className = "auth-alert";
-        alertBox.style.display = "none";
+        const signupAlert = document.getElementById("signup-alert");
+        if (signupAlert) {
+            signupAlert.textContent = "";
+            signupAlert.className = "auth-alert";
+            signupAlert.style.display = "none";
+        }
+
+        const otpAlert = document.getElementById("otp-alert");
+        if (otpAlert) {
+            otpAlert.textContent = "";
+            otpAlert.className = "auth-alert";
+            otpAlert.style.display = "none";
+        }
     }
 
     // ----------------------------
@@ -95,15 +143,15 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (!payload.name) {
-            return showAlert("Name is required");
+            return showSignupAlert("Name is required");
         }
 
         if (!payload.email) {
-            return showAlert("Email is required");
+            return showSignupAlert("Email is required");
         }
 
         if (payload.password.length < 6) {
-            return showAlert("Password must be at least 6 characters");
+            return showSignupAlert("Password must be at least 6 characters");
         }
 
         try {
@@ -111,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setLoading(true);
 
             const response = await fetch(
-                `${API_BASE_URL}/auth/signup`,
+                `${API_BASE_URL}/auth/send-otp`,
                 {
                     method: "POST",
                     headers: {
@@ -136,31 +184,170 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Signup failed"
                 );
             }
+            signupEmail = payload.email;
 
-            showAlert(
-                data.message || "Account created successfully!",
+            document
+            .querySelectorAll(".otp-box")
+            .forEach(box => box.value = "");
+
+            document.querySelector(".otp-box").focus();
+
+            document.getElementById("otp-email").textContent =
+                signupEmail;
+
+            document.getElementById("otp-modal").hidden = false;
+
+            showSignupAlert(
+                data.message,
                 "success"
             );
-
-            form.reset();
-
-            setTimeout(() => {
-
-                window.location.href = "/login";
-
-            }, 1200);
 
         } catch (err) {
 
             console.error(err);
 
-            showAlert(
+            showSignupAlert(
                 err.message || "Something went wrong."
             );
 
         } finally {
 
             setLoading(false);
+
+        }
+
+    });
+    // ----------------------------
+    // Verify OTP
+    // ----------------------------
+
+
+    // ----------------------------
+    // Verify OTP
+    // ----------------------------
+
+    document
+    .getElementById("verify-otp-btn")
+    .addEventListener("click", async () => {
+
+        const otp = [...document.querySelectorAll(".otp-box")]
+            .map(box => box.value)
+            .join("");
+
+        // Select the OTP card element so we can add the red glow to it
+        const otpCard = document.querySelector(".otp-card");
+
+        if (otp.length !== 6) {
+            otpCard.classList.add("error-state");
+            setTimeout(() => otpCard.classList.remove("error-state"), 1500);
+
+            showOtpAlert("Please enter the 6-digit OTP.");
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE_URL}/auth/verify-otp`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: signupEmail,
+                        otp: otp
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "OTP verification failed."
+                );
+            }
+
+            showOtpAlert(
+                "Account created successfully!",
+                "success"
+            );
+            document.getElementById("otp-modal").hidden = true;
+
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 1000);
+
+        } catch (err) {
+
+            console.error(err);
+
+            showOtpAlert(
+                err.message ||
+                "OTP verification failed."
+            );
+
+            // NEW: Add the red glassmorphism effect when the backend says OTP is wrong
+            // 1. Select the card
+            const otpCard = document.querySelector('.otp-card');
+
+            // 2. Add the red glassmorphism class
+            otpCard.classList.add('error-state');
+            
+            // Remove the effect after 1.5 seconds (1500ms)
+            setTimeout(() => {
+                otpCard.classList.remove("error-state");
+            }, 1500);
+
+            // OPTIONAL BUT RECOMMENDED: Clear the wrong OTP inputs automatically
+            document.querySelectorAll(".otp-box").forEach(box => box.value = "");
+            document.querySelector(".otp-box").focus(); 
+
+        }
+
+    });
+
+    document
+    .getElementById("resend-otp-btn")
+    .addEventListener("click", async () => {
+
+        try {
+
+            const response = await fetch(
+                `${API_BASE_URL}/auth/resend-otp`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: signupEmail
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail ||
+                    "Failed to resend OTP."
+                );
+            }
+
+            showOtpAlert(
+                data.message,
+                "success"
+            );
+
+        } catch (err) {
+
+            showOtpAlert(
+                err.message
+            );
 
         }
 

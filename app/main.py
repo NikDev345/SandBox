@@ -22,6 +22,8 @@ import app.ui.pages.signup
 import app.ui.pages.dashboard
 import app.ui.pages.profile
 import app.ui.pages.tool_page
+import app.ui.pages.forgot_password
+import app.ui.pages.reset_password
 
 # ui.run(
 #     title='SandBox',
