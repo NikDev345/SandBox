@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database.engine import get_db
 from app.utils.auth import get_current_user
-from app.schemas.ai.summarizer import (
+from app.models.summarizer import (
     SummarizeRequest,
     SummarizeResponse,
 )

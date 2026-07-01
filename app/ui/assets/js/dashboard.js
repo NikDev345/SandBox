@@ -199,6 +199,11 @@ async function loadDashboardData() {
 
     if (me) {
         renderProfile(me);
+        const passwordEmail = document.getElementById("passwordEmail");
+
+        if (passwordEmail) {
+            passwordEmail.value = me.email;
+        }
         localStorage.setItem("SandBox_user", JSON.stringify(me));
         applyAdminRole();
     } else if (localStorage.getItem("access_token")) {
@@ -861,9 +866,10 @@ function initializeProfile() {
 }
 
 function renderProfile(user) {
-    const name     = user.name || user.email?.split("@")[0] || "Workspace";
-    const email    = user.email || "Not signed in";
-    const provider = user.provider || user.auth_provider || "Local";
+    const name = user.name || user.email?.split("@")[0] || "Workspace";
+    const email = user.email || "Not signed in";
+    const bio = user.bio || "Hey, there!";
+    const provider = user.provider || "local";
 
     const DEFAULT_AVATAR = "/assets/default_avatar.png";
 
@@ -872,8 +878,18 @@ function renderProfile(user) {
         img.onerror = function () { this.src = DEFAULT_AVATAR; };
     });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = name);
-    document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = provider);
+    document.querySelectorAll("[data-user-bio]").forEach(t => t.textContent = bio);
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = email);
+
+    const profileName = document.getElementById("profileName");
+    if (profileName) profileName.value = user.name || "";
+
+    const profileEmail = document.getElementById("profileEmail");
+    if (profileEmail) profileEmail.value = user.email || "";
+
+    const profileBio = document.getElementById("profileBio");
+    if (profileBio) profileBio.value = user.bio || "";
+
 
     const wt = document.querySelector("[data-workspace-title]");
     const ws = document.querySelector("[data-workspace-subtitle]");
@@ -890,7 +906,7 @@ function renderSignedOut() {
 
     document.querySelectorAll("[data-user-avatar]").forEach(img => { img.src = DEFAULT_AVATAR; });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = "Workspace");
-    document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = "Signed out");
+    document.querySelectorAll("[data-user-bio]").forEach(t => t.textContent = "Hey, there");
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = "Not signed in");
 
     const wt = document.querySelector("[data-workspace-title]");

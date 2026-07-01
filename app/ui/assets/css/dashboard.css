@@ -2143,3 +2143,25 @@ body.is-admin .admin-only {
   background: rgba(99, 102, 241, 0.3);
   color: var(--ink-0);
 }
+
+#passwordEmail {
+    cursor: not-allowed;
+    opacity: 0.85;
+}
+
+#sendPasswordOtpBtn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.confirmation-box {
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    border: 1px solid var(--border-1);
+    font-family: monospace;
+    font-weight: 700;
+    text-align: center;
+    user-select: all;
+}

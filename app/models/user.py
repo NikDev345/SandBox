@@ -60,3 +60,6 @@ class UserLogin(BaseModel):
 class UpdatePasswordRequest(BaseModel):
     current_password: str
     new_password: str
+    
+class DeleteConfirmation(BaseModel):
+    confirmation_text: str

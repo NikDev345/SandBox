@@ -2,12 +2,14 @@ class SettingsManager {
   constructor() {
     this.currentSection = 'profile';
     this.formsDirty = new Map();
+    this.API_BASE_URL = "";
     this.init();
   }
 
   init() {
     this.cacheElements();
     this.attachEventListeners();
+    this.loadProfile(); 
     this.loadSettings();
     this.setupNavigationVisibility();
   }
@@ -15,28 +17,156 @@ class SettingsManager {
   cacheElements() {
     this.navLinks = document.querySelectorAll('.settings-nav-link');
     this.sections = document.querySelectorAll('.settings-section');
-    this.forms = document.querySelectorAll('.settings-form');
+    this.profileForm = document.getElementById("profileForm");
+
     this.toggles = document.querySelectorAll('.toggle-input');
     this.themeRadios = document.querySelectorAll('input[name="theme"]');
     this.accentRadios = document.querySelectorAll('input[name="accent"]');
     this.passwordInput = document.getElementById('new-password');
     this.strengthBar = document.getElementById('strength-bar');
     this.requirementItems = document.querySelectorAll('.requirement-item');
+    this.passwordEmail = document.getElementById("passwordEmail");
+    this.sendOtpBtn = document.getElementById("sendPasswordOtpBtn");
+    this.verifyOtpBtn = document.getElementById("verifyPasswordOtpBtn");
+    this.changePasswordBtn = document.getElementById("changePasswordBtn");
+    this.emailStep = document.getElementById("password-email-step");
+    this.otpStep = document.getElementById("password-otp-step");
+    this.passwordStep = document.getElementById("password-change-step");
+    this.deleteAccountBtn = document.getElementById("deleteAccountBtn");
+    this.deleteModal = document.getElementById("deleteModal");
+    this.deleteExpectedText = document.getElementById("deleteExpectedText");
+    this.deleteConfirmationInput = document.getElementById("deleteConfirmationInput");
+    this.confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    this.cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
   }
 
   attachEventListeners() {
+    const btn = document.getElementById("profileSaveBtn");
+
+    btn.addEventListener("click", (e) => {
+        console.log("BUTTON CLICKED");
+
+        console.log(document.getElementById("profileForm").checkValidity());
+
+        document.getElementById("profileForm").requestSubmit();
+    });
+
+    if (this.sendOtpBtn) {
+        this.sendOtpBtn.addEventListener("click", () => {
+            this.sendPasswordOTP();
+        });
+    }
+    if (this.verifyOtpBtn) {
+        this.verifyOtpBtn.addEventListener("click", () => {
+            this.verifyPasswordOTP();
+        });
+    }
+    if (this.changePasswordBtn) {
+        this.changePasswordBtn.addEventListener("click", () => {
+            this.changePassword();
+        });
+    }
+
+    if (this.profileForm) {
+
+    console.log("Profile listener attached");
+    // Delete account
+    this.deleteAccountBtn?.addEventListener(
+        "click",
+        () => this.openDeleteModal()
+    );
+
+    this.cancelDeleteBtn?.addEventListener(
+        "click",
+        () => this.closeDeleteModal()
+    );
+
+    this.deleteConfirmationInput?.addEventListener(
+        "input",
+        () => {
+
+            this.confirmDeleteBtn.disabled =
+                this.deleteConfirmationInput.value.trim() !==
+                this.deleteExpectedText.textContent.trim();
+
+        }
+    );
+
+    this.confirmDeleteBtn?.addEventListener(
+        "click",
+        () => this.deleteAccount()
+    );
+
+    this.profileForm.addEventListener("submit", (e) => {
+        console.log("PROFILE SUBMIT");
+        this.handleFormSubmit(e);
+    });
+
+    this.profileForm.addEventListener("reset", (e) =>
+        this.handleFormReset(e)
+    );
+
+    this.profileForm
+        .querySelectorAll("input, textarea")
+        .forEach(input => {
+
+            input.addEventListener("input", () =>
+                this.markFormDirty(this.profileForm)
+            );
+
+        });
+    }
     this.navLinks.forEach(link => {
       link.addEventListener('click', (e) => this.handleNavClick(e));
     });
 
-    this.forms.forEach(form => {
-      form.addEventListener('submit', (e) => this.handleFormSubmit(e));
-      form.addEventListener('reset', (e) => this.handleFormReset(e));
-      form.querySelectorAll('input, textarea, select').forEach(input => {
-        input.addEventListener('change', () => this.markFormDirty(form));
-        input.addEventListener('input', () => this.markFormDirty(form));
+    if (this.profileForm) {
+
+    this.profileForm.addEventListener("reset", (e) =>
+        this.handleFormReset(e)
+    );
+
+    this.profileForm
+        .querySelectorAll("input, textarea, select")
+        .forEach(input => {
+
+            input.addEventListener("change", () =>
+                this.markFormDirty(this.profileForm)
+            );
+
+            input.addEventListener("input", () =>
+                this.markFormDirty(this.profileForm)
+            );
+
+        });
+  }
+  const otpBoxes = document.querySelectorAll(".password-otp-box");
+
+  otpBoxes.forEach((box, index) => {
+
+      box.addEventListener("input", () => {
+
+          box.value = box.value.replace(/\D/g, "");
+
+          if (box.value && index < otpBoxes.length - 1) {
+              otpBoxes[index + 1].focus();
+          }
+
       });
-    });
+
+      box.addEventListener("keydown", (e) => {
+
+          if (
+              e.key === "Backspace" &&
+              !box.value &&
+              index > 0
+          ) {
+              otpBoxes[index - 1].focus();
+          }
+
+      });
+
+  });
 
     this.toggles.forEach(toggle => {
       toggle.addEventListener('change', (e) => this.handleToggleChange(e));
@@ -65,6 +195,284 @@ class SettingsManager {
         this.switchSection(section);
       });
     });
+  }
+
+  async openDeleteModal() {
+
+    try {
+        const response = await fetch(
+            `${this.API_BASE_URL}/auth/confirm-delete`,
+            {
+                credentials: "include"
+            }
+        );
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail);
+        }
+
+        this.deleteExpectedText.textContent =
+            data.confirmation_text;
+
+        this.deleteConfirmationInput.value = "";
+
+        this.confirmDeleteBtn.disabled = true;
+
+        this.deleteModal.classList.add("open");
+
+    }
+
+    catch (err) {
+        this.showToast(err.message, "error");
+    }
+
+  }
+
+  closeDeleteModal() {
+    this.deleteModal.classList.remove("open");
+  }
+
+  async deleteAccount() {
+
+    try {
+
+        this.confirmDeleteBtn.disabled = true;
+
+        const response = await fetch(
+            `${this.API_BASE_URL}/auth/account`,
+            {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    confirmation_text:
+                        this.deleteConfirmationInput.value
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail);
+        }
+
+        localStorage.clear();
+        sessionStorage.clear();
+
+        this.showToast(
+            data.message,
+            "success"
+        );
+
+        setTimeout(() => {
+
+            window.location.href = "/login";
+
+        }, 1000);
+
+    }
+
+    catch (err) {
+
+        this.showToast(
+            err.message,
+            "error"
+        );
+
+        this.confirmDeleteBtn.disabled = false;
+
+    }
+
+  }
+
+  async changePassword() {
+
+    const newPassword = document.getElementById("newPassword").value.trim();
+    const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+    if (!newPassword) {
+        this.showToast("Please enter a new password.", "error");
+        return;
+    }
+
+    if (!confirmPassword) {
+        this.showToast("Please confirm your password.", "error");
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        this.showToast("Passwords do not match.", "error");
+        return;
+    }
+
+    try {
+
+        this.changePasswordBtn.disabled = true;
+        this.changePasswordBtn.textContent = "Updating...";
+
+        const response = await fetch(
+            `${this.API_BASE_URL}/auth/change-password`,
+            {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: this.passwordEmail.value,
+                    new_password: newPassword,
+                    confirm_password: confirmPassword
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                "Failed to update password."
+            );
+        }
+
+        this.showToast(
+            data.message,
+            "success"
+        );
+
+        // Reset the UI
+        document.getElementById("newPassword").value = "";
+        document.getElementById("confirmPassword").value = "";
+
+        document
+            .querySelectorAll(".password-otp-box")
+            .forEach(box => box.value = "");
+
+        this.passwordStep.hidden = true;
+        this.otpStep.hidden = true;
+        this.emailStep.hidden = false;
+
+    } catch (err) {
+
+        console.error(err);
+
+        this.showToast(
+            err.message,
+            "error"
+        );
+
+    } finally {
+
+        this.changePasswordBtn.disabled = false;
+        this.changePasswordBtn.textContent = "Update Password";
+
+    }
+
+  }
+
+  async verifyPasswordOTP() {
+
+    const otp = [...document.querySelectorAll(".password-otp-box")]
+        .map(box => box.value)
+        .join("");
+
+    if (otp.length !== 6) {
+        this.showToast("Please enter the 6-digit OTP.", "error");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${this.API_BASE_URL}/auth/verify-password-otp`,
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: this.passwordEmail.value,
+                    otp: otp
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "OTP verification failed");
+        }
+
+        this.showToast(data.message, "success");
+
+        this.otpStep.hidden = true;
+        this.passwordStep.hidden = false;
+
+        document.getElementById("newPassword").focus();
+
+    } catch (err) {
+
+        this.showToast(err.message, "error");
+
+        document.querySelectorAll(".password-otp-box")
+            .forEach(box => box.value = "");
+
+        document.querySelector(".password-otp-box").focus();
+
+    }
+
+  }
+
+  async sendPasswordOTP() {
+
+    try {
+        this.sendOtpBtn.disabled = true;
+        this.sendOtpBtn.textContent = "Sending...";
+        const response = await fetch(
+            `${this.API_BASE_URL}/auth/send-password-otp`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    email: this.passwordEmail.value
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail);
+        }
+
+        this.showToast(data.message, "success");
+
+        this.emailStep.hidden = true;
+        this.otpStep.hidden = false;
+        const firstBox = document.querySelector(".password-otp-box");
+
+        if (firstBox) {
+            firstBox.focus();
+        }
+
+    } catch (err) {
+
+        this.showToast(err.message, "error");
+
+    }finally {
+
+      this.sendOtpBtn.disabled = false;
+      this.sendOtpBtn.textContent = "Send OTP";
+
+    } 
   }
 
   setupNavigationVisibility() {
@@ -113,19 +521,79 @@ class SettingsManager {
     this.showUnsavedIndicator();
   }
 
-  handleFormSubmit(e) {
+  async handleFormSubmit(e) {
+    console.log("Profile form submitted");
     e.preventDefault();
+
     const form = e.target;
-    const formData = new FormData(form);
-    
+
+    // Only handle the profile form here
+    if (form.id !== "profileForm") {
+        return;
+    }
+
     this.showLoadingState(form);
-    
-    setTimeout(() => {
-      this.hideLoadingState(form);
-      this.formsDirty.delete(form);
-      this.hideUnsavedIndicator();
-      this.showToast('Changes saved successfully', 'success');
-    }, 800);
+
+    try {
+        const payload = {
+            name: document.getElementById("profileFullName").value.trim(),
+            bio: document.getElementById("profileBio").value.trim()
+        };
+
+        const response = await fetch(`${this.API_BASE_URL}/user/profile`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        if (typeof renderProfile === "function") {
+            renderProfile(data.user);
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Failed to update profile."
+            );
+        }
+
+        // Update the UI immediately
+        document.querySelector(".settings-avatar-name").textContent =
+            data.user.name;
+
+        document.getElementById("profileFullName").value =
+            data.user.name;
+
+        document.getElementById("profileBio").value =
+            data.user.bio || "";
+
+        this.formsDirty.delete(form);
+        this.hideUnsavedIndicator();
+
+        this.showToast(
+            data.message || "Profile updated successfully",
+            "success"
+        );
+
+    } catch (err) {
+
+        console.error(err);
+
+        this.showToast(
+            err.message || "Failed to update profile.",
+            "error"
+        );
+
+    } finally {
+
+        this.hideLoadingState(form);
+
+    }
   }
 
   handleFormReset(e) {
@@ -249,6 +717,75 @@ class SettingsManager {
 
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+  }
+
+  async loadProfile() {
+    try {
+      const response = await fetch(`${this.API_BASE_URL}/auth/me`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load profile");
+      }
+
+      const profile = await response.json();
+
+      // Avatar
+      const avatar = document.querySelector(".settings-avatar-img");
+      if (avatar) {
+        avatar.src =
+          profile.avatar ||
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}`;
+
+          avatar.onerror = function () {
+              this.src = "/assets/default_avatar.png";
+          };
+      }
+
+      // Top card
+      const topName = document.querySelector(".settings-avatar-name");
+      if (topName) topName.textContent = profile.name;
+
+      const topEmail = document.querySelector(".settings-avatar-email");
+      if (topEmail) topEmail.textContent = profile.email;
+
+      // Form
+      const fullName = document.querySelector("#profileFullName")
+      if (fullName) fullName.value = profile.name || "";
+
+      const email = document.getElementById("profileEmail");
+      if (email) email.value = profile.email || "";
+
+      const bio = document.getElementById("profileBio");
+      if (bio) bio.value = profile.bio || "";
+
+      const role = document.getElementById("profileRole");
+      if (role) role.value = profile.role || "User";
+
+      // Auth Provider
+      const providerField = document.querySelectorAll(".form-static-value")[0];
+      if (providerField)
+        providerField.innerHTML = profile.provider || "Local";
+
+      // Member Since
+      const memberField = document.querySelectorAll(".form-static-value")[1];
+      if (memberField && profile.created_at) {
+        memberField.textContent = new Date(profile.created_at)
+          .toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+      }
+
+    } catch (err) {
+      console.error("Profile Load Error:", err);
+    }
   }
 
   loadSettings() {
