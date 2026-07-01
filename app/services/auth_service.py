@@ -79,3 +79,19 @@ class AuthService:
         "bio": user.bio,
         "created_at": user.created_at
         }
+        
+    @staticmethod
+    def update_password(db: Session, current_user: Session, password: str, existing_password: str):
+        user = db.query(Users).filter(Users.id == current_user['sub']).first()
+        if not user:
+            return None
+        if not verify_password(existing_password, user.password_hash):
+            return False
+        if verify_password(password, user.password_hash):
+            return 'same_password'
+        user.password_hash = hash_password(password)
+        
+        db.commit()
+        db.refresh(user)
+        
+        return user
