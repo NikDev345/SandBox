@@ -56,3 +56,7 @@ class UserResponse(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str = Field(min_length=6)
+
+class UpdatePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str

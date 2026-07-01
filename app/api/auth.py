@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 
 from app.database.engine import get_db
-from app.models.user import UserCreate, UserLogin
+from app.models.user import UserCreate, UserLogin, UpdatePasswordRequest
 from app.services.auth_service import AuthService
 from app.utils.jwt import create_access_token
 from app.utils.auth import get_current_user
@@ -227,3 +227,25 @@ def logout():
     response.delete_cookie("token", path="/")
 
     return response
+
+@router.put('/update_password')
+def update_password(data: UpdatePasswordRequest, db: Session = Depends(get_db), current_user: Session = Depends(get_current_user)):
+    user = AuthService.update_password(db, current_user, data.new_password, data.current_password)
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    if user is False:
+        raise HTTPException(
+            status_code=401,
+            detail="Current password is incorrect"
+        )
+    if user == 'same_password':
+        raise HTTPException(
+            status_code=400,
+            detail="New password must be different from the current password."
+        )
+    return {
+        "message": "Password updated successfully."
+    }
