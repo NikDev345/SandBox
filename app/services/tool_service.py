@@ -44,3 +44,11 @@ class ToolService:
     @staticmethod
     def get_tool_count(db: Session):
         return db.query(Tools).count()
+    
+    @staticmethod
+    def get_tool_by_slug(db: Session, slug: str):
+        return (
+            db.query(Tools)
+            .filter(Tools.slug == slug)
+            .first()
+         )

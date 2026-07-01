@@ -1,3 +1,15 @@
-/venv
+# Python
+__pycache__/
+*.py[c]
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
 .env
-.env.example
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
