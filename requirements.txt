@@ -30,4 +30,7 @@ email-validator>=2.2.0
 pypdf>=5.7.0
 python-multipart>=0.0.20
 
+# PDF Generation
+reportlab>=3.6.12
+
 # HTTP Client
