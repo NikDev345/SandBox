@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database.engine import get_db
-from app.schemas.ai.summarizer import (
+from app.models.summarizer import (
     SummarizeRequest,
     SummarizeResponse,
     ExtractResponse,
