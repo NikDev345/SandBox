@@ -4,18 +4,24 @@ from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 
 from app.database.engine import get_db
-from app.models.user import UserCreate, UserLogin, UpdatePasswordRequest
+from app.models.user import Users, UserLogin, UpdatePasswordRequest, DeleteConfirmation
 from app.services.auth_service import AuthService
 from app.utils.jwt import create_access_token
 from app.utils.auth import get_current_user
-
+from app.utils.security import verify_password
 from app.models.otp import SendOTPRequest, VerifyOTPRequest, ResendOTPRequest
 from app.models.password_reset import ForgotPasswordRequest, ResetPasswordRequest
-
+from app.models.password_otp import (
+    PasswordOTP,
+    PasswordOTPRequest,
+    VerifyPasswordOTPRequest,
+    ChangePasswordRequest
+)
 
 from app.services.password_reset_service import PasswordResetService
 from app.services.otp_service import OTPService
 from app.utils.security import hash_password
+
 
 router = APIRouter(
     prefix="/auth",
@@ -248,4 +254,194 @@ def update_password(data: UpdatePasswordRequest, db: Session = Depends(get_db), 
         )
     return {
         "message": "Password updated successfully."
+    }
+    
+@router.post("/send-password-otp")
+def send_password_otp(
+    data: PasswordOTPRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+
+    user = db.query(Users).filter(
+        Users.id == current_user["sub"]
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    if user.email != data.email:
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid email"
+        )
+
+    result = OTPService.send_password_otp(
+        db,
+        data.email
+    )
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    if result is False:
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to send OTP"
+        )
+
+    return {
+        "message": "OTP sent successfully"
+    }
+    
+@router.post("/verify-password-otp")
+def verify_password_otp(
+    data: VerifyPasswordOTPRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+
+    user = db.query(Users).filter(
+        Users.id == current_user["sub"]
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    if user.email != data.email:
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid email"
+        )
+
+    result = OTPService.verify_password_otp(
+        db,
+        data.email,
+        data.otp
+    )
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail="OTP not found"
+        )
+
+    if result is False:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired OTP"
+        )
+
+    return {
+        "message": "OTP verified"
+    }
+    
+@router.put("/change-password")
+def change_password(
+    data: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+
+    record = db.query(PasswordOTP).filter(
+        PasswordOTP.email == data.email,
+        PasswordOTP.verified == True
+    ).first()
+
+    if not record:
+        raise HTTPException(
+            status_code=403,
+            detail="Verify OTP first"
+        )
+
+    user = db.query(Users).filter(
+        Users.id == current_user["sub"]
+    ).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+        
+    if data.new_password != data.confirm_password:
+        raise HTTPException(
+            status_code=400,
+            detail="Passwords do not match."
+        )
+        
+    if verify_password(
+        data.new_password,
+        user.password_hash
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="New password must be different from the current password."
+        )
+
+    user.password_hash = hash_password(
+        data.new_password
+    )
+
+    db.delete(record)
+
+    db.commit()
+
+    return {
+        "message": "Password updated successfully"
+    }
+    
+@router.delete('/account')
+def delete_account(data: DeleteConfirmation, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    user = db.query(Users).filter(
+        Users.id == current_user["sub"]
+    ).first()
+
+    expected = f"DELETE {user.name}"
+
+    if data.confirmation_text != expected:
+        raise HTTPException(
+            status_code=400,
+            detail="Confirmation text does not match."
+        )
+
+    db.delete(user)
+    db.commit()
+
+    response = JSONResponse(
+        content={
+            "message": "Account deleted successfully."
+        }
+    )
+
+    response.delete_cookie(
+        key="access_token",
+        path="/"
+    )
+
+    response.delete_cookie(
+        key="token",
+        path="/"
+    )
+
+    return response
+    
+@router.get('/confirm-delete')
+def confirm_delete(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    
+    user = db.query(Users).filter(
+        Users.id == current_user["sub"]
+    ).first() 
+    
+    return {
+        "confirmation_text": f"DELETE {user.name}"
     }

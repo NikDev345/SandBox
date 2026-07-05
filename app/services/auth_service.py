@@ -6,10 +6,8 @@ from app.utils.security import (
 )
 import uuid 
 
-
 class AuthService:
-
-
+    
     @staticmethod
     def create_user(
         db: Session,
@@ -17,11 +15,9 @@ class AuthService:
         email: str,
         password: str
     ):
-
+        
         existing_user = db.query(Users).filter(Users.email == email).first()
-
         if existing_user:
-
             return None
 
         user = Users(
@@ -34,13 +30,9 @@ class AuthService:
             provider="local",
             role='users'
         )
-
         db.add(user)
-
         db.commit()
-
         db.refresh(user)
-
         return user
 
 
@@ -54,7 +46,6 @@ class AuthService:
         user = db.query(Users).filter(Users.email == email).first()
 
         if not user:
-
             return None
 
         if not verify_password(
@@ -62,7 +53,6 @@ class AuthService:
             user.password_hash
         ):
             return None
-
         return user
 
     @staticmethod
@@ -95,3 +85,4 @@ class AuthService:
         db.refresh(user)
         
         return user
+    

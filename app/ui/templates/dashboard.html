@@ -25,7 +25,7 @@
       <img class="avatar" data-user-avatar src="/assets/default_avatar.png" alt="Profile">
       <div>
         <strong data-user-name>Workspace</strong>
-        <small data-user-provider>Guest</small>
+        <small data-user-bio>Hello there!</small>
       </div>
     </div>
 
@@ -453,7 +453,11 @@
                   <div class="settings-avatar">
                     <img class="settings-avatar-img" src="/assets/default_avatar.png" alt="User avatar">
                     <label class="settings-avatar-edit">
-                      <input type="file" accept="image/*" hidden>
+                      <input
+                        id="avatarUpload"
+                        type="file"
+                        accept="image/*"
+                        hidden>
                       <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </label>
                   </div>
@@ -466,26 +470,41 @@
 
               <div class="settings-card">
                 <p class="settings-card-heading">Basic Information</p>
-                <div class="settings-form">
+                <form id="profileForm" class="settings-form">
                   <div class="form-row">
                     <div class="form-group">
                       <label class="form-label">Full Name</label>
-                      <input class="form-input" type="text" placeholder="Your full name">
+                      <input id="profileFullName" class="form-input" type="text" placeholder="Your full name">
                     </div>
                     <div class="form-group">
                       <label class="form-label">Email</label>
-                      <input class="form-input" type="email" placeholder="your.email@example.com">
+                      <input
+                          type="email"
+                          id="profileEmail"
+                          class="form-input"
+                          readonly
+                      >
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Bio</label>
-                    <textarea class="form-textarea" placeholder="Tell us about yourself" rows="3"></textarea>
+                    <textarea id="profileBio" class="form-textarea" placeholder="Tell us about yourself" rows="3"></textarea>
                   </div>
                   <div class="form-actions">
-                    <button class="btn btn-ghost" type="button">Cancel</button>
-                    <button class="btn btn-primary" type="button">Save Changes</button>
+                    <button
+                        id="profileCancelBtn"
+                        class="btn btn-ghost"
+                        type="reset">
+                        Cancel
+                    </button>
+                    <button
+                        id="profileSaveBtn"
+                        class="btn btn-primary"
+                        type="submit">
+                        Save Changes
+                    </button>
                   </div>
-                </div>
+                </form>
               </div>
             </section>
 
@@ -560,53 +579,123 @@
               <p class="settings-description">Keep your account safe and secure</p>
 
               <div class="settings-card">
-                <p class="settings-card-heading">Password</p>
-                <div class="settings-form">
-                  <div class="form-group">
-                    <label class="form-label">Current Password</label>
-                    <input class="form-input" type="password" placeholder="Enter current password">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">New Password</label>
-                    <input class="form-input" type="password" placeholder="Enter new password" id="new-password">
-                    <div class="password-strength-meter">
-                      <div class="strength-bar strength-weak" id="strength-bar"></div>
-                    </div>
-                    <div class="password-requirements">
-                      <p class="password-requirements-label">Requirements:</p>
-                      <ul class="requirements-list">
-                        <li class="requirement-item" data-requirement="length">8+ characters</li>
-                        <li class="requirement-item" data-requirement="uppercase">One uppercase letter</li>
-                        <li class="requirement-item" data-requirement="lowercase">One lowercase letter</li>
-                        <li class="requirement-item" data-requirement="number">One number</li>
-                        <li class="requirement-item" data-requirement="special">One special character</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Confirm New Password</label>
-                    <input class="form-input" type="password" placeholder="Confirm new password">
-                  </div>
-                  <div class="form-actions">
-                    <button class="btn btn-ghost" type="button">Cancel</button>
-                    <button class="btn btn-primary" type="button">Update Password</button>
-                  </div>
-                </div>
-              </div>
 
-              <div class="settings-card">
-                <p class="settings-card-heading">Two-Factor Authentication</p>
-                <div class="preference-row">
-                  <div class="preference-info">
-                    <p class="preference-label">Enable 2FA</p>
-                    <p class="preference-description">Add an extra layer of security to your account</p>
-                  </div>
-                  <label class="toggle-switch">
-                    <input type="checkbox" class="toggle-input">
-                    <span class="toggle-slider"></span>
-                  </label>
+                <p class="settings-card-heading">
+                    Change Password
+                </p>
+
+                <!-- STEP 1 -->
+                <div id="password-email-step">
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+
+                        <input
+                            id="passwordEmail"
+                            class="form-input"
+                            type="email"
+                            readonly
+                        >
+                    </div>
+
+                    <div class="form-actions">
+                        <button
+                            id="sendPasswordOtpBtn"
+                            class="btn btn-primary"
+                            type="button">
+                            Send OTP
+                        </button>
+                    </div>
+
                 </div>
-              </div>
+
+                <!-- STEP 2 -->
+                <div id="password-otp-step" hidden>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Verification Code
+                        </label>
+
+                        <div class="otp-container">
+
+                            <input class="otp-box password-otp-box" maxlength="1">
+
+                            <input class="otp-box password-otp-box" maxlength="1">
+
+                            <input class="otp-box password-otp-box" maxlength="1">
+
+                            <input class="otp-box password-otp-box" maxlength="1">
+
+                            <input class="otp-box password-otp-box" maxlength="1">
+
+                            <input class="otp-box password-otp-box" maxlength="1">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            id="verifyPasswordOtpBtn"
+                            class="btn btn-primary"
+                            type="button">
+                            Verify OTP
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- STEP 3 -->
+                <div id="password-change-step" hidden>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            New Password
+                        </label>
+
+                        <input
+                            id="newPassword"
+                            class="form-input"
+                            type="password"
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            id="confirmPassword"
+                            class="form-input"
+                            type="password"
+                        >
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            id="changePasswordBtn"
+                            class="btn btn-primary"
+                            type="button">
+                            Update Password
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+              
             </section>
 
             <!-- Connected Accounts Section -->
@@ -764,7 +853,12 @@
                     <p class="danger-card-title">Delete Account</p>
                     <p class="danger-card-desc">Permanently delete your account and all associated data</p>
                   </div>
-                  <button class="btn btn-danger" type="button">Delete Account</button>
+                  <button
+                      id="deleteAccountBtn"
+                      class="btn btn-danger"
+                      type="button">
+                      Delete Account
+                  </button>
                 </div>
               </div>
             </section>
@@ -775,6 +869,65 @@
     </section>
 
   </main>
+
+</div>
+<!-- DELETE ACCOUNT MODAL -->
+<div id="deleteModal" class="modal-backdrop">
+
+    <div class="modal-box modal-box--sm">
+
+        <div class="modal-header">
+            <h3>Delete Account</h3>
+
+            <button
+                type="button"
+                id="closeDeleteModal"
+                class="modal-close">
+                ✕
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <p class="delete-warning-text">
+                This action cannot be undone.
+            </p>
+
+            <p>
+                Type the following text exactly:
+            </p>
+
+            <div
+                id="deleteExpectedText"
+                class="confirmation-box">
+            </div>
+
+            <input
+                id="deleteConfirmationInput"
+                class="form-input"
+                placeholder="Type here...">
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                id="cancelDeleteBtn"
+                class="btn btn-ghost">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                id="confirmDeleteBtn"
+                class="btn btn-danger">
+                Delete Account
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 

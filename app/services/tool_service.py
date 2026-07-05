@@ -30,7 +30,6 @@ class ToolService:
         db.refresh(tool)
         
         return tool
-    
 
     @staticmethod
     def return_tool(db: Session, id: str):

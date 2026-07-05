@@ -43,7 +43,16 @@ class UserService:
 
         db.refresh(user)
 
-        return user
+        return {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "provider": user.provider,
+            "avatar": user.avatar_url,
+            "bio": user.bio,
+            "created_at": user.created_at.isoformat()
+        }
 
     @staticmethod
     def update_theme(
@@ -121,3 +130,4 @@ class UserService:
         db.refresh(user)
 
         return user
+    

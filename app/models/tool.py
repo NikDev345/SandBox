@@ -3,7 +3,6 @@ from app.database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
 
-
 class Tools(Base):
     __tablename__ = 'tools'
     
@@ -23,7 +22,6 @@ class ToolCreate(BaseModel):
     description: str
     icon_url: str
     source_path: str
-    
     
 class ToolResponse(BaseModel):
     id: str
