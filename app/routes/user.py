@@ -1,3 +1,6 @@
+# it contains all the apis of user panel related to apperance and user settings
+
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 

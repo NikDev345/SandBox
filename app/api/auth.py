@@ -1,3 +1,5 @@
+#it contains all the api related to user account like create, login or delete account
+# and password reset, and so on 
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from sqlalchemy.orm import Session
@@ -204,14 +206,26 @@ def login(
         {"sub": user.id,
          "email": user.email,
          'role': user.role}
-        
     )
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-        "user_id": user.id,
-        "role": user.role
-    }
+    
+    response = JSONResponse(
+        {
+            'message': 'login successfull',
+            'user_id': user.id,
+            'role': user.role
+        }
+    )
+    
+    response.set_cookie(
+        key='access_token',
+        value=token,
+        httponly=True,
+        samesite="lax",
+        secure=False,
+        path='/'
+    )
+    
+    return response
 
 @router.get('/me')
 def get_profile(db: Session = Depends(get_db), current_user= Depends(get_current_user)):
@@ -444,4 +458,23 @@ def confirm_delete(db: Session = Depends(get_db), current_user = Depends(get_cur
     
     return {
         "confirmation_text": f"DELETE {user.name}"
+    }
+    
+@router.get('/settings/connections')
+async def get_connections(db= Depends(get_db) , current_user = Depends(get_current_user)):
+    user = db.query(Users).filter(Users.id == current_user['sub']).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+    print("google_connected =", user.google_connected)
+    print("google_email =", user.google_email)
+    
+    return {
+        "google_connected": user.google_connected,
+        "github_connected": user.github_connected,
+        "google_email": user.google_email,
+        "github_email": user.github_email
     }

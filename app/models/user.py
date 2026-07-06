@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Boolean
 from app.database.engine import Base
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
@@ -35,6 +35,34 @@ class Users(Base):
         String,
         default="expanded"
     )
+    
+    # Connected accounts
+    google_connected = Column(Boolean, default=False)
+    github_connected = Column(Boolean, default=False)
+
+    google_id = Column(String, unique=True)
+    github_id = Column(String, unique=True)
+
+    google_email = Column(String)
+    github_email = Column(String)
+
+    google_avatar = Column(String)
+    github_avatar = Column(String)
+
+    google_name = Column(String)
+    github_name = Column(String)
+    
+    local_name = Column(String, nullable=False)
+    local_email = Column(String, nullable=False)
+    local_avatar = Column(
+        String,
+        default="ui/assets/default_avatar.png",
+        nullable=False
+    )
+    
+    name_customized = Column(Boolean, default=False)
+    email_customized = Column(Boolean, default=False)
+    avatar_customized = Column(Boolean, default=False)
 
     
 # Session Schemas-------------------------------------------------------------------

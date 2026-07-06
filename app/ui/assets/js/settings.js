@@ -522,7 +522,6 @@ class SettingsManager {
   }
 
   async handleFormSubmit(e) {
-    console.log("Profile form submitted");
     e.preventDefault();
 
     const form = e.target;
@@ -550,6 +549,9 @@ class SettingsManager {
         });
 
         const data = await response.json();
+        console.log('1')
+        console.log(data);
+        console.log(data.user);
         if (typeof renderProfile === "function") {
             renderProfile(data.user);
         }
