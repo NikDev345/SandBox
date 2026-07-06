@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual environment
+# Virtuaal environment
 .venv/
 venv/
 
@@ -13,7 +13,6 @@ venv/
 # VS Code
 .vscode/
 
-<<<<<<< HEAD
 # Pytest
 .pytest_cache/
 
@@ -22,8 +21,6 @@ venv/
 
 # Ruff
 .ruff_cache/
-=======
 # Logs
 *.log
 sandbox.db
->>>>>>> f39841a0093a12ea805a15f47bc0ad2cf07b7570
