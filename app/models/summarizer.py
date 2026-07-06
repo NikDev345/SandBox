@@ -19,6 +19,10 @@ class SummarizeRequest(BaseModel):
         default="medium",
         description="Desired summary length."
     )
+    instructions: str | None = Field(
+        default=None,
+        description="Optional user instructions for the summary."
+    )
 
 
 class SummarizeResponse(BaseModel):
@@ -30,3 +34,19 @@ class SummarizeResponse(BaseModel):
         ...,
         description="Generated summary."
     )   
+
+
+class ExtractResponse(BaseModel):
+    """
+    Response schema for extracted document text.
+    """
+
+    text: str = Field(..., description="Extracted text from uploaded document.")
+
+
+class DownloadRequest(BaseModel):
+    """
+    Request schema for PDF download of summary.
+    """
+
+    summary: str = Field(..., description="Summary text to render as PDF.")

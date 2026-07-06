@@ -17,14 +17,14 @@ class PromptEngine:
 
     SUMMARY_LENGTHS: Dict[str, str] = {
         "short": """
-Create a highly concise summary.
+        Create a highly concise summary.
 
-Requirements:
-- Target approximately 10-30 words when possible.
-- Capture only the core idea.
-- Use one short paragraph or 2-3 bullet points.
-- Remove all supporting details and examples.
-""",
+        Requirements:
+        - Target approximately 10-30 words when possible.
+        - Capture only the core idea.
+        - Use one short paragraph or 2-3 bullet points.
+        - Remove all supporting details and examples.
+        """,
 
         "medium": """
 Create a balanced summary.
@@ -52,6 +52,7 @@ Requirements:
     def build_summary_prompt(
         text: str,
         length: str = "medium",
+        instructions: str | None = None,
     ) -> str:
         """
         Build a prompt for the AI Text Summarizer.
@@ -72,6 +73,16 @@ Requirements:
             )
 
         instruction = PromptEngine.SUMMARY_LENGTHS[length]
+        instruction_block = ""
+
+        if instructions and instructions.strip():
+            instruction_block = f"""
+Additional User Instructions:
+{instructions.strip()}
+
+Follow these instructions while remaining faithful to the original document.
+Do not invent or add information.
+"""
 
         return f"""
 You are an expert AI Text Summarizer.
@@ -83,6 +94,8 @@ Selected Summary Length:
 
 Length Instructions:
 {instruction}
+
+{instruction_block}
 
 General Rules:
 1. Never invent facts, names, dates, numbers, statistics, or conclusions.
