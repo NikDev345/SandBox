@@ -1,16 +1,29 @@
-# Python
+# Python cache
 __pycache__/
-*.py[c]
-*.pyo
-*.pyd
-*.pyc
-# Virtual Environment
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
 venv/
+
+# Environment variables
 .env
 
-# VSCode
+# VS Code
 .vscode/
 
+<<<<<<< HEAD
 # Logs
 *.log
 sandbox.db
+=======
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+>>>>>>> af64e00f90431fcc7d5e2797cf66d87255a5d41a

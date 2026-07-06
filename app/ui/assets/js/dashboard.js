@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCategoryBadges();
     loadConnections();
 
+<<<<<<< HEAD
     // =======================================================
     // Theme
     // =======================================================
@@ -90,6 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // =======================================================
 
+=======
+>>>>>>> af64e00f90431fcc7d5e2797cf66d87255a5d41a
     const googleBtn = document.getElementById("google-connect-btn");
 
     if (googleBtn) {

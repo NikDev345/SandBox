@@ -12,12 +12,26 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
+<<<<<<< HEAD
 from app.api.summarizer.summarizer import router as summarizer_router
+=======
+from app.api.ai.summarizer import router as summarizer_router
+from app.api.json_fixer import router as json_fixer_router
+>>>>>>> af64e00f90431fcc7d5e2797cf66d87255a5d41a
 import app.main 
 from nicegui import ui
+from app.seed.seed_tools import seed_tools
+from app.database.engine import SessionLocal
 
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
+
+db = SessionLocal()
+
+try:
+    seed_tools(db)
+finally:
+    db.close()
 
 app = FastAPI()
 
@@ -46,6 +60,7 @@ app.include_router(analytic_router)
 app.include_router(google_router)
 app.include_router(user_router)
 app.include_router(summarizer_router)
+app.include_router(json_fixer_router)
 
 ui.run_with(
     app,

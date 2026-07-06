@@ -4,9 +4,6 @@ from app.services.prompt_engine import PromptEngine
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 
-print("ToolService imported from:", ToolService.__module__)
-print("Methods:", dir(ToolService))
-
 class SummarizerService:
     """
     Business logic for AI Text Summarizer.
