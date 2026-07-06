@@ -61,3 +61,7 @@ class ExecutionService:
     @staticmethod
     def get_all_executions(db: Session):
         return db.query(Executions).all()
+    
+    @staticmethod
+    def get_execution_count(db: Session):
+        return db.query(Executions).count()

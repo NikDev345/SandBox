@@ -1,110 +1,189 @@
-const loginForm = document.getElementById("login-form");
-const guestButton = document.getElementById("guest-login");
-const authAlert = document.querySelector(".auth-alert");
+document.addEventListener("DOMContentLoaded", () => {
 
-function showAlert(message, type = "error") {
-    if (!authAlert) return;
-    authAlert.textContent = message;
-    authAlert.className = `auth-alert show ${type}`;
-}
+    const form = document.getElementById("login-form");
+    if (!form) return;
 
-function setButtonLoading(button, loading) {
-    if (!button) return;
-    const label = button.querySelector("span") || button;
-    if (!button.dataset.defaultText) {
-        button.dataset.defaultText = label.textContent;
-    }
-    label.textContent = loading ? button.dataset.loadingText : button.dataset.defaultText;
-    button.disabled = loading;
-}
+    const alertBox = document.querySelector(".auth-alert");
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-function setFieldError(input, message) {
-    const field = input.closest(".field");
-    const note = field?.querySelector("small");
-    field?.classList.toggle("invalid", Boolean(message));
-    if (note) note.textContent = message || "";
-}
+    // OAuth Buttons
+    const googleBtn = document.querySelector('[data-oauth-provider="google"]');
+    const githubBtn = document.querySelector('[data-oauth-provider="github"]');
 
-function validateLogin() {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    let valid = true;
+    // ----------------------------
+    // Alerts
+    // ----------------------------
 
-    if (!email.value.trim() || !email.validity.valid) {
-        setFieldError(email, "Enter a valid email address.");
-        valid = false;
-    } else {
-        setFieldError(email, "");
+    function showAlert(message, type = "error") {
+        alertBox.textContent = message;
+        alertBox.className = `auth-alert ${type}`;
+        alertBox.style.display = "block";
     }
 
-    if (!password.value || password.value.length < 6) {
-        setFieldError(password, "Password must be at least 6 characters.");
-        valid = false;
-    } else {
-        setFieldError(password, "");
+    function clearAlert() {
+        alertBox.textContent = "";
+        alertBox.className = "auth-alert";
+        alertBox.style.display = "none";
     }
 
-    return valid;
-}
+    // ----------------------------
+    // Loading State
+    // ----------------------------
 
-document.querySelectorAll(".field input").forEach(input => {
-    input.addEventListener("input", () => setFieldError(input, ""));
-});
+    function setLoading(loading) {
 
-document.querySelectorAll("[data-disabled-provider]").forEach(button => {
-    button.addEventListener("click", () => {
-        showAlert(`${button.dataset.disabledProvider} sign in is ready for provider integration.`, "success");
-    });
-});
+        submitBtn.disabled = loading;
 
-guestButton?.addEventListener("click", () => {
-    localStorage.setItem("toolbox_user", JSON.stringify({
-        name: "Guest",
-        email: "guest@toolbox.local",
-        provider: "Guest"
-    }));
-    window.location.href = "/";
-});
+        const span = submitBtn.querySelector("span");
 
-loginForm?.addEventListener("submit", async event => {
-    event.preventDefault();
+        if (loading) {
 
-    if (!validateLogin()) return;
+            submitBtn.dataset.originalText = span.textContent;
+            span.textContent = "Signing in...";
 
-    const submitButton = loginForm.querySelector("button[type='submit']");
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+        } else {
 
-    setButtonLoading(submitButton, true);
+            span.textContent =
+                submitBtn.dataset.originalText || "Sign In";
 
-    try {
-        const response = await fetch("/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, password })
+        }
+    }
+
+    // ----------------------------
+    // Google OAuth
+    // ----------------------------
+
+    if (googleBtn) {
+
+        googleBtn.addEventListener("click", () => {
+
+            window.location.href = "/auth/google";
+
         });
 
-        const data = await response.json();
+    }
 
-        if (!response.ok) {
-            throw new Error(data.detail || "Unable to sign in.");
+    // ----------------------------
+    // GitHub OAuth
+    // ----------------------------
+
+    if (githubBtn) {
+
+        githubBtn.addEventListener("click", () => {
+
+            window.location.href = "/auth/github";
+
+        });
+
+    }
+
+    // ----------------------------
+    // Login
+    // ----------------------------
+
+    form.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        clearAlert();
+
+        const payload = {
+
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value
+
+        };
+
+        if (!payload.email) {
+            return showAlert("Email is required");
         }
 
-        localStorage.setItem("user_id", data.user_id);
-        localStorage.setItem("access_token", data.access_token);
-        localStorage.setItem("toolbox_user", JSON.stringify({
-            name: email.split("@")[0],
-            email,
-            provider: "Local"
-        }));
+        if (!payload.password) {
+            return showAlert("Password is required");
+        }
 
-        showAlert("Signed in. Redirecting to your workspace...", "success");
-        window.location.href = "/";
-    } catch (error) {
-        showAlert(error.message);
-    } finally {
-        setButtonLoading(submitButton, false);
-    }
+        try {
+
+            setLoading(true);
+
+            const response = await fetch(
+                "/auth/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            let data = {};
+
+            try {
+
+                data = await response.json();
+
+            } catch {
+
+                throw new Error("Invalid server response");
+
+            }
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "Invalid credentials"
+                );
+
+            }
+
+            // Save Session
+            localStorage.setItem(
+                "access_token",
+                data.access_token
+            );
+
+            localStorage.setItem(
+                "user_id",
+                data.user_id
+            );
+
+            if (data.role) {
+
+                localStorage.setItem(
+                    "role",
+                    data.role
+                );
+
+            }
+
+            showAlert(
+                "Login successful!",
+                "success"
+            );
+
+            setTimeout(() => {
+
+                window.location.href = "/";
+
+            }, 1000);
+
+        } catch (err) {
+
+            console.error(err);
+
+            showAlert(
+                err.message || "Login failed."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    });
+
 });

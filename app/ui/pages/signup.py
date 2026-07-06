@@ -10,7 +10,8 @@ def signup_page():
     """)
 
     ui.add_body_html("""
-    <script src="/assets/js/signup.js"></script>
+        <script src="/assets/js/appearance.js"></script>
+        <script src="/assets/js/signup.js"></script>
     """)
 
     with open(

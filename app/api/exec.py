@@ -62,4 +62,10 @@ def get_tool_executions(
         tool_id
     )
     
-# TODO: Implement 'get all executions' API
+@router.get('/all')
+def get_all_executions(db: Session = Depends(get_db)):
+    return ExecutionService.get_all_executions(db)
+
+@router.get('/count')
+def get_execution_count(db: Session = Depends(get_db)):
+    return ExecutionService.get_execution_count(db)
