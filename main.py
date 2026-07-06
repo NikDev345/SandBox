@@ -13,12 +13,22 @@ import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
 from app.api.ai.summarizer import router as summarizer_router
+from app.api.json_fixer import router as json_fixer_router
 import app.main 
 from nicegui import ui
+from app.seed.seed_tools import seed_tools
+from app.database.engine import SessionLocal
 
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
+db = SessionLocal()
+
+try:
+    seed_tools(db)
+finally:
+    db.close()
+    
 app = FastAPI()
 
 load_dotenv()
@@ -49,6 +59,7 @@ app.include_router(analytic_router)
 app.include_router(google_router)
 app.include_router(user_router)
 app.include_router(summarizer_router)
+app.include_router(json_fixer_router)
 
 ui.run_with(
     app,

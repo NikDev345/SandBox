@@ -27,6 +27,8 @@ import app.ui.pages.tool_page
 import app.ui.pages.forgot_password
 import app.ui.pages.reset_password
 import app.ui.pages.text_summarizer
+import app.ui.pages.json_fixer
+
 # ui.run(
 #     title='SandBox',
 #     dark=True,
