@@ -14,6 +14,8 @@ def home():
 
 ui.add_head_html("""
 <link rel="stylesheet" href="/assets/css/auth.css">
+
+<script type="module" src="/assets/js/appearance.js"></script>
 """, shared=True)
 
 

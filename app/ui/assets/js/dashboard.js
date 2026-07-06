@@ -42,6 +42,54 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCategoryBadges();
     loadConnections();
 
+    // =======================================================
+    // Theme
+    // =======================================================
+
+    document.querySelectorAll(".theme-option").forEach(option => {
+
+        option.addEventListener("click", () => {
+
+            const radio = option.querySelector(".theme-radio");
+
+            radio.checked = true;
+
+            window.setTheme(radio.value);
+
+        });
+
+    });
+
+    // =======================================================
+    // Accent
+    // =======================================================
+
+    document.querySelectorAll(".accent-option").forEach(option => {
+
+        option.addEventListener("click", () => {
+
+            const radio = option.querySelector(".accent-radio");
+
+            radio.checked = true;
+
+            window.setAccent(radio.value);
+
+        });
+
+    });
+
+    // Load selected values into the radio buttons
+
+    const savedTheme = localStorage.getItem("sandbox-theme") || "dark";
+    const themeRadio = document.querySelector(`.theme-radio[value="${savedTheme}"]`);
+    if (themeRadio) themeRadio.checked = true;
+
+    const savedAccent = localStorage.getItem("sandbox-accent") || "blue";
+    const accentRadio = document.querySelector(`.accent-radio[value="${savedAccent}"]`);
+    if (accentRadio) accentRadio.checked = true;
+
+    // =======================================================
+
     const googleBtn = document.getElementById("google-connect-btn");
 
     if (googleBtn) {
