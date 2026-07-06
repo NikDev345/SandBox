@@ -1,13 +1,13 @@
 /* ============================================================
    AI SandBox — DASHBOARD + ADMIN TOOL MANAGEMENT
    ============================================================ */
-
 const apiCandidates = {
     metrics: ["/analytics/summary", "/api/analytics/summary", "/admin/metrics"],
     tools:   ["/tools", "/api/tools"],
     files:   ["/api/tools/files"],
     me:      ["/auth/me"]
 };
+
 
 /* ── Context menu state ── */
 let activeContextMenu = { id: null, name: null, slug: null };
@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     emptyState  = document.querySelector("[data-empty-state]");
     resultCount = document.querySelector("[data-result-count]");
 
-    consumeOAuthCallback();
     initializeMetricCards();
     initializeSearch();
     initializeNavigation();
@@ -41,8 +40,72 @@ document.addEventListener("DOMContentLoaded", () => {
     loadDashboardData();
     applyAdminRole();
     updateCategoryBadges();
-});
+    loadConnections();
 
+    const googleBtn = document.getElementById("google-connect-btn");
+
+    if (googleBtn) {
+        googleBtn.addEventListener("click", async () => {
+
+            if (googleBtn.dataset.connected === "true") {
+
+                if (!confirm("Disconnect Google account?")) return;
+
+                const response = await fetch("/settings/disconnect/google", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert(err.detail || "Failed to disconnect Google.");
+                    return;
+                }
+
+                await loadConnections();
+                await settingsManager.loadProfile();
+
+            } else {
+
+                window.location.href = "/settings/connect/google";
+
+            }
+
+        });
+    }
+
+    const githubBtn = document.getElementById("github-connect-btn");
+
+    if (githubBtn) {
+        githubBtn.addEventListener("click", async () => {
+
+            if (githubBtn.dataset.connected === "true") {
+
+                if (!confirm("Disconnect GitHub account?")) return;
+
+                const response = await fetch("/settings/disconnect/github", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert(err.detail || "Failed to disconnect <Github></Github>.");
+                    return;
+                }
+
+                await loadConnections();
+                await settingsManager.loadProfile();
+
+            } else {
+
+                window.location.href = "/settings/connect/github";
+
+            }
+
+        });
+    }
+});
 /* ============================================================
    ADMIN CONTROLS — event delegation, no inline handlers
    ============================================================ */
@@ -154,35 +217,79 @@ function setMetric(key, value, note) {
    ============================================================ */
 
 function authHeaders() {
-    const token = localStorage.getItem("access_token");
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    return {}
 }
 
-function persistAuthSession(token, user) {
-    localStorage.setItem("access_token", token);
-    localStorage.setItem("user_id", user.id);
-    localStorage.setItem("SandBox_user", JSON.stringify(user));
-}
 
 function clearAuthSession() {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_id");
     localStorage.removeItem("SandBox_user");
     localStorage.removeItem("role");
 }
 
-function consumeOAuthCallback() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("auth_token");
-    const user = safeJson(params.get("auth_user"));
-    if (!token || !user) return;
-    persistAuthSession(token, user);
-    window.history.replaceState({}, document.title, window.location.pathname);
-}
 
 /* ============================================================
    DATA LOADING
    ============================================================ */
+async function loadConnections() {
+
+    try {
+
+        const response = await fetch("/auth/settings/connections", {
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        const googleStatus = document.getElementById("google-status");
+        const githubStatus = document.getElementById("github-status");
+
+        const googleBtn = document.getElementById("google-connect-btn");
+        const githubBtn = document.getElementById("github-connect-btn");
+
+        if (!googleStatus || !githubStatus || !googleBtn || !githubBtn) {
+            return;
+        }
+
+        // Google
+        if (data.google_connected) {
+
+            googleBtn.textContent = "Disconnect";
+            googleBtn.dataset.connected = "true";
+            googleStatus.textContent = 'Connected';
+
+        } else {
+
+            googleBtn.textContent = "Connect";
+            googleBtn.dataset.connected = "false";
+            googleStatus.textContent = 'Disconnected';
+
+        }
+
+        // GitHub
+        if (data.github_connected) {
+
+            githubBtn.textContent = "Disconnect";
+            githubBtn.dataset.connected = "true";
+            githubStatus.textContent = 'Connected';
+
+        } else {
+
+            githubBtn.textContent = "Connect";
+            githubBtn.dataset.connected = "false";
+            githubStatus.textContent = 'Disconnected';
+
+        }
+
+    } catch (err) {
+        console.error("Failed to load connections:", err);
+    }
+
+}
 
 async function fetchFirstAvailable(urls) {
     for (const url of urls) {
@@ -199,14 +306,21 @@ async function loadDashboardData() {
 
     if (me) {
         renderProfile(me);
-        const passwordEmail = document.getElementById("passwordEmail");
+
+        localStorage.setItem(
+            "SandBox_user",
+            JSON.stringify(me)
+        );
+
+        const passwordEmail =
+            document.getElementById("passwordEmail");
 
         if (passwordEmail) {
             passwordEmail.value = me.email;
         }
-        localStorage.setItem("SandBox_user", JSON.stringify(me));
+
         applyAdminRole();
-    } else if (localStorage.getItem("access_token")) {
+    } else {
         clearAuthSession();
         renderSignedOut();
     }
@@ -856,7 +970,7 @@ function initializeProfile() {
     });
 
     const storedUser = safeJson(localStorage.getItem("SandBox_user"));
-    if (storedUser && localStorage.getItem("access_token")) {
+    if (storedUser) {
         renderProfile(storedUser);
     } else {
         renderSignedOut();
@@ -866,7 +980,7 @@ function initializeProfile() {
 }
 
 function renderProfile(user) {
-    const name = user.name || user.email?.split("@")[0] || "Workspace";
+    const name = user.name || "Workspace";
     const email = user.email || "Not signed in";
     const bio = user.bio || "Hey, there!";
     const provider = user.provider || "local";

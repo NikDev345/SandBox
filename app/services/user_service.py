@@ -34,13 +34,19 @@ class UserService:
         if not user:
             return None
 
+        # Always update local profile
+        user.local_name = name
         user.name = name
-
+        user.name_customized = True
+        
         if hasattr(user, "bio"):
             user.bio = bio
 
-        db.commit()
+        # Update displayed profile only if no OAuth provider is connected
+        if not user.google_connected and not user.github_connected:
+            user.name = user.local_name
 
+        db.commit()
         db.refresh(user)
 
         return {
