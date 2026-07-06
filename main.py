@@ -12,12 +12,11 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
-<<<<<<< HEAD
+
 from app.api.summarizer.summarizer import router as summarizer_router
-=======
-from app.api.ai.summarizer import router as summarizer_router
-from app.api.json_fixer import router as json_fixer_router
->>>>>>> af64e00f90431fcc7d5e2797cf66d87255a5d41a
+
+from app.api.json_fixer.json_fixer import router as json_fixer_router
+
 import app.main 
 from nicegui import ui
 from app.seed.seed_tools import seed_tools

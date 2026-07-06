@@ -15,8 +15,6 @@ class AppearanceUpdate(BaseModel):
 
     accent_color: str
 
-    animations: str
-
     sidebar_mode: str
 
 router = APIRouter(
@@ -65,8 +63,6 @@ def get_appearance(
 
         "accent_color": user.accent_color,
 
-        "animations": user.animations,
-
         "sidebar_mode": user.sidebar_mode
 
     }
@@ -112,47 +108,26 @@ def update_theme(
 
 @router.put("/appearance")
 def update_appearance(
-
     data: AppearanceUpdate,
-
     db: Session = Depends(get_db),
-
-    current_user=Depends(get_current_user)
-
-):
+    current_user=Depends(get_current_user)):
 
     user = UserService.update_appearance(
-
         db=db,
-
         current_user=current_user,
-
         theme=data.theme,
-
         accent_color=data.accent_color,
-
-        animations=data.animations,
-
         sidebar_mode=data.sidebar_mode
-
     )
 
     return {
-
         "message": "Appearance updated",
-
         "appearance": {
-
             "theme": user.theme,
-
             "accent_color": user.accent_color,
-
             "animations": user.animations,
-
             "sidebar_mode": user.sidebar_mode
-
         }
-
     }
     
     

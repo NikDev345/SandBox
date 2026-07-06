@@ -232,12 +232,11 @@ const JsonFixer = (() => {
     hideStatusCard();
 
     try {
-      const token    = localStorage.getItem('access_token');
       const response = await fetch('/json-fixer/fix', {
         method:  'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type':  'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type':  'application/json'
         },
         body: JSON.stringify({ json_text: rawInput }),
       });
