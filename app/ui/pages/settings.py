@@ -12,6 +12,7 @@ def settings():
     """))
 
     ui.add_body_html("""
+    <script src="/assets/js/appearance.js"></script>
     <script src="/assets/js/settings.js"></script>
     """)
 
