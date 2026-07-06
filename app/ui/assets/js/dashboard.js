@@ -1,13 +1,6 @@
 /* ============================================================
    AI SandBox — DASHBOARD + ADMIN TOOL MANAGEMENT
    ============================================================ */
-
-const dashboard = document.querySelector("[data-dashboard]");
-let toolCards = Array.from(document.querySelectorAll(".tool-card"));
-const searchInput = document.getElementById("global-search");
-const emptyState = document.querySelector("[data-empty-state]");
-const resultCount = document.querySelector("[data-result-count]");
-
 const apiCandidates = {
     metrics: ["/analytics/summary", "/api/analytics/summary", "/admin/metrics"],
     tools:   ["/tools", "/api/tools"],
@@ -15,18 +8,30 @@ const apiCandidates = {
     me:      ["/auth/me"]
 };
 
+
 /* ── Context menu state ── */
 let activeContextMenu = { id: null, name: null, slug: null };
+let toolCards = [];
+let searchInput = null;
+let emptyState = null;
+let resultCount = null;
 
 /* ============================================================
    BOOT
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
-    consumeOAuthCallback();
+    /* Cache DOM references after content is ready */
+    toolCards  = Array.from(document.querySelectorAll(".tool-card"));
+    searchInput = document.getElementById("global-search");
+    emptyState  = document.querySelector("[data-empty-state]");
+    resultCount = document.querySelector("[data-result-count]");
+
     initializeMetricCards();
     initializeSearch();
     initializeNavigation();
+    initializeSectionNavigation();
+    initializeSettingsNavigation();
     initializeProfile();
     initializeCommandPalette();
     initializeMobileDrawer();
@@ -35,8 +40,120 @@ document.addEventListener("DOMContentLoaded", () => {
     loadDashboardData();
     applyAdminRole();
     updateCategoryBadges();
-});
+    loadConnections();
 
+    // =======================================================
+    // Theme
+    // =======================================================
+
+    document.querySelectorAll(".theme-option").forEach(option => {
+
+        option.addEventListener("click", () => {
+
+            const radio = option.querySelector(".theme-radio");
+
+            radio.checked = true;
+
+            window.setTheme(radio.value);
+
+        });
+
+    });
+
+    // =======================================================
+    // Accent
+    // =======================================================
+
+    document.querySelectorAll(".accent-option").forEach(option => {
+
+        option.addEventListener("click", () => {
+
+            const radio = option.querySelector(".accent-radio");
+
+            radio.checked = true;
+
+            window.setAccent(radio.value);
+
+        });
+
+    });
+
+    // Load selected values into the radio buttons
+
+    const savedTheme = localStorage.getItem("sandbox-theme") || "dark";
+    const themeRadio = document.querySelector(`.theme-radio[value="${savedTheme}"]`);
+    if (themeRadio) themeRadio.checked = true;
+
+    const savedAccent = localStorage.getItem("sandbox-accent") || "blue";
+    const accentRadio = document.querySelector(`.accent-radio[value="${savedAccent}"]`);
+    if (accentRadio) accentRadio.checked = true;
+
+    // =======================================================
+
+    const googleBtn = document.getElementById("google-connect-btn");
+
+    if (googleBtn) {
+        googleBtn.addEventListener("click", async () => {
+
+            if (googleBtn.dataset.connected === "true") {
+
+                if (!confirm("Disconnect Google account?")) return;
+
+                const response = await fetch("/settings/disconnect/google", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert(err.detail || "Failed to disconnect Google.");
+                    return;
+                }
+
+                await loadConnections();
+                await settingsManager.loadProfile();
+
+            } else {
+
+                window.location.href = "/settings/connect/google";
+
+            }
+
+        });
+    }
+
+    const githubBtn = document.getElementById("github-connect-btn");
+
+    if (githubBtn) {
+        githubBtn.addEventListener("click", async () => {
+
+            if (githubBtn.dataset.connected === "true") {
+
+                if (!confirm("Disconnect GitHub account?")) return;
+
+                const response = await fetch("/settings/disconnect/github", {
+                    method: "POST",
+                    credentials: "include"
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    alert(err.detail || "Failed to disconnect <Github></Github>.");
+                    return;
+                }
+
+                await loadConnections();
+                await settingsManager.loadProfile();
+
+            } else {
+
+                window.location.href = "/settings/connect/github";
+
+            }
+
+        });
+    }
+});
 /* ============================================================
    ADMIN CONTROLS — event delegation, no inline handlers
    ============================================================ */
@@ -60,7 +177,6 @@ function initializeAdminControls() {
         toolModal.querySelectorAll(".modal-close").forEach(btn =>
             btn.addEventListener("click", closeToolModal)
         );
-        /* Cancel button (btn-ghost inside tool-modal footer) */
         toolModal.querySelector(".modal-footer .btn-ghost")
             ?.addEventListener("click", closeToolModal);
         toolModal.addEventListener("click", e => {
@@ -118,7 +234,7 @@ function applyAdminRole() {
     if (role === "admin") {
         document.body.classList.add("is-admin");
         const addBtn = document.getElementById("add-tool-btn");
-        if (addBtn) addBtn.style.display = "";  // controlled by .admin-only
+        if (addBtn) addBtn.style.display = "";
     } else {
         document.body.classList.remove("is-admin");
     }
@@ -149,35 +265,79 @@ function setMetric(key, value, note) {
    ============================================================ */
 
 function authHeaders() {
-    const token = localStorage.getItem("access_token");
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    return {}
 }
 
-function persistAuthSession(token, user) {
-    localStorage.setItem("access_token", token);
-    localStorage.setItem("user_id", user.id);
-    localStorage.setItem("SandBox_user", JSON.stringify(user));
-}
 
 function clearAuthSession() {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_id");
     localStorage.removeItem("SandBox_user");
     localStorage.removeItem("role");
 }
 
-function consumeOAuthCallback() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("auth_token");
-    const user = safeJson(params.get("auth_user"));
-    if (!token || !user) return;
-    persistAuthSession(token, user);
-    window.history.replaceState({}, document.title, window.location.pathname);
-}
 
 /* ============================================================
    DATA LOADING
    ============================================================ */
+async function loadConnections() {
+
+    try {
+
+        const response = await fetch("/auth/settings/connections", {
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        const googleStatus = document.getElementById("google-status");
+        const githubStatus = document.getElementById("github-status");
+
+        const googleBtn = document.getElementById("google-connect-btn");
+        const githubBtn = document.getElementById("github-connect-btn");
+
+        if (!googleStatus || !githubStatus || !googleBtn || !githubBtn) {
+            return;
+        }
+
+        // Google
+        if (data.google_connected) {
+
+            googleBtn.textContent = "Disconnect";
+            googleBtn.dataset.connected = "true";
+            googleStatus.textContent = 'Connected';
+
+        } else {
+
+            googleBtn.textContent = "Connect";
+            googleBtn.dataset.connected = "false";
+            googleStatus.textContent = 'Disconnected';
+
+        }
+
+        // GitHub
+        if (data.github_connected) {
+
+            githubBtn.textContent = "Disconnect";
+            githubBtn.dataset.connected = "true";
+            githubStatus.textContent = 'Connected';
+
+        } else {
+
+            githubBtn.textContent = "Connect";
+            githubBtn.dataset.connected = "false";
+            githubStatus.textContent = 'Disconnected';
+
+        }
+
+    } catch (err) {
+        console.error("Failed to load connections:", err);
+    }
+
+}
 
 async function fetchFirstAvailable(urls) {
     for (const url of urls) {
@@ -194,9 +354,21 @@ async function loadDashboardData() {
 
     if (me) {
         renderProfile(me);
-        localStorage.setItem("SandBox_user", JSON.stringify(me));
+
+        localStorage.setItem(
+            "SandBox_user",
+            JSON.stringify(me)
+        );
+
+        const passwordEmail =
+            document.getElementById("passwordEmail");
+
+        if (passwordEmail) {
+            passwordEmail.value = me.email;
+        }
+
         applyAdminRole();
-    } else if (localStorage.getItem("access_token")) {
+    } else {
         clearAuthSession();
         renderSignedOut();
     }
@@ -209,7 +381,7 @@ async function loadDashboardData() {
         setMetric("users", formatMetric(metrics.active_users ?? metrics.users), "active");
         setMetric("uptime", metrics.uptime ?? "99.9%", "");
     } else {
-        ["totalTools","executions","users","uptime"].forEach(k => setMetric(k, "--", "Unavailable"));
+        ["totalTools", "executions", "users", "uptime"].forEach(k => setMetric(k, "--", "Unavailable"));
     }
 
     /* Load tools from API (if available — otherwise static cards remain) */
@@ -273,7 +445,6 @@ function renderTools(tools) {
     toolCards = Array.from(document.querySelectorAll(".tool-card"));
     filterTools(searchInput?.value || "");
 
-    /* Show empty-create button for admin when no tools */
     const emptyCreateBtn = document.getElementById("empty-create-btn");
     if (emptyCreateBtn && isAdmin()) emptyCreateBtn.style.display = "";
 }
@@ -299,7 +470,6 @@ function filterTools(query) {
     let visible = 0;
 
     toolCards.forEach(card => {
-        /* Non-admin users never see disabled tools */
         if (!isAdmin() && card.dataset.disabled === "true") {
             card.hidden = true;
             return;
@@ -312,8 +482,9 @@ function filterTools(query) {
 
     updateResultCount(visible);
 
-    if (emptyState) {
-        emptyState.hidden = visible !== 0;
+    const es = document.querySelector("[data-empty-state]");
+    if (es) {
+        es.hidden = visible !== 0;
         const msg = document.getElementById("empty-state-msg");
         const btn = document.getElementById("empty-create-btn");
         if (msg) msg.textContent = needle ? "Try a different search term." : "No tools available yet.";
@@ -322,7 +493,8 @@ function filterTools(query) {
 }
 
 function updateResultCount(count) {
-    if (resultCount) resultCount.textContent = `${count} ${count === 1 ? "tool" : "tools"}`;
+    const rc = document.querySelector("[data-result-count]");
+    if (rc) rc.textContent = `${count} ${count === 1 ? "tool" : "tools"}`;
 }
 
 /* ============================================================
@@ -342,7 +514,7 @@ function openToolMenu(event, toolId, toolName, toolSlug) {
     const menuW = 180;
     const menuH = 160;
 
-    let top = rect.bottom + 4;
+    let top  = rect.bottom + 4;
     let left = rect.right - menuW;
 
     if (top + menuH > window.innerHeight) top = rect.top - menuH - 4;
@@ -353,7 +525,6 @@ function openToolMenu(event, toolId, toolName, toolSlug) {
     menu.classList.add("open");
     menu.removeAttribute("aria-hidden");
 
-    /* Close on outside click */
     setTimeout(() => {
         document.addEventListener("click", closeContextMenuOnOutside, { once: true });
     }, 0);
@@ -390,16 +561,22 @@ let editingToolId = null;
 function openToolModal(editData = null) {
     editingToolId = editData?.id || null;
 
-    const modal    = document.getElementById("tool-modal");
-    const title    = document.getElementById("modal-title");
+    const modal     = document.getElementById("tool-modal");
+    const title     = document.getElementById("modal-title");
     const submitBtn = document.getElementById("modal-submit-btn");
 
-    /* Reset form */
-    document.getElementById("tool-name-input").value = editData?.name || "";
-    document.getElementById("tool-category-select").value = editData?.category || "";
-    document.getElementById("tool-description-input").value = editData?.description || "";
-    document.getElementById("logo-filename").textContent = "Click to upload or drag PNG here";
-    const preview = document.getElementById("logo-preview");
+    if (!modal || !title || !submitBtn) return;
+
+    const nameInput = document.getElementById("tool-name-input");
+    const catSelect = document.getElementById("tool-category-select");
+    const descInput = document.getElementById("tool-description-input");
+    const fileLabel = document.getElementById("logo-filename");
+    const preview   = document.getElementById("logo-preview");
+
+    if (nameInput) nameInput.value = editData?.name || "";
+    if (catSelect) catSelect.value = editData?.category || "";
+    if (descInput) descInput.value = editData?.description || "";
+    if (fileLabel) fileLabel.textContent = "Click to upload or drag PNG here";
     if (preview) {
         preview.hidden = true;
         preview.src = "";
@@ -424,17 +601,13 @@ function openToolModal(editData = null) {
 
 function closeToolModal() {
     const modal = document.getElementById("tool-modal");
+    if (!modal) return;
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
     editingToolId = null;
 }
 
-function handleModalBackdropClick(e) {
-    if (e.target === document.getElementById("tool-modal")) closeToolModal();
-}
-
 async function openEditToolModal(toolId) {
-    /* Fetch tool data from API */
     try {
         const res = await fetch(`/api/tools/${toolId}`, { headers: authHeaders() });
         if (res.ok) {
@@ -444,7 +617,6 @@ async function openEditToolModal(toolId) {
         }
     } catch (_) {}
 
-    /* Fallback: read from DOM */
     const card = document.querySelector(`.tool-card[data-tool-id="${toolId}"]`);
     if (card) {
         openToolModal({
@@ -472,7 +644,6 @@ async function loadToolFiles(selected = "") {
         }
     } catch (_) {}
 
-    /* Fallback placeholder list */
     select.innerHTML = `
         <option value="">Select Python file…</option>
         <option value="pdf_viewer.py"${selected === "pdf_viewer.py" ? " selected" : ""}>pdf_viewer.py</option>
@@ -482,10 +653,10 @@ async function loadToolFiles(selected = "") {
 }
 
 async function submitToolForm() {
-    const name        = document.getElementById("tool-name-input").value.trim();
-    const category    = document.getElementById("tool-category-select").value;
-    const description = document.getElementById("tool-description-input").value.trim();
-    const sourceFile  = document.getElementById("tool-file-select").value;
+    const name        = document.getElementById("tool-name-input")?.value.trim() || "";
+    const category    = document.getElementById("tool-category-select")?.value || "";
+    const description = document.getElementById("tool-description-input")?.value.trim() || "";
+    const sourceFile  = document.getElementById("tool-file-select")?.value || "";
     const logoInput   = document.getElementById("tool-logo-input");
     const logoFile    = logoInput?.files?.[0] || null;
 
@@ -494,6 +665,7 @@ async function submitToolForm() {
     if (!sourceFile) return showToast("Please select a Python file.", "error");
 
     const btn = document.getElementById("modal-submit-btn");
+    if (!btn) return;
     btn.disabled = true;
     btn.textContent = editingToolId ? "Saving…" : "Creating…";
 
@@ -523,18 +695,19 @@ async function submitToolForm() {
             const err = await res.json().catch(() => ({}));
             showToast(err.detail || "Failed to save tool.", "error");
         }
-    } catch (e) {
+    } catch (_) {
         showToast("Network error. Please try again.", "error");
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = editingToolId
-            ? `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Save Changes`
-            : `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Create Tool`;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = editingToolId
+                ? `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Save Changes`
+                : `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Create Tool`;
+        }
     }
 }
 
 function refreshToolCard(tool, oldId = null) {
-    /* Re-render a single card or append new one */
     const grid = document.querySelector("[data-tool-grid]");
     if (!grid) return;
 
@@ -573,8 +746,7 @@ function buildToolCardHtml(tool) {
         >
             <div class="tool-card-header">
                 ${logoHtml}
-                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options"
->
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
                     <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
                 </button>
             </div>
@@ -596,6 +768,7 @@ let deletingToolId = null;
 function openDeleteModal(toolId, toolName) {
     deletingToolId = toolId;
     const modal = document.getElementById("delete-modal");
+    if (!modal) return;
     const nameDisplay = document.getElementById("delete-tool-name-display");
     if (nameDisplay) nameDisplay.textContent = toolName;
     modal.classList.add("open");
@@ -604,13 +777,10 @@ function openDeleteModal(toolId, toolName) {
 
 function closeDeleteModal() {
     const modal = document.getElementById("delete-modal");
+    if (!modal) return;
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
     deletingToolId = null;
-}
-
-function handleDeleteBackdropClick(e) {
-    if (e.target === document.getElementById("delete-modal")) closeDeleteModal();
 }
 
 async function confirmDeleteTool() {
@@ -668,9 +838,9 @@ async function disableTool(toolId, toolName) {
    ============================================================ */
 
 function initializeLogoDropZone() {
-    const zone  = document.getElementById("logo-drop-zone");
-    const input = document.getElementById("tool-logo-input");
-    const label = document.getElementById("logo-filename");
+    const zone    = document.getElementById("logo-drop-zone");
+    const input   = document.getElementById("tool-logo-input");
+    const label   = document.getElementById("logo-filename");
     const preview = document.getElementById("logo-preview");
 
     if (!zone || !input) return;
@@ -678,7 +848,7 @@ function initializeLogoDropZone() {
     input.addEventListener("change", () => {
         const file = input.files?.[0];
         if (!file) return;
-        label.textContent = file.name;
+        if (label) label.textContent = file.name;
         if (preview) {
             preview.src = URL.createObjectURL(file);
             preview.hidden = false;
@@ -696,7 +866,7 @@ function initializeLogoDropZone() {
         const dt = new DataTransfer();
         dt.items.add(file);
         input.files = dt.files;
-        label.textContent = file.name;
+        if (label) label.textContent = file.name;
         if (preview) {
             preview.src = URL.createObjectURL(file);
             preview.hidden = false;
@@ -730,7 +900,7 @@ function showToast(message, type = "info") {
 }
 
 /* ============================================================
-   NAVIGATION / PROFILE / COMMAND PALETTE
+   NAVIGATION
    ============================================================ */
 
 function initializeNavigation() {
@@ -738,15 +908,102 @@ function initializeNavigation() {
         item.addEventListener("click", () => {
             document.querySelectorAll(".nav-item").forEach(l => l.classList.remove("active"));
             item.classList.add("active");
+            const dashboard = document.querySelector("[data-dashboard]");
             dashboard?.classList.remove("nav-open");
             document.querySelector(".mobile-menu")?.setAttribute("aria-expanded", "false");
         });
     });
 }
 
+/* ============================================================
+   SECTION NAVIGATION (dashboard / account)
+   ============================================================ */
+
+function initializeSectionNavigation() {
+    const navItems = document.querySelectorAll(".nav-item[data-section]");
+    const sections = document.querySelectorAll(".dashboard-section");
+
+    if (!navItems.length || !sections.length) return;
+
+    function showSection(sectionId) {
+        sections.forEach(section => {
+            const active = section.dataset.sectionId === sectionId;
+            section.style.display = active ? "" : "none";
+            section.classList.toggle("active", active);
+        });
+
+        navItems.forEach(item => {
+            item.classList.toggle("active", item.dataset.section === sectionId);
+        });
+
+        history.replaceState(
+            null,
+            "",
+            sectionId === "dashboard" ? "/" : `#${sectionId}`
+        );
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener("click", function (e) {
+            const href = this.getAttribute("href");
+            if (href && href.startsWith("#")) {
+                e.preventDefault();
+                showSection(this.dataset.section);
+            }
+        });
+    });
+
+    /* Initial route */
+    let initial = window.location.hash.replace("#", "");
+    if (!initial) initial = "dashboard";
+
+    const exists = [...sections].some(s => s.dataset.sectionId === initial);
+    showSection(exists ? initial : "dashboard");
+}
+
+/* ============================================================
+   SETTINGS NAVIGATION (within account section)
+   ============================================================ */
+
+function initializeSettingsNavigation() {
+    const settingsLinks   = document.querySelectorAll(".settings-nav-link[data-settings-section]");
+    const settingsSections = document.querySelectorAll(".settings-section[data-settings-section]");
+
+    if (!settingsLinks.length || !settingsSections.length) return;
+
+    function showSettingsSection(sectionId) {
+        settingsSections.forEach(section => {
+            const active = section.dataset.settingsSection === sectionId;
+            section.style.display = active ? "" : "none";
+            section.classList.toggle("active", active);
+        });
+
+        settingsLinks.forEach(link => {
+            link.classList.toggle("active", link.dataset.settingsSection === sectionId);
+        });
+    }
+
+    settingsLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            showSettingsSection(this.dataset.settingsSection);
+        });
+    });
+
+    /* Activate first settings section by default */
+    const firstActive = document.querySelector(".settings-section.active[data-settings-section]");
+    const firstSection = firstActive?.dataset.settingsSection
+        || settingsSections[0]?.dataset.settingsSection;
+    if (firstSection) showSettingsSection(firstSection);
+}
+
+/* ============================================================
+   PROFILE
+   ============================================================ */
+
 function initializeProfile() {
     const profileButton = document.querySelector(".profile-trigger");
-    const profileMenu = document.querySelector(".profile-menu");
+    const profileMenu   = document.querySelector(".profile-menu");
 
     profileButton?.addEventListener("click", () => {
         const isOpen = profileMenu?.classList.toggle("open");
@@ -761,7 +1018,7 @@ function initializeProfile() {
     });
 
     const storedUser = safeJson(localStorage.getItem("SandBox_user"));
-    if (storedUser && localStorage.getItem("access_token")) {
+    if (storedUser) {
         renderProfile(storedUser);
     } else {
         renderSignedOut();
@@ -771,28 +1028,36 @@ function initializeProfile() {
 }
 
 function renderProfile(user) {
-    const name     = user.name || user.email?.split("@")[0] || "Workspace";
-    const email    = user.email || "Not signed in";
-    const provider = user.provider || user.auth_provider || "Local";
-    const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join("").toUpperCase() || "TB";
+    const name = user.name || "Workspace";
+    const email = user.email || "Not signed in";
+    const bio = user.bio || "Hey, there!";
+    const provider = user.provider || "local";
 
     const DEFAULT_AVATAR = "/assets/default_avatar.png";
 
     document.querySelectorAll("[data-user-avatar]").forEach(img => {
         img.src = user.avatar || DEFAULT_AVATAR;
-
-        // If the avatar URL is invalid or fails to load
-        img.onerror = function () {
-            this.src = DEFAULT_AVATAR;
-        };
+        img.onerror = function () { this.src = DEFAULT_AVATAR; };
     });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = name);
-    document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = provider);
+    document.querySelectorAll("[data-user-bio]").forEach(t => t.textContent = bio);
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = email);
+
+    const profileName = document.getElementById("profileName");
+    if (profileName) profileName.value = user.name || "";
+
+    const profileEmail = document.getElementById("profileEmail");
+    if (profileEmail) profileEmail.value = user.email || "";
+
+    const profileBio = document.getElementById("profileBio");
+    if (profileBio) profileBio.value = user.bio || "";
+
+
     const wt = document.querySelector("[data-workspace-title]");
     const ws = document.querySelector("[data-workspace-subtitle]");
     if (wt) wt.textContent = `${name}'s workspace`;
     if (ws) ws.textContent = `${email} authenticated with ${provider}.`;
+
     document.querySelectorAll("[data-auth-link]").forEach(l => l.hidden = true);
     const logoutBtn = document.querySelector("[data-logout]");
     if (logoutBtn) logoutBtn.hidden = false;
@@ -801,16 +1066,16 @@ function renderProfile(user) {
 function renderSignedOut() {
     const DEFAULT_AVATAR = "/assets/default_avatar.png";
 
-    document.querySelectorAll("[data-user-avatar]").forEach(img => {
-        img.src = DEFAULT_AVATAR;
-    });
+    document.querySelectorAll("[data-user-avatar]").forEach(img => { img.src = DEFAULT_AVATAR; });
     document.querySelectorAll("[data-user-name]").forEach(t => t.textContent = "Workspace");
-    document.querySelectorAll("[data-user-provider]").forEach(t => t.textContent = "Signed out");
+    document.querySelectorAll("[data-user-bio]").forEach(t => t.textContent = "Hey, there");
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = "Not signed in");
+
     const wt = document.querySelector("[data-workspace-title]");
     const ws = document.querySelector("[data-workspace-subtitle]");
     if (wt) wt.textContent = "Your active workspace";
     if (ws) ws.textContent = "Sign in to sync your tools, history, and saved workflows.";
+
     document.querySelectorAll("[data-auth-link]").forEach(l => l.hidden = false);
     const logoutBtn = document.querySelector("[data-logout]");
     if (logoutBtn) logoutBtn.hidden = true;
@@ -818,10 +1083,7 @@ function renderSignedOut() {
 
 async function logout() {
     try {
-        await fetch("/auth/logout", {
-            method: "POST",
-            credentials: "include"
-        });
+        await fetch("/auth/logout", { method: "POST", credentials: "include" });
     } finally {
         clearAuthSession();
         renderSignedOut();
@@ -829,11 +1091,17 @@ async function logout() {
     }
 }
 
+/* ============================================================
+   COMMAND PALETTE
+   ============================================================ */
+
 function initializeCommandPalette() {
     document.querySelectorAll("[data-open-command]").forEach(button => {
         button.addEventListener("click", openCommandPalette);
     });
+
     document.addEventListener("keydown", event => {
+        const dashboard = document.querySelector("[data-dashboard]");
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
             event.preventDefault();
             openCommandPalette();
@@ -881,8 +1149,13 @@ function closeCommandPalette() {
     document.querySelector(".command-modal")?.remove();
 }
 
+/* ============================================================
+   MOBILE DRAWER
+   ============================================================ */
+
 function initializeMobileDrawer() {
-    const button = document.querySelector(".mobile-menu");
+    const button    = document.querySelector(".mobile-menu");
+    const dashboard = document.querySelector("[data-dashboard]");
     button?.addEventListener("click", () => {
         const isOpen = dashboard?.classList.toggle("nav-open");
         button.setAttribute("aria-expanded", String(Boolean(isOpen)));

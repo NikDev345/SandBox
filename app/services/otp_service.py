@@ -7,6 +7,7 @@ from app.models.otp import EmailOTP
 
 from app.utils.otp import generate_otp, hash_otp, verify_otp
 from app.services.email_service import send_otp_email
+from app.models.password_otp import PasswordOTP
 
 import uuid
 
@@ -113,4 +114,68 @@ class OTPService:
 
         db.commit()
 
+        return True
+    
+    @staticmethod
+    def send_password_otp(
+        db: Session,
+        email: str
+    ):
+
+        user = db.query(Users).filter(
+            Users.email == email
+        ).first()
+
+        if not user:
+            return None
+
+        db.query(PasswordOTP).filter(
+            PasswordOTP.email == email
+        ).delete()
+
+        otp = generate_otp()
+
+        record = PasswordOTP(
+            email=email,
+            hash_otp=hash_otp(otp),
+            verified=False,
+            expires_at=datetime.utcnow() + timedelta(minutes=5)
+        )
+
+        db.add(record)
+        db.commit()
+
+        sent = send_otp_email(email, otp)
+
+        if not sent:
+            db.delete(record)
+            db.commit()
+            return False
+
+        return True
+    
+    @staticmethod
+    def verify_password_otp(
+        db: Session,
+        email: str,
+        otp: str
+    ):
+
+        record = db.query(PasswordOTP).filter(
+            PasswordOTP.email == email
+        ).first()
+
+        if not record:
+            return None
+
+        if datetime.utcnow() > record.expires_at:
+            db.delete(record)
+            db.commit()
+            return False
+
+        if not verify_otp(otp, record.hash_otp):
+            return False
+
+        record.verified = True
+        db.commit()
         return True

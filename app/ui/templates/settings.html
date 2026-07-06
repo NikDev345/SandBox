@@ -1,0 +1,661 @@
+{% comment %} <!-- ============================================================
+     SANDBOX — SETTINGS PAGE
+     Drops into .dashboard-main. No shell, sidebar, or topbar here.
+     ============================================================ -->
+
+<div id="settingsView" class="settings-view">
+
+  <!-- Page header (mirrors dashboard hero style without the panel) -->
+  <div class="settings-view-header">
+    <h1 class="settings-view-title">Settings</h1>
+    <p class="settings-view-subtitle">Manage your account, appearance, and preferences.</p>
+  </div>
+
+  <!-- Two-column layout: in-page nav + content -->
+  <div class="settings-page">
+
+    <!-- ── In-page navigation ── -->
+    <nav class="settings-nav" aria-label="Settings sections">
+      <div class="settings-nav-header">
+        <p class="settings-nav-title">Account</p>
+      </div>
+      <ul class="settings-nav-list" role="list">
+        <li>
+          <a href="#profile" class="settings-nav-link active" data-section="profile">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </span>
+            Profile
+          </a>
+        </li>
+        <li>
+          <a href="#appearance" class="settings-nav-link" data-section="appearance">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </span>
+            Appearance
+          </a>
+        </li>
+        <li>
+          <a href="#security" class="settings-nav-link" data-section="security">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            Security
+          </a>
+        </li>
+        <li>
+          <a href="#accounts" class="settings-nav-link" data-section="accounts">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            Connected Accounts
+          </a>
+        </li>
+        <li>
+          <a href="#notifications" class="settings-nav-link" data-section="notifications">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </span>
+            Notifications
+          </a>
+        </li>
+        <li>
+          <a href="#sessions" class="settings-nav-link" data-section="sessions">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </span>
+            Sessions
+          </a>
+        </li>
+        <li>
+          <a href="#about" class="settings-nav-link" data-section="about">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </span>
+            About
+          </a>
+        </li>
+        <li>
+          <a href="#danger" class="settings-nav-link settings-nav-link--danger" data-section="danger">
+            <span class="s-nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </span>
+            Danger Zone
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- ── Section panels ── -->
+    <div class="settings-content">
+
+      <!-- ═══════════════════════════════════════
+           PROFILE
+           ═══════════════════════════════════════ -->
+      <section class="settings-section active" data-section="profile" aria-labelledby="heading-profile">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-profile">Profile</h2>
+          <p class="settings-description">Update your personal information and avatar.</p>
+        </div>
+
+        <div class="settings-card">
+          <!-- Avatar row -->
+          <div class="settings-avatar-row">
+            <div class="settings-avatar">
+              <img
+                id="profileAvatar"
+                class="settings-avatar-img"
+                src="https://ui-avatars.com/api/?name=Alex+Morgan&background=6366f1&color=fff&size=72"
+                alt="Profile avatar"
+                width="72" height="72"
+              >
+              <button type="button" class="settings-avatar-edit" id="avatarChangeBtn" aria-label="Change avatar">
+                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <input type="file" id="avatarUpload" accept="image/*" hidden aria-label="Upload avatar">
+            </div>
+            <div class="settings-avatar-meta">
+              <span class="settings-avatar-name">Alex Morgan</span>
+              <span class="settings-avatar-email">alex@sandbox.ai</span>
+            </div>
+          </div>
+
+          <form id="profileForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="profileFullName">Full Name</label>
+                <input type="text" id="profileFullName" class="form-input" value="Alex Morgan" autocomplete="name">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profileBio">Bio</label>
+              <textarea id="profileBio" class="form-input form-textarea" rows="3">AI engineer building with Sandbox.</textarea>
+              <span class="form-hint">A short description visible to your team.</span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="profileRole">Role</label>
+                <input type="text" id="profileRole" class="form-input" value="Developer">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Auth Provider</label>
+                <div class="form-static-value">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 8.5L12 5 8.5 8.5"/><path d="M12 5v9"/><path d="M8 17a4 4 0 1 0 8 0"/></svg>
+                  Google
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Member Since</label>
+              <div class="form-static-value">January 15, 2024</div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="profileSaveBtn">
+                <span class="btn-text">Save Profile</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="btn btn-ghost" id="profileCancelBtn">Discard</button>
+              <div class="unsaved-indicator" id="profileUnsavedIndicator" role="status" aria-live="polite">
+                <span class="unsaved-dot" aria-hidden="true"></span> Unsaved changes
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           APPEARANCE
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="appearance" aria-labelledby="heading-appearance">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-appearance">Appearance</h2>
+          <p class="settings-description">Customise the look and feel of the dashboard.</p>
+        </div>
+
+        <div class="settings-card">
+          <p class="settings-card-heading">Theme</p>
+          <p class="settings-card-subtext">Choose between dark, light, or match your system preference.</p>
+          <div class="theme-selector">
+            <label class="theme-option">
+              <input type="radio" name="theme" value="dark" checked class="theme-radio" aria-label="Dark theme">
+              <span class="theme-card">
+                <span class="theme-preview theme-preview--dark">
+                  <span class="theme-preview-bar"></span>
+                  <span class="theme-preview-sidebar"></span>
+                </span>
+                <span class="theme-label">Dark</span>
+              </span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="theme" value="light" class="theme-radio" aria-label="Light theme">
+              <span class="theme-card">
+                <span class="theme-preview theme-preview--light">
+                  <span class="theme-preview-bar"></span>
+                  <span class="theme-preview-sidebar"></span>
+                </span>
+                <span class="theme-label">Light</span>
+              </span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="theme" value="system" class="theme-radio" aria-label="System theme">
+              <span class="theme-card">
+                <span class="theme-preview theme-preview--system">
+                  <span class="theme-preview-bar"></span>
+                  <span class="theme-preview-sidebar"></span>
+                </span>
+                <span class="theme-label">System</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <p class="settings-card-heading">Accent Color</p>
+          <p class="settings-card-subtext">Used for active states, links, and interactive elements.</p>
+          <div class="accent-selector">
+            <label class="accent-option"><input type="radio" name="accentColor" value="blue"   checked class="accent-radio" aria-label="Blue accent"><span class="accent-swatch accent-swatch--blue"></span></label>
+            <label class="accent-option"><input type="radio" name="accentColor" value="purple"         class="accent-radio" aria-label="Purple accent"><span class="accent-swatch accent-swatch--purple"></span></label>
+            <label class="accent-option"><input type="radio" name="accentColor" value="green"          class="accent-radio" aria-label="Green accent"><span class="accent-swatch accent-swatch--green"></span></label>
+            <label class="accent-option"><input type="radio" name="accentColor" value="orange"         class="accent-radio" aria-label="Orange accent"><span class="accent-swatch accent-swatch--orange"></span></label>
+            <label class="accent-option"><input type="radio" name="accentColor" value="red"            class="accent-radio" aria-label="Red accent"><span class="accent-swatch accent-swatch--red"></span></label>
+            <label class="accent-option"><input type="radio" name="accentColor" value="gray"           class="accent-radio" aria-label="Gray accent"><span class="accent-swatch accent-swatch--gray"></span></label>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <p class="settings-card-heading">Display Preferences</p>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Animations</span>
+              <span class="preference-description">Enable subtle motion effects throughout the UI</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle animations">
+              <input type="checkbox" class="toggle-input" id="toggleAnimations" checked>
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Reduced Motion</span>
+              <span class="preference-description">Minimise animations for accessibility</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle reduced motion">
+              <input type="checkbox" class="toggle-input" id="toggleReducedMotion">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Compact Mode</span>
+              <span class="preference-description">Tighter spacing and smaller UI elements</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle compact mode">
+              <input type="checkbox" class="toggle-input" id="toggleCompactMode">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="appearanceSaveBtn">
+            <span class="btn-text">Save Appearance</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <div class="unsaved-indicator" id="appearanceUnsavedIndicator" role="status" aria-live="polite">
+            <span class="unsaved-dot" aria-hidden="true"></span> Unsaved changes
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           SECURITY
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="security" aria-labelledby="heading-security">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-security">Security</h2>
+          <p class="settings-description">Manage your password and two‑factor authentication.</p>
+        </div>
+
+        <!-- Change password -->
+        <div class="settings-card">
+          <p class="settings-card-heading">Change Password</p>
+          <p class="settings-card-subtext">Use a strong, unique password you don't use anywhere else.</p>
+
+          <form id="passwordForm" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" class="form-input" autocomplete="current-password" placeholder="Enter current password">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newPassword">New Password</label>
+              <input type="password" id="newPassword" class="form-input" autocomplete="new-password" placeholder="At least 8 characters">
+              <div class="password-strength-meter">
+                <div class="strength-bar" id="strengthBar"></div>
+              </div>
+              <span class="form-hint" id="strengthText">Enter a password above</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" class="form-input" autocomplete="new-password" placeholder="Repeat new password">
+              <span class="form-hint" id="confirmPasswordHint"></span>
+            </div>
+
+            <div class="password-requirements">
+              <p class="password-requirements-label">Password must include:</p>
+              <ul class="requirements-list">
+                <li class="requirement-item" data-req="length">8+ characters</li>
+                <li class="requirement-item" data-req="uppercase">Uppercase</li>
+                <li class="requirement-item" data-req="lowercase">Lowercase</li>
+                <li class="requirement-item" data-req="number">Number</li>
+                <li class="requirement-item" data-req="special">Special character</li>
+              </ul>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="changePasswordBtn" disabled>
+                <span class="btn-text">Change Password</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 2FA -->
+        <div class="settings-card settings-card--warning">
+          <div class="security-method-row">
+            <div class="security-method-info">
+              <div class="security-method-icon">
+                <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              </div>
+              <div>
+                <p class="security-method-label">Two‑Factor Authentication</p>
+                <p class="security-method-desc">Add an extra layer of security via authenticator app or SMS.</p>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Enable 2FA</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           CONNECTED ACCOUNTS
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="accounts" aria-labelledby="heading-accounts">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-accounts">Connected Accounts</h2>
+          <p class="settings-description">Link third‑party services to your Sandbox account.</p>
+        </div>
+
+        <div class="settings-card">
+          <div class="connected-account-row">
+            <div class="account-info">
+              <div class="account-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              </div>
+              <div class="account-details">
+                <span class="account-name">Google</span>
+                <span class="account-status--connected">Connected · alex@gmail.com</span>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Disconnect</button>
+          </div>
+
+          <div class="connected-account-row">
+            <div class="account-info">
+              <div class="account-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              </div>
+              <div class="account-details">
+                <span class="account-name">GitHub</span>
+                <span class="account-status--connected">Connected · @alexmorgan</span>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Disconnect</button>
+          </div>
+
+          <div class="connected-account-row">
+            <div class="account-info">
+              <div class="account-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zM11 11V7m4 4V7"/></svg>
+              </div>
+              <div class="account-details">
+                <span class="account-name">Slack</span>
+                <span class="account-status--disconnected">Not connected</span>
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm">Connect</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           NOTIFICATIONS
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="notifications" aria-labelledby="heading-notifications">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-notifications">Notifications</h2>
+          <p class="settings-description">Choose what you get notified about and how.</p>
+        </div>
+
+        <div class="settings-card">
+          <p class="settings-card-heading">Email</p>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Email Notifications</span>
+              <span class="preference-description">Receive email updates about your activity</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle email notifications">
+              <input type="checkbox" class="toggle-input" id="toggleEmailNotifications" checked>
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Security Alerts</span>
+              <span class="preference-description">Get alerted about suspicious login attempts</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle security alerts">
+              <input type="checkbox" class="toggle-input" id="toggleSecurityAlerts" checked>
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Marketing Emails</span>
+              <span class="preference-description">Tips, offers, and news about Sandbox</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle marketing emails">
+              <input type="checkbox" class="toggle-input" id="toggleMarketingEmails">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <p class="settings-card-heading">Product</p>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Product Updates</span>
+              <span class="preference-description">New features and improvements</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle product updates">
+              <input type="checkbox" class="toggle-input" id="toggleProductUpdates">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">New Features</span>
+              <span class="preference-description">Early access to experimental tools</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle new features">
+              <input type="checkbox" class="toggle-input" id="toggleNewFeatures">
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="preference-row">
+            <div class="preference-info">
+              <span class="preference-label">Browser Notifications</span>
+              <span class="preference-description">Show desktop push notifications for important events</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle browser notifications">
+              <input type="checkbox" class="toggle-input" id="toggleBrowserNotifications" checked>
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="notificationsSaveBtn">
+            <span class="btn-text">Save Preferences</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           SESSIONS
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="sessions" aria-labelledby="heading-sessions">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-sessions">Sessions</h2>
+          <p class="settings-description">View and manage all active sessions across your devices.</p>
+        </div>
+
+        <!-- Current session callout -->
+        <div class="current-session">
+          <div class="session-details">
+            <span class="session-detail-item"><strong>This device</strong></span>
+            <span class="session-detail-item">Chrome · Windows 11</span>
+            <span class="session-detail-item">San Francisco, US</span>
+            <span class="session-detail-item">Active now</span>
+          </div>
+          <span class="session-badge--current">Current</span>
+        </div>
+
+        <div class="settings-card" style="padding: 0; overflow: hidden;">
+          <div class="sessions-table-wrapper">
+            <table class="sessions-table">
+              <thead>
+                <tr>
+                  <th>Device</th>
+                  <th>Browser</th>
+                  <th>OS</th>
+                  <th>Location</th>
+                  <th>Last Active</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="sessionsTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+          <!-- Skeleton shown while loading -->
+          <div id="sessionsLoading" style="display:none; padding: 16px; display:flex; flex-direction:column; gap:10px;">
+            <div class="skeleton-row" style="height:20px;"></div>
+            <div class="skeleton-row" style="height:20px;"></div>
+            <div class="skeleton-row" style="height:20px;"></div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="logoutOtherDevicesBtn">Logout Other Devices</button>
+          <button class="btn btn-danger" id="logoutEverywhereBtn">
+            <span class="btn-text">Logout Everywhere</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           ABOUT
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="about" aria-labelledby="heading-about">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading" id="heading-about">About</h2>
+          <p class="settings-description">Information about your Sandbox installation.</p>
+        </div>
+
+        <div class="settings-card">
+          <div class="about-list">
+            <div class="about-row">
+              <span class="about-term">Version</span>
+              <span class="about-definition">v2.1.3</span>
+            </div>
+            <div class="about-row">
+              <span class="about-term">Environment</span>
+              <span class="about-definition">Production</span>
+            </div>
+            <div class="about-row">
+              <span class="about-term">License</span>
+              <span class="about-definition">Enterprise</span>
+            </div>
+            <div class="about-row">
+              <span class="about-term">Uptime</span>
+              <span class="about-definition">14d 7h 32m</span>
+            </div>
+            <div class="about-row">
+              <span class="about-term">Backend</span>
+              <span class="about-definition">FastAPI 0.110 · Python 3.12</span>
+            </div>
+            <div class="about-row">
+              <span class="about-term">Documentation</span>
+              <span class="about-definition">
+                <a href="#" style="color: var(--accent); text-decoration: none; font-weight: var(--weight-medium);">
+                  docs.sandbox.ai ↗
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ═══════════════════════════════════════
+           DANGER ZONE
+           ═══════════════════════════════════════ -->
+      <section class="settings-section" data-section="danger" aria-labelledby="heading-danger">
+
+        <div class="settings-section-header">
+          <h2 class="settings-heading settings-heading--danger" id="heading-danger">Danger Zone</h2>
+          <p class="settings-description">Irreversible actions — proceed with caution.</p>
+        </div>
+
+        <div class="settings-card settings-card--danger">
+          <div class="danger-card-content">
+            <div class="danger-card-copy">
+              <p class="danger-card-title">Export Data</p>
+              <p class="danger-card-desc">Download a copy of all your data before deletion.</p>
+            </div>
+            <button class="btn btn-ghost btn-sm">Export</button>
+          </div>
+        </div>
+
+        <div class="settings-card settings-card--danger">
+          <div class="danger-card-content">
+            <div class="danger-card-copy">
+              <p class="danger-card-title settings-card-heading--danger">Delete Account</p>
+              <p class="danger-card-desc">Permanently delete your account and all associated data. This cannot be undone.</p>
+            </div>
+            <button class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /settings-content -->
+  </div><!-- /settings-page -->
+</div><!-- /settingsView -->
+
+<!-- ── Confirmation Dialog (reuses dashboard modal classes) ── -->
+<div id="dialogOverlay" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" aria-hidden="true">
+  <div class="modal-box modal-box--sm">
+    <div class="modal-header">
+      <h3 class="modal-title" id="dialogTitle">Confirm Action</h3>
+      <button class="modal-close" id="dialogCloseBtn" aria-label="Close dialog">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p id="dialogMessage" style="font-size: var(--text-sm); color: var(--text-soft); line-height: 1.6;"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="dialogCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="dialogConfirmBtn">
+        <span class="btn-text">Confirm</span>
+        <span class="btn-spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</div> {% endcomment %}

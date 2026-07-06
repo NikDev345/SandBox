@@ -34,16 +34,31 @@ class UserService:
         if not user:
             return None
 
+        # Always update local profile
+        user.local_name = name
         user.name = name
-
+        user.name_customized = True
+        
         if hasattr(user, "bio"):
             user.bio = bio
 
-        db.commit()
+        # Update displayed profile only if no OAuth provider is connected
+        if not user.google_connected and not user.github_connected:
+            user.name = user.local_name
 
+        db.commit()
         db.refresh(user)
 
-        return user
+        return {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "provider": user.provider,
+            "avatar": user.avatar_url,
+            "bio": user.bio,
+            "created_at": user.created_at.isoformat()
+        }
 
     @staticmethod
     def update_theme(
@@ -121,3 +136,4 @@ class UserService:
         db.refresh(user)
 
         return user
+    

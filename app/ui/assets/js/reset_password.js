@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ).get("token");
 
 
+
+
+        
     function showAlert(message, type = "error") {
 
         alertBox.textContent = message;

@@ -1,15 +1,26 @@
-# Python
+# Python cache
 __pycache__/
-*.py[c]
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
-# Virtual Environment
+# Virtuaal environment
+.venv/
 venv/
+
+# Environment variables
 .env
 
-# VSCode
+# VS Code
 .vscode/
 
+# Pytest
+.pytest_cache/
+
+# Mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
 # Logs
 *.log
+sandbox.db

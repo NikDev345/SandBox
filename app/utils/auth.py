@@ -10,14 +10,14 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     token = None
-    # manual login
+    # manual login via Authorization header
     if credentials:
         token = credentials.credentials
-        
-    # google login
+
+    # google login via cookie
     if not token:
         token = request.cookies.get('access_token')
-        
+
     if not token:
         raise HTTPException(
             status_code=401,

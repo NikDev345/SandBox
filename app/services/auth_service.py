@@ -6,10 +6,8 @@ from app.utils.security import (
 )
 import uuid 
 
-
 class AuthService:
-
-
+    
     @staticmethod
     def create_user(
         db: Session,
@@ -17,11 +15,9 @@ class AuthService:
         email: str,
         password: str
     ):
-
+        
         existing_user = db.query(Users).filter(Users.email == email).first()
-
         if existing_user:
-
             return None
 
         user = Users(
@@ -34,13 +30,9 @@ class AuthService:
             provider="local",
             role='users'
         )
-
         db.add(user)
-
         db.commit()
-
         db.refresh(user)
-
         return user
 
 
@@ -54,7 +46,6 @@ class AuthService:
         user = db.query(Users).filter(Users.email == email).first()
 
         if not user:
-
             return None
 
         if not verify_password(
@@ -62,7 +53,6 @@ class AuthService:
             user.password_hash
         ):
             return None
-
         return user
 
     @staticmethod
@@ -79,3 +69,20 @@ class AuthService:
         "bio": user.bio,
         "created_at": user.created_at
         }
+        
+    @staticmethod
+    def update_password(db: Session, current_user: Session, password: str, existing_password: str):
+        user = db.query(Users).filter(Users.id == current_user['sub']).first()
+        if not user:
+            return None
+        if not verify_password(existing_password, user.password_hash):
+            return False
+        if verify_password(password, user.password_hash):
+            return 'same_password'
+        user.password_hash = hash_password(password)
+        
+        db.commit()
+        db.refresh(user)
+        
+        return user
+    

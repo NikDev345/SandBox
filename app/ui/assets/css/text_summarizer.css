@@ -1,0 +1,394 @@
+/* Tool-specific styles for AI Text Summarizer - scoped under .text-summarizer-root */
+
+/*
+  COLOUR PALETTE — matched to SandBox dashboard screenshot
+  ─────────────────────────────────────────────────────────
+  Page background  : #0d0d0d   (deepest black, body/sidebar)
+  Card surface     : #1a1a1a   (dashboard stat cards)
+  Card surface alt : #1e1e1e   (slightly lighter variant)
+  Border           : rgba(255,255,255,0.07)  (barely-visible rule)
+  Border hover     : rgba(255,255,255,0.14)
+  Text primary     : #ffffff
+  Text secondary   : #a0a0a0   (muted labels like "in workspace")
+  Text tertiary    : #6b6b6b   (dimmer hints)
+  Accent/label     : #a0a0a0   (TOTAL TOOLS, EXECUTIONS labels)
+  Button primary   : #ffffff bg / #000 text  (Open Tools button)
+  No blue tints.
+*/
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+
+.text-summarizer-root .tool-shell {
+  width: 100%;
+  padding: 0;
+  display: block;
+  position: relative;
+}
+
+.text-summarizer-root .tool-frame {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  position: relative;
+  z-index: 1;
+  padding: 0 clamp(16px, 2vw, 28px) 32px;
+  box-sizing: border-box;
+}
+
+.text-summarizer-root .tool-section {
+  padding: 0;
+  border-radius: 16px;
+  background: transparent;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.text-summarizer-root .section-header {
+  padding: 22px 24px 18px;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.text-summarizer-root .section-header h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 2vw, 2.15rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.text-summarizer-root .section-header p {
+  margin: 10px 0 0;
+  color: #a0a0a0;
+  max-width: 680px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.text-summarizer-root .header-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.text-summarizer-root .pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #252525;
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   METRIC CARDS  (mirrors "TOTAL TOOLS / EXECUTIONS" cards)
+   ============================================================ */
+
+.text-summarizer-root .metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.text-summarizer-root .metric-card {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 88px;
+  justify-content: center;
+}
+
+.text-summarizer-root .metric-card strong {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #a0a0a0;          /* matches "TOTAL TOOLS" label colour */
+}
+
+.text-summarizer-root .metric-card span {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+
+.text-summarizer-root .tool-panel {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-height: 0;
+}
+
+.text-summarizer-root .glass-card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 14px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  min-height: 0;
+}
+
+/* ============================================================
+   TYPOGRAPHY LABELS
+   ============================================================ */
+
+.text-summarizer-root .section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: #a0a0a0;          /* matches muted uppercase labels in dashboard */
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.text-summarizer-root .eyebrow {
+  color: #6b6b6b;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+/* ============================================================
+   FORM INPUTS
+   ============================================================ */
+
+.text-summarizer-root .upload-panel .form-input,
+.text-summarizer-root .input-panel .form-input,
+.text-summarizer-root .summary-panel .form-input {
+  width: 100%;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e8e8e8;
+}
+
+.text-summarizer-root .upload-panel input[type="file"] {
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #111111;
+}
+
+.text-summarizer-root .input-panel textarea,
+.text-summarizer-root .summary-panel textarea {
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  min-height: 260px;
+  resize: vertical;
+  border-radius: 12px;
+  padding: 18px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #e8e8e8;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+}
+
+.text-summarizer-root .input-panel textarea:focus,
+.text-summarizer-root .summary-panel textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.text-summarizer-root .summary-panel .glass-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  flex: 1 1 auto;
+  min-height: 100%;
+}
+
+.text-summarizer-root .summary-panel .empty-state {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border-radius: 12px;
+  background: #111111;
+  color: #6b6b6b;
+  min-height: 140px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================
+   FILE ROW
+   ============================================================ */
+
+.text-summarizer-root .tool-file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+/* ============================================================
+   TOOL GRID BUTTONS
+   ============================================================ */
+
+.text-summarizer-root .tool-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.text-summarizer-root .tool-grid button {
+  justify-content: flex-start;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e8e8e8;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.text-summarizer-root .tool-grid button:hover {
+  background: #272727;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ============================================================
+   FOOTER / ACTIONS
+   ============================================================ */
+
+.text-summarizer-root .tool-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #a0a0a0;
+  margin-top: 12px;
+}
+
+/* Primary button — matches "Open Tools" white button in dashboard */
+.text-summarizer-root .tool-footer .btn,
+.text-summarizer-root .tool-panel .btn-primary {
+  min-width: 140px;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.text-summarizer-root .tool-footer .btn:hover,
+.text-summarizer-root .tool-panel .btn-primary:hover {
+  background: #e8e8e8;
+}
+
+.text-summarizer-root .summary-panel .actions {
+  justify-content: flex-start;
+}
+
+.text-summarizer-root .tool-file-name {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-summarizer-root .tool-select-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (min-width: 1600px) {
+  .text-summarizer-root .tool-frame {
+    padding-left: clamp(24px, 3vw, 48px);
+    padding-right: clamp(24px, 3vw, 48px);
+  }
+}
+
+@media (max-width: 1040px) {
+  .text-summarizer-root .tool-frame {
+    grid-template-columns: 1fr;
+  }
+  .text-summarizer-root .tool-shell {
+    padding-top: 24px;
+  }
+  .text-summarizer-root .tool-section {
+    height: auto;
+  }
+  .text-summarizer-root .input-panel textarea,
+  .text-summarizer-root .summary-panel textarea {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 780px) {
+  .text-summarizer-root .tool-frame {
+    padding: 20px 12px;
+    gap: 16px;
+  }
+  .text-summarizer-root .tool-panel {
+    padding: 18px;
+  }
+  .text-summarizer-root .tool-grid {
+    grid-template-columns: 1fr;
+  }
+  .text-summarizer-root .tool-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .text-summarizer-root .metric-grid {
+    grid-template-columns: 1fr;
+  }
+}

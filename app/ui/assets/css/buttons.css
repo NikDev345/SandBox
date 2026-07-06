@@ -1,0 +1,721 @@
+/**
+ * ============================================================
+ * SANDBOX — Buttons System
+ * Premium button components for AI SaaS platform
+ * Inspired by: OpenAI, Linear, Vercel, Apple
+ * ============================================================
+ * 
+ * TABLE OF CONTENTS
+ * 1.  Button Base
+ * 2.  Button Variants
+ *     - Primary
+ *     - Secondary
+ *     - Ghost
+ *     - Outline
+ *     - Gradient
+ *     - Danger
+ *     - Success
+ *     - Icon Button
+ * 3.  Button Sizes
+ * 4.  Button States
+ *     - Loading
+ *     - Disabled
+ *     - Hover / Active / Focus
+ * 5.  Floating Action Button (FAB)
+ * 6.  Ripple / Glow Effects
+ * 7.  Button Groups
+ * ============================================================
+ */
+
+/* ============================================================
+   1. BUTTON BASE
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2_5) var(--space-5);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-primary);
+  transition: all var(--transition-base) var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  min-height: 40px;
+  min-width: 40px;
+  /* Prevent double tap zoom on mobile */
+  touch-action: manipulation;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast) var(--ease-in-out);
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+}
+
+.btn:active::after {
+  opacity: 1;
+  transition: opacity 0s;
+}
+
+/* ============================================================
+   2. BUTTON VARIANTS
+   ============================================================ */
+
+/* ---- Primary Button ---- */
+.btn-primary {
+  background: var(--gradient-brand);
+  border-color: transparent;
+  color: var(--color-white);
+  box-shadow: 0 4px 16px rgba(64, 128, 255, 0.25);
+  font-weight: var(--font-weight-semibold);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(64, 128, 255, 0.35);
+  border-color: transparent;
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 12px rgba(64, 128, 255, 0.20);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(64, 128, 255, 0.15), 0 8px 32px rgba(64, 128, 255, 0.30);
+}
+
+.btn-primary:disabled,
+.btn-primary.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---- Secondary Button ---- */
+.btn-secondary {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.btn-secondary:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+  border-color: var(--color-primary-400);
+}
+
+.btn-secondary:disabled,
+.btn-secondary.btn-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  transform: none;
+}
+
+/* ---- Ghost Button ---- */
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-secondary);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.btn-ghost:hover {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+}
+
+.btn-ghost:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+}
+
+.btn-ghost:disabled,
+.btn-ghost.btn-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+  transform: none;
+}
+
+/* ---- Outline Button ---- */
+.btn-outline {
+  background: transparent;
+  border-color: var(--glass-border);
+  color: var(--color-text-primary);
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background: var(--glass-bg);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-outline:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-outline:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+  border-color: var(--color-primary-400);
+}
+
+.btn-outline:disabled,
+.btn-outline.btn-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  transform: none;
+}
+
+/* ---- Gradient Button ---- */
+.btn-gradient {
+  background: var(--gradient-brand);
+  border-color: transparent;
+  color: var(--color-white);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 4px 24px rgba(64, 128, 255, 0.20);
+  position: relative;
+  z-index: 1;
+}
+
+.btn-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--gradient-brand);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base) var(--ease-in-out);
+  z-index: -1;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 40px rgba(64, 128, 255, 0.30);
+}
+
+.btn-gradient:hover::before {
+  opacity: 1;
+}
+
+.btn-gradient:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.btn-gradient:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(64, 128, 255, 0.15), 0 8px 40px rgba(64, 128, 255, 0.25);
+}
+
+.btn-gradient:disabled,
+.btn-gradient.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---- Danger Button ---- */
+.btn-danger {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: var(--color-white);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.20);
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.30);
+}
+
+.btn-danger:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-danger:focus-visible {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.btn-danger:disabled,
+.btn-danger.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---- Success Button ---- */
+.btn-success {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: var(--color-white);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.20);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.30);
+}
+
+.btn-success:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-success:focus-visible {
+  outline: 2px solid var(--color-success);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+.btn-success:disabled,
+.btn-success.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---- Icon Button ---- */
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-md);
+  flex-shrink: 0;
+  min-width: unset;
+  min-height: unset;
+}
+
+.btn-icon.btn-sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--icon-sm);
+}
+
+.btn-icon.btn-lg {
+  width: 48px;
+  height: 48px;
+  font-size: var(--icon-lg);
+}
+
+.btn-icon.btn-xl {
+  width: 56px;
+  height: 56px;
+  font-size: var(--icon-xl);
+}
+
+.btn-icon.btn-primary {
+  box-shadow: 0 4px 12px rgba(64, 128, 255, 0.20);
+}
+
+.btn-icon.btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(64, 128, 255, 0.30);
+}
+
+/* ============================================================
+   3. BUTTON SIZES
+   ============================================================ */
+
+.btn-sm {
+  padding: var(--space-1_5) var(--space-3);
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-lg);
+  min-height: 32px;
+  min-width: 32px;
+  gap: var(--space-1);
+}
+
+.btn-md {
+  padding: var(--space-2_5) var(--space-5);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-xl);
+  min-height: 40px;
+  min-width: 40px;
+}
+
+.btn-lg {
+  padding: var(--space-3_5) var(--space-7);
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-2xl);
+  min-height: 48px;
+  min-width: 48px;
+  gap: var(--space-3);
+}
+
+.btn-xl {
+  padding: var(--space-5) var(--space-10);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-3xl);
+  min-height: 56px;
+  min-width: 56px;
+  gap: var(--space-3);
+}
+
+/* ---- Full Width ---- */
+.btn-block {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================================
+   4. BUTTON STATES
+   ============================================================ */
+
+/* ---- Loading State ---- */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-loading .btn-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.20);
+  border-top-color: var(--color-white);
+  border-radius: var(--radius-full);
+  animation: spin 0.8s linear infinite;
+  margin-right: var(--space-2);
+  flex-shrink: 0;
+}
+
+.btn-loading.btn-secondary .btn-spinner,
+.btn-loading.btn-ghost .btn-spinner,
+.btn-loading.btn-outline .btn-spinner {
+  border: 2px solid rgba(255, 255, 255, 0.10);
+  border-top-color: var(--color-text-primary);
+}
+
+.btn-loading .btn-text {
+  opacity: 0.7;
+}
+
+/* ---- Disabled State ---- */
+.btn:disabled,
+.btn-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ---- Focus Visible (for accessibility) ---- */
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   5. FLOATING ACTION BUTTON (FAB)
+   ============================================================ */
+.fab {
+  position: fixed;
+  bottom: var(--space-8);
+  right: var(--space-8);
+  z-index: var(--z-fixed);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--icon-xl);
+  background: var(--gradient-brand);
+  color: var(--color-white);
+  box-shadow: 0 8px 32px rgba(64, 128, 255, 0.30);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base) var(--ease-spring);
+  touch-action: manipulation;
+}
+
+.fab:hover {
+  transform: scale(1.08) translateY(-4px);
+  box-shadow: 0 12px 48px rgba(64, 128, 255, 0.40);
+}
+
+.fab:active {
+  transform: scale(0.92);
+}
+
+.fab:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 4px;
+}
+
+/* ---- FAB Sizes ---- */
+.fab-sm {
+  width: 44px;
+  height: 44px;
+  font-size: var(--icon-lg);
+}
+
+.fab-lg {
+  width: 68px;
+  height: 68px;
+  font-size: var(--icon-2xl);
+}
+
+/* ---- FAB Position Variants ---- */
+.fab-bottom-left {
+  right: auto;
+  left: var(--space-8);
+}
+
+.fab-top-right {
+  bottom: auto;
+  top: var(--space-8);
+}
+
+.fab-top-left {
+  bottom: auto;
+  top: var(--space-8);
+  right: auto;
+  left: var(--space-8);
+}
+
+/* ============================================================
+   6. RIPPLE / GLOW EFFECTS
+   ============================================================ */
+
+/* ---- Glow on Hover (for primary/gradient) ---- */
+.btn-glow {
+  position: relative;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: var(--gradient-brand);
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity var(--transition-slow) var(--ease-in-out);
+  z-index: -1;
+}
+
+.btn-glow:hover::before {
+  opacity: 0.3;
+}
+
+.btn-glow:active::before {
+  opacity: 0.1;
+}
+
+/* ---- Ripple (simulated via pseudo) ---- */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn-ripple:active::after {
+  width: 200%;
+  padding-top: 200%;
+  opacity: 1;
+  transition: 0s;
+}
+
+/* ============================================================
+   7. BUTTON GROUPS
+   ============================================================ */
+.btn-group {
+  display: inline-flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-group-vertical {
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.btn-group > .btn {
+  border-radius: var(--radius-xl);
+}
+
+.btn-group > .btn:first-child:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-group > .btn:last-child:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.btn-group > .btn:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.btn-group > .btn + .btn {
+  border-left-color: transparent;
+}
+
+/* ---- Group with divider ---- */
+.btn-group-divider > .btn:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: var(--glass-border);
+}
+
+/* ---- Responsive Button Groups ---- */
+@media (max-width: 480px) {
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn-group > .btn {
+    width: 100%;
+    border-radius: var(--radius-xl);
+  }
+  
+  .btn-group > .btn:first-child:not(:last-child) {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+  
+  .btn-group > .btn:last-child:not(:first-child) {
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  }
+  
+  .btn-group > .btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+  
+  .btn-group > .btn + .btn {
+    border-top-color: transparent;
+    border-left-color: var(--glass-border);
+  }
+  
+  .btn-group-divider > .btn:not(:last-child)::after {
+    right: auto;
+    bottom: -1px;
+    top: auto;
+    left: 20%;
+    width: 60%;
+    height: 1px;
+    right: 20%;
+  }
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   UTILITY: BUTTON WITH ICON
+   ============================================================ */
+.btn .btn-icon-left {
+  margin-right: var(--space-1);
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+
+.btn .btn-icon-right {
+  margin-left: var(--space-1);
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+
+.btn-sm .btn-icon-left,
+.btn-sm .btn-icon-right {
+  font-size: 1em;
+}
+
+.btn-lg .btn-icon-left,
+.btn-lg .btn-icon-right {
+  font-size: 1.3em;
+}
+
+.btn-xl .btn-icon-left,
+.btn-xl .btn-icon-right {
+  font-size: 1.5em;
+}
