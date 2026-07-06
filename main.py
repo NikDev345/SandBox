@@ -12,7 +12,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
-from app.api.ai.summarizer import router as summarizer_router
+from app.api.summarizer.summarizer import router as summarizer_router
 import app.main 
 from nicegui import ui
 

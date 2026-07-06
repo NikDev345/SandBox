@@ -4,8 +4,9 @@ from nicegui import ui
 def login_page():
 
     ui.add_head_html("""
-    <link rel="stylesheet"
-    href="/assets/css/auth.css">
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    <link rel="stylesheet" href="/assets/css/auth.css">
     """)
 
     with open(
@@ -15,6 +16,7 @@ def login_page():
 
         ui.html(f.read())
 
-    ui.add_body_html(
-        '<script src="/assets/js/login.js"></script>'
-    )
+    ui.add_body_html("""
+        <script src="/assets/js/appearance.js"></script>
+        <script src="/assets/js/login.js"></script>
+    """)

@@ -8,7 +8,7 @@ from app.models.summarizer import (
     ExtractResponse,
     DownloadRequest,
 )
-from app.services.ai.summarizer_service import SummarizerService
+from app.services.summarizer.summarizer_service import SummarizerService
 from fastapi import UploadFile, File, HTTPException
 from fastapi.responses import StreamingResponse
 import io
