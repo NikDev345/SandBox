@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
-
 from app.models.user import Users
-
+from datetime import datetime
 
 class UserService:
 
@@ -58,30 +57,7 @@ class UserService:
             "avatar": user.avatar_url,
             "bio": user.bio,
             "created_at": user.created_at.isoformat()
-        }
-
-    @staticmethod
-    def update_theme(
-        db: Session,
-        current_user: dict,
-        theme: str
-    ):
-
-        user = db.query(
-            Users
-        ).filter(
-            Users.id == current_user["sub"]
-        ).first()
-
-        if not user:
-            return None
-
-        user.theme = theme
-
-        db.commit()
-
-        return user
-    
+        }   
     
     
     @staticmethod
@@ -89,9 +65,7 @@ class UserService:
         db: Session,
         current_user: dict,
         theme: str,
-        accent_color: str,
-        animations: str,
-        sidebar_mode: str
+        accent_color: str
     ):
 
         user = db.query(Users).filter(
@@ -103,15 +77,11 @@ class UserService:
 
         user.theme = theme
         user.accent_color = accent_color
-        user.animations = animations
-        user.sidebar_mode = sidebar_mode
 
         db.commit()
         db.refresh(user)
 
         return user
-
-
 
     @staticmethod
     def update_avatar(
@@ -136,4 +106,27 @@ class UserService:
         db.refresh(user)
 
         return user
+    
+    @staticmethod
+    def last_update(db: Session, current_user: Session):
+        user = db.query(Users).filter(Users.id == current_user["sub"]).first()
+        
+        if not user:
+            return None
+        
+        user.last_updated = datetime.utcnow()
+        
+        db.commit()
+        db.refresh(user)
+        
+        return user
+    
+    @staticmethod
+    def get_last_updated_time(db: Session, current_user: Session):
+        user = db.query(Users).filter(Users.id == current_user["sub"]).first()
+        
+        if not user : return None
+        
+        return user
+    
     

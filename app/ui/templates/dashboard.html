@@ -406,22 +406,6 @@
                 </a>
               </li>
               <li>
-                <a class="settings-nav-link" href="#settings-notifications" data-settings-section="notifications">
-                  <span class="s-nav-icon">
-                    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                  </span>
-                  <span>Notifications</span>
-                </a>
-              </li>
-              <li>
-                <a class="settings-nav-link" href="#settings-sessions" data-settings-section="sessions">
-                  <span class="s-nav-icon">
-                    <svg viewBox="0 0 24 24"><path d="M4 9h16v10H4z"/><path d="M9 4h6v3H9z"/></svg>
-                  </span>
-                  <span>Sessions</span>
-                </a>
-              </li>
-              <li>
                 <a class="settings-nav-link" href="#settings-about" data-settings-section="about">
                   <span class="s-nav-icon">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -570,6 +554,16 @@
                     <span class="accent-swatch accent-swatch--gray"></span>
                   </label>
                 </div>
+              </div>
+
+              <div class="settings-actions">
+                <button
+                    id="appearance-save-btn"
+                    class="btn btn-primary"
+                    disabled
+                >
+                    Save Changes
+                </button>
               </div>
             </section>
 
@@ -728,92 +722,7 @@
                   <button id="github-connect-btn" class="btn btn-ghost btn-sm" type="button">Connect</button>
                 </div>
               </div>
-            </section>
-
-            <!-- Notifications Section -->
-            <section class="settings-section" data-settings-section="notifications" id="settings-notifications">
-              <div class="settings-heading">Notifications</div>
-              <p class="settings-description">Control how and when SandBox notifies you</p>
-
-              <div class="settings-card">
-                <p class="settings-card-heading">Email Notifications</p>
-                <div class="preference-row">
-                  <div class="preference-info">
-                    <p class="preference-label">Product updates</p>
-                    <p class="preference-description">New features and improvements</p>
-                  </div>
-                  <label class="toggle-switch">
-                    <input type="checkbox" class="toggle-input" checked>
-                    <span class="toggle-slider"></span>
-                  </label>
-                </div>
-                <div class="preference-row">
-                  <div class="preference-info">
-                    <p class="preference-label">Security alerts</p>
-                    <p class="preference-description">Suspicious activity and login notifications</p>
-                  </div>
-                  <label class="toggle-switch">
-                    <input type="checkbox" class="toggle-input" checked>
-                    <span class="toggle-slider"></span>
-                  </label>
-                </div>
-                <div class="preference-row">
-                  <div class="preference-info">
-                    <p class="preference-label">Marketing emails</p>
-                    <p class="preference-description">Tips, promotions, and newsletters</p>
-                  </div>
-                  <label class="toggle-switch">
-                    <input type="checkbox" class="toggle-input">
-                    <span class="toggle-slider"></span>
-                  </label>
-                </div>
-              </div>
-            </section>
-
-            <!-- Sessions Section -->
-            <section class="settings-section" data-settings-section="sessions" id="settings-sessions">
-              <div class="settings-heading">Sessions</div>
-              <p class="settings-description">Manage where you're signed in</p>
-
-              <div class="settings-card">
-                <p class="settings-card-heading">Active Sessions</p>
-                <div class="sessions-table-wrap">
-                  <table class="sessions-table">
-                    <thead>
-                      <tr>
-                        <th>Device</th>
-                        <th>Browser</th>
-                        <th>Location</th>
-                        <th>Last active</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>MacBook Pro</td>
-                        <td>Chrome 120</td>
-                        <td>San Francisco, US</td>
-                        <td>Now (current)</td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <td>iPhone 14</td>
-                        <td>Safari 17</td>
-                        <td>San Francisco, US</td>
-                        <td>2 hours ago</td>
-                        <td><button class="btn btn-ghost btn-sm" type="button">Sign Out</button></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div class="settings-card">
-                <p class="settings-card-heading">Sign Out All Other Sessions</p>
-                <p class="settings-card-subtext">Sign out from all devices except this one</p>
-                <button class="btn btn-ghost" type="button">Sign Out All</button>
-              </div>
-            </section>
+            </section>        
 
             <!-- About Section -->
             <section class="settings-section" data-settings-section="about" id="settings-about">
@@ -824,19 +733,15 @@
                 <dl class="about-list">
                   <div class="about-row">
                     <dt class="about-term">Account Created</dt>
-                    <dd class="about-definition">January 15, 2024</dd>
-                  </div>
-                  <div class="about-row">
-                    <dt class="about-term">Account Status</dt>
-                    <dd class="about-definition">Active</dd>
+                    <dd class="about-definition" id="aboutCreated">-</dd>
                   </div>
                   <div class="about-row">
                     <dt class="about-term">SandBox Version</dt>
-                    <dd class="about-definition">1.0.0</dd>
+                    <dd class="about-definition">1.0.1</dd>
                   </div>
                   <div class="about-row">
                     <dt class="about-term">Last Updated</dt>
-                    <dd class="about-definition">June 28, 2024</dd>
+                    <dd class="about-definition" id="aboutUpdated">-</dd>
                   </div>
                 </dl>
               </div>

@@ -1,6 +1,15 @@
 /* ============================================================
    AI SandBox — DASHBOARD + ADMIN TOOL MANAGEMENT
    ============================================================ */
+
+let appearanceChanged = false;
+
+let selectedTheme =
+    localStorage.getItem("sandbox-theme") || "system";
+
+let selectedAccent =
+    localStorage.getItem("sandbox-accent") || "blue";
+
 const apiCandidates = {
     metrics: ["/analytics/summary", "/api/analytics/summary", "/admin/metrics"],
     tools:   ["/tools", "/api/tools"],
@@ -20,7 +29,7 @@ let resultCount = null;
    BOOT
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     /* Cache DOM references after content is ready */
     toolCards  = Array.from(document.querySelectorAll(".tool-card"));
     searchInput = document.getElementById("global-search");
@@ -41,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applyAdminRole();
     updateCategoryBadges();
     loadConnections();
+    await loadAppearance();
 
     // =======================================================
     // Theme
@@ -54,7 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             radio.checked = true;
 
-            window.setTheme(radio.value);
+            selectedTheme = radio.value;
+
+            window.setTheme(selectedTheme);
+
+            appearanceChanged = true;
+
+            document
+            .getElementById("appearance-save-btn")
+            .disabled = false;
 
         });
 
@@ -72,11 +90,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             radio.checked = true;
 
-            window.setAccent(radio.value);
+            selectedAccent = radio.value;
+
+            window.setAccent(selectedAccent);
+
+            appearanceChanged = true;
+
+            document
+            .getElementById("appearance-save-btn")
+            .disabled = false;
 
         });
 
     });
+
+    document.getElementById("appearance-save-btn").addEventListener("click", saveAppearance);
 
     // Load selected values into the radio buttons
 
@@ -395,6 +423,107 @@ async function loadDashboardData() {
 /* ============================================================
    TOOL RENDERING
    ============================================================ */
+
+async function loadAppearance() {
+
+    try {
+
+        const response = await fetch(
+            "/user/appearance",
+            {
+                credentials: "include"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Unable to load appearance.");
+        }
+
+        const data = await response.json();
+
+        selectedTheme = data.theme || "system";
+        selectedAccent = data.accent_color || "blue";
+
+        window.setTheme(selectedTheme);
+        window.setAccent(selectedAccent);
+
+        const themeRadio = document.querySelector(
+            `.theme-radio[value="${selectedTheme}"]`
+        );
+
+        if (themeRadio) {
+            themeRadio.checked = true;
+        }
+
+        const accentRadio = document.querySelector(
+            `.accent-radio[value="${selectedAccent}"]`
+        );
+
+        if (accentRadio) {
+            accentRadio.checked = true;
+        }
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
+
+}
+
+async function saveAppearance(){
+
+    try{
+        const now = new Date();
+
+        const utc = now.toISOString()
+            .replace("T", " ")
+            .replace("Z", "");
+
+        const response = await fetch(
+            "/user/appearance",
+            {
+                method:"PUT",
+                credentials:"include",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+
+                    theme:selectedTheme,
+
+                    accent_color:selectedAccent
+
+                })
+            }
+        );
+
+        if(!response.ok){
+            throw new Error("Unable to save appearance.");
+        }
+        await fetch(
+            "/user/last-updated",
+            {
+                method:"PUT",
+                credentials:"include",
+            }
+        );
+
+        appearanceChanged=false;
+
+        document
+        .getElementById("appearance-save-btn")
+        .disabled=true;
+
+        showToast("Appearance updated successfully.", "success");
+
+    }
+
+    catch(err){
+        showToast(err.message, "error");
+    }
+
+}
 
 function normalizeTools(payload) {
     const list = Array.isArray(payload) ? payload : payload?.tools;

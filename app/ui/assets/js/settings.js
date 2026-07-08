@@ -11,6 +11,7 @@ class SettingsManager {
     this.attachEventListeners();
     this.loadProfile(); 
     this.loadSettings();
+    this.loadAbout();
     this.setupNavigationVisibility();
   }
 
@@ -329,16 +330,23 @@ class SettingsManager {
                 })
             }
         );
-
+        
         const data = await response.json();
-
+        
         if (!response.ok) {
-            throw new Error(
-                data.detail ||
-                "Failed to update password."
-            );
+          throw new Error(
+            data.detail ||
+            "Failed to update password."
+          );
         }
-
+        
+        await fetch(
+          "/user/last-updated",
+          {
+            method:"PUT",
+            credentials:"include"
+          }
+        );
         this.showToast(
             data.message,
             "success"
@@ -547,23 +555,30 @@ class SettingsManager {
             },
             body: JSON.stringify(payload)
         });
-
+        
         const data = await response.json();
         console.log('1')
         console.log(data);
         console.log(data.user);
         if (typeof renderProfile === "function") {
-            renderProfile(data.user);
+          renderProfile(data.user);
         }
-
+        
         if (!response.ok) {
-            throw new Error(
-                data.detail ||
-                data.message ||
-                "Failed to update profile."
-            );
+          throw new Error(
+            data.detail ||
+            data.message ||
+            "Failed to update profile."
+          );
         }
-
+        
+        await fetch(
+          "/user/last-updated",
+          {
+            method:"PUT",
+            credentials:"include"
+          }
+        );
         // Update the UI immediately
         document.querySelector(".settings-avatar-name").textContent =
             data.user.name;
@@ -719,6 +734,27 @@ class SettingsManager {
 
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+  }
+
+  async loadAbout(){
+    try{
+      const response = await fetch(
+        "/user/formatted_time",
+        {
+          credentials:"include"
+        }
+      );
+      if (!response.ok){
+        throw new Error("Failed to load About information.")
+      }
+      const data = await response.json()
+
+      document.getElementById("aboutCreated").textContent = data.created_at;
+      document.getElementById("aboutUpdated").textContent = data.last_updated;
+
+    } catch(err){
+      console.error(err);
+    }
   }
 
   async loadProfile() {

@@ -20,6 +20,14 @@ DEFAULT_TOOLS = [
         "icon_url": "/assets/icons/json_fixer.svg",
         "source_path": "json_fixer",
     },
+    
+    {
+        "name": "Code Reviewer",
+        "category": "Developer Tools",
+        "description": "Review your code",
+        "icon_url": "/assets/icons/code_reviewer.svg",
+        "source_path": "code_reviewer",
+    }
 
 ]
 

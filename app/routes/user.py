@@ -1,6 +1,6 @@
 # it contains all the apis of user panel related to apperance and user settings
 
-
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -10,12 +10,8 @@ from app.services.user_service import UserService
 from pydantic import BaseModel
 
 class AppearanceUpdate(BaseModel):
-
     theme: str
-
     accent_color: str
-
-    sidebar_mode: str
 
 router = APIRouter(
     prefix="/user",
@@ -58,13 +54,8 @@ def get_appearance(
     )
 
     return {
-
         "theme": user.theme,
-
         "accent_color": user.accent_color,
-
-        "sidebar_mode": user.sidebar_mode
-
     }
 
 
@@ -88,23 +79,6 @@ def update_profile(
     }
 
 
-@router.put("/theme")
-def update_theme(
-    data: dict,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
-):
-
-    user = UserService.update_theme(
-        db=db,
-        current_user=current_user,
-        theme=data.get("theme")
-    )
-
-    return {
-        "message": "Theme updated",
-        "theme": user.theme
-    }
 
 @router.put("/appearance")
 def update_appearance(
@@ -116,8 +90,7 @@ def update_appearance(
         db=db,
         current_user=current_user,
         theme=data.theme,
-        accent_color=data.accent_color,
-        sidebar_mode=data.sidebar_mode
+        accent_color=data.accent_color
     )
 
     return {
@@ -125,8 +98,7 @@ def update_appearance(
         "appearance": {
             "theme": user.theme,
             "accent_color": user.accent_color,
-            "animations": user.animations,
-            "sidebar_mode": user.sidebar_mode
+            "animations": user.animations
         }
     }
     
@@ -148,3 +120,36 @@ def update_avatar(
         "message": "Avatar updated",
         "avatar": user.avatar_url
     }
+    
+@router.put("/last-updated")
+def last_updated(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    UserService.last_update(db, current_user)
+    
+    return {
+        "message": "Updated"
+    }
+    
+@router.get('/formatted_time')
+def formatted_time(db: Session = Depends(get_db), current_user: Session = Depends(get_current_user)):
+    user = UserService.get_last_updated_time(db, current_user)
+    
+    update_formatted = 'NA'
+    
+    if user.last_updated:
+        update_date = datetime.strptime(
+            str(user.last_updated),
+            "%Y-%m-%d %H:%M:%S.%f"
+        )
+        update_formatted = update_date.strftime("%d %B, %Y")
+        
+    creation_date = datetime.strptime(
+        str(user.created_at),
+        "%Y-%m-%d %H:%M:%S.%f"
+    )
+    create_formatted = creation_date.strftime("%d %B, %Y")
+    
+    return {
+        "last_updated": update_formatted,
+        "created_at": create_formatted
+    }
+    

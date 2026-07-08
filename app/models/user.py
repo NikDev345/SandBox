@@ -63,6 +63,8 @@ class Users(Base):
     name_customized = Column(Boolean, default=False)
     email_customized = Column(Boolean, default=False)
     avatar_customized = Column(Boolean, default=False)
+    
+    last_updated = Column(String, nullable=True)
 
     
 # Session Schemas-------------------------------------------------------------------

@@ -6,7 +6,7 @@ from app.models.json_fixer import (
     JSONFixRequest,
     JSONFixResponse,
 )
-from app.services.json_fixer_service import JSONFixerService
+from app.services.json_fixer.json_fixer_service import JSONFixerService
 
 router = APIRouter(
     prefix="/json-fixer",

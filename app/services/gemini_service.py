@@ -62,3 +62,20 @@ class GeminiService:
 
         except Exception as e:
             raise RuntimeError(f"Gemini API Error: {str(e)}")
+        
+    def generate_code_review(self, prompt: str):
+        """
+        Generic Gemini generation.
+        Used by Code Reviewer, SQL Generator,
+        Regex Generator, Unit Test Generator, etc.
+        """
+        
+        try:
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
+            )
+            return response.text.strip()
+        
+        except Exception as e:
+            raise RuntimeError(f"Gemini api error: {e}")

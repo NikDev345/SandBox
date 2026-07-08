@@ -2165,3 +2165,13 @@ body.is-admin .admin-only {
     text-align: center;
     user-select: all;
 }
+
+.settings-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:24px;
+}
+
+#appearance-save-btn{
+    min-width:180px;
+}
