@@ -14,11 +14,11 @@ venv/
 # VS Code
 .vscode/
 
-<<<<<<< HEAD
+
 # Logs
 *.log
 sandbox.db
-=======
+
 # Pytest
 .pytest_cache/
 
@@ -27,4 +27,4 @@ sandbox.db
 
 # Ruff
 .ruff_cache/
->>>>>>> af64e00f90431fcc7d5e2797cf66d87255a5d41a
+
