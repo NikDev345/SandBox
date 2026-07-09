@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from app.services.gemini_service import GeminiService
-import json, os, tempfile, zipfile, re, hashlib
+import json, os, tempfile, zipfile, re, tiktoken
 from rapidfuzz import fuzz
 from pygments.lexers import guess_lexer
 from fastapi import UploadFile, File
@@ -10,6 +10,7 @@ from tree_sitter import Parser
 from tree_sitter_language_pack import get_language
 from tree_sitter_language_pack import get_parser
 from language_dispatcher import LanguageDispatcher
+from collections import Counter
 
 class CodeReviewService:
     LANGUAGE_TO_EXTENSIONS = {
@@ -215,9 +216,612 @@ class CodeReviewService:
         "match_statement",
     }
     
+    COMMON_PROJECT_FILES = {
+        "python": {
+            "requirements.txt",
+            "pyproject.toml",
+            "README.md",
+            ".gitignore",
+        },
+        "java": {
+            "pom.xml",
+            "build.gradle",
+            "README.md",
+            ".gitignore",
+        },
+        "javascript": {
+            "package.json",
+            "README.md",
+            ".gitignore",
+        },
+        "typescript": {
+            "package.json",
+            "tsconfig.json",
+            "README.md",
+            ".gitignore",
+        },
+        "c": {
+            "Makefile",
+            "README.md",
+            ".gitignore",
+        },
+        "cpp": {
+            "CMakeLists.txt",
+            "README.md",
+            ".gitignore",
+        },
+        "c#": {
+            ".csproj",
+            ".sln",
+            "README.md",
+            ".gitignore",
+        },
+        "go": {
+            "go.mod",
+            "README.md",
+            ".gitignore",
+        },
+        "rust": {
+            "Cargo.toml",
+            "README.md",
+            ".gitignore",
+        },
+        "php": {
+            "composer.json",
+            "README.md",
+            ".gitignore",
+        },
+    }
+    
+    ENTRY_POINT_FILES = {
+        "main.py",
+        "app.py",
+        "server.py",
+        "manage.py",
+        "__main__.py",
+        "index.js",
+        "server.js",
+        "app.js",
+        "main.ts",
+        "server.ts",
+        "Program.cs",
+        "Main.java",
+    }
+    
+    ENCODER = tiktoken.get_encoding("cl100k_base")
+    MAX_INPUT_TOKENS = 12000
+    
     @staticmethod
-    def review():
-        pass
+    def review(
+        db: Session,
+        execution_id: str,
+        input_type: str,
+        code: str = None,
+        filename: str = None,
+        files: list = None,
+        zip_path: str = None,
+        language: str = None
+    ):
+        review_files = CodeReviewService._process_input(input_type, code, filename, files, zip_path, language)
+        
+        # local analysis
+        syntax_report = CodeReviewService._syntax_check(review_files)
+        statistics_report = CodeReviewService._file_statistics(review_files)
+        security_report = CodeReviewService._security_scan(review_files)
+        duplicate_report = CodeReviewService._duplicate_code_detection(review_files)
+        complexity_report = CodeReviewService._complexity_analysis(review_files)
+        dependency_report = CodeReviewService._dependency_analysis(review_files)
+        project_struct_report = CodeReviewService._project_structure_analysis(review_files)
+        
+        local_report = {
+            "syntax": syntax_report,
+            "statistics": statistics_report,
+            "security": security_report,
+            "duplicates": duplicate_report,
+            "complexity": complexity_report,
+            "dependencies": dependency_report,
+            "project_structure": project_struct_report
+            }
+        
+        # these lines below will make a list of important files from the folder/project
+        # then it will rank it based on their importance
+        # then it will create chunks of size MAX_SIZE
+        # Then it will make a dependency graph for relation between multiple code files
+        # then it will create batches of out chunks to pass onto AI.
+        # these batches will be either each functions/classes
+        # then each batch will be passed onto Gemini for analysis
+        
+        ranked_files = CodeReviewService._rank_files(review_files, local_report)
+        chunks = CodeReviewService._split_into_chunks(review_files)
+        dependency_graph = CodeReviewService._build_dependency_graph(review_files)
+        
+        batches = CodeReviewService._build_ai_batches(ranked_files, chunks, dependency_graph)
+        
+        ai_reports = []
+        
+        for batch in batches:
+            
+            report = GeminiService.generate_code_review(
+                batch=batch,
+                local_report=local_report,
+                    dependency_graph=dependency_graph
+            )
+                
+            ai_reports.append(report)
+            
+        merged_ai_report = CodeReviewService._merge_ai_reports(ai_reports)
+        
+        final_report = {
+            "local_analysis": local_report,
+            "ai_analysis": merged_ai_report
+        }
+        
+        return final_report
+    
+    @staticmethod
+    def _merge_ai_reports(ai_reports):
+
+        merged = {
+            "summary": {
+                "overview": "",
+                "architecture": "",
+                "modules": []
+            },
+            "logic_bugs": [],
+            "performance": [],
+            "readability": [],
+            "best_practices": [],
+            "refactoring": [],
+            "production_readiness": {
+                "score": 100,
+                "summary": "",
+                "strengths": [],
+                "weaknesses": [],
+                "missing": []
+            },
+            "documentation": {
+                "overview": "",
+                "classes": [],
+                "functions": []
+            },
+            "unit_tests": [],
+            "improved_code": []
+        }
+
+        seen_logic = set()
+        seen_perf = set()
+        seen_read = set()
+        seen_best = set()
+        seen_refactor = set()
+        seen_tests = set()
+        seen_code = set()
+
+        for report in ai_reports:
+
+            review = report["review"]
+
+            # ---------------- Summary ----------------
+            if not merged["summary"]["overview"]:
+                merged["summary"] = review.get(
+                    "summary",
+                    merged["summary"]
+                )
+
+            # ---------------- Logic Bugs ----------------
+            for bug in review.get("logic_bugs", []):
+
+                key = (
+                    bug.get("title"),
+                    bug.get("description")
+                )
+
+                if key not in seen_logic:
+                    seen_logic.add(key)
+                    merged["logic_bugs"].append(bug)
+
+            # ---------------- Performance ----------------
+            for item in review.get("performance", []):
+
+                key = (
+                    item.get("issue"),
+                    item.get("recommendation")
+                )
+
+                if key not in seen_perf:
+                    seen_perf.add(key)
+                    merged["performance"].append(item)
+
+            # ---------------- Readability ----------------
+            for item in review.get("readability", []):
+
+                key = (
+                    item.get("issue"),
+                    item.get("recommendation")
+                )
+
+                if key not in seen_read:
+                    seen_read.add(key)
+                    merged["readability"].append(item)
+
+            # ---------------- Best Practices ----------------
+            for item in review.get("best_practices", []):
+
+                key = (
+                    item.get("issue"),
+                    item.get("recommendation")
+                )
+
+                if key not in seen_best:
+                    seen_best.add(key)
+                    merged["best_practices"].append(item)
+
+            # ---------------- Refactoring ----------------
+            for item in review.get("refactoring", []):
+
+                key = (
+                    item.get("title"),
+                    item.get("recommendation")
+                )
+
+                if key not in seen_refactor:
+                    seen_refactor.add(key)
+                    merged["refactoring"].append(item)
+
+            # ---------------- Production Readiness ----------------
+            prod = review.get("production_readiness", {})
+
+            merged["production_readiness"]["score"] = min(
+                merged["production_readiness"]["score"],
+                prod.get("score", 100)
+            )
+
+            merged["production_readiness"]["strengths"].extend(
+                prod.get("strengths", [])
+            )
+
+            merged["production_readiness"]["weaknesses"].extend(
+                prod.get("weaknesses", [])
+            )
+
+            merged["production_readiness"]["missing"].extend(
+                prod.get("missing", [])
+            )
+
+            if not merged["production_readiness"]["summary"]:
+                merged["production_readiness"]["summary"] = prod.get(
+                    "summary",
+                    ""
+                )
+
+            # ---------------- Documentation ----------------
+            docs = review.get("documentation", {})
+
+            if not merged["documentation"]["overview"]:
+                merged["documentation"]["overview"] = docs.get(
+                    "overview",
+                    ""
+                )
+
+            merged["documentation"]["classes"].extend(
+                docs.get("classes", [])
+            )
+
+            merged["documentation"]["functions"].extend(
+                docs.get("functions", [])
+            )
+
+            # ---------------- Unit Tests ----------------
+            for test in review.get("unit_tests", []):
+
+                key = test.get("name")
+
+                if key not in seen_tests:
+                    seen_tests.add(key)
+                    merged["unit_tests"].append(test)
+
+            # ---------------- Improved Code ----------------
+            for code in review.get("improved_code", []):
+
+                key = (
+                    code.get("file"),
+                    code.get("function")
+                )
+
+                if key not in seen_code:
+                    seen_code.add(key)
+                    merged["improved_code"].append(code)
+
+        merged["summary"]["modules"] = list(
+            dict.fromkeys(
+                merged["summary"].get("modules", [])
+            )
+        )
+
+        merged["production_readiness"]["strengths"] = list(
+            dict.fromkeys(
+                merged["production_readiness"]["strengths"]
+            )
+        )
+
+        merged["production_readiness"]["weaknesses"] = list(
+            dict.fromkeys(
+                merged["production_readiness"]["weaknesses"]
+            )
+        )
+
+        merged["production_readiness"]["missing"] = list(
+            dict.fromkeys(
+                merged["production_readiness"]["missing"]
+            )
+        )
+
+        return merged
+    
+    @staticmethod
+    def _rank_files(files, local_report):
+
+        syntax_map = {
+            e["file"]: 1
+            for e in local_report["syntax"]
+        }
+
+        security_map = {}
+
+        for finding in local_report["security"]:
+            security_map.setdefault(
+                finding["file"],
+                0
+            )
+            security_map[finding["file"]] += 1
+
+        duplicate_map = {}
+
+        for dup in local_report["duplicates"]:
+
+            duplicate_map.setdefault(
+                dup["file1"],
+                0
+            )
+
+            duplicate_map.setdefault(
+                dup["file2"],
+                0
+            )
+
+            duplicate_map[dup["file1"]] += 1
+            duplicate_map[dup["file2"]] += 1
+
+        complexity_map = {}
+
+        for report in local_report["complexity"]:
+
+            max_complexity = 0
+
+            for fn in report["functions"]:
+                max_complexity = max(
+                    max_complexity,
+                    fn["cyclomatic_complexity"]
+                )
+
+            complexity_map[
+                report["filename"]
+            ] = max_complexity
+
+        dependency_map = {}
+
+        for dep in local_report["dependencies"]:
+            dependency_map[
+                dep["filename"]
+            ] = dep["import_count"]
+
+        ranked = []
+
+        for file in files:
+
+            filename = file["filename"]
+
+            score = 0
+            reasons = []
+
+            if filename in syntax_map:
+                score += 30
+                reasons.append("Syntax Errors")
+
+            if filename in security_map:
+                score += 25
+                reasons.append("Security Findings")
+
+            if complexity_map.get(filename, 0) > 10:
+                score += 20
+                reasons.append("High Complexity")
+
+            if filename in duplicate_map:
+                score += 15
+                reasons.append("Duplicate Code")
+
+            if file["line_count"] > 500:
+                score += 10
+                reasons.append("Large File")
+
+            if filename in CodeReviewService.ENTRY_POINT_FILES:
+                score += 15
+                reasons.append("Entry Point")
+
+            if dependency_map.get(filename, 0) > 15:
+                score += 5
+                reasons.append("Many Imports")
+
+            ranked.append({
+                "filename": filename,
+                "priority": score,
+                "reasons": reasons,
+            })
+
+        ranked.sort(
+            key=lambda x: x["priority"],
+            reverse=True
+        )
+
+        return ranked
+    
+    @staticmethod
+    def _split_into_chunks(files):
+
+        chunks = []
+
+        for file in files:
+
+            language = file["language"]
+
+            if language not in CodeReviewService.FUNCTION_NODE_TYPES:
+                continue
+
+            parser = get_parser(language)
+
+            tree = parser.parse(
+                file["code"].encode("utf-8")
+            )
+
+            node_types = (
+                CodeReviewService.FUNCTION_NODE_TYPES.get(language, set())
+                |
+                CodeReviewService.CLASS_NODE_TYPES.get(language, set())
+            )
+
+            def traverse(node):
+
+                if node.type in node_types:
+
+                    chunks.append({
+                        "file": file["filename"],
+                        "path": file["path"],
+                        "language": language,
+                        "type": node.type,
+                        "start_line": node.start_point[0] + 1,
+                        "end_line": node.end_point[0] + 1,
+                        "code": file["code"][
+                            node.start_byte:node.end_byte
+                        ]
+                    })
+
+                for child in node.children:
+                    traverse(child)
+
+            traverse(tree.root_node)
+
+        return chunks
+    
+    @staticmethod
+    def _build_dependency_graph(files):
+
+        project_files = {
+            os.path.splitext(
+                file["filename"]
+            )[0]: file["filename"]
+            for file in files
+        }
+
+        graph = {}
+
+        for file in files:
+
+            imports = CodeReviewService._extract_imports(file)
+
+            dependencies = []
+
+            for imp in imports:
+
+                statement = imp["statement"]
+
+                for module in project_files:
+
+                    if module in statement:
+
+                        dependencies.append(
+                            project_files[module]
+                        )
+
+            graph[file["filename"]] = sorted(
+                list(set(dependencies))
+            )
+
+        return graph
+    
+    @staticmethod
+    def _count_tokens(text: str):
+        return len(CodeReviewService.ENCODER.encode(text))
+    
+    @staticmethod
+    def _build_ai_batches(
+        ranked_files,
+        chunks,
+        dependency_graph,
+        max_tokens=None,
+    ):
+
+        if max_tokens is None:
+            max_tokens = CodeReviewService.MAX_INPUT_TOKENS
+
+        chunk_map = {}
+
+        for chunk in chunks:
+            chunk_map.setdefault(
+                chunk["file"],
+                []
+            ).append(chunk)
+
+        batches = []
+        visited = set()
+
+        for ranked in ranked_files:
+            filename = ranked["filename"]
+            if filename in visited:
+                continue
+
+            batch = {
+                "files": [],
+                "chunks": [],
+                "priority": ranked["priority"]
+            }
+
+            current_tokens = 0
+            queue = [filename]
+
+            while queue:
+                current = queue.pop(0)
+
+                if current in visited:
+                    continue
+
+                if current not in chunk_map:
+                    continue
+
+                file_chunks = chunk_map[current]
+
+                chunk_tokens = sum(
+                    CodeReviewService._count_tokens(
+                        chunk["code"]
+                    )
+                    for chunk in file_chunks
+                )
+
+                if current_tokens + chunk_tokens > max_tokens:
+                    continue
+
+                batch["files"].append(current)
+                batch["chunks"].extend(file_chunks)
+                current_tokens += chunk_tokens
+                visited.add(current)
+
+                for dependency in dependency_graph.get(current, []):
+                    if dependency not in visited:
+                        queue.append(dependency)
+
+            if batch["chunks"]:
+                batch["token_count"] = current_tokens
+                batches.append(batch)
+
+        return batches
     
     @staticmethod
     def _process_code_snippet(code: str, lang: str = None):
@@ -258,7 +862,7 @@ class CodeReviewService:
         
         return [file]
          
-    
+
     @staticmethod
     def _process_single_file(filename: str, code: str):
         
@@ -870,8 +1474,68 @@ class CodeReviewService:
             })
 
         return report
+    # -----------------------------------------------------------------------
+    @staticmethod
+    def _project_structure_analysis(files):
+        # especially works in zip file.
+        # it tells if we are missing any import file in our project
+        # or our project structure is poor
+
+        if not files:
+            return {}
+
+        language = Counter(
+            file["language"] for file in files
+        ).most_common(1)[0][0]
+
+        uploaded_files = {
+            file["filename"]
+            for file in files
+        }
+
+        folders = sorted({
+            os.path.dirname(file["path"])
+            for file in files
+            if file["path"] and os.path.dirname(file["path"])
+        })
+
+        filename_counter = Counter(
+            file["filename"]
+            for file in files
+        )
+
+        duplicate_filenames = [
+            filename
+            for filename, count in filename_counter.items()
+            if count > 1
+        ]
+
+        required_files = CodeReviewService.COMMON_PROJECT_FILES.get(
+            language,
+            set()
+        )
+
+        missing_files = sorted(
+            required_files - uploaded_files
+        )
+
+        return {
+            "language": language,
+            "total_files": len(files),
+            "folders": folders,
+            "missing_files": missing_files,
+            "duplicate_filenames": duplicate_filenames,
+        }
     
     @staticmethod
-    def _process_input(input_type: str):
+    def _process_input(input_type: str, code: str = None, filename: str = None, files: list = None, zip_path: str = None, language: str = None):
         if input_type == 'snippet':
-            res = CodeReviewService._process_code_snippet()
+            return CodeReviewService._process_code_snippet(code, language)
+        elif input_type == 'file':
+            return CodeReviewService._process_single_file(filename, code)
+        elif input_type == 'multiple':
+            return CodeReviewService._process_multiple_files(files)
+        elif input_type == 'zip':
+            return CodeReviewService._process_zip(zip_path)
+        
+        raise ValueError(f"Unsupported input type: {input_type}")
