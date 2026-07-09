@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from app.services.gemini_service import GeminiService
-import json, os, tempfile, shutil, zipfile
+import json, os, tempfile, zipfile, re, hashlib
+from rapidfuzz import fuzz
 from pygments.lexers import guess_lexer
 from fastapi import UploadFile, File
 from tree_sitter import Parser
@@ -550,7 +551,122 @@ class CodeReviewService:
                 findings.extend(LanguageDispatcher._svelte_security_scan(file))
 
         return findings
+    
+    @staticmethod
+    def _normalize_code(code: str) -> str:
+        # Normalize line endings
+        code = code.replace("\r\n", "\n").replace("\r", "\n")
+
+        # Remove single-line comments
+        code = re.sub(r'//.*$', '', code, flags=re.MULTILINE)   # C, C++, Java, JS, Go, Rust...
+        code = re.sub(r'#.*$', '', code, flags=re.MULTILINE)    # Python, Shell, YAML
+
+        # Remove multi-line comments
+        code = re.sub(r'/\*.*?\*/', '', code, flags=re.DOTALL)  # C-style comments
+
+        # Remove HTML/XML comments
+        code = re.sub(r'<!--.*?-->', '', code, flags=re.DOTALL)
+
+        # Remove trailing whitespace
+        code = "\n".join(line.rstrip() for line in code.splitlines())
+
+        # Remove blank lines
+        code = "\n".join(
+            line for line in code.splitlines()
+            if line.strip()
+        )
+
+        # Remove leading/trailing whitespace
+        code = code.strip()
+
+        return code
+    
+    @staticmethod
+    def _similarity_score(chunk1, chunk2):
+        return round(fuzz.token_sort_ratio(chunk1, chunk2), 2)
+    
+    @staticmethod
+    def _extract_code_blocks(file):
+        # it will extract code chunks smartly.
+        # Like it will divide code into different functions and classes.
+        # So that we can compare if 2 functions/classes are identical or not.
+
+        language = file["language"]
+
+        if language not in CodeReviewService.FUNCTION_NODE_TYPES:
+            return []
+
+        parser = get_parser(language)
+
+        tree = parser.parse(file["code"].encode("utf-8"))
+
+        node_types = (
+            CodeReviewService.FUNCTION_NODE_TYPES[language]
+            | CodeReviewService.CLASS_NODE_TYPES.get(language, set())
+        )
+
+        blocks = []
+
+        def traverse(node):
+
+            if node.type in node_types:
+
+                code = file["code"][
+                    node.start_byte:node.end_byte
+                ]
+
+                blocks.append({
+                    "file": file["path"] or file["filename"],
+                    "type": node.type,
+                    "start_line": node.start_point[0] + 1,
+                    "end_line": node.end_point[0] + 1,
+                    "code": CodeReviewService._normalize_code(code)
+                })
+
+            for child in node.children:
+                traverse(child)
+
+        traverse(tree.root_node)
+
+        return blocks
+    
+    @staticmethod
+    def _duplicate_code_detection(files):
+        
+        blocks = []
+        for file in files:
+            # normalize the code
+            blocks.extend(CodeReviewService._extract_code_blocks(file))
+            
+        duplicates = []
+        
+        for i in range(len(blocks)):
+            for j in range(i+1, len(blocks)):
+                score = CodeReviewService._similarity_score(blocks[i]['code'], blocks[j]['code'])
+                
+                if score < 85:
+                    continue
+                
+                if score >= 95:
+                    severity = 'critical'
+                elif score >= 90:
+                    severity = 'high'
+                else:
+                    severity = 'medium'
                     
+                duplicates.append({
+                        "file1": blocks[i]["file"],
+                        "file2": blocks[j]["file"],
+                        "start_line1": blocks[i]["start_line"],
+                        "end_line1": blocks[i]["end_line"],
+                        "start_line2": blocks[j]["start_line"],
+                        "end_line2": blocks[j]["end_line"],
+                        "similarity": score,
+                        "severity": severity
+                    })
+        
+        return duplicates          
+
     @staticmethod
     def _complexity_analysis(files):
         pass
