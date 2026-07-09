@@ -64,8 +64,8 @@ class GeminiService:
 
         except Exception as e:
             raise RuntimeError(f"Gemini API Error: {str(e)}")
-        
-    def generate_code_review(self, batch, local_report, dependency_graph):
+          
+    async def generate_code_review(self, batch, local_report, dependency_graph):
         """
         Generic Gemini generation.
         Used by Code Reviewer, SQL Generator,
@@ -77,7 +77,7 @@ class GeminiService:
               "batch_files": batch["files"],
               "review": {}
           }
-        def _filter_local_report(self, local_report, batch_files):
+        def filter_local_report(local_report, batch_files):
 
           filtered = {}
 
@@ -115,7 +115,7 @@ class GeminiService:
 
           return filtered
         
-        filtered_local_report = self._filter_local_report(
+        filtered_local_report = filter_local_report(
             local_report,
             batch["files"]
         )
@@ -458,7 +458,7 @@ class GeminiService:
                 """
         
         try:
-            response = self.client.models.generate_content(
+            response = await self.client.aio.models.generate_content(
                 model="gemini-2.5-flash",
                 contents=[system_prompt, prompt],
                 config=types.GenerateContentConfig(

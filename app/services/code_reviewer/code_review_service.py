@@ -1,3 +1,5 @@
+import asyncio
+
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
@@ -292,7 +294,7 @@ class CodeReviewService:
     MAX_INPUT_TOKENS = 12000
     
     @staticmethod
-    def review(
+    async def review(
         db: Session,
         execution_id: str,
         input_type: str,
@@ -336,20 +338,17 @@ class CodeReviewService:
         dependency_graph = CodeReviewService._build_dependency_graph(review_files)
         
         batches = CodeReviewService._build_ai_batches(ranked_files, chunks, dependency_graph)
-        
-        ai_reports = []
-        
-        for batch in batches:
-            
-            report = GeminiService.generate_code_review(
-                batch=batch,
-                local_report=local_report,
-                    dependency_graph=dependency_graph
+                    
+        tasks = [GeminiService.generate_code_review(
+            batch=batch,
+            local_report=local_report,
+            dependency_graph=dependency_graph
             )
+            for batch in batches]
                 
-            ai_reports.append(report)
+        reports = await asyncio.gather(*tasks)  
             
-        merged_ai_report = CodeReviewService._merge_ai_reports(ai_reports)
+        merged_ai_report = CodeReviewService._merge_ai_reports(reports)
         
         final_report = {
             "local_analysis": local_report,
