@@ -430,6 +430,19 @@ class CodeReviewService:
             
         return syntax_errors
     
+    # this function can count object, class, functions or any statement in a code file
+    # the node_types tell the function what to count. Eg import statement, functions, classes, comments
+    @staticmethod
+    def count_ast_nodes(root, node_types):
+        count = 0
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            if node.type in node_types:
+                count += 1
+            stack.extend(node.children)
+        return count
+    
     @staticmethod
     def _file_statistics(files):
         
@@ -446,24 +459,12 @@ class CodeReviewService:
             tree = parser.parse(code.encode("utf-8"))
             root = tree.root_node
 
-            # this function can count object, class, functions or any statement in a code file
-            # the node_types tell the function what to count. Eg import statement, functions, classes, comments
-            def count_ast_nodes(root, node_types):
-                count = 0
-                stack = [root]
-                while stack:
-                    node = stack.pop()
-                    if node.type in node_types:
-                        count += 1
-                    stack.extend(node.children)
-                return count
-
             total_lines = file['line_count']
             blank_lines = sum(1 for line in code.splitlines() if not line.strip())
-            functions = count_ast_nodes(root, CodeReviewService.FUNCTION_NODE_TYPES.get(language, set()))
-            classes = count_ast_nodes(root, CodeReviewService.CLASS_NODE_TYPES.get(language, set()))
-            comments = count_ast_nodes(root, CodeReviewService.COMMENT_NODE_TYPES.get(language, set()))
-            imports = count_ast_nodes(root, CodeReviewService.IMPORT_NODE_TYPES.get(language, set()))
+            functions = CodeReviewService.count_ast_nodes(root, CodeReviewService.FUNCTION_NODE_TYPES.get(language, set()))
+            classes = CodeReviewService.count_ast_nodes(root, CodeReviewService.CLASS_NODE_TYPES.get(language, set()))
+            comments = CodeReviewService.count_ast_nodes(root, CodeReviewService.COMMENT_NODE_TYPES.get(language, set()))
+            imports = CodeReviewService.count_ast_nodes(root, CodeReviewService.IMPORT_NODE_TYPES.get(language, set()))
             
             stats.append({
                 "filename": file["filename"],
