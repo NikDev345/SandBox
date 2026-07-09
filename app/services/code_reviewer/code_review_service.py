@@ -199,6 +199,21 @@ class CodeReviewService:
         },
     }
     
+    COMPLEXITY_NODE_TYPES = {
+        "if_statement",
+        "elif_clause",
+        "else_clause",
+        "for_statement",
+        "while_statement",
+        "do_statement",
+        "switch_statement",
+        "case_statement",
+        "catch_clause",
+        "except_clause",
+        "conditional_expression",
+        "binary_expression",
+        "match_statement",
+    }
     
     @staticmethod
     def review():
@@ -665,12 +680,154 @@ class CodeReviewService:
                         "severity": severity
                     })
         
-        return duplicates          
+        return duplicates         
+    
+    #------------- complexity analysis and its helper functions here--------------------------------
+    
+    @staticmethod
+    def _get_function_nodes(file):
+        # this function will return all the function as nodes in a source code.
+        # so we will know all the fucntion in the code to compute complexity
+        language = file["language"]
+
+        if language not in CodeReviewService.FUNCTION_NODE_TYPES:
+            return []
+
+        parser = get_parser(language)
+        tree = parser.parse(file["code"].encode("utf-8"))
+        node_types = CodeReviewService.FUNCTION_NODE_TYPES[language]
+        functions = []
+
+        def traverse(node):
+
+            if node.type in node_types:
+                functions.append(node)
+
+            for child in node.children:
+                traverse(child)
+
+        traverse(tree.root_node)
+        return functions
+    
+    @staticmethod
+    def _get_class_nodes(file):
+        # this function will return all the classes as nodes in a source code.
+        # so we will know all the class in the code to compute complexity
+        language = file["language"]
+
+        if language not in CodeReviewService.CLASS_NODE_TYPES:
+            return []
+
+        parser = get_parser(language)
+
+        tree = parser.parse(file["code"].encode("utf-8"))
+
+        node_types = CodeReviewService.CLASS_NODE_TYPES[language]
+
+        classes = []
+
+        def traverse(node):
+
+            if node.type in node_types:
+                classes.append(node)
+
+            for child in node.children:
+                traverse(child)
+
+        traverse(tree.root_node)
+
+        return classes
+    
+    @staticmethod
+    def _function_length(node):
+        # we can compute the length of a function
+        return node.end_point[0] - node.start_point[0] + 1
+    
+    @staticmethod
+    def _class_length(node):
+        # we can compute the length of a class in a code
+        return node.end_point[0] - node.start_point[0] + 1
+    
+    @staticmethod
+    def _cyclomatic_complexity(node):
+        # Cyclomatic COmplexity means how many independent execution paths exists in a code
+        # Its formula = 1 + number of decision points
+        # A decision point is any construct that can change the execution path.
+        # For eg: if-else, while loop, for loop. IT creates a new branch and changes the path
+        
+        complexity = 1
+        stack = [node]
+        while stack:
+            current = stack.pop()
+            if current.type in CodeReviewService.COMPLEXITY_NODE_TYPES:
+                complexity += 1
+            stack.extend(current.children)
+
+        return complexity
+    
+    @staticmethod
+    def _nesting_depth(node):
+        # it calculates the depth of the nesting branches using DFS.
+        '''
+        if a:
+            print('a') -> Depth 1
+            
+        if a:
+            while True:
+                for i in range(10):
+                    if c:       
+                    -> Depth 4
+        '''
+
+        control_nodes = CodeReviewService.COMPLEXITY_NODE_TYPES
+        max_depth = 0
+
+        def dfs(current, depth):
+            nonlocal max_depth
+            if current.type in control_nodes:
+                depth += 1
+                max_depth = max(max_depth, depth)
+
+            for child in current.children:
+                dfs(child, depth)
+                
+        dfs(node, 0)
+        return max_depth
 
     @staticmethod
     def _complexity_analysis(files):
-        pass
-            
+        complexity_report = []
+        
+        for file in files:
+            functions = []
+            for node in CodeReviewService._get_function_nodes(file):
+                functions.append({
+                    "start_line": node.start_point[0] + 1,
+                    "end_line": node.end_point[0] + 1,
+                    "function_length": CodeReviewService._function_length(node),
+                    "cyclomatic_complexity": CodeReviewService._cyclomatic_complexity(node),
+                    "nesting_depth": CodeReviewService._nesting_depth(node)
+                })
+                
+            classes = []
+            for node in CodeReviewService._get_class_nodes(file):
+                classes.append({
+                    "start_line": node.start_point[0] + 1,
+                    "end_line": node.end_point[0] + 1,
+                    "class_length": CodeReviewService._class_length(node)
+                })
+                
+            complexity_report.append({
+                "filename": file["filename"],
+                "language": file["language"],
+                "functions": functions,
+                "classes": classes
+            })
+        
+        return complexity_report
+
+    
+    # --------------complexity analysis completed---------------------------------
     @staticmethod
     def _process_input(input_type: str):
         if input_type == 'snippet':
