@@ -7,9 +7,6 @@ from app.services.gemini_service import GeminiService
 import json, os, tempfile, zipfile, re, tiktoken
 from rapidfuzz import fuzz
 from pygments.lexers import guess_lexer
-from fastapi import UploadFile, File
-from tree_sitter import Parser
-from tree_sitter_language_pack import get_language
 from tree_sitter_language_pack import get_parser
 from language_dispatcher import LanguageDispatcher
 from collections import Counter
@@ -303,7 +300,8 @@ class CodeReviewService:
     @staticmethod
     async def review(
         db: Session,
-        execution_id: str,
+        user_id,
+        tool_id,
         input_type: str,
         code: str = None,
         filename: str = None,
@@ -361,6 +359,20 @@ class CodeReviewService:
             "local_analysis": local_report,
             "ai_analysis": merged_ai_report
         }
+        
+        ExecutionService.create_execution(
+            db,
+            user_id,
+            tool_id,
+            user_input=json.dumps({
+                "input_type": input_type,
+                "language": language,
+                "filename": filename,
+                "uploaded_files": [f["filename"] for f in review_files],
+                "total_files": len(review_files),
+            }),
+            output=json.dumps(final_report, ensure_ascii=False)
+        )
         
         return final_report
     
