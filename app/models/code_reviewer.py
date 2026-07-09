@@ -39,6 +39,10 @@ class CodeReviewerRequest(BaseModel):
     
     code: str = Field(..., description="Source code to review")
     language: str = Field(..., description="Programming Language")
+    input_type: str = Field(..., default=None)
+    filename: str = Field(..., default=None)
+    files: list = Field(..., None)
+    zip_path: str = Field(..., None)
     review_type: str = Field(..., description="Type of review")
     
     @field_validator("code")

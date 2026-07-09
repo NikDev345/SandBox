@@ -2,7 +2,6 @@ import asyncio
 
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
-from app.services.tool_service import ToolService
 from app.services.gemini_service import GeminiService
 import json, os, tempfile, zipfile, re, tiktoken
 from rapidfuzz import fuzz
@@ -301,7 +300,7 @@ class CodeReviewService:
     async def review(
         db: Session,
         user_id,
-        tool_id,
+        tool_id: str,
         input_type: str,
         code: str = None,
         filename: str = None,
@@ -310,6 +309,7 @@ class CodeReviewService:
         language: str = None
     ):
         review_files = CodeReviewService._process_input(input_type, code, filename, files, zip_path, language)
+        
         
         # local analysis
         syntax_report = CodeReviewService._syntax_check(review_files)
