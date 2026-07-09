@@ -825,9 +825,52 @@ class CodeReviewService:
             })
         
         return complexity_report
-
     
     # --------------complexity analysis completed---------------------------------
+    
+    # -------------dependency analysis------------------------------------------
+    @staticmethod
+    def _extract_imports(file):
+        # this will extract all the import lines from the source code.
+        language = file["language"]
+        if language not in CodeReviewService.IMPORT_NODE_TYPES:
+            return []
+        parser = get_parser(language)
+        tree = parser.parse(file["code"].encode())
+        imports = []
+        node_types = CodeReviewService.IMPORT_NODE_TYPES[language]
+
+        def traverse(node):
+
+            if node.type in node_types:
+                imports.append({
+                    "line": node.start_point[0] + 1,
+                    "statement": file["code"][
+                        node.start_byte:node.end_byte
+                    ]
+                })
+
+            for child in node.children:
+                traverse(child)
+
+        traverse(tree.root_node)
+        return imports
+    
+    @staticmethod
+    def _dependency_analysis(files):
+
+        report = []
+        for file in files:
+            imports = CodeReviewService._extract_imports(file)
+            report.append({
+                "filename": file["filename"],
+                "language": file["language"],
+                "imports": imports,
+                "import_count": len(imports)
+            })
+
+        return report
+    
     @staticmethod
     def _process_input(input_type: str):
         if input_type == 'snippet':
