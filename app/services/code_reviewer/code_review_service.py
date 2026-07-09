@@ -8,6 +8,7 @@ from fastapi import UploadFile, File
 from tree_sitter import Parser
 from tree_sitter_language_pack import get_language
 from tree_sitter_language_pack import get_parser
+from language_dispatcher import LanguageDispatcher
 
 class CodeReviewService:
     LANGUAGE_TO_EXTENSIONS = {
@@ -196,6 +197,7 @@ class CodeReviewService:
             "import_statement",
         },
     }
+    
     
     @staticmethod
     def review():
@@ -480,6 +482,74 @@ class CodeReviewService:
             })
 
         return stats
+    
+    @staticmethod
+    def _security_scan(files):
+
+        findings = []
+
+        for file in files:
+
+            language = file["language"]
+
+            if language == "python":
+                findings.extend(LanguageDispatcher._python_security_scan(file))
+
+            elif language == "java":
+                findings.extend(LanguageDispatcher._java_security_scan(file))
+
+            elif language == "javascript":
+                findings.extend(LanguageDispatcher._javascript_security_scan(file))
+
+            elif language == "typescript":
+                findings.extend(LanguageDispatcher._typescript_security_scan(file))
+
+            elif language in ("cpp", "c++"):
+                findings.extend(LanguageDispatcher._cpp_security_scan(file))
+
+            elif language == "c":
+                findings.extend(LanguageDispatcher._c_security_scan(file))
+
+            elif language == "c#":
+                findings.extend(LanguageDispatcher._csharp_security_scan(file))
+
+            elif language == "go":
+                findings.extend(LanguageDispatcher._go_security_scan(file))
+
+            elif language == "rust":
+                findings.extend(LanguageDispatcher._rust_security_scan(file))
+
+            elif language == "php":
+                findings.extend(LanguageDispatcher._php_security_scan(file))
+
+            elif language == "html":
+                findings.extend(LanguageDispatcher._html_security_scan(file))
+
+            elif language == "css":
+                findings.extend(LanguageDispatcher._css_security_scan(file))
+
+            elif language == "json":
+                findings.extend(LanguageDispatcher._json_security_scan(file))
+
+            elif language == "xml":
+                findings.extend(LanguageDispatcher._xml_security_scan(file))
+
+            elif language == "yaml":
+                findings.extend(LanguageDispatcher._yaml_security_scan(file))
+
+            elif language == "sql":
+                findings.extend(LanguageDispatcher._sql_security_scan(file))
+
+            elif language == "dockerfile":
+                findings.extend(LanguageDispatcher._dockerfile_security_scan(file))
+
+            elif language == "vue":
+                findings.extend(LanguageDispatcher._vue_security_scan(file))
+
+            elif language == "svelte":
+                findings.extend(LanguageDispatcher._svelte_security_scan(file))
+
+        return findings
                     
     @staticmethod
     def _complexity_analysis(files):
