@@ -292,6 +292,13 @@ class CodeReviewService:
     
     ENCODER = tiktoken.get_encoding("cl100k_base")
     MAX_INPUT_TOKENS = 12000
+    PARSER_CACHE = {}
+    
+    @staticmethod
+    def _get_parser(language):
+        if language not in CodeReviewService.PARSER_CACHE:
+            CodeReviewService.PARSER_CACHE[language] = get_parser(language)
+        return CodeReviewService.PARSER_CACHE[language]
     
     @staticmethod
     async def review(
@@ -675,7 +682,7 @@ class CodeReviewService:
             if language not in CodeReviewService.FUNCTION_NODE_TYPES:
                 continue
 
-            parser = get_parser(language)
+            parser = CodeReviewService._get_parser(language)
 
             tree = parser.parse(
                 file["code"].encode("utf-8")
@@ -690,6 +697,47 @@ class CodeReviewService:
             def traverse(node):
 
                 if node.type in node_types:
+                    code = file["code"][
+                        node.start_byte:node.end_byte
+                    ]
+
+                    lines = len(code.splitlines())
+
+                    length = node.end_point[0] - node.start_point[0] + 1
+
+                    cyclomatic_complexity = CodeReviewService._cyclomatic_complexity(node)
+
+                    nesting_depth = CodeReviewService._nesting_depth(node)
+                    
+                    if (
+                        cyclomatic_complexity <= 1
+                        and nesting_depth == 0
+                        and lines <= 5
+                    ):
+                        continue
+
+                    score = 0
+
+                    if length >= 30:
+                        score += 3
+
+                    if length >= 60:
+                        score += 4
+
+                    if length >= 120:
+                        score += 5
+
+                    if cyclomatic_complexity > 10:
+                        score += 10
+
+                    if nesting_depth > 4:
+                        score += 10
+
+                    if "TODO" in code.upper():
+                        score += 3
+
+                    if "FIXME" in code.upper():
+                        score += 3
 
                     chunks.append({
                         "file": file["filename"],
@@ -698,9 +746,8 @@ class CodeReviewService:
                         "type": node.type,
                         "start_line": node.start_point[0] + 1,
                         "end_line": node.end_point[0] + 1,
-                        "code": file["code"][
-                            node.start_byte:node.end_byte
-                        ]
+                        "code": code,
+                        "priority": score
                     })
 
                 for child in node.children:
@@ -796,19 +843,25 @@ class CodeReviewService:
                     continue
 
                 file_chunks = chunk_map[current]
+                file_chunks.sort(
+                    key=lambda chunk: chunk["priority"],
+                    reverse=True,
+                )
+
+                MAX_FUNCTIONS_PER_FILE = 8
+                selected_chunks = file_chunks[:MAX_FUNCTIONS_PER_FILE]
 
                 chunk_tokens = sum(
-                    CodeReviewService._count_tokens(
-                        chunk["code"]
-                    )
-                    for chunk in file_chunks
+                    CodeReviewService._count_tokens(chunk["code"])
+                    for chunk in selected_chunks
                 )
 
                 if current_tokens + chunk_tokens > max_tokens:
                     continue
 
                 batch["files"].append(current)
-                batch["chunks"].extend(file_chunks)
+
+                batch["chunks"].extend(selected_chunks)
                 current_tokens += chunk_tokens
                 visited.add(current)
 
@@ -957,7 +1010,13 @@ class CodeReviewService:
             "dist",
             "build",
             "target",
-            "coverage"
+            "coverage",
+            "tests",
+            "test",
+            "generated",
+            "migrations",
+            "vendor",
+            ".next"
         }
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1038,7 +1097,7 @@ class CodeReviewService:
         for file in files:
             language = file["language"]
             try:
-                parser = get_parser(language)
+                parser = CodeReviewService._get_parser(language)
             except Exception:
                 continue
             
@@ -1073,7 +1132,7 @@ class CodeReviewService:
             language = file["language"]
 
             try:
-                parser = get_parser(language)
+                parser = CodeReviewService._get_parser(language)
             except Exception:
                 continue
             code = file['code']
@@ -1214,7 +1273,7 @@ class CodeReviewService:
         if language not in CodeReviewService.FUNCTION_NODE_TYPES:
             return []
 
-        parser = get_parser(language)
+        parser = CodeReviewService._get_parser(language)
 
         tree = parser.parse(file["code"].encode("utf-8"))
 
@@ -1296,7 +1355,7 @@ class CodeReviewService:
         if language not in CodeReviewService.FUNCTION_NODE_TYPES:
             return []
 
-        parser = get_parser(language)
+        parser = CodeReviewService._get_parser(language)
         tree = parser.parse(file["code"].encode("utf-8"))
         node_types = CodeReviewService.FUNCTION_NODE_TYPES[language]
         functions = []
@@ -1321,7 +1380,7 @@ class CodeReviewService:
         if language not in CodeReviewService.CLASS_NODE_TYPES:
             return []
 
-        parser = get_parser(language)
+        parser = CodeReviewService._get_parser(language)
 
         tree = parser.parse(file["code"].encode("utf-8"))
 
@@ -1438,7 +1497,7 @@ class CodeReviewService:
         language = file["language"]
         if language not in CodeReviewService.IMPORT_NODE_TYPES:
             return []
-        parser = get_parser(language)
+        parser = CodeReviewService._get_parser(language)
         tree = parser.parse(file["code"].encode())
         imports = []
         node_types = CodeReviewService.IMPORT_NODE_TYPES[language]
