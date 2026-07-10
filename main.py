@@ -12,6 +12,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
+from app.api.image_text_extractor.image_text_extractor import router as image_text_extractor_router
 
 # tools
 from app.api.summarizer.summarizer import router as summarizer_router
@@ -62,6 +63,7 @@ app.include_router(user_router)
 app.include_router(summarizer_router)
 app.include_router(json_fixer_router)
 app.include_router(code_reviewer_router)
+app.include_router(image_text_extractor_router)
 
 ui.run_with(
     app,

@@ -1,0 +1,312 @@
+<div class="image-text-extractor">
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="ite-hero">
+    <div class="ite-hero-copy">
+      <div class="ite-hero-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+          <path d="M10 14l2-2 2 2"/>
+        </svg>
+      </div>
+      <div class="ite-hero-text">
+        <h1 class="ite-hero-title">Image Text Extractor</h1>
+        <p class="ite-hero-desc">Upload any image containing text and extract it instantly using on-device OCR. Works offline — your images never leave your browser.</p>
+      </div>
+    </div>
+
+    <ul class="feature-pills" role="list">
+      <li class="feature-pill">Offline OCR</li>
+      <li class="feature-pill">PNG · JPG · WEBP · BMP · TIFF · GIF</li>
+      <li class="feature-pill">Max 25 MB</li>
+      <li class="feature-pill">Multi-Language</li>
+      <li class="feature-pill">No Upload Required</li>
+      <li class="feature-pill">Copy · TXT · JSON</li>
+    </ul>
+  </section>
+
+  <!-- ── UPLOAD AREA ────────────────────────────────────────────────────── -->
+  <div class="ite-upload-zone" id="iteUploadZone" aria-label="Upload image — click, drag, or paste">
+    <input type="file" id="iteFileInput" class="visually-hidden" accept="image/png,image/jpeg,image/webp,image/bmp,image/tiff,image/gif" aria-label="Choose image file">
+
+    <div class="ite-upload-idle" id="iteUploadIdle">
+      <div class="ite-upload-graphic" aria-hidden="true">
+        <svg class="ite-upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <div class="ite-upload-ring" aria-hidden="true"></div>
+      </div>
+      <div class="ite-upload-copy">
+        <p class="ite-upload-headline">Drop your image here</p>
+        <p class="ite-upload-sub">or <button class="ite-upload-trigger" id="iteUploadTrigger" type="button">browse files</button> · paste from clipboard</p>
+      </div>
+      <div class="ite-upload-types">
+        <span class="ite-type-badge">PNG</span>
+        <span class="ite-type-badge">JPG</span>
+        <span class="ite-type-badge">WEBP</span>
+        <span class="ite-type-badge">BMP</span>
+        <span class="ite-type-badge">TIFF</span>
+        <span class="ite-type-badge">GIF</span>
+      </div>
+    </div>
+
+    <div class="ite-upload-dropping" id="iteUploadDropping" aria-hidden="true">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <p>Release to upload</p>
+    </div>
+  </div>
+
+  <!-- ── WORKSPACE ──────────────────────────────────────────────────────── -->
+  <div class="ite-workspace" id="iteWorkspace" hidden>
+
+    <!-- LEFT: Image Preview -->
+    <div class="ite-pane ite-pane--image">
+      <div class="ite-pane-header">
+        <span class="ite-pane-label">Image Preview</span>
+        <div class="ite-pane-actions">
+          <button class="jf-icon-btn" id="iteZoomIn" title="Zoom In" aria-label="Zoom in">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            Zoom In
+          </button>
+          <button class="jf-icon-btn" id="iteZoomOut" title="Zoom Out" aria-label="Zoom out">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+            Zoom Out
+          </button>
+          <button class="jf-icon-btn" id="iteRotateLeft" title="Rotate Left" aria-label="Rotate left">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.83"/></svg>
+            Rotate
+          </button>
+          <button class="jf-icon-btn" id="iteRotateRight" title="Rotate Right" aria-label="Rotate right">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.83"/></svg>
+            Rotate
+          </button>
+          <button class="jf-icon-btn" id="iteFit" title="Fit Image" aria-label="Fit image">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            Fit
+          </button>
+          <button class="jf-icon-btn" id="iteReplace" title="Replace Image" aria-label="Replace image">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Replace
+          </button>
+          <button class="jf-icon-btn ite-icon-btn--danger" id="iteRemove" title="Remove Image" aria-label="Remove image">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            Remove
+          </button>
+        </div>
+      </div>
+
+      <div class="ite-image-viewport" id="iteImageViewport">
+        <img id="iteImagePreview" class="ite-preview-img" src="" alt="Uploaded preview" draggable="false">
+      </div>
+
+      <div class="ite-image-info" id="iteImageInfo">
+        <div class="ite-info-item">
+          <span class="ite-info-label">File</span>
+          <span class="ite-info-value" id="iteInfoName">—</span>
+        </div>
+        <div class="ite-info-item">
+          <span class="ite-info-label">Resolution</span>
+          <span class="ite-info-value" id="iteInfoRes">—</span>
+        </div>
+        <div class="ite-info-item">
+          <span class="ite-info-label">Format</span>
+          <span class="ite-info-value" id="iteInfoFormat">—</span>
+        </div>
+        <div class="ite-info-item">
+          <span class="ite-info-label">Size</span>
+          <span class="ite-info-value" id="iteInfoSize">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Extracted Text -->
+    <div class="ite-pane ite-pane--output">
+      <div class="ite-pane-header">
+        <span class="ite-pane-label">Extracted Text</span>
+        <div class="ite-pane-actions">
+          <button class="jf-icon-btn" id="iteCopy" title="Copy text" aria-label="Copy extracted text">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+          <button class="jf-icon-btn" id="iteDownloadTxt" title="Download TXT" aria-label="Download as TXT">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            TXT
+          </button>
+          <button class="jf-icon-btn" id="iteDownloadJson" title="Download JSON" aria-label="Download as JSON">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            JSON
+          </button>
+          <button class="jf-icon-btn" id="iteDownloadPdf" title="Download PDF" aria-label="Download as PDF">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF
+          </button>
+          <button class="jf-icon-btn ite-icon-btn--danger" id="iteClearOutput" title="Clear output" aria-label="Clear extracted text">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="ite-output-wrap">
+        <!-- Empty State -->
+        <div class="ite-output-empty" id="iteOutputEmpty">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <p>Extracted text will appear here</p>
+        </div>
+
+        <!-- Loading State -->
+        <div class="ite-output-loading" id="iteOutputLoading" hidden>
+          <div class="ite-spinner" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <p>Extracting text…</p>
+          <div class="ite-progress-bar" role="progressbar" aria-label="Extraction progress">
+            <div class="ite-progress-fill" id="iteProgressFill"></div>
+          </div>
+        </div>
+
+        <!-- Output Textarea -->
+        <textarea
+          id="iteOutputTextarea"
+          class="ite-output-textarea"
+          readonly
+          placeholder="No text extracted yet…"
+          aria-label="Extracted text output"
+          spellcheck="false"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTION BAR ──────────────────────────────────────────────────────── -->
+  <div class="ite-action-bar" id="iteActionBar" hidden>
+    <button class="btn btn-primary ite-extract-btn" id="iteExtractBtn" type="button" aria-label="Extract text from image">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        <path d="M8 11h6M11 8v6"/>
+      </svg>
+      Extract Text
+    </button>
+  </div>
+
+  <!-- ── STATUS CARD ─────────────────────────────────────────────────────── -->
+  <div class="ite-status-card" id="iteStatusCard" hidden>
+    <div class="ite-status-header">
+      <span class="ite-status-icon" id="iteStatusIcon" aria-hidden="true"></span>
+      <p class="ite-status-title" id="iteStatusTitle">Ready</p>
+    </div>
+    <div class="ite-status-body" id="iteStatusBody"></div>
+  </div>
+
+  <!-- ── STATISTICS ──────────────────────────────────────────────────────── -->
+  <div class="ite-stats-grid" id="iteStatsGrid" hidden>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Characters</span>
+      <span class="ite-stat-value" id="statChars">0</span>
+    </div>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Words</span>
+      <span class="ite-stat-value" id="statWords">0</span>
+    </div>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Lines</span>
+      <span class="ite-stat-value" id="statLines">0</span>
+    </div>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Paragraphs</span>
+      <span class="ite-stat-value" id="statParagraphs">0</span>
+    </div>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Confidence</span>
+      <span class="ite-stat-value" id="statConfidence">—</span>
+    </div>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Processing</span>
+      <span class="ite-stat-value" id="statTime">—</span>
+    </div>
+    <div class="ite-stat-card metric-card">
+      <span class="ite-stat-label">Language</span>
+      <span class="ite-stat-value" id="statLang">—</span>
+    </div>
+  </div>
+
+  <!-- ── FEATURE CARDS ───────────────────────────────────────────────────── -->
+  <div class="ite-features-section">
+    <div class="ite-features-header">
+      <h2 class="ite-features-title">Why Image Text Extractor?</h2>
+      <p class="ite-features-desc">Built for privacy, speed, and accuracy — all processing happens locally in your browser.</p>
+    </div>
+    <div class="ite-features-grid">
+
+      <div class="ite-feature-card metric-card">
+        <div class="ite-feature-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="ite-feature-title">Offline OCR</h3>
+        <p class="ite-feature-desc">No internet connection needed. The entire OCR engine runs locally in your browser using WebAssembly.</p>
+      </div>
+
+      <div class="ite-feature-card metric-card">
+        <div class="ite-feature-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3 class="ite-feature-title">Fast Processing</h3>
+        <p class="ite-feature-desc">Optimised WASM build with worker threads delivers results in seconds, even on large high-resolution images.</p>
+      </div>
+
+      <div class="ite-feature-card metric-card">
+        <div class="ite-feature-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 class="ite-feature-title">High Accuracy</h3>
+        <p class="ite-feature-desc">Powered by Tesseract.js with LSTM neural network models trained on millions of real-world documents.</p>
+      </div>
+
+      <div class="ite-feature-card metric-card">
+        <div class="ite-feature-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 class="ite-feature-title">Multi Language</h3>
+        <p class="ite-feature-desc">Supports 100+ languages including Latin, Cyrillic, Arabic, Chinese, Japanese, Korean, and Devanagari scripts.</p>
+      </div>
+
+      <div class="ite-feature-card metric-card">
+        <div class="ite-feature-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 class="ite-feature-title">Secure & Private</h3>
+        <p class="ite-feature-desc">Your images are processed entirely on-device. Nothing is uploaded to any server. Zero data retention.</p>
+      </div>
+
+      <div class="ite-feature-card metric-card">
+        <div class="ite-feature-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3 class="ite-feature-title">No API Required</h3>
+        <p class="ite-feature-desc">Zero subscriptions. Zero API keys. Zero usage limits. Just open the tool and start extracting text immediately.</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<!-- /.image-text-extractor -->
+
+<input type="file" id="iteReplaceInput" class="visually-hidden" accept="image/png,image/jpeg,image/webp,image/bmp,image/tiff,image/gif" aria-label="Replace image file">
