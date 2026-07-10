@@ -714,53 +714,46 @@ class CodeReviewService:
                     ]
 
                     lines = len(code.splitlines())
-
                     length = node.end_point[0] - node.start_point[0] + 1
-
                     cyclomatic_complexity = CodeReviewService._cyclomatic_complexity(node)
-
                     nesting_depth = CodeReviewService._nesting_depth(node)
                     
-                    if (
-                        cyclomatic_complexity <= 1
-                        and nesting_depth == 0
-                        and lines <= 5
-                    ):
-                        continue
+                    skip_this = (cyclomatic_complexity <= 1 and nesting_depth == 0 and lines <= 5)
+                    
+                    if not skip_this:
+                        score = 0
 
-                    score = 0
+                        if length >= 30:
+                            score += 3
 
-                    if length >= 30:
-                        score += 3
+                        if length >= 60:
+                            score += 4
 
-                    if length >= 60:
-                        score += 4
+                        if length >= 120:
+                            score += 5
 
-                    if length >= 120:
-                        score += 5
+                        if cyclomatic_complexity > 10:
+                            score += 10
 
-                    if cyclomatic_complexity > 10:
-                        score += 10
+                        if nesting_depth > 4:
+                            score += 10
 
-                    if nesting_depth > 4:
-                        score += 10
+                        if "TODO" in code.upper():
+                            score += 3
 
-                    if "TODO" in code.upper():
-                        score += 3
+                        if "FIXME" in code.upper():
+                            score += 3
 
-                    if "FIXME" in code.upper():
-                        score += 3
-
-                    chunks.append({
-                        "file": file["filename"],
-                        "path": file["path"],
-                        "language": language,
-                        "type": node.type,
-                        "start_line": node.start_point[0] + 1,
-                        "end_line": node.end_point[0] + 1,
-                        "code": code,
-                        "priority": score
-                    })
+                        chunks.append({
+                            "file": file["filename"],
+                            "path": file["path"],
+                            "language": language,
+                            "type": node.type,
+                            "start_line": node.start_point[0] + 1,
+                            "end_line": node.end_point[0] + 1,
+                            "code": code,
+                            "priority": score
+                        })
 
                 for child in node.children:
                     traverse(child)

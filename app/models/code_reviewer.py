@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import List
+from typing import List, Optional
 
 class IssueGroup(BaseModel):
     critical: List[str]
@@ -39,11 +39,11 @@ class CodeReviewerRequest(BaseModel):
     
     code: str = Field(..., description="Source code to review")
     language: str = Field(..., description="Programming Language")
-    input_type: str = Field(..., default=None)
-    filename: str = Field(..., default=None)
-    files: list = Field(..., None)
-    zip_path: str = Field(..., None)
     review_type: str = Field(..., description="Type of review")
+    input_type: Optional[str] = Field(None, description="Input type")
+    filename: Optional[str] = Field(None, description="Filename")
+    files: Optional[list] = Field(None, description="Uploaded files")
+    zip_path: Optional[str] = Field(None, description="ZIP file path")
     
     @field_validator("code")
     @classmethod
@@ -51,7 +51,7 @@ class CodeReviewerRequest(BaseModel):
         if not value.strip():
             raise ValueError("Code cannot be empty")
         return value
-    
+
 class CodeReviewerResponse(BaseModel):
     review: CodeReview
     
