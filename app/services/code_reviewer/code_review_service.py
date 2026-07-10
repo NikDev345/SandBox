@@ -7,7 +7,7 @@ import json, os, tempfile, zipfile, re, tiktoken
 from rapidfuzz import fuzz
 from pygments.lexers import guess_lexer
 from tree_sitter_language_pack import get_parser
-from language_dispatcher import LanguageDispatcher
+from app.services.code_reviewer.language_dispatcher import LanguageDispatcher
 from collections import Counter
 
 class CodeReviewService:
