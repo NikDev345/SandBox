@@ -18,8 +18,7 @@ from app.api.summarizer.summarizer import router as summarizer_router
 from app.api.json_fixer.json_fixer import router as json_fixer_router
 from app.api.code_reviewer.code_reviewer import router as code_reviewer_router
 
-import app.main 
-from nicegui import ui
+from nicegui import ui, app
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
 
@@ -33,15 +32,19 @@ try:
 finally:
     db.close()
 
-app = FastAPI()
+fastapi_app = FastAPI()
+app.add_static_files(
+    "/assets",
+    "app/ui/assets"
+)
 
 load_dotenv()
-app.add_middleware(
+fastapi_app.add_middleware(
     SessionMiddleware,
     secret_key=os.getenv("JWT_SECRET_KEY")
 )
 
-app.add_middleware(
+fastapi_app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://127.0.0.1:5500",
@@ -53,18 +56,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router)
-app.include_router(tool_router)
-app.include_router(exe_router)
-app.include_router(analytic_router)
-app.include_router(google_router)
-app.include_router(user_router)
-app.include_router(summarizer_router)
-app.include_router(json_fixer_router)
-app.include_router(code_reviewer_router)
+fastapi_app.include_router(auth_router)
+fastapi_app.include_router(tool_router)
+fastapi_app.include_router(exe_router)
+fastapi_app.include_router(analytic_router)
+fastapi_app.include_router(google_router)
+fastapi_app.include_router(user_router)
+fastapi_app.include_router(summarizer_router)
+fastapi_app.include_router(json_fixer_router)
+fastapi_app.include_router(code_reviewer_router)
+
+
+import app.ui.pages.login
+import app.ui.pages.test
+import app.ui.pages.signup
+import app.ui.pages.dashboard
+import app.ui.pages.profile
+import app.ui.pages.forgot_password
+import app.ui.pages.reset_password
+import app.ui.pages.text_summarizer
+import app.ui.pages.json_fixer
+import app.ui.pages.code_reviewer
+
+
 
 ui.run_with(
-    app,
+    fastapi_app,
     title="SandBox",
     mount_path="/",
     favicon='app/ui/assets/logo.png'

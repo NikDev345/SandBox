@@ -52,6 +52,10 @@ class CodeReviewService:
         "python": {
             "function_definition",
         },
+        "python 3": {
+            "function_definition",
+        },
+        
         "java": {
             "method_declaration",
             "constructor_declaration",
@@ -214,6 +218,21 @@ class CodeReviewService:
         "match_statement",
     }
     
+    LANGUAGE_ALIASES = {
+        "python 3": "python",
+        "python3": "python",
+        "py": "python",
+
+        "c++": "cpp",
+        "cpp": "cpp",
+
+        "c#": "csharp",
+
+        "js": "javascript",
+        "ts": "typescript",
+    }
+
+    
     COMMON_PROJECT_FILES = {
         "python": {
             "requirements.txt",
@@ -292,8 +311,21 @@ class CodeReviewService:
     
     @staticmethod
     def _get_parser(language):
+        
+        print("\n==============================")
+        print("RAW LANGUAGE:", repr(language))
+
+        language = language.lower().strip()
+
+        language = CodeReviewService.LANGUAGE_ALIASES.get(
+            language,
+            language
+        )
+        print("NORMALIZED:", repr(language))
+        print("==============================\n")
         if language not in CodeReviewService.PARSER_CACHE:
             CodeReviewService.PARSER_CACHE[language] = get_parser(language)
+
         return CodeReviewService.PARSER_CACHE[language]
     
     @staticmethod
@@ -343,6 +375,12 @@ class CodeReviewService:
         dependency_graph = CodeReviewService._build_dependency_graph(review_files)
         
         batches = CodeReviewService._build_ai_batches(ranked_files, chunks, dependency_graph)
+        print("\n=========== DEBUG ===========")
+        print("Review Files :", len(review_files))
+        print("Ranked Files :", len(ranked_files))
+        print("Chunks :", len(chunks))
+        print("Batches :", len(batches))
+        print("=============================\n")
                     
         tasks = [GeminiService.generate_code_review(
             batch=batch,
@@ -352,6 +390,11 @@ class CodeReviewService:
             for batch in batches]
                 
         reports = await asyncio.gather(*tasks)  
+        print("\n========== RAW REPORTS ==========")
+        for i, report in enumerate(reports):
+            print(f"\n---- Report {i} ----")
+            print(json.dumps(report, indent=2, ensure_ascii=False))
+        print("=================================\n")
             
         merged_ai_report = CodeReviewService._merge_ai_reports(reports)
         
@@ -373,6 +416,7 @@ class CodeReviewService:
             }),
             output=json.dumps(final_report, ensure_ascii=False)
         )
+        
         
         return final_report
     
@@ -688,18 +732,21 @@ class CodeReviewService:
         chunks = []
 
         for file in files:
-
+            print("Detected language:", file["language"])
+            print("Filename:", file["filename"])
             language = file["language"]
-
+            language = CodeReviewService.LANGUAGE_ALIASES.get(language, language)
             if language not in CodeReviewService.FUNCTION_NODE_TYPES:
                 continue
 
             parser = CodeReviewService._get_parser(language)
+            print("Parser:", parser)
 
             tree = parser.parse(
                 file["code"].encode("utf-8")
             )
 
+            file_chunks = []
             node_types = (
                 CodeReviewService.FUNCTION_NODE_TYPES.get(language, set())
                 |
@@ -744,7 +791,7 @@ class CodeReviewService:
                         if "FIXME" in code.upper():
                             score += 3
 
-                        chunks.append({
+                        file_chunks.append({
                             "file": file["filename"],
                             "path": file["path"],
                             "language": language,
@@ -759,6 +806,29 @@ class CodeReviewService:
                     traverse(child)
 
             traverse(tree.root_node)
+            if not file_chunks:
+
+                file_chunks.append({
+
+                    "file": file["filename"],
+
+                    "path": file["path"],
+
+                    "language": language,
+
+                    "type": "module",
+
+                    "start_line": 1,
+
+                    "end_line": len(file["code"].splitlines()),
+
+                    "code": file["code"],
+
+                    "priority": 100
+
+                })
+
+            chunks.extend(file_chunks)
 
         return chunks
     
@@ -854,15 +924,31 @@ class CodeReviewService:
                 )
 
                 MAX_FUNCTIONS_PER_FILE = 8
-                selected_chunks = file_chunks[:MAX_FUNCTIONS_PER_FILE]
 
-                chunk_tokens = sum(
-                    CodeReviewService._count_tokens(chunk["code"])
-                    for chunk in selected_chunks
-                )
+                selected_chunks = []
 
-                if current_tokens + chunk_tokens > max_tokens:
-                    continue
+                chunk_tokens = 0
+
+                for chunk in file_chunks[:MAX_FUNCTIONS_PER_FILE]:
+
+                    tokens = CodeReviewService._count_tokens(chunk["code"])
+
+                    if current_tokens + chunk_tokens + tokens > max_tokens:
+                        break
+
+                    selected_chunks.append(chunk)
+
+                    chunk_tokens += tokens
+
+                # If even the highest-priority chunk is too large,
+                # still send it instead of producing zero batches.
+                if not selected_chunks and file_chunks:
+
+                    selected_chunks.append(file_chunks[0])
+
+                    chunk_tokens = CodeReviewService._count_tokens(
+                        file_chunks[0]["code"]
+                    )
 
                 batch["files"].append(current)
 

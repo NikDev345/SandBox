@@ -14,7 +14,7 @@ router = APIRouter(
 @router.post("/review", response_model=CodeReviewerResponse)
 async def code_review(data: CodeReviewerRequest, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     try:
-        tool = ToolService.get_tool_by_slug(db, slug='CODE_REVIEWER')
+        tool = ToolService.get_tool_by_slug(db, slug='CODE-REVIEWER')
         if not tool:
             tool_id = 'CODE_REVIEWER'
         else:

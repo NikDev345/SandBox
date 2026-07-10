@@ -1,175 +1,355 @@
-let editor = null;
-let improvedEditor = null;
-let reviewData = null;
+if (window.__CODE_REVIEWER_INITIALIZED__) {
+    console.log("Code Reviewer already initialized.");
+} else {
 
-const tabs = {};
+window.__CODE_REVIEWER_INITIALIZED__ = true;
 
-document.addEventListener("DOMContentLoaded", () => {
+/*****************************************************************
+ * GLOBAL STATE
+ *****************************************************************/
 
-    initializeMonaco();
 
-    initializeEvents();
+const AppState = {
 
-    initializeTabs();
+    inputType: "snippet",
 
-    updateLineCount();
+    language: "auto",
 
-});
+    reviewType: "general",
 
-function initializeMonaco() {
+    projectName: "",
 
-    if (window.__sandbox_monaco_initialized) {
+    files: [],
+
+    currentFile: null,
+
+    reviewResult: null,
+
+    projectStats: {
+        files: 0,
+        folders: 0,
+        functions: 0,
+        classes: 0,
+        loc: 0
+    }
+
+};
+
+/*****************************************************************
+ * DOM ELEMENTS
+ *****************************************************************/
+
+/*****************************************************************
+ * INITIALIZATION
+ *****************************************************************/
+
+let editor;
+waitForPage();
+
+function waitForPage() {
+
+    const required = [
+        "editor",
+        "file-upload",
+        "start-review-btn"
+    ];
+
+    const ready = required.every(id => document.getElementById(id));
+
+    if (!ready) {
+        setTimeout(waitForPage, 100);
         return;
     }
 
-    window.__sandbox_monaco_initialized = true;
+    initialize();
 
-    require.config({
-        paths: {
-            vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs"
+}
+
+let Elements = {};
+function initialize(){
+    Elements = {
+
+        // Upload
+        uploadTab: document.getElementById("tab-upload"),
+        snippetTab: document.getElementById("tab-snippet"),
+
+        uploadSection: document.getElementById("upload-section"),
+
+        dropZone: document.getElementById("project-dropzone"),
+
+        fileUpload: document.getElementById("file-upload"),
+
+        snippetContainer: document.getElementById("snippet-dropzone"),
+
+        snippetInput: document.getElementById("snippet-input"),
+
+        language: document.getElementById("snippet-language"),
+
+        // Buttons
+        reviewButton: document.getElementById("start-review-btn"),
+
+        recentButton: document.getElementById("btn-recent"),
+
+        historyButton: document.getElementById("btn-history"),
+
+        exportButton: document.getElementById("btn-export"),
+
+        copyButton: document.getElementById("btn-copy-review"),
+
+        downloadButton: document.getElementById("btn-download-json"),
+
+        reReviewButton: document.getElementById("btn-re-review"),
+
+        // Editor
+        editor: document.getElementById("editor"),
+
+        // Tree
+        projectTree: document.querySelector(".file-tree"),
+
+        // Status Bar
+        languageStatus: document.getElementById("status-lang"),
+
+        cursorStatus: document.getElementById("status-cursor"),
+
+        lineStatus: document.getElementById("status-lines"),
+
+        encodingStatus: document.getElementById("status-encoding"),
+
+        statFiles: document.getElementById("stat-files"),
+
+        statFolders: document.getElementById("stat-folders"),
+
+        statFunctions: document.getElementById("stat-functions"),
+
+        statClasses: document.getElementById("stat-classes"),
+
+        statLOC: document.getElementById("stat-loc"),
+
+        summary: document.getElementById("summary"),
+
+        overallScore: document.getElementById("overallScore"),
+
+        grade: document.getElementById("grade"),
+
+        verdict: document.getElementById("verdict"),
+
+        correctnessBar: document.getElementById("correctnessBar"),
+        correctnessValue: document.getElementById("correctnessValue"),
+
+        securityBar: document.getElementById("securityBar"),
+        securityValue: document.getElementById("securityValue"),
+
+        performanceBar: document.getElementById("performanceBar"),
+        performanceValue: document.getElementById("performanceValue"),
+
+        maintainabilityBar: document.getElementById("maintainabilityBar"),
+        maintainabilityValue: document.getElementById("maintainabilityValue"),
+
+        readabilityBar: document.getElementById("readabilityBar"),
+        readabilityValue: document.getElementById("readabilityValue"),
+
+    };
+
+    initializeEditor();
+    registerEvents();
+    disableReviewButton();
+
+}
+
+/*****************************************************************
+ * REGISTER EVENTS
+ *****************************************************************/
+function showUploadMode() {
+
+    AppState.inputType = "project";
+
+    Elements.uploadTab.classList.add("active");
+    Elements.snippetTab.classList.remove("active");
+
+    Elements.dropZone.style.display = "flex";
+    Elements.snippetContainer.style.display = "none";
+
+}
+
+function showSnippetMode() {
+
+    AppState.inputType = "snippet";
+
+    Elements.snippetTab.classList.add("active");
+    Elements.uploadTab.classList.remove("active");
+
+    Elements.dropZone.style.display = "none";
+    Elements.snippetContainer.style.display = "block";
+}
+
+function languageChanged() {
+
+    const language = Elements.language.value.toLowerCase();
+
+    setEditorLanguage(language);
+
+}
+
+function registerEvents() {
+
+    document.addEventListener("click", (e) => {
+
+        if (e.target.closest("#tab-upload")) {
+            console.log("Upload Tab");
+            showUploadMode();
+            return;
         }
-    });
 
-    require(["vs/editor/editor.main"], () => {
+        if (e.target.closest("#tab-snippet")) {
+            console.log("Snippet Tab");
+            showSnippetMode();
+            return;
+        }
 
-        monaco.editor.defineTheme("sandbox-dark", {
-            base: "vs-dark",
-            inherit: true,
-            rules: [],
-            colors: {}
-        });
-
-        monaco.editor.defineTheme("sandbox-light", {
-            base: "vs",
-            inherit: true,
-            rules: [],
-            colors: {}
-        });
-
-        const theme =
-            document.documentElement.dataset.theme === "light"
-                ? "sandbox-light"
-                : "sandbox-dark";
-
-        monaco.editor.setTheme(theme);
-
-        editor = monaco.editor.create(
-            document.getElementById("editor"),
-            {
-                value: "",
-                language: "python",
-                theme,
-                automaticLayout: true,
-                minimap: { enabled: false },
-                fontSize: 15,
-                fontFamily: "JetBrains Mono",
-                wordWrap: "on",
-                tabSize: 4,
-                scrollBeyondLastLine: false
-            }
-        );
-
-        improvedEditor = monaco.editor.create(
-            document.getElementById("improvedCode"),
-            {
-                value: "",
-                language: "python",
-                theme,
-                readOnly: true,
-                automaticLayout: true,
-                minimap: { enabled: false },
-                fontSize: 15,
-                fontFamily: "JetBrains Mono",
-                wordWrap: "on",
-                scrollBeyondLastLine: false
-            }
-        );
-
-        editor.onDidChangeModelContent(updateLineCount);
+        if (e.target.closest("#start-review-btn")) {
+            startReview();
+            return;
+        }
 
     });
 
-}
+    Elements.fileUpload?.addEventListener(
+        "change",
+        handleFileUpload
+    );
 
-function initializeEvents() {
-
-    document
-        .getElementById("reviewBtn")
-        .addEventListener("click", reviewCode);
-
-    document
-        .getElementById("copyBtn")
-        .addEventListener("click", copyReview);
-
-    document
-        .getElementById("downloadBtn")
-        .addEventListener("click", downloadReview);
-
-    document
-        .getElementById("clearBtn")
-        .addEventListener("click", clearReview);
-
-    document
-        .getElementById("codeFile")
-        .addEventListener("change", uploadFile);
+    Elements.language?.addEventListener(
+        "change",
+        languageChanged
+    );
 
 }
 
-function initializeTabs() {
+/*****************************************************************
+ * ace EDITOR
+ *****************************************************************/
 
-    document.querySelectorAll(".tab-btn").forEach(button => {
+function initializeEditor() {
 
-        tabs[button.dataset.tab] = button;
+    editor = ace.edit("editor");
 
-        button.addEventListener("click", () => {
+    editor.setTheme("ace/theme/monokai");
 
-            document
-                .querySelectorAll(".tab-btn")
-                .forEach(btn => btn.classList.remove("active"));
+    editor.session.setMode("ace/mode/python");
 
-            document
-                .querySelectorAll(".tab-content")
-                .forEach(tab => tab.classList.remove("active"));
+    editor.setOptions({
 
-            button.classList.add("active");
+        fontSize: 14,
 
-            document
-                .getElementById(button.dataset.tab + "Tab")
-                .classList.add("active");
+        showPrintMargin: false,
 
-        });
+        wrap: true,
+
+        tabSize: 4,
+
+        useSoftTabs: true,
+
+        highlightActiveLine: true
+    });
+
+    editor.session.on("change", () => {
+
+        const lines = editor.session.getLength();
+
+        if (Elements.lineStatus) {
+            Elements.lineStatus.textContent = `${lines} Lines`;
+        }
 
     });
 
 }
 
-function updateLineCount() {
+function setEditorLanguage(language) {
 
-    if (!editor) return;
+    const modes = {
 
-    const lines = editor.getModel().getLineCount();
+        python: "python",
+        java: "java",
+        javascript: "javascript",
+        typescript: "typescript",
+        html: "html",
+        css: "css",
+        sql: "sql",
+        php: "php",
+        go: "golang",
+        rust: "rust",
+        c: "c_cpp",
+        "c++": "c_cpp",
+        csharp: "csharp"
 
-    document.getElementById("lineCount").textContent =
-        `${lines} Lines`;
+    };
+
+    editor.session.setMode(
+        "ace/mode/" + (modes[language] || "text")
+    );
 
 }
 
-async function uploadFile(event) {
+
+/*****************************************************************
+ * BUTTON STATE
+ *****************************************************************/
+
+function disableReviewButton(){
+
+    if (Elements.reviewButton) {
+        Elements.reviewButton.disabled = true;
+    }
+
+}
+
+function enableReviewButton(){
+
+    if (Elements.reviewButton) {
+        Elements.reviewButton.disabled = false;
+    }
+
+}
+
+/*****************************************************************
+ * EVENT HANDLERS
+ *****************************************************************/
+
+async function handleFileUpload(event) {
 
     const file = event.target.files[0];
+    const language = detectLanguage(file.name);
 
     if (!file) return;
 
-    const text = await file.text();
+    const content = await file.text();
+    AppState.inputType = "file";
+    AppState.files = [{
+        name: file.name,
+        path: file.name,
+        content: content,
+        language: language
+    }];
 
-    editor.setValue(text);
+    AppState.currentFile = AppState.files[0];
 
-    const ext = file.name
-        .split(".")
-        .pop()
-        .toLowerCase();
+    editor.setValue(content, -1);
 
-    const languageMap = {
+    updateProjectStats();
+
+    enableReviewButton();
+
+    detectLanguage(file.name);
+
+    renderProjectTree();
+
+}
+
+function detectLanguage(filename) {
+
+    const ext = filename.split(".").pop().toLowerCase();
+
+    const map = {
         py: "python",
         java: "java",
         js: "javascript",
@@ -182,93 +362,231 @@ async function uploadFile(event) {
         php: "php",
         sql: "sql",
         html: "html",
-        css: "css",
-        json: "json"
+        css: "css"
     };
 
-    const language =
-        languageMap[ext] || "plaintext";
+    const language = map[ext] || "text";
 
-    monaco.editor.setModelLanguage(
-        editor.getModel(),
-        language
-    );
+    Elements.language.value = language;
 
-    monaco.editor.setModelLanguage(
-        improvedEditor.getModel(),
-        language
-    );
+    setEditorLanguage(language);
 
-    const select =
-        document.getElementById("languageSelect");
+    return language;
+}
 
-    if (select.querySelector(`option[value="${language}"]`))
-        select.value = language;
-    else
-        select.value = "auto";
+function updateProjectStats() {
 
-    showToast(`${file.name} loaded successfully.`, "success");
+    if (!AppState.currentFile) return;
+
+    const content = AppState.currentFile.content;
+
+    const lines = content.split("\n").length;
+
+    Elements.statFiles.textContent = AppState.files.length;
+
+    Elements.statFolders.textContent = 0;
+
+    Elements.statFunctions.textContent =
+        (content.match(/\b(function|def)\b/g) || []).length;
+
+    Elements.statClasses.textContent =
+        (content.match(/\bclass\b/g) || []).length;
+
+    Elements.statLOC.textContent = lines;
 
 }
 
-function showLoading(show) {
+function renderProjectTree() {
 
-    document.getElementById("loadingCard").hidden = !show;
+    if (!Elements.projectTree) return;
 
-    document.getElementById("reviewBtn").disabled = show;
+    Elements.projectTree.innerHTML = "";
+
+    AppState.files.forEach(file => {
+
+        const item = document.createElement("div");
+
+        item.className = "tree-item";
+
+        item.textContent = file.name;
+
+        item.onclick = () => {
+
+            editor.setValue(file.content, -1);
+
+            AppState.currentFile = file;
+
+        };
+
+        Elements.projectTree.appendChild(item);
+
+    });
 
 }
 
-async function reviewCode() {
+function handleFolderUpload(event){
 
-    if (!editor) return;
+    console.log("Folder Upload");
 
-    const code = editor.getValue().trim();
+}
 
-    if (!code) {
-        showToast("Please enter some code.", "error");
-        return;
-    }
+function handleZipUpload(event){
 
-    const language = document.getElementById("languageSelect").value;
-    const reviewType = document.getElementById("reviewTypeSelect").value;
+    console.log("ZIP Upload");
 
-    showLoading(true);
+}
+
+function inputTypeChanged(){
+
+    if (!Elements.inputType) return;
+
+    AppState.inputType = Elements.inputType.value;
+
+}
+
+async function startReview() {
 
     try {
 
+        const payload = buildRequest();
+
+        console.log(payload);
+
         const response = await fetch("/code-review/review", {
+
             method: "POST",
+
             credentials: "include",
+
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                code,
-                language,
-                review_type: reviewType
-            })
+
+            body: JSON.stringify(payload)
+
         });
+
+        if (!response.ok) {
+
+            const err = await response.json();
+
+            console.log(JSON.stringify(err, null, 2));
+
+            alert(err.detail);
+
+            return;
+
+        }
 
         const result = await response.json();
 
-        if (!response.ok)
-            throw new Error(result.detail || "Failed to review code.");
+        console.log(result);
 
-        reviewData = result.review;
+        AppState.reviewResult = result.review;
 
-        renderReview(reviewData);
-        showToast("Code reviewed successfully.", "success");
+        renderReview(result.review);
 
-    } catch (err) {
+    }
 
-        console.error(err);
+    catch (e) {
 
-        showToast(err.message, "error");
+        console.log(JSON.stringify(e, null, 2));
 
-    } finally {
+        alert(e);
 
-        showLoading(false);
+    }
+
+}
+
+function buildRequest() {
+
+    if (AppState.inputType === "snippet") {
+
+        return {
+
+            input_type: "snippet",
+
+            language: Elements.language.value,
+
+            code: editor.getValue(),
+
+            filename: null,
+
+            files: null,
+
+            zip_path: null
+
+        };
+
+    }
+
+    if (AppState.inputType === "file") {
+
+        const file = AppState.currentFile;
+
+        return {
+
+            input_type: "file",
+
+            review_type: document.getElementById("review-type").value,
+
+            language: file.language,
+
+            code: file.content,
+
+            filename: file.name,
+
+            files: null,
+
+            zip_path: null
+
+        };
+
+    }
+
+    if (AppState.inputType === "multiple") {
+
+        return {
+
+            input_type: "multiple",
+
+            language: "auto",
+
+            code: null,
+
+            filename: null,
+
+            files: AppState.files.map(file => ({
+
+                filename: file.name,
+
+                code: file.content
+
+            })),
+
+            zip_path: null
+
+        };
+
+    }
+
+    if (AppState.inputType === "zip") {
+
+        return {
+
+            input_type: "zip",
+
+            language: "auto",
+
+            code: null,
+
+            filename: null,
+
+            files: null,
+
+            zip_path: AppState.zipPath
+
+        };
 
     }
 
@@ -276,409 +594,50 @@ async function reviewCode() {
 
 function renderReview(review) {
 
-    renderScore(review.score);
+    console.log(review);
 
-    renderSummary(review.summary);
-
-    renderIssues(review.issues);
-
-    renderSecurity(review.security);
-
-    renderPerformance(review.performance);
-
-    renderBestPractices(review.best_practices);
-
-    renderSuggestions(review.suggestions);
-
-    renderImprovedCode(
-        review.improved_code,
-        review.language
-    );
-
-    renderVerdict(review.verdict);
+    renderSummary(review);
 
 }
 
-function renderScore(score) {
+function renderSummary(review) {
 
-    document.getElementById("overallScore").textContent =
-        `${(score.overall / 10).toFixed(1)}`;
+    const ai = review.ai_analysis;
 
-    setProgress("correctnessScore", score.correctness);
+    if (Elements.summary) {
 
-    setProgress("securityScore", score.security);
+        let text = "";
 
-    setProgress("performanceScore", score.performance);
+        if (ai.summary) {
 
-    setProgress("maintainabilityScore", score.maintainability);
+            text += ai.summary.overview || "";
 
-    setProgress("readabilityScore", score.readability);
+            if (ai.summary.architecture) {
 
-}
+                text += "\n\n## Architecture\n";
 
-function setProgress(id, value) {
+                text += ai.summary.architecture;
 
-    document.getElementById(id).style.width =
-        `${value}%`;
+            }
 
-}
+            if (ai.summary.modules?.length) {
 
-function renderSummary(summary) {
+                text += "\n\n## Modules\n";
 
-    document.getElementById("summary").textContent =
-        summary;
+                ai.summary.modules.forEach(module => {
 
-}
+                    text += `- ${module}\n`;
 
-function renderSecurity(text) {
+                });
 
-    document.getElementById("security").textContent =
-        text;
+            }
 
-}
-
-function renderPerformance(text) {
-
-    document.getElementById("performance").textContent =
-        text;
-
-}
-
-function renderBestPractices(text) {
-
-    document.getElementById("bestPractices").textContent =
-        text;
-
-}
-
-function renderVerdict(text) {
-
-    document.getElementById("verdict").textContent =
-        text;
-
-}
-
-function renderSuggestions(items) {
-
-    const ul =
-        document.getElementById("suggestions");
-
-    ul.innerHTML = "";
-
-    if (!items.length) {
-
-        ul.innerHTML = "<li>No suggestions.</li>";
-
-        return;
-
-    }
-
-    items.forEach(item => {
-
-        const li = document.createElement("li");
-
-        li.textContent = item;
-
-        ul.appendChild(li);
-
-    });
-
-}
-
-function renderIssues(issues) {
-
-    renderIssueList(
-        "criticalIssues",
-        issues.critical
-    );
-
-    renderIssueList(
-        "highIssues",
-        issues.high
-    );
-
-    renderIssueList(
-        "mediumIssues",
-        issues.medium
-    );
-
-    renderIssueList(
-        "lowIssues",
-        issues.low
-    );
-
-}
-
-function renderIssueList(id, issues) {
-
-    const ul =
-        document.getElementById(id);
-
-    ul.innerHTML = "";
-
-    if (!issues.length) {
-
-        ul.innerHTML =
-            "<li>None</li>";
-
-        return;
-
-    }
-
-    issues.forEach(issue => {
-
-        const li =
-            document.createElement("li");
-
-        li.textContent = issue;
-
-        ul.appendChild(li);
-
-    });
-
-}
-
-function renderImprovedCode(code, language) {
-
-    if (!improvedEditor) return;
-
-    monaco.editor.setModelLanguage(
-        improvedEditor.getModel(),
-        language || "plaintext"
-    );
-
-    improvedEditor.setValue(code);
-
-}
-
-async function copyReview() {
-
-    if (!reviewData) {
-        showToast("No review available.", "error");
-        return;
-    }
-
-    try {
-
-        await navigator.clipboard.writeText(
-            JSON.stringify(reviewData, null, 2)
-        );
-
-        showToast("Review copied to clipboard.", "success");
-
-    } catch (err) {
-
-        console.error(err);
-
-        showToast("Failed to copy review.", "error");
-
-    }
-
-}
-
-function downloadReview() {
-
-    if (!reviewData) {
-        showToast("No review available.", "error");
-        return;
-    }
-
-    let markdown = "";
-
-    markdown += "# Code Review\n\n";
-
-    markdown += `**Overall Score:** ${(reviewData.score.overall / 10).toFixed(1)}/10\n\n`;
-
-    markdown += "## Summary\n\n";
-    markdown += `${reviewData.summary}\n\n`;
-
-    markdown += "## Issues\n\n";
-
-    markdown += "### Critical\n";
-    reviewData.issues.critical.forEach(i => markdown += `- ${i}\n`);
-    markdown += "\n";
-
-    markdown += "### High\n";
-    reviewData.issues.high.forEach(i => markdown += `- ${i}\n`);
-    markdown += "\n";
-
-    markdown += "### Medium\n";
-    reviewData.issues.medium.forEach(i => markdown += `- ${i}\n`);
-    markdown += "\n";
-
-    markdown += "### Low\n";
-    reviewData.issues.low.forEach(i => markdown += `- ${i}\n`);
-    markdown += "\n";
-
-    markdown += "## Security\n\n";
-    markdown += reviewData.security + "\n\n";
-
-    markdown += "## Performance\n\n";
-    markdown += reviewData.performance + "\n\n";
-
-    markdown += "## Best Practices\n\n";
-    markdown += reviewData.best_practices + "\n\n";
-
-    markdown += "## Suggestions\n\n";
-
-    reviewData.suggestions.forEach(s => {
-        markdown += `- ${s}\n`;
-    });
-
-    markdown += "\n";
-
-    markdown += "## Improved Code\n\n";
-
-    markdown += "```";
-    markdown += reviewData.language;
-    markdown += "\n";
-    markdown += reviewData.improved_code;
-    markdown += "\n```\n\n";
-
-    markdown += "## Final Verdict\n\n";
-    markdown += reviewData.verdict;
-
-    const blob = new Blob(
-        [markdown],
-        {
-            type: "text/markdown"
         }
-    );
 
-    const url = URL.createObjectURL(blob);
+        Elements.summary.innerHTML = marked.parse(text);
 
-    const a = document.createElement("a");
-
-    a.href = url;
-    a.download = "code_review.md";
-
-    document.body.appendChild(a);
-
-    a.click();
-
-    a.remove();
-
-    URL.revokeObjectURL(url);
-    showToast("Review downloaded successfully.", "success");
-
-}
-
-function clearReview() {
-
-    reviewData = null;
-
-    if (editor)
-        editor.setValue("");
-
-    if (improvedEditor)
-        improvedEditor.setValue("");
-
-    document.getElementById("summary").textContent = "";
-
-    document.getElementById("security").textContent = "";
-
-    document.getElementById("performance").textContent = "";
-
-    document.getElementById("bestPractices").textContent = "";
-
-    document.getElementById("verdict").textContent = "";
-
-    document.getElementById("overallScore").textContent = "0.0";
-
-    document.getElementById("lineCount").textContent = "0 Lines";
-
-    [
-        "criticalIssues",
-        "highIssues",
-        "mediumIssues",
-        "lowIssues",
-        "suggestions"
-    ].forEach(id => {
-        document.getElementById(id).innerHTML = "";
-    });
-
-    [
-        "correctnessScore",
-        "securityScore",
-        "performanceScore",
-        "maintainabilityScore",
-        "readabilityScore"
-    ].forEach(id => {
-        document.getElementById(id).style.width = "0%";
-    });
-
-    document.getElementById("codeFile").value = "";
-
-    showToast("Editor cleared.", "success");
-
-}
-
-function setEditorTheme(theme) {
-
-    if (!window.monaco)
-        return;
-
-    monaco.editor.setTheme(
-        theme === "light"
-            ? "sandbox-light"
-            : "sandbox-dark"
-    );
-
-}
-
-const observer = new MutationObserver(() => {
-
-    const theme =
-        document.documentElement.dataset.theme;
-
-    setEditorTheme(theme);
-
-});
-
-observer.observe(
-    document.documentElement,
-    {
-        attributes: true,
-        attributeFilter: ["data-theme"]
     }
-);
 
-window.addEventListener("resize", () => {
-
-    if (editor)
-        editor.layout();
-
-    if (improvedEditor)
-        improvedEditor.layout();
-
-});
-
-function showToast(message, type = "info") {
-    const container = document.getElementById("toast-container");
-    if (!container) return;
-
-    const icons = {
-        success: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-        error:   `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
-        info:    `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>`
-    };
-
-    const toast = document.createElement("div");
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `${icons[type] || icons.info}<span>${escapeHtml(message)}</span>`;
-    container.appendChild(toast);
-
-    setTimeout(() => {
-        toast.classList.add("toast-exit");
-        toast.addEventListener("animationend", () => toast.remove(), { once: true });
-    }, 3500);
 }
 
-function escapeHtml(value) {
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
 }

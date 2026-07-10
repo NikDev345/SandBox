@@ -1,374 +1,357 @@
-<section class="tool-page">
+<div class="dashboard-shell">
+  <div class="bg-grid"></div>
 
-    <div class="tool-header">
+  <header class="dashboard-topbar reviewer-topbar">
+    <div class="reviewer-header-left">
+      <h1 class="page-title">AI Code Reviewer</h1>
+      <span class="page-description">Automated static analysis & refactoring</span>
+    </div>
+    
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" id="btn-recent">
+        <svg><use href="#icon-clock"></use></svg> Recent Executions
+      </button>
+      <button class="btn btn-ghost btn-sm" id="btn-history">
+        <svg><use href="#icon-history"></use></svg> History
+      </button>
+      <div class="v-divider"></div>
+      <button class="btn btn-ghost btn-sm" id="btn-copy-review">
+        <svg><use href="#icon-copy"></use></svg> Copy Review
+      </button>
+      <button class="btn btn-ghost btn-sm" id="btn-download-json">
+        <svg><use href="#icon-download"></use></svg> JSON
+      </button>
+      <button class="btn btn-primary btn-sm" id="btn-export">
+        <svg><use href="#icon-export"></use></svg> Export Report
+      </button>
+    </div>
+  </header>
 
-        <div>
+  <main class="dashboard-main reviewer-main">
+    
+    <div class="upload-hero-section" id="upload-section">
+      <div class="upload-card">
+        <div class="upload-header">
+  <h2>Upload Workspace</h2>
+  <p>Drop your project or paste a snippet to begin AI analysis.</p>
+</div>
 
-            <h1 class="tool-title">Code Reviewer</h1>
+<div class="upload-mode-toggle">
+  <button class="mode-toggle-btn active" id="tab-upload">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+    File Upload
+  </button>
+  <button class="mode-toggle-btn" id="tab-snippet">
+    <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+    Paste Snippet
+  </button>
+</div>
 
-            <p class="tool-subtitle">
-                AI-powered code review for bugs, security, performance and clean code.
-            </p>
+<div class="file-drop-zone large-dropzone" id="project-dropzone">
+  <input type="file" id="file-upload" class="file-input-hidden" multiple webkitdirectory directory />
+  <div class="file-drop-content">
+    <div class="upload-icon-ring">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+    </div>
+    <span class="upload-title">Click to upload or drag & drop</span>
+    <span class="upload-subtitle">Supports Single File, Multiple Files, Folder, or ZIP</span>
+  </div>
+</div>
 
-        </div>
+<div class="snippet-input-zone" id="snippet-dropzone" style="display: none;">
+  <div class="snippet-toolbar">
+    <span class="snippet-label">Raw Code</span>
+    <div class="select-wrap select-sm">
+      <select class="form-select" id="snippet-language">
+        <option>Auto-detect</option>
+        <option>TypeScript / JavaScript</option>
+        <option>Python</option>
+        <option>Java</option>
+        <option>C++ / C#</option>
+        <option>HTML / CSS</option>
+      </select>
+      <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+  </div>
+  <textarea class="form-textarea snippet-textarea" id="snippet-input" placeholder="// Paste your code snippet here...&#10;&#10;function reviewMe() {&#10;  console.log('Ready for analysis');&#10;}"></textarea>
+</div>
 
-        <button id="reviewBtn" class="primary-btn">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            Review Code
-        </button>
+<div class="pre-review-stats" id="pre-review-stats" style="display: none;">
+  </div>
 
+<div class="upload-actions">
+  <button class="btn btn-primary start-review-btn" id="start-review-btn" disabled>
+    <svg viewBox="0 0 24 24"><path d="m5 3 14 9-14 9V3z"/></svg> Start AI Review
+  </button>
+</div>
+
+<div class="review-timeline-container" id="review-timeline" style="display: none;">
+  </div>      
+        
+      </div>
     </div>
 
-    <section class="toolbar">
+    <div class="reviewer-layout" id="reviewer-workspace" style="display: none;">
+      
+      <aside class="panel-left explorer-panel">
+        <div class="panel-header">
+          <h3>Explorer</h3>
+        </div>
+        <div class="explorer-search">
+          <div class="command-search mini-search">
+            <svg class="search-icon" viewBox="0 0 24 24"><path d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+            <input type="text" class="search" placeholder="Search files...">
+          </div>
+        </div>
+        
+        <div class="tree-container">
+          <ul class="file-tree">
+            <li class="tree-folder expanded">
+              <div class="tree-item-row">
+                <svg class="folder-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <span>src</span>
+              </div>
+              <ul class="tree-children">
+                <li class="tree-folder">
+                  <div class="tree-item-row">
+                    <svg class="folder-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    <span>components</span>
+                  </div>
+                </li>
+                <li class="tree-file active">
+                  <div class="tree-item-row">
+                    <span class="file-icon ts-icon">TS</span>
+                    <span>ReviewDashboard.ts</span>
+                  </div>
+                </li>
+                <li class="tree-file">
+                  <div class="tree-item-row">
+                    <span class="file-icon ts-icon">TS</span>
+                    <span>utils.ts</span>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="explorer-stats-footer">
 
-        <div class="toolbar-left">
-
-            <div class="toolbar-item">
-
-                <label>Language</label>
-
-                <select id="languageSelect">
-
-                    <option value="auto">Auto Detect</option>
-                    <option value="python">Python</option>
-                    <option value="java">Java</option>
-                    <option value="javascript">JavaScript</option>
-                    <option value="typescript">TypeScript</option>
-                    <option value="cpp">C++</option>
-                    <option value="c">C</option>
-                    <option value="csharp">C#</option>
-                    <option value="go">Go</option>
-                    <option value="rust">Rust</option>
-                    <option value="php">PHP</option>
-                    <option value="sql">SQL</option>
-                    <option value="html">HTML</option>
-                    <option value="css">CSS</option>
-
-                </select>
-
+            <div class="mini-stat">
+                <span>Files</span>
+                <strong id="stat-files">0</strong>
             </div>
 
-            <div class="toolbar-item">
+            <div class="mini-stat">
+                <span>Folders</span>
+                <strong id="stat-folders">0</strong>
+            </div>
 
-                <label>Review</label>
+            <div class="mini-stat">
+                <span>Functions</span>
+                <strong id="stat-functions">0</strong>
+            </div>
 
-                <select id="reviewTypeSelect">
+            <div class="mini-stat">
+                <span>Classes</span>
+                <strong id="stat-classes">0</strong>
+            </div>
 
-                    <option value="general">General</option>
-                    <option value="security">Security</option>
-                    <option value="performance">Performance</option>
-                    <option value="bugs">Bug Detection</option>
-                    <option value="clean-code">Clean Code</option>
-                    <option value="best-practices">Best Practices</option>
-
-                </select>
-
+            <div class="mini-stat">
+                <span>LOC</span>
+                <strong id="stat-loc">0</strong>
             </div>
 
         </div>
+      </aside>
 
-        <div class="toolbar-right">
-
-            <label class="upload-btn">
-
-                <i class="fa-solid fa-upload"></i>
-
-                Upload Code
-
-                <input
-                    id="codeFile"
-                    type="file"
-                    hidden
-                    accept=".py,.java,.js,.ts,.cpp,.c,.cs,.go,.rs,.php,.sql,.html,.css,.json,.txt">
-
-            </label>
-
-            <button id="copyBtn" class="secondary-btn">
-                <i class="fa-regular fa-copy"></i>
-                Copy
-            </button>
-
-            <button id="downloadBtn" class="secondary-btn">
-                <i class="fa-solid fa-download"></i>
-                Download
-            </button>
-
-            <button id="clearBtn" class="secondary-btn">
-                <i class="fa-solid fa-trash"></i>
-                Clear
-            </button>
-
+      <section class="panel-center editor-panel">
+        <div class="editor-toolbar">
+          <div class="toolbar-left">
+            <span class="active-file-path">src / ReviewDashboard.ts</span>
+          </div>
+          <div class="toolbar-right">
+            <div class="select-wrap select-sm">
+              <select class="form-select" id="input-type">
+                <option>Full Project</option>
+                <option>Active File</option>
+              </select>
+              <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            <div class="select-wrap select-sm">
+              <select class="form-select" id="review-type">
+                <option>Deep Analysis</option>
+                <option>Security Focus</option>
+                <option>Performance Focus</option>
+              </select>
+              <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-re-review">Review Active File</button>
+          </div>
         </div>
+        
+        <div class="ace-container">
+            <div id="editor"></div>
+        </div>
+        <div class="editor-statusbar">
+          <div class="status-left">
+            <span id="status-lang">TypeScript</span>
+            <span id="status-cursor">Ln 42, Col 18</span>
+          </div>
+          <div class="status-right">
+            <span id="status-encoding">UTF-8</span>
+            <span id="status-lines">248 Lines</span>
+          </div>
+        </div>
+      </section>
 
-    </section>
+      <aside class="panel-right ai-dashboard-panel">
+        <div class="panel-header">
+          <h3>AI Analysis</h3>
+        </div>
+        
+        <div class="dashboard-scroll-area">
+          
+          <div class="post-review-metrics">
+            <div class="metric-tiny"><span>Duration</span> <strong>12.4s</strong></div>
+            <div class="metric-tiny"><span>Tokens</span> <strong>85k</strong></div>
+            <div class="metric-tiny"><span>Exec Time</span> <strong>0.8s</strong></div>
+          </div>
 
-    <div id="loadingCard" class="loading-bar" hidden>
-
-        <div class="spinner"></div>
-
-        <span>Reviewing code using Gemini...</span>
-
-    </div>
-
-    <div class="workspace">
-
-        <!-- LEFT -->
-
-        <section class="editor-panel">
-
-            <div class="panel-header">
-
-                <span>Source Code</span>
-
-                <span id="lineCount">0 Lines</span>
-
+          <div class="score-card">
+            <div class="circular-score">
+              <svg viewBox="0 0 36 36" class="circular-chart success">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="circle" stroke-dasharray="92, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <text class="percentage" id="overallScore">0</text>
+              </svg>
             </div>
-
-            <div id="editor" class="editor"></div>
-
-        </section>
-
-        <!-- RIGHT -->
-
-        <section class="review-panel">
-
-            <div class="review-top">
-
-                <div class="score-card">
-
-                    <div class="score-value" id="overallScore">
-                        0.0
-                    </div>
-
-                    <div class="score-label">
-                        Overall Score
-                    </div>
-
-                </div>
-
-                <div class="metrics">
-
-                    <div class="metric">
-
-                        <span>Correctness</span>
-
-                        <div class="progress">
-
-                            <div id="correctnessScore" class="progress-fill"></div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="metric">
-
-                        <span>Security</span>
-
-                        <div class="progress">
-
-                            <div id="securityScore" class="progress-fill"></div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="metric">
-
-                        <span>Performance</span>
-
-                        <div class="progress">
-
-                            <div id="performanceScore" class="progress-fill"></div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="metric">
-
-                        <span>Maintainability</span>
-
-                        <div class="progress">
-
-                            <div id="maintainabilityScore" class="progress-fill"></div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="metric">
-
-                        <span>Readability</span>
-
-                        <div class="progress">
-
-                            <div id="readabilityScore" class="progress-fill"></div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="score-details">
+              <h4 id="grade">--</h4>
+              <p id="verdict">Waiting for review...</p>
             </div>
+          </div>
 
-            <div class="review-tabs">
+          <div class="quality-metrics">
+            <div class="q-metric">
 
-                <button class="tab-btn active" data-tab="summary">
-                    Summary
-                </button>
+                <div class="q-metric-header">
 
-                <button class="tab-btn" data-tab="issues">
-                    Issues
-                </button>
+                    <span>Correctness</span>
 
-                <button class="tab-btn" data-tab="security">
-                    Security
-                </button>
-
-                <button class="tab-btn" data-tab="performance">
-                    Performance
-                </button>
-
-                <button class="tab-btn" data-tab="improved">
-                    Improved Code
-                </button>
-
-                <button class="tab-btn" data-tab="verdict">
-                    Verdict
-                </button>
-
-            </div>
-
-            <div class="review-content">
-
-                <!-- SUMMARY -->
-
-                <div class="tab-content active" id="summaryTab">
-
-                    <div class="review-section">
-
-                        <h3>Summary</h3>
-
-                        <p id="summary">
-                            No review yet.
-                        </p>
-
-                    </div>
-
-                    <div class="review-section">
-
-                        <h3>Suggestions</h3>
-
-                        <ul id="suggestions"></ul>
-
-                    </div>
+                    <span id="correctnessValue">0%</span>
 
                 </div>
 
-                <!-- ISSUES -->
-
-                <div class="tab-content" id="issuesTab">
-
-                    <div class="issue-group">
-
-                        <h3>🔴 Critical</h3>
-
-                        <ul id="criticalIssues"></ul>
-
-                    </div>
-
-                    <div class="issue-group">
-
-                        <h3>🟠 High</h3>
-
-                        <ul id="highIssues"></ul>
-
-                    </div>
-
-                    <div class="issue-group">
-
-                        <h3>🟡 Medium</h3>
-
-                        <ul id="mediumIssues"></ul>
-
-                    </div>
-
-                    <div class="issue-group">
-
-                        <h3>🟢 Low</h3>
-
-                        <ul id="lowIssues"></ul>
-
-                    </div>
-
-                </div>
-
-                <!-- SECURITY -->
-
-                <div class="tab-content" id="securityTab">
-
-                    <div class="review-section">
-
-                        <h3>Security Review</h3>
-
-                        <p id="security"></p>
-
-                    </div>
-
-                </div>
-
-                <!-- PERFORMANCE -->
-
-                <div class="tab-content" id="performanceTab">
-
-                    <div class="review-section">
-
-                        <h3>Performance Review</h3>
-
-                        <p id="performance"></p>
-
-                    </div>
-
-                    <div class="review-section">
-
-                        <h3>Best Practices</h3>
-
-                        <p id="bestPractices"></p>
-
-                    </div>
-
-                </div>
-
-                <!-- IMPROVED CODE -->
-
-                <div class="tab-content" id="improvedTab">
+                <div class="q-bar">
 
                     <div
-                        id="improvedCode"
-                        class="improved-editor"
+                        id="correctnessBar"
+                        class="q-fill"
+                        style="width:0%"
                     ></div>
 
                 </div>
 
-                <!-- VERDICT -->
-
-                <div class="tab-content" id="verdictTab">
-
-                    <div class="review-section">
-
-                        <h3>Final Verdict</h3>
-
-                        <p id="verdict"></p>
-
-                    </div>
-
-                </div>
-
             </div>
+            <span id="securityValue">0%</span>
 
-        </section>
+            <div id="securityBar"
+            class="q-fill"
+            style="width:0%">
+
+            <span id="performanceValue">0%</span>
+
+            <div id="performanceBar"
+            class="q-fill"
+            style="width:0%">
+
+            <span id="maintainabilityValue">0%</span>
+
+            <div id="maintainabilityBar"
+            class="q-fill"
+            style="width:0%">
+
+            <span id="readabilityValue">0%</span>
+
+            <div id="readabilityBar"
+            class="q-fill"
+            style="width:0%">
+          </div>
+
+          <div class="ai-summary-card">
+            <svg class="ai-sparkle" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            <p id="summary">
+            Waiting for review...
+            </p>
+          </div>
+
+          <div class="review-accordions">
+            
+            <details class="review-category" open>
+              <summary>
+                <div class="summary-title">
+                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                  Logic Bugs & Performance
+                </div>
+                <span class="issue-count warning">2 Issues</span>
+              </summary>
+              <div class="category-content">
+                <div class="issue-card">
+                  <div class="issue-header">
+                    <span class="severity-badge warning">Medium</span>
+                    <span class="issue-file">utils.ts : Ln 42</span>
+                  </div>
+                  <h5 class="issue-title">Inefficient DOM Traversal in Loop</h5>
+                  <p class="issue-desc">Querying the DOM inside a `for` loop causes layout thrashing and slows down performance.</p>
+                  <div class="issue-recommendation">
+                    <strong>Recommendation:</strong> Cache the DOM element outside the loop or batch DOM updates.
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="review-category">
+              <summary>
+                <div class="summary-title">
+                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                  Best Practices & Readability
+                </div>
+                <span class="issue-count success">0 Issues</span>
+              </summary>
+              <div class="category-content">
+                <p class="empty-issues">Code adheres perfectly to best practices.</p>
+              </div>
+            </details>
+
+            <details class="review-category">
+              <summary>
+                <div class="summary-title">
+                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                  Improved Code Suggestion
+                </div>
+              </summary>
+              <div class="category-content">
+                <div class="improved-code-wrapper">
+                  <div class="improved-code-toolbar">
+                    <span>utils.ts (Refactored)</span>
+                    <div class="code-actions">
+                      <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></button>
+                      <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg></button>
+                      <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+                    </div>
+                  </div>
+                  <div class="mini-monaco" id="monaco-improved">
+                     <div id="improved-editor"></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+          </div>
+        </div>
+      </aside>
 
     </div>
-
-</section>
+  </main>
+</div>

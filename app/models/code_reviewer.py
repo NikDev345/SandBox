@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional
+from typing import List, Optional, Any
 
 class IssueGroup(BaseModel):
     critical: List[str]
@@ -15,22 +15,11 @@ class ReviewScore(BaseModel):
     maintainability: int
     readability: int
     
-class CodeReview(BaseModel):
+class CodeReviewResult(BaseModel):
 
-    language: str
-    review_type: str
-    quality: str
-    estimated_complexity: str
-    lines_of_code: int
-    score: ReviewScore
-    summary: str
-    issues: IssueGroup
-    security: str
-    performance: str
-    best_practices: str
-    suggestions: List[str]
-    improved_code: str
-    verdict: str
+    local_analysis: dict[str, Any]
+
+    ai_analysis: dict[str, Any]
 
 class CodeReviewerRequest(BaseModel):
     '''
@@ -53,5 +42,5 @@ class CodeReviewerRequest(BaseModel):
         return value
 
 class CodeReviewerResponse(BaseModel):
-    review: CodeReview
+    review: CodeReviewResult
     
