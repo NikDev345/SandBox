@@ -203,19 +203,145 @@ class CodeReviewService:
     }
     
     COMPLEXITY_NODE_TYPES = {
-        "if_statement",
-        "elif_clause",
-        "else_clause",
-        "for_statement",
-        "while_statement",
-        "do_statement",
-        "switch_statement",
-        "case_statement",
-        "catch_clause",
-        "except_clause",
-        "conditional_expression",
-        "binary_expression",
-        "match_statement",
+
+        "python": {
+            "if_statement",
+            "for_statement",
+            "while_statement",
+            "except_clause",
+            "conditional_expression",
+            "match_statement",
+        },
+
+        "javascript": {
+            "if_statement",
+            "for_statement",
+            "for_in_statement",
+            "for_of_statement",
+            "while_statement",
+            "do_statement",
+            "switch_statement",
+            "switch_case",
+            "catch_clause",
+            "conditional_expression",
+        },
+
+        "typescript": {
+            "if_statement",
+            "for_statement",
+            "for_in_statement",
+            "for_of_statement",
+            "while_statement",
+            "do_statement",
+            "switch_statement",
+            "switch_case",
+            "catch_clause",
+            "conditional_expression",
+        },
+
+        "java": {
+            "if_statement",
+            "for_statement",
+            "enhanced_for_statement",
+            "while_statement",
+            "do_statement",
+            "switch_expression",
+            "switch_label",
+            "catch_clause",
+            "ternary_expression",
+        },
+
+        "c": {
+            "if_statement",
+            "for_statement",
+            "while_statement",
+            "do_statement",
+            "switch_statement",
+            "case_statement",
+            "conditional_expression",
+        },
+
+        "cpp": {
+            "if_statement",
+            "for_statement",
+            "while_statement",
+            "do_statement",
+            "switch_statement",
+            "case_statement",
+            "conditional_expression",
+            "catch_clause",
+        },
+
+        "csharp": {
+            "if_statement",
+            "for_statement",
+            "foreach_statement",
+            "while_statement",
+            "do_statement",
+            "switch_statement",
+            "switch_expression",
+            "catch_clause",
+            "conditional_expression",
+        },
+
+        "go": {
+            "if_statement",
+            "for_statement",
+            "expression_switch_statement",
+            "type_switch_statement",
+            "case_clause",
+            "select_statement",
+        },
+
+        "php": {
+            "if_statement",
+            "for_statement",
+            "foreach_statement",
+            "while_statement",
+            "do_statement",
+            "switch_statement",
+            "case_statement",
+            "catch_clause",
+            "conditional_expression",
+        },
+
+        "ruby": {
+            "if",
+            "unless",
+            "while",
+            "until",
+            "for",
+            "case",
+            "when",
+            "rescue",
+        },
+
+        "rust": {
+            "if_expression",
+            "for_expression",
+            "while_expression",
+            "loop_expression",
+            "match_expression",
+        },
+
+        "kotlin": {
+            "if_expression",
+            "for_statement",
+            "while_statement",
+            "do_while_statement",
+            "when_expression",
+            "catch_block",
+        },
+
+        "swift": {
+            "if_statement",
+            "for_statement",
+            "while_statement",
+            "repeat_while_statement",
+            "switch_statement",
+            "catch_block",
+            "guard_statement",
+        },
     }
     
     LANGUAGE_ALIASES = {
@@ -381,8 +507,10 @@ class CodeReviewService:
         print("Chunks :", len(chunks))
         print("Batches :", len(batches))
         print("=============================\n")
+        
+        gemini = GeminiService()
                     
-        tasks = [GeminiService.generate_code_review(
+        tasks = [gemini.generate_code_review(
             batch=batch,
             local_report=local_report,
             dependency_graph=dependency_graph
@@ -424,30 +552,12 @@ class CodeReviewService:
     def _merge_ai_reports(ai_reports):
 
         merged = {
-            "summary": {
-                "overview": "",
-                "architecture": "",
-                "modules": []
-            },
             "logic_bugs": [],
             "performance": [],
             "readability": [],
             "best_practices": [],
             "refactoring": [],
-            "production_readiness": {
-                "score": 100,
-                "summary": "",
-                "strengths": [],
-                "weaknesses": [],
-                "missing": []
-            },
-            "documentation": {
-                "overview": "",
-                "classes": [],
-                "functions": []
-            },
-            "unit_tests": [],
-            "improved_code": []
+            "unit_tests": []
         }
 
         seen_logic = set()
@@ -461,13 +571,6 @@ class CodeReviewService:
         for report in ai_reports:
 
             review = report["review"]
-
-            # ---------------- Summary ----------------
-            if not merged["summary"]["overview"]:
-                merged["summary"] = review.get(
-                    "summary",
-                    merged["summary"]
-                )
 
             # ---------------- Logic Bugs ----------------
             for bug in review.get("logic_bugs", []):
@@ -529,49 +632,6 @@ class CodeReviewService:
                     seen_refactor.add(key)
                     merged["refactoring"].append(item)
 
-            # ---------------- Production Readiness ----------------
-            prod = review.get("production_readiness", {})
-
-            merged["production_readiness"]["score"] = min(
-                merged["production_readiness"]["score"],
-                prod.get("score", 100)
-            )
-
-            merged["production_readiness"]["strengths"].extend(
-                prod.get("strengths", [])
-            )
-
-            merged["production_readiness"]["weaknesses"].extend(
-                prod.get("weaknesses", [])
-            )
-
-            merged["production_readiness"]["missing"].extend(
-                prod.get("missing", [])
-            )
-
-            if not merged["production_readiness"]["summary"]:
-                merged["production_readiness"]["summary"] = prod.get(
-                    "summary",
-                    ""
-                )
-
-            # ---------------- Documentation ----------------
-            docs = review.get("documentation", {})
-
-            if not merged["documentation"]["overview"]:
-                merged["documentation"]["overview"] = docs.get(
-                    "overview",
-                    ""
-                )
-
-            merged["documentation"]["classes"].extend(
-                docs.get("classes", [])
-            )
-
-            merged["documentation"]["functions"].extend(
-                docs.get("functions", [])
-            )
-
             # ---------------- Unit Tests ----------------
             for test in review.get("unit_tests", []):
 
@@ -580,42 +640,6 @@ class CodeReviewService:
                 if key not in seen_tests:
                     seen_tests.add(key)
                     merged["unit_tests"].append(test)
-
-            # ---------------- Improved Code ----------------
-            for code in review.get("improved_code", []):
-
-                key = (
-                    code.get("file"),
-                    code.get("function")
-                )
-
-                if key not in seen_code:
-                    seen_code.add(key)
-                    merged["improved_code"].append(code)
-
-        merged["summary"]["modules"] = list(
-            dict.fromkeys(
-                merged["summary"].get("modules", [])
-            )
-        )
-
-        merged["production_readiness"]["strengths"] = list(
-            dict.fromkeys(
-                merged["production_readiness"]["strengths"]
-            )
-        )
-
-        merged["production_readiness"]["weaknesses"] = list(
-            dict.fromkeys(
-                merged["production_readiness"]["weaknesses"]
-            )
-        )
-
-        merged["production_readiness"]["missing"] = list(
-            dict.fromkeys(
-                merged["production_readiness"]["missing"]
-            )
-        )
 
         return merged
     
@@ -734,7 +758,7 @@ class CodeReviewService:
         for file in files:
             print("Detected language:", file["language"])
             print("Filename:", file["filename"])
-            language = file["language"]
+            language = CodeReviewService._normalize_language(file["language"])
             language = CodeReviewService.LANGUAGE_ALIASES.get(language, language)
             if language not in CodeReviewService.FUNCTION_NODE_TYPES:
                 continue
@@ -762,7 +786,7 @@ class CodeReviewService:
 
                     lines = len(code.splitlines())
                     length = node.end_point[0] - node.start_point[0] + 1
-                    cyclomatic_complexity = CodeReviewService._cyclomatic_complexity(node)
+                    cyclomatic_complexity = CodeReviewService._cyclomatic_complexity(node, language)
                     nesting_depth = CodeReviewService._nesting_depth(node)
                     
                     skip_this = (cyclomatic_complexity <= 1 and nesting_depth == 0 and lines <= 5)
@@ -923,7 +947,7 @@ class CodeReviewService:
                     reverse=True,
                 )
 
-                MAX_FUNCTIONS_PER_FILE = 8
+                MAX_FUNCTIONS_PER_FILE = 5
 
                 selected_chunks = []
 
@@ -1186,7 +1210,7 @@ class CodeReviewService:
         syntax_errors = []
         
         for file in files:
-            language = file["language"]
+            language = CodeReviewService._normalize_language(file["language"])
             try:
                 parser = CodeReviewService._get_parser(language)
             except Exception:
@@ -1220,7 +1244,7 @@ class CodeReviewService:
         stats = []
         
         for file in files:
-            language = file["language"]
+            language = CodeReviewService._normalize_language(file["language"])
 
             try:
                 parser = CodeReviewService._get_parser(language)
@@ -1259,7 +1283,7 @@ class CodeReviewService:
 
         for file in files:
 
-            language = file["language"]
+            language = CodeReviewService._normalize_language(file["language"])
 
             if language == "python":
                 findings.extend(LanguageDispatcher._python_security_scan(file))
@@ -1359,7 +1383,7 @@ class CodeReviewService:
         # Like it will divide code into different functions and classes.
         # So that we can compare if 2 functions/classes are identical or not.
 
-        language = file["language"]
+        language = CodeReviewService._normalize_language(file["language"])
 
         if language not in CodeReviewService.FUNCTION_NODE_TYPES:
             return []
@@ -1441,7 +1465,7 @@ class CodeReviewService:
     def _get_function_nodes(file):
         # this function will return all the function as nodes in a source code.
         # so we will know all the fucntion in the code to compute complexity
-        language = file["language"]
+        language = CodeReviewService._normalize_language(file["language"])
 
         if language not in CodeReviewService.FUNCTION_NODE_TYPES:
             return []
@@ -1466,7 +1490,7 @@ class CodeReviewService:
     def _get_class_nodes(file):
         # this function will return all the classes as nodes in a source code.
         # so we will know all the class in the code to compute complexity
-        language = file["language"]
+        language = CodeReviewService._normalize_language(file["language"])
 
         if language not in CodeReviewService.CLASS_NODE_TYPES:
             return []
@@ -1502,17 +1526,19 @@ class CodeReviewService:
         return node.end_point[0] - node.start_point[0] + 1
     
     @staticmethod
-    def _cyclomatic_complexity(node):
+    def _cyclomatic_complexity(node, language):
         # Cyclomatic COmplexity means how many independent execution paths exists in a code
         # Its formula = 1 + number of decision points
         # A decision point is any construct that can change the execution path.
         # For eg: if-else, while loop, for loop. IT creates a new branch and changes the path
-        
-        complexity = 1
+        node_types = CodeReviewService.COMPLEXITY_NODE_TYPES[
+            CodeReviewService._normalize_language(language)
+        ]
+        complexity = 1  
         stack = [node]
         while stack:
             current = stack.pop()
-            if current.type in CodeReviewService.COMPLEXITY_NODE_TYPES:
+            if current.type in node_types:
                 complexity += 1
             stack.extend(current.children)
 
@@ -1553,12 +1579,13 @@ class CodeReviewService:
         
         for file in files:
             functions = []
+            language = CodeReviewService._normalize_language(file["language"])
             for node in CodeReviewService._get_function_nodes(file):
                 functions.append({
                     "start_line": node.start_point[0] + 1,
                     "end_line": node.end_point[0] + 1,
                     "function_length": CodeReviewService._function_length(node),
-                    "cyclomatic_complexity": CodeReviewService._cyclomatic_complexity(node),
+                    "cyclomatic_complexity": CodeReviewService._cyclomatic_complexity(node, language),
                     "nesting_depth": CodeReviewService._nesting_depth(node)
                 })
                 
@@ -1580,12 +1607,27 @@ class CodeReviewService:
         return complexity_report
     
     # --------------complexity analysis completed---------------------------------
-    
+    @staticmethod
+    def _normalize_language(language: str) -> str:
+
+        language = language.lower().strip()
+
+        mapping = {
+            "python 3": "python",
+            "python2": "python",
+            "python 2": "python",
+            "c++": "cpp",
+            "c#": "c_sharp",
+            "js": "javascript",
+            "ts": "typescript",
+        }
+
+        return mapping.get(language, language)
     # -------------dependency analysis------------------------------------------
     @staticmethod
     def _extract_imports(file):
         # this will extract all the import lines from the source code.
-        language = file["language"]
+        language = CodeReviewService._normalize_language(file["language"])
         if language not in CodeReviewService.IMPORT_NODE_TYPES:
             return []
         parser = CodeReviewService._get_parser(language)

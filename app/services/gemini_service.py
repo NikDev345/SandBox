@@ -1,15 +1,11 @@
 import os
 import re
-
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import json
-
-load_dotenv()
-
 import config
-
+from config import GEMINI_MODEL
 
 class GeminiService:
     """
@@ -57,7 +53,7 @@ class GeminiService:
 
         try:
             response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
+                model=GEMINI_MODEL,
                 contents=prompt,
             )
             return response.text.strip()
@@ -126,47 +122,84 @@ class GeminiService:
         }
         
         system_prompt = """
-You are an expert software engineer reviewing a software project.
+You are a senior software engineer reviewing part of a software project.
 
 Input:
-- Source code chunks
+- Code chunks
 - Dependency graph
 - Local static analysis
 
-The local analyzer has already completed:
-- Syntax validation
-- File statistics
-- Security analysis
-- Duplicate detection
+The local analysis is already complete and should be treated as the source of truth.
+
+Do NOT repeat:
+- Syntax errors
+- Security findings
+- Duplicate code findings
 - Complexity analysis
 - Dependency analysis
+- File statistics
 - Project structure analysis
-
-Treat the local analysis as the source of truth.
-
-Do NOT:
-- Repeat local analysis.
-- Recompute syntax, security, complexity, duplicates, dependencies, statistics or project structure.
-- Invent issues not supported by the code.
-
-Instead, explain why reported issues matter and suggest improvements.
 
 Analyze only the supplied code.
 
-Review:
+Focus only on:
+1. Logic bugs
+2. Performance issues
+3. Readability and maintainability
+4. Best practice violations
+5. Refactoring opportunities
+6. Unit test suggestions
 
-1. Project Summary
-2. Logic Bugs
-3. Performance
-4. Readability
-5. Best Practices
-6. Refactoring
-7. Production Readiness (0-100)
-8. Documentation
-9. Unit Test Suggestions
-10. Improved Code (only when worthwhile)
 
-Return ONLY valid JSON.
+Rules:
+- Explain each issue in maximum 5-10 words STRICTLY..
+- Provide exactly one actionable suggestion for each issue.
+- Do not repeat similar findings.
+- If no issue exists for a category, return an empty array.
+- Do not include markdown.
+- Return only valid JSON.
+
+Return a JSON object with these keys:
+
+{
+ 
+  "logic_bugs": [
+    {
+      "file": "",
+      "line": '',
+      "severity": "",
+      "issue": "",
+      "suggestion": ""
+    }
+  ],
+
+  "performance": [
+    {
+      "file": "",
+      "line": '',
+      "severity": "",
+      "issue": "",
+      "suggestion": ""
+    }
+  ],
+
+  "readability": [],
+  "best_practices": [],
+  "refactoring": [],
+  "unit_tests": []
+
+}
+
+Maximum findings:
+
+Logic Bugs: 5
+Performance: 5
+Readability: 5
+Best Practices: 5
+Refactoring: 5
+Unit Tests: 5
+
+Give the top and most critical findings so that i should not exceed the maximum findings limit
 """
 
         '''
@@ -250,15 +283,19 @@ Return ONLY valid JSON.
         
         try:
             response = await self.client.aio.models.generate_content(
-                model="gemini-2.5-flash",
+                model=GEMINI_MODEL,
                 contents=[system_prompt, prompt],
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.2,
-                    max_output_tokens=4096
+                    max_output_tokens=10000
                 )
             )
             text = response.text.strip()
+
+            print("\n========== GEMINI RESPONSE ==========")
+            print(text)
+            print("=====================================\n")
 
             if text.startswith("```"):
                 text = (
