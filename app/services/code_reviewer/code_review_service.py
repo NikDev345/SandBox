@@ -48,6 +48,21 @@ class CodeReviewService:
         for ext in extensions
     }
     
+    FUNCTION_NAME_NODE_TYPES = {
+        "python": {"identifier"},
+        "java": {"identifier"},
+        "javascript": {"identifier", "property_identifier"},
+        "typescript": {"identifier", "property_identifier"},
+        "php": {"name"},
+        "go": {"identifier"},
+        "c": {"identifier"},
+        "cpp": {"identifier"},
+        "csharp": {"identifier"},
+        "rust": {"identifier"},
+        "kotlin": {"simple_identifier"},
+        "swift": {"simple_identifier"},
+    }
+    
     FUNCTION_NODE_TYPES = {
         "python": {
             "function_definition",
@@ -1582,11 +1597,26 @@ class CodeReviewService:
             language = CodeReviewService._normalize_language(file["language"])
             for node in CodeReviewService._get_function_nodes(file):
                 functions.append({
-                    "start_line": node.start_point[0] + 1,
-                    "end_line": node.end_point[0] + 1,
-                    "function_length": CodeReviewService._function_length(node),
-                    "cyclomatic_complexity": CodeReviewService._cyclomatic_complexity(node, language),
-                    "nesting_depth": CodeReviewService._nesting_depth(node)
+                    "name":
+                        CodeReviewService._function_name(node,file),
+
+                    "start_line":
+                        node.start_point[0]+1,
+
+                    "end_line":
+                        node.end_point[0]+1,
+
+                    "function_length":
+                        CodeReviewService._function_length(node),
+
+                    "cyclomatic_complexity":
+                        CodeReviewService._cyclomatic_complexity(
+                            node,
+                            language
+                        ),
+
+                    "nesting_depth":
+                        CodeReviewService._nesting_depth(node)
                 })
                 
             classes = []
@@ -1605,6 +1635,23 @@ class CodeReviewService:
             })
         
         return complexity_report
+    
+    @staticmethod
+    def _function_name(node, file):
+
+        language = CodeReviewService._normalize_language(file["language"])
+        code = file["code"]
+
+        node_types = CodeReviewService.FUNCTION_NAME_NODE_TYPES.get(
+            language,
+            {"identifier"}
+        )
+
+        for child in node.children:
+            if child.type in node_types:
+                return code[child.start_byte:child.end_byte]
+
+        return "Anonymous"
     
     # --------------complexity analysis completed---------------------------------
     @staticmethod

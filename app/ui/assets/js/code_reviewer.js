@@ -480,10 +480,9 @@ async function startReview() {
 
         const result = await response.json();
 
-        console.log(result);
-
         AppState.reviewResult = result.review;
-
+        document.getElementById("upload-section").style.display = "none";
+        document.getElementById("reviewer-workspace").style.display = "grid"
         renderReview(result.review);
 
     }
@@ -592,11 +591,262 @@ function buildRequest() {
 
 }
 
-function renderReview(review) {
+function renderReview(review){
+    renderProjectOverview(
+        review.local_analysis
+    );
+    renderFileTree(AppState.files);
+    renderSummary(
+        review
+    );
+    renderScore(
+        review
+    );
+    renderLocalAnalysis(
+        review.local_analysis
+    );
+    renderIssueAccordions(
+        review.ai_analysis
+    );
+}
 
-    console.log(review);
+function openFile(filename){
 
-    renderSummary(review);
+    const file =
+        AppState.files.find(
+            f=>f.filename===filename
+        );
+
+    if(!file) return;
+
+    editor.setValue(
+        file.code,
+        -1
+    );
+
+    setEditorLanguage(
+        file.language
+    );
+
+}
+
+function gotoIssue(file,line){
+
+    openFile(file);
+
+    editor.gotoLine(
+        line,
+        0,
+        true
+    );
+
+    editor.scrollToLine(
+        line,
+        true,
+        true
+    );
+
+    editor.session.highlightLines(
+        line-1,
+        line-1,
+        "ace_active-line"
+    );
+
+    editor.focus();
+
+}
+
+function severityColor(level){
+
+    switch(level){
+
+        case "critical":
+            return "#ef4444";
+
+        case "high":
+            return "#f97316";
+
+        case "medium":
+            return "#facc15";
+
+        default:
+            return "#22c55e";
+
+    }
+
+}
+
+function getFileExtension(file){
+
+    const ext=file.split(".").pop();
+
+    switch(ext){
+
+        case "py": return "🐍";
+
+        case "java": return "☕";
+
+        case "js": return "JS";
+
+        case "ts": return "TS";
+
+        case "cpp": return "C++";
+
+        case "cs": return "C#";
+
+        case "go": return "Go";
+
+        case "php": return "PHP";
+
+        default: return "📄";
+
+    }
+
+}
+
+function renderIssueAccordions(ai){
+
+    const container =
+        document.getElementById("review-accordions");
+
+    container.innerHTML="";
+
+    renderCategory(
+        container,
+        "Logic Bugs",
+        ai.logic_bugs
+    );
+
+    renderCategory(
+        container,
+        "Performance",
+        ai.performance
+    );
+
+    renderCategory(
+        container,
+        "Readability",
+        ai.readability
+    );
+
+    renderCategory(
+        container,
+        "Best Practices",
+        ai.best_practices
+    );
+
+    renderCategory(
+        container,
+        "Refactoring",
+        ai.refactoring
+    );
+
+    renderCategory(
+        container,
+        "Unit Tests",
+        ai.unit_tests
+    );
+
+}
+
+function renderScore(review){
+
+    const ai = review.ai_analysis;
+
+    let score = 100;
+
+    score -= ai.logic_bugs.length * 8;
+    score -= ai.performance.length * 5;
+    score -= ai.readability.length * 2;
+    score -= ai.best_practices.length * 3;
+    score -= ai.refactoring.length * 2;
+
+    score = Math.max(score,0);
+
+    Elements.overallScore.textContent = score;
+
+    if(score>=90){
+
+        Elements.grade.textContent="A";
+
+        Elements.verdict.textContent="Excellent";
+
+    }
+
+    else if(score>=75){
+
+        Elements.grade.textContent="B";
+
+        Elements.verdict.textContent="Good";
+
+    }
+
+    else if(score>=60){
+
+        Elements.grade.textContent="C";
+
+        Elements.verdict.textContent="Needs Improvement";
+
+    }
+
+    else{
+
+        Elements.grade.textContent="D";
+
+        Elements.verdict.textContent="Poor";
+
+    }
+
+    setProgress(
+        Elements.correctnessBar,
+        100-ai.logic_bugs.length*10,
+        Elements.correctnessValue
+    );
+
+    setProgress(
+        Elements.securityBar,
+        100-review.local_analysis.security.length*10,
+        Elements.securityValue
+    );
+
+    setProgress(
+        Elements.performanceBar,
+        100-ai.performance.length*10,
+        Elements.performanceValue
+    );
+
+    setProgress(
+        Elements.maintainabilityBar,
+        100-ai.refactoring.length*10,
+        Elements.maintainabilityValue
+    );
+
+    setProgress(
+        Elements.readabilityBar,
+        100-ai.readability.length*10,
+        Elements.readabilityValue
+    );
+
+}
+
+function renderProjectOverview(local) {
+
+    const stats = local.statistics[0];
+
+    Elements.statFiles.textContent =
+        local.project_structure.total_files;
+
+    Elements.statFolders.textContent =
+        local.project_structure.folders.length;
+
+    Elements.statFunctions.textContent =
+        stats.functions;
+
+    Elements.statClasses.textContent =
+        stats.classes;
+
+    Elements.statLOC.textContent =
+        stats.total_lines;
 
 }
 
@@ -604,40 +854,312 @@ function renderSummary(review) {
 
     const ai = review.ai_analysis;
 
-    if (Elements.summary) {
+    let html = "";
 
-        let text = "";
+    html += "<h4>AI Review Summary</h4>";
 
-        if (ai.summary) {
+    const total =
+        ai.logic_bugs.length +
+        ai.performance.length +
+        ai.readability.length +
+        ai.best_practices.length +
+        ai.refactoring.length +
+        ai.unit_tests.length;
 
-            text += ai.summary.overview || "";
+    html += `<p>${total} findings detected.</p>`;
 
-            if (ai.summary.architecture) {
+    Elements.summary.innerHTML = html;
 
-                text += "\n\n## Architecture\n";
+}
 
-                text += ai.summary.architecture;
+function renderCategory(container,title,issues){
 
-            }
+    const details=document.createElement("details");
 
-            if (ai.summary.modules?.length) {
+    details.className="review-category";
 
-                text += "\n\n## Modules\n";
+    details.open=true;
 
-                ai.summary.modules.forEach(module => {
+    details.innerHTML=`
 
-                    text += `- ${module}\n`;
+    <summary>
 
-                });
+        <div class="summary-title">
 
-            }
+            ${title}
 
-        }
+        </div>
 
-        Elements.summary.innerHTML = marked.parse(text);
+        <span class="issue-count">
+
+            ${issues.length}
+
+        </span>
+
+    </summary>
+
+    <div class="category-content"></div>
+
+    `;
+
+    const body=
+        details.querySelector(".category-content");
+
+    if(issues.length===0){
+
+        body.innerHTML=`
+            <p class="empty-issues">
+                No issues found.
+            </p>
+        `;
 
     }
 
+    else{
+
+        issues.forEach(issue=>{
+
+            body.innerHTML+=`
+
+            <div class="issue-card">
+
+                <div class="issue-header">
+
+                    <span class="severity-badge">
+
+                        ${issue.severity || "-"}
+
+                    </span>
+
+                    <span>
+
+                        ${issue.file || ""}
+
+                        ${issue.line ? ": Line "+issue.line : ""}
+
+                    </span>
+
+                </div>
+
+                <h5>
+
+                    ${issue.issue}
+
+                </h5>
+
+                <div class="issue-recommendation">
+
+                    ${issue.suggestion}
+
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+    }
+
+    container.appendChild(details);
+
 }
+
+function renderLocalAnalysis(local){
+
+    const container =
+        document.getElementById("local-analysis");
+
+    container.innerHTML="";
+
+    renderLocalSection(
+        container,
+        "Syntax",
+        local.syntax
+    );
+
+    renderLocalSection(
+        container,
+        "Security",
+        local.security
+    );
+
+    renderLocalSection(
+        container,
+        "Duplicates",
+        local.duplicates
+    );
+
+    renderLocalSection(
+        container,
+        "Dependencies",
+        local.dependencies
+    );
+
+    renderComplexity(
+        container,
+        local.complexity
+    );
+
+}
+
+function renderComplexity(container,data){
+
+    const card=document.createElement("div");
+
+    card.className="local-card";
+
+    let html=`
+
+    <h4>Complexity Analysis</h4>
+
+    <table class="review-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Function</th>
+
+                <th>Lines</th>
+
+                <th>Complexity</th>
+
+                <th>Nesting</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+    `;
+
+    data.forEach(file=>{
+
+        file.functions.forEach(fn=>{
+
+            html+=`
+
+            <tr>
+
+                <td>
+
+                    ${fn.name || "Function"}
+
+                </td>
+
+                <td>
+
+                    ${fn.function_length}
+
+                </td>
+
+                <td>
+
+                    ${fn.cyclomatic_complexity}
+
+                </td>
+
+                <td>
+
+                    ${fn.nesting_depth}
+
+                </td>
+
+            </tr>
+
+            `;
+
+        });
+
+    });
+
+    html+=`
+
+        </tbody>
+
+    </table>
+
+    `;
+
+    card.innerHTML=html;
+
+    container.appendChild(card);
+
+}
+
+function renderFileTree(files){
+
+    const tree =
+        document.querySelector(".file-tree");
+
+    tree.innerHTML="";
+
+    files.forEach(file=>{
+
+        tree.innerHTML += `
+
+        <li class="tree-file">
+
+            <div
+                class="tree-item-row"
+                onclick="openFile('${file.filename}')">
+
+                <span class="file-icon">
+
+                    ${getFileExtension(file.filename)}
+
+                </span>
+
+                <span>
+
+                    ${file.filename}
+
+                </span>
+
+            </div>
+
+        </li>
+
+        `;
+
+    });
+
+}
+
+function renderLocalSection(
+    container,
+    title,
+    data
+){
+
+    const card=document.createElement("div");
+
+    card.className="local-card";
+
+    card.innerHTML=`
+
+        <h4>${title}</h4>
+
+        <pre>
+
+${JSON.stringify(data,null,2)}
+
+        </pre>
+
+    `;
+
+    container.appendChild(card);
+
+}
+
+function setProgress(bar,value,label){
+    value=Math.max(0,Math.min(100,value));
+    bar.style.width=value+"%";
+    label.textContent=value+"%";
+}
+
+
 
 }

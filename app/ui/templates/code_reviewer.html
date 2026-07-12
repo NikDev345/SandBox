@@ -285,8 +285,15 @@
             Waiting for review...
             </p>
           </div>
+          <h3 class="section-title">
+              Local Analysis
+          </h3>
 
-          <div class="review-accordions">
+          <div id="local-analysis">
+
+          </div>
+
+          <div class="review-accordions" id="review-accordions">
             
             <details class="review-category" open>
               <summary>
@@ -294,18 +301,25 @@
                   <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
                   Logic Bugs & Performance
                 </div>
-                <span class="issue-count warning">2 Issues</span>
+                <span class="issue-count warning">-</span>
               </summary>
               <div class="category-content">
-                <div class="issue-card">
+                <div
+                class="issue-card"
+
+                onclick="gotoIssue(
+                '${issue.file}',
+                ${issue.line}
+                )"
+                >
                   <div class="issue-header">
-                    <span class="severity-badge warning">Medium</span>
-                    <span class="issue-file">utils.ts : Ln 42</span>
+                    <span class="severity-badge warning">-</span>
+                    <span class="issue-file">-</span>
                   </div>
-                  <h5 class="issue-title">Inefficient DOM Traversal in Loop</h5>
-                  <p class="issue-desc">Querying the DOM inside a `for` loop causes layout thrashing and slows down performance.</p>
+                  <h5 class="issue-title">-</h5>
+                  <p class="issue-desc">-</p>
                   <div class="issue-recommendation">
-                    <strong>Recommendation:</strong> Cache the DOM element outside the loop or batch DOM updates.
+                    <strong>-</strong>
                   </div>
                 </div>
               </div>
@@ -317,10 +331,10 @@
                   <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
                   Best Practices & Readability
                 </div>
-                <span class="issue-count success">0 Issues</span>
+                <span class="issue-count success"></span>
               </summary>
               <div class="category-content">
-                <p class="empty-issues">Code adheres perfectly to best practices.</p>
+                <p class="empty-issues"></p>
               </div>
             </details>
 
@@ -328,13 +342,13 @@
               <summary>
                 <div class="summary-title">
                   <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-                  Improved Code Suggestion
+                  
                 </div>
               </summary>
               <div class="category-content">
                 <div class="improved-code-wrapper">
                   <div class="improved-code-toolbar">
-                    <span>utils.ts (Refactored)</span>
+                    <span></span>
                     <div class="code-actions">
                       <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></button>
                       <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg></button>
