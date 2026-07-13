@@ -32,58 +32,58 @@
     <div class="upload-hero-section" id="upload-section">
       <div class="upload-card">
         <div class="upload-header">
-  <h2>Upload Workspace</h2>
-  <p>Drop your project or paste a snippet to begin AI analysis.</p>
-</div>
-
-<div class="upload-mode-toggle">
-  <button class="mode-toggle-btn active" id="tab-upload">
-    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
-    File Upload
-  </button>
-  <button class="mode-toggle-btn" id="tab-snippet">
-    <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-    Paste Snippet
-  </button>
-</div>
-
-<div class="file-drop-zone large-dropzone" id="project-dropzone">
-  <input type="file" id="file-upload" class="file-input-hidden" multiple webkitdirectory directory />
-  <div class="file-drop-content">
-    <div class="upload-icon-ring">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+      <h2>Upload Workspace</h2>
+      <p>Drop your project or paste a snippet to begin AI analysis.</p>
     </div>
-    <span class="upload-title">Click to upload or drag & drop</span>
-    <span class="upload-subtitle">Supports Single File, Multiple Files, Folder, or ZIP</span>
-  </div>
-</div>
 
-<div class="snippet-input-zone" id="snippet-dropzone" style="display: none;">
-  <div class="snippet-toolbar">
-    <span class="snippet-label">Raw Code</span>
-    <div class="select-wrap select-sm">
-      <select class="form-select" id="snippet-language">
-        <option>Auto-detect</option>
-        <option>TypeScript / JavaScript</option>
-        <option>Python</option>
-        <option>Java</option>
-        <option>C++ / C#</option>
-        <option>HTML / CSS</option>
-      </select>
-      <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+    <div class="upload-mode-toggle">
+      <button class="mode-toggle-btn active" id="tab-upload">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+        File Upload
+      </button>
+      <button class="mode-toggle-btn" id="tab-snippet">
+        <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        Paste Snippet
+      </button>
     </div>
-  </div>
-  <textarea class="form-textarea snippet-textarea" id="snippet-input" placeholder="// Paste your code snippet here...&#10;&#10;function reviewMe() {&#10;  console.log('Ready for analysis');&#10;}"></textarea>
-</div>
 
-<div class="pre-review-stats" id="pre-review-stats" style="display: none;">
-  </div>
+    <div class="file-drop-zone large-dropzone" id="project-dropzone">
+      <input type="file" id="file-upload" class="file-input-hidden" multiple webkitdirectory directory />
+      <div class="file-drop-content">
+        <div class="upload-icon-ring">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+        </div>
+        <span class="upload-title">Click to upload or drag & drop</span>
+        <span class="upload-subtitle">Supports Single File, Multiple Files, Folder, or ZIP</span>
+      </div>
+    </div>
 
-<div class="upload-actions">
-  <button class="btn btn-primary start-review-btn" id="start-review-btn" disabled>
-    <svg viewBox="0 0 24 24"><path d="m5 3 14 9-14 9V3z"/></svg> Start AI Review
-  </button>
-</div>
+    <div class="snippet-input-zone" id="snippet-dropzone" style="display: none;">
+      <div class="snippet-toolbar">
+        <span class="snippet-label">Raw Code</span>
+        <div class="select-wrap select-sm">
+          <select class="form-select" id="snippet-language">
+            <option>Auto-detect</option>
+            <option>TypeScript / JavaScript</option>
+            <option>Python</option>
+            <option>Java</option>
+            <option>C++ / C#</option>
+            <option>HTML / CSS</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <textarea class="form-textarea snippet-textarea" id="snippet-input" placeholder="// Paste your code snippet here...&#10;&#10;function reviewMe() {&#10;  console.log('Ready for analysis');&#10;}"></textarea>
+    </div>
+
+    <div class="pre-review-stats" id="pre-review-stats" style="display: none;">
+      </div>
+
+    <div class="upload-actions">
+      <button class="btn btn-primary start-review-btn" id="start-review-btn" disabled>
+        <svg viewBox="0 0 24 24"><path d="m5 3 14 9-14 9V3z"/></svg> Start AI Review
+      </button>
+    </div>
 
 <div class="review-timeline-container" id="review-timeline" style="display: none;">
   </div>      
@@ -106,30 +106,7 @@
         
         <div class="tree-container">
           <ul class="file-tree">
-            <li class="tree-folder expanded">
-              <div class="tree-item-row">
-                <svg class="folder-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                <span>src</span>
-              </div>
-              <ul class="tree-children">
-                <li class="tree-folder">
-                  <div class="tree-item-row">
-                    <svg class="folder-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                    <span>components</span>
-                  </div>
-                </li>
-                <li class="tree-file active">
-                  <div class="tree-item-row">
-                    <span class="file-icon ts-icon">TS</span>
-                    <span>ReviewDashboard.ts</span>
-                  </div>
-                </li>
-                <li class="tree-file">
-                  <div class="tree-item-row">
-                    <span class="file-icon ts-icon">TS</span>
-                    <span>utils.ts</span>
-                  </div>
-                </li>
+            
               </ul>
             </li>
           </ul>
@@ -190,18 +167,162 @@
           </div>
         </div>
         
-        <div class="ace-container">
-            <div id="editor"></div>
+        <div class="center-tabs">
+
+          <button
+              id="tab-ai-report"
+              class="center-tab active">
+
+              AI Report
+
+          </button>
+
+          <button
+              id="tab-local-report"
+              class="center-tab">
+
+              Local Analysis
+
+          </button>
+
+          <button
+              id="tab-source"
+              class="center-tab">
+
+              Source Code
+
+          </button>
+
         </div>
-        <div class="editor-statusbar">
-          <div class="status-left">
-            <span id="status-lang">TypeScript</span>
-            <span id="status-cursor">Ln 42, Col 18</span>
+
+        <div
+            id="ai-report-view"
+            class="center-view">
+
+          <div class="ai-overview-card">
+
+            <div class="ai-overview-top">
+              <div>
+                <div class="ai-overview-title">AI review health</div>
+                <div class="ai-overview-sub" id="ai-overview-sub">Waiting for review...</div>
+              </div>
+              <div>
+                <div class="ai-overview-total" id="ai-total-count">0</div>
+                <div class="ai-overview-total-label">total findings</div>
+              </div>
+            </div>
+
+            <div class="health-strip">
+              <div class="health-seg" id="ai-seg-critical" style="width:0%;background:var(--sev-critical);"></div>
+              <div class="health-seg" id="ai-seg-high" style="width:0%;background:var(--sev-high);"></div>
+              <div class="health-seg" id="ai-seg-medium" style="width:0%;background:var(--sev-medium);"></div>
+              <div class="health-seg" id="ai-seg-low" style="width:0%;background:var(--sev-low);"></div>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-critical);"></span><span id="ai-legend-critical">0</span> critical</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-high);"></span><span id="ai-legend-high">0</span> high</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-medium);"></span><span id="ai-legend-medium">0</span> medium</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-low);"></span><span id="ai-legend-low">0</span> low</div>
+            </div>
+
+            <div class="stat-tiles ai-stat-tiles">
+              <div class="stat-tile" id="ai-tile-logic"><span class="stat-count" id="ai-stat-logic">0</span><span class="stat-label">Logic Bugs</span></div>
+              <div class="stat-tile" id="ai-tile-performance"><span class="stat-count" id="ai-stat-performance">0</span><span class="stat-label">Performance</span></div>
+              <div class="stat-tile" id="ai-tile-readability"><span class="stat-count" id="ai-stat-readability">0</span><span class="stat-label">Readability</span></div>
+              <div class="stat-tile" id="ai-tile-best-practices"><span class="stat-count" id="ai-stat-best-practices">0</span><span class="stat-label">Best Practices</span></div>
+              <div class="stat-tile" id="ai-tile-refactoring"><span class="stat-count" id="ai-stat-refactoring">0</span><span class="stat-label">Refactoring</span></div>
+              <div class="stat-tile" id="ai-tile-tests"><span class="stat-count" id="ai-stat-tests">0</span><span class="stat-label">Unit Tests</span></div>
+            </div>
+
           </div>
-          <div class="status-right">
-            <span id="status-encoding">UTF-8</span>
-            <span id="status-lines">248 Lines</span>
+
+          <div id="ai-analysis-accordions"></div>
+
+        </div>
+
+        <div
+            id="local-report-view"
+            class="center-view"
+            style="display:none;">
+
+          <div class="local-overview-card">
+
+            <div class="local-overview-top">
+              <div>
+                <div class="local-overview-title">Local scan health</div>
+                <div class="local-overview-sub" id="local-overview-sub">Waiting for review...</div>
+              </div>
+              <div>
+                <div class="local-overview-total" id="local-total-count">0</div>
+                <div class="local-overview-total-label">total findings</div>
+              </div>
+            </div>
+
+            <div class="health-strip">
+              <div class="health-seg" id="seg-critical" style="width:0%;background:var(--sev-critical);"></div>
+              <div class="health-seg" id="seg-high" style="width:0%;background:var(--sev-high);"></div>
+              <div class="health-seg" id="seg-medium" style="width:0%;background:var(--sev-medium);"></div>
+              <div class="health-seg" id="seg-low" style="width:0%;background:var(--sev-low);"></div>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-critical);"></span><span id="legend-critical-count">0</span> critical</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-high);"></span><span id="legend-high-count">0</span> high</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-medium);"></span><span id="legend-medium-count">0</span> medium</div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--sev-low);"></span><span id="legend-low-count">0</span> low</div>
+            </div>
+
+            <div class="stat-tiles">
+              <div class="stat-tile" id="tile-syntax">
+                <span class="stat-count" id="stat-syntax-count">0</span>
+                <span class="stat-label">Syntax</span>
+              </div>
+              <div class="stat-tile" id="tile-security">
+                <span class="stat-count" id="stat-security-count">0</span>
+                <span class="stat-label">Security</span>
+              </div>
+              <div class="stat-tile" id="tile-duplicates">
+                <span class="stat-count" id="stat-duplicates-count">0</span>
+                <span class="stat-label">Duplicates</span>
+              </div>
+              <div class="stat-tile" id="tile-complexity">
+                <span class="stat-count" id="stat-complexity-count">0</span>
+                <span class="stat-label">Hotspots</span>
+              </div>
+              <div class="stat-tile" id="tile-dependencies">
+                <span class="stat-count" id="stat-dependencies-count">0</span>
+                <span class="stat-label">Imports</span>
+              </div>
+            </div>
+
           </div>
+
+          <div id="local-analysis"></div>
+
+        </div>
+
+        <div
+            id="source-view"
+            class="center-view"
+            style="display:none;">
+
+            <div class="ace-container">
+
+                <div id="editor"></div>
+
+            </div>
+
+            <div class="editor-statusbar">
+              <div class="status-left">
+                <span id="status-lang">TypeScript</span>
+                <span id="status-cursor">Ln 42, Col 18</span>
+              </div>
+              <div class="status-right">
+                <span id="status-encoding">UTF-8</span>
+                <span id="status-lines">248 Lines</span>
+              </div>
+            </div>
         </div>
       </section>
 
@@ -213,9 +334,8 @@
         <div class="dashboard-scroll-area">
           
           <div class="post-review-metrics">
-            <div class="metric-tiny"><span>Duration</span> <strong>12.4s</strong></div>
-            <div class="metric-tiny"><span>Tokens</span> <strong>85k</strong></div>
-            <div class="metric-tiny"><span>Exec Time</span> <strong>0.8s</strong></div>
+            <div class="metric-tiny"><span>Tokens</span> <strong></strong></div>
+            <div class="metric-tiny"><span>Exec Time</span> <strong></strong></div>
           </div>
 
           <div class="score-card">
@@ -235,48 +355,68 @@
           <div class="quality-metrics">
             <div class="q-metric">
 
-                <div class="q-metric-header">
+              <div class="q-metric-header">
+                  <span>Correctness</span>
+                  <span id="correctnessValue">0%</span>
+              </div>
 
-                    <span>Correctness</span>
+              <div class="q-bar">
+                  <div id="correctnessBar" class="q-fill"></div>
+              </div>
 
-                    <span id="correctnessValue">0%</span>
+          </div>
 
-                </div>
+          <div class="q-metric">
 
-                <div class="q-bar">
+              <div class="q-metric-header">
+                  <span>Security</span>
+                  <span id="securityValue">0%</span>
+              </div>
 
-                    <div
-                        id="correctnessBar"
-                        class="q-fill"
-                        style="width:0%"
-                    ></div>
+              <div class="q-bar">
+                  <div id="securityBar" class="q-fill"></div>
+              </div>
 
-                </div>
+          </div>
 
-            </div>
-            <span id="securityValue">0%</span>
+          <div class="q-metric">
 
-            <div id="securityBar"
-            class="q-fill"
-            style="width:0%">
+              <div class="q-metric-header">
+                  <span>Performance</span>
+                  <span id="performanceValue">0%</span>
+              </div>
 
-            <span id="performanceValue">0%</span>
+              <div class="q-bar">
+                  <div id="performanceBar" class="q-fill"></div>
+              </div>
 
-            <div id="performanceBar"
-            class="q-fill"
-            style="width:0%">
+          </div>
 
-            <span id="maintainabilityValue">0%</span>
+          <div class="q-metric">
 
-            <div id="maintainabilityBar"
-            class="q-fill"
-            style="width:0%">
+              <div class="q-metric-header">
+                  <span>Maintainability</span>
+                  <span id="maintainabilityValue">0%</span>
+              </div>
 
-            <span id="readabilityValue">0%</span>
+              <div class="q-bar">
+                  <div id="maintainabilityBar" class="q-fill"></div>
+              </div>
 
-            <div id="readabilityBar"
-            class="q-fill"
-            style="width:0%">
+          </div>
+
+          <div class="q-metric">
+
+              <div class="q-metric-header">
+                  <span>Readability</span>
+                  <span id="readabilityValue">0%</span>
+              </div>
+
+              <div class="q-bar">
+                  <div id="readabilityBar" class="q-fill"></div>
+              </div>
+
+          </div>
           </div>
 
           <div class="ai-summary-card">
@@ -285,87 +425,24 @@
             Waiting for review...
             </p>
           </div>
-          <h3 class="section-title">
-              Local Analysis
-          </h3>
 
-          <div id="local-analysis">
-
-          </div>
-
-          <div class="review-accordions" id="review-accordions">
-            
-            <details class="review-category" open>
-              <summary>
-                <div class="summary-title">
-                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-                  Logic Bugs & Performance
-                </div>
-                <span class="issue-count warning">-</span>
-              </summary>
-              <div class="category-content">
-                <div
-                class="issue-card"
-
-                onclick="gotoIssue(
-                '${issue.file}',
-                ${issue.line}
-                )"
-                >
-                  <div class="issue-header">
-                    <span class="severity-badge warning">-</span>
-                    <span class="issue-file">-</span>
-                  </div>
-                  <h5 class="issue-title">-</h5>
-                  <p class="issue-desc">-</p>
-                  <div class="issue-recommendation">
-                    <strong>-</strong>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-            <details class="review-category">
-              <summary>
-                <div class="summary-title">
-                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-                  Best Practices & Readability
-                </div>
-                <span class="issue-count success"></span>
-              </summary>
-              <div class="category-content">
-                <p class="empty-issues"></p>
-              </div>
-            </details>
-
-            <details class="review-category">
-              <summary>
-                <div class="summary-title">
-                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-                  
-                </div>
-              </summary>
-              <div class="category-content">
-                <div class="improved-code-wrapper">
-                  <div class="improved-code-toolbar">
-                    <span></span>
-                    <div class="code-actions">
-                      <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></button>
-                      <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg></button>
-                      <button class="icon-button"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
-                    </div>
-                  </div>
-                  <div class="mini-monaco" id="monaco-improved">
-                     <div id="improved-editor"></div>
-                  </div>
-                </div>
-              </div>
-            </details>
-
-          </div>
         </div>
       </aside>
 
     </div>
   </main>
+</div>
+
+<div
+id="file-context-menu"
+class="context-menu"
+style="display:none;">
+
+    <div
+    id="ctx-open">
+
+        Open
+
+    </div>
+
 </div>

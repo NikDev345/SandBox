@@ -154,8 +154,39 @@ function initialize(){
     registerEvents();
     disableReviewButton();
 
-}
+    document
+    .getElementById("ctx-open")
+    .onclick=()=>{
 
+        const file=
+            document
+            .getElementById(
+                "file-context-menu"
+            )
+            .dataset.file;
+
+        openFile(file);
+
+    };
+
+    document
+    .getElementById("tab-ai-report")
+    .onclick = showAIReport;
+
+    document
+    .getElementById("tab-local-report")
+    .onclick = showLocalReport;
+
+    document
+    .getElementById("tab-source")
+    .onclick = showSourceCode;
+    }
+
+    document.addEventListener("click",()=>{
+        document
+        .getElementById("file-context-menu")
+        .style.display="none";
+    });
 /*****************************************************************
  * REGISTER EVENTS
  *****************************************************************/
@@ -325,9 +356,9 @@ async function handleFileUpload(event) {
     const content = await file.text();
     AppState.inputType = "file";
     AppState.files = [{
-        name: file.name,
+        filename: file.name,
         path: file.name,
-        content: content,
+        code: content,
         language: language
     }];
 
@@ -378,7 +409,7 @@ function updateProjectStats() {
 
     if (!AppState.currentFile) return;
 
-    const content = AppState.currentFile.content;
+    const content = AppState.currentFile.code;
 
     const lines = content.split("\n").length;
 
@@ -408,11 +439,11 @@ function renderProjectTree() {
 
         item.className = "tree-item";
 
-        item.textContent = file.name;
+        item.textContent = file.filename;
 
         item.onclick = () => {
 
-            editor.setValue(file.content, -1);
+            editor.setValue(file.code, -1);
 
             AppState.currentFile = file;
 
@@ -482,7 +513,7 @@ async function startReview() {
 
         AppState.reviewResult = result.review;
         document.getElementById("upload-section").style.display = "none";
-        document.getElementById("reviewer-workspace").style.display = "grid"
+        document.getElementById("reviewer-workspace").style.display = "flex"
         renderReview(result.review);
 
     }
@@ -531,9 +562,9 @@ function buildRequest() {
 
             language: file.language,
 
-            code: file.content,
+            code: file.code,
 
-            filename: file.name,
+            filename: file.filename,
 
             files: null,
 
@@ -605,9 +636,93 @@ function renderReview(review){
     renderLocalAnalysis(
         review.local_analysis
     );
-    renderIssueAccordions(
+    renderAIReport(
         review.ai_analysis
     );
+    showAIReport();
+}
+
+function renderAIReport(ai){
+
+    const listContainer = document.getElementById("ai-analysis-accordions");
+
+    listContainer.innerHTML = '<div class="review-accordions"></div>';
+    const wrapper = listContainer.querySelector(".review-accordions");
+
+    renderCategory(wrapper, "Logic Bugs", ai.logic_bugs, "cat-icon-logic", "L");
+    renderCategory(wrapper, "Performance", ai.performance, "cat-icon-performance", "P");
+    renderCategory(wrapper, "Readability", ai.readability, "cat-icon-readability", "R");
+    renderCategory(wrapper, "Best Practices", ai.best_practices, "cat-icon-best-practices", "B");
+    renderCategory(wrapper, "Refactoring", ai.refactoring, "cat-icon-refactoring", "F");
+    renderCategory(wrapper, "Unit Tests", ai.unit_tests, "cat-icon-tests", "T");
+
+    renderAIOverview(ai);
+
+}
+
+function renderAIOverview(ai){
+
+    const counts = { critical:0, high:0, medium:0, low:0 };
+
+    const severityBuckets = [
+        ai.logic_bugs, ai.performance, ai.readability,
+        ai.best_practices, ai.refactoring
+    ];
+
+    severityBuckets.forEach(list => {
+        (list || []).forEach(item => {
+            const sev = (item.severity || "medium").toLowerCase();
+            if (counts[sev] !== undefined) counts[sev]++;
+        });
+    });
+
+    const total =
+        (ai.logic_bugs || []).length +
+        (ai.performance || []).length +
+        (ai.readability || []).length +
+        (ai.best_practices || []).length +
+        (ai.refactoring || []).length +
+        (ai.unit_tests || []).length;
+
+    document.getElementById("ai-total-count").textContent = total;
+
+    document.getElementById("ai-overview-sub").textContent =
+        total === 0
+            ? "No AI findings detected"
+            : `${total} findings across logic, performance, readability and more`;
+
+    document.getElementById("ai-legend-critical").textContent = counts.critical;
+    document.getElementById("ai-legend-high").textContent = counts.high;
+    document.getElementById("ai-legend-medium").textContent = counts.medium;
+    document.getElementById("ai-legend-low").textContent = counts.low;
+
+    const sevTotal = counts.critical + counts.high + counts.medium + counts.low;
+
+    setAIHealthSegment("ai-seg-critical", counts.critical, sevTotal);
+    setAIHealthSegment("ai-seg-high", counts.high, sevTotal);
+    setAIHealthSegment("ai-seg-medium", counts.medium, sevTotal);
+    setAIHealthSegment("ai-seg-low", counts.low, sevTotal);
+
+    setAIStatTile("ai-tile-logic", "ai-stat-logic", (ai.logic_bugs || []).length);
+    setAIStatTile("ai-tile-performance", "ai-stat-performance", (ai.performance || []).length);
+    setAIStatTile("ai-tile-readability", "ai-stat-readability", (ai.readability || []).length);
+    setAIStatTile("ai-tile-best-practices", "ai-stat-best-practices", (ai.best_practices || []).length);
+    setAIStatTile("ai-tile-refactoring", "ai-stat-refactoring", (ai.refactoring || []).length);
+    setAIStatTile("ai-tile-tests", "ai-stat-tests", (ai.unit_tests || []).length);
+}
+
+function setAIHealthSegment(id, count, total){
+    const el = document.getElementById(id);
+    const pct = total > 0 ? (count / total) * 100 : 0;
+    el.style.width = pct + "%";
+}
+
+function setAIStatTile(tileId, countId, count){
+    document.getElementById(countId).textContent = count;
+
+    const tile = document.getElementById(tileId);
+    tile.classList.remove("has-issues", "clean");
+    tile.classList.add(count > 0 ? "has-issues" : "clean");
 }
 
 function openFile(filename){
@@ -627,6 +742,9 @@ function openFile(filename){
     setEditorLanguage(
         file.language
     );
+
+    showSourceCode();
+    AppState.currentFile=file;
 
 }
 
@@ -677,27 +795,20 @@ function severityColor(level){
 }
 
 function getFileExtension(file){
-
-    const ext=file.split(".").pop();
+    if(!file)
+        return "📄";
+    console.log(file);
+    const ext=file.split(".").pop().toLowerCase()   ;
 
     switch(ext){
-
-        case "py": return "🐍";
-
-        case "java": return "☕";
-
+        case "py": return "PY";
+        case "java": return "JAVA";
         case "js": return "JS";
-
         case "ts": return "TS";
-
         case "cpp": return "C++";
-
         case "cs": return "C#";
-
         case "go": return "Go";
-
         case "php": return "PHP";
-
         default: return "📄";
 
     }
@@ -872,221 +983,92 @@ function renderSummary(review) {
 
 }
 
-function renderCategory(container,title,issues){
+function showAIReport(){
 
-    const details=document.createElement("details");
+    document.getElementById("ai-report-view").style.display="flex";
+    document.getElementById("local-report-view").style.display="none";
+    document.getElementById("source-view").style.display="none";
 
-    details.className="review-category";
+    document.getElementById("tab-ai-report").classList.add("active");
+    document.getElementById("tab-local-report").classList.remove("active");
+    document.getElementById("tab-source").classList.remove("active");
+}
 
-    details.open=true;
+function showLocalReport(){
 
-    details.innerHTML=`
+    document.getElementById("ai-report-view").style.display="none";
+    document.getElementById("local-report-view").style.display="flex";
+    document.getElementById("source-view").style.display="none";
 
+    document.getElementById("tab-local-report").classList.add("active");
+    document.getElementById("tab-ai-report").classList.remove("active");
+    document.getElementById("tab-source").classList.remove("active");
+}
+
+function showSourceCode(){
+    setTimeout(()=>{
+        editor.resize();
+    },100);
+
+    document.getElementById("source-view").style.display="flex";
+    document.getElementById("ai-report-view").style.display="none";
+    document.getElementById("local-report-view").style.display="none";
+
+    document.getElementById("tab-source").classList.add("active");
+    document.getElementById("tab-ai-report").classList.remove("active");
+    document.getElementById("tab-local-report").classList.remove("active");
+}
+
+function renderCategory(container, title, issues, iconClass, iconLetter){
+
+    issues = issues || [];
+
+    const details = document.createElement("details");
+    details.className = "review-category";
+    details.open = true;
+
+    details.innerHTML = `
     <summary>
-
         <div class="summary-title">
-
+            <span class="section-icon ${iconClass || ''}">${iconLetter || title.charAt(0)}</span>
             ${title}
-
         </div>
-
-        <span class="issue-count">
-
-            ${issues.length}
-
-        </span>
-
+        <span class="issue-count ${issues.length === 0 ? '' : 'warning'}">${issues.length}</span>
     </summary>
-
     <div class="category-content"></div>
-
     `;
 
-    const body=
-        details.querySelector(".category-content");
+    const body = details.querySelector(".category-content");
 
-    if(issues.length===0){
+    if (issues.length === 0) {
 
-        body.innerHTML=`
+        body.innerHTML = `
             <p class="empty-issues">
                 No issues found.
             </p>
         `;
 
-    }
+    } else {
 
-    else{
+        issues.forEach(issue => {
 
-        issues.forEach(issue=>{
+            const sev = (issue.severity || "medium").toLowerCase();
 
-            body.innerHTML+=`
-
-            <div class="issue-card">
-
+            const card = document.createElement("div");
+            card.className = "issue-card";
+            card.innerHTML = `
                 <div class="issue-header">
-
-                    <span class="severity-badge">
-
-                        ${issue.severity || "-"}
-
-                    </span>
-
-                    <span>
-
-                        ${issue.file || ""}
-
-                        ${issue.line ? ": Line "+issue.line : ""}
-
-                    </span>
-
+                    <span class="severity-badge ${sev}">${issue.severity || "-"}</span>
+                    <span class="issue-file">${escapeHtml(issue.file)}${issue.line ? " : Line " + issue.line : ""}</span>
                 </div>
-
-                <h5>
-
-                    ${issue.issue}
-
-                </h5>
-
-                <div class="issue-recommendation">
-
-                    ${issue.suggestion}
-
-                </div>
-
-            </div>
-
+                <h5 class="issue-title">${escapeHtml(issue.issue)}</h5>
+                ${issue.suggestion ? `<div class="issue-recommendation"><strong>Fix:</strong> ${escapeHtml(issue.suggestion)}</div>` : ""}
             `;
-
+            body.appendChild(card);
         });
-
     }
 
     container.appendChild(details);
-
-}
-
-function renderLocalAnalysis(local){
-
-    const container =
-        document.getElementById("local-analysis");
-
-    container.innerHTML="";
-
-    renderLocalSection(
-        container,
-        "Syntax",
-        local.syntax
-    );
-
-    renderLocalSection(
-        container,
-        "Security",
-        local.security
-    );
-
-    renderLocalSection(
-        container,
-        "Duplicates",
-        local.duplicates
-    );
-
-    renderLocalSection(
-        container,
-        "Dependencies",
-        local.dependencies
-    );
-
-    renderComplexity(
-        container,
-        local.complexity
-    );
-
-}
-
-function renderComplexity(container,data){
-
-    const card=document.createElement("div");
-
-    card.className="local-card";
-
-    let html=`
-
-    <h4>Complexity Analysis</h4>
-
-    <table class="review-table">
-
-        <thead>
-
-            <tr>
-
-                <th>Function</th>
-
-                <th>Lines</th>
-
-                <th>Complexity</th>
-
-                <th>Nesting</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-    `;
-
-    data.forEach(file=>{
-
-        file.functions.forEach(fn=>{
-
-            html+=`
-
-            <tr>
-
-                <td>
-
-                    ${fn.name || "Function"}
-
-                </td>
-
-                <td>
-
-                    ${fn.function_length}
-
-                </td>
-
-                <td>
-
-                    ${fn.cyclomatic_complexity}
-
-                </td>
-
-                <td>
-
-                    ${fn.nesting_depth}
-
-                </td>
-
-            </tr>
-
-            `;
-
-        });
-
-    });
-
-    html+=`
-
-        </tbody>
-
-    </table>
-
-    `;
-
-    card.innerHTML=html;
-
-    container.appendChild(card);
-
 }
 
 function renderFileTree(files){
@@ -1095,16 +1077,17 @@ function renderFileTree(files){
         document.querySelector(".file-tree");
 
     tree.innerHTML="";
-
+    console.log(files);
     files.forEach(file=>{
-
+        console.log(file);
         tree.innerHTML += `
 
         <li class="tree-file">
 
             <div
                 class="tree-item-row"
-                onclick="openFile('${file.filename}')">
+                onclick="openFile('${file.filename}')"
+                oncontextmenu="showFileMenu(event,'${file.filename}')">
 
                 <span class="file-icon">
 
@@ -1128,38 +1111,365 @@ function renderFileTree(files){
 
 }
 
-function renderLocalSection(
-    container,
-    title,
-    data
+function showFileMenu(
+event,
+filename
 ){
 
-    const card=document.createElement("div");
+    event.preventDefault();
 
-    card.className="local-card";
+    const menu =
+        document.getElementById(
+            "file-context-menu"
+        );
 
-    card.innerHTML=`
+    menu.style.left =
+        event.pageX+"px";
 
-        <h4>${title}</h4>
+    menu.style.top =
+        event.pageY+"px";
 
-        <pre>
+    menu.style.display="block";
 
-${JSON.stringify(data,null,2)}
+    menu.dataset.file=filename;
 
-        </pre>
+}
 
+function renderLocalAnalysis(local){
+
+    const container = document.getElementById("local-analysis");
+
+    container.innerHTML = '<div class="review-accordions"></div>';
+    const wrapper = container.querySelector(".review-accordions");
+
+    renderSyntaxSection(wrapper, local.syntax);
+    renderSecuritySection(wrapper, local.security);
+    renderDuplicatesSection(wrapper, local.duplicates);
+    renderDependenciesSection(wrapper, local.dependencies);
+    renderComplexity(wrapper, local.complexity);
+
+    renderLocalOverview(local);
+
+}
+
+function hotspotStatus(fn){
+    const complexity = fn.cyclomatic_complexity || 0;
+    const nesting = fn.nesting_depth || 0;
+
+    if (complexity > 10 || nesting > 4) return "hot";
+    if (complexity > 6 || nesting > 2) return "warm";
+    return "cool";
+}
+
+function renderLocalOverview(local){
+
+    const counts = { critical:0, high:0, medium:0, low:0 };
+
+    (local.syntax || []).forEach(() => counts.critical++);
+
+    (local.security || []).forEach(item => {
+        const sev = (item.severity || "medium").toLowerCase();
+        if (counts[sev] !== undefined) counts[sev]++;
+    });
+
+    (local.duplicates || []).forEach(item => {
+        const sev = (item.severity || "medium").toLowerCase();
+        if (counts[sev] !== undefined) counts[sev]++;
+    });
+
+    let hotspotCount = 0;
+
+    (local.complexity || []).forEach(file => {
+        (file.functions || []).forEach(fn => {
+            const status = hotspotStatus(fn);
+            if (status === "hot") { counts.high++; hotspotCount++; }
+            else if (status === "warm") { counts.medium++; hotspotCount++; }
+        });
+    });
+
+    const totalImports = (local.dependencies || [])
+        .reduce((sum, f) => sum + (f.import_count || 0), 0);
+
+    const total = counts.critical + counts.high + counts.medium + counts.low;
+
+    document.getElementById("local-total-count").textContent = total;
+
+    document.getElementById("local-overview-sub").textContent =
+        total === 0
+            ? "No local findings detected"
+            : `${total} findings across syntax, security, duplicates and dependencies`;
+
+    document.getElementById("legend-critical-count").textContent = counts.critical;
+    document.getElementById("legend-high-count").textContent = counts.high;
+    document.getElementById("legend-medium-count").textContent = counts.medium;
+    document.getElementById("legend-low-count").textContent = counts.low;
+
+    setHealthSegment("seg-critical", counts.critical, total);
+    setHealthSegment("seg-high", counts.high, total);
+    setHealthSegment("seg-medium", counts.medium, total);
+    setHealthSegment("seg-low", counts.low, total);
+
+    setStatTile("tile-syntax", "stat-syntax-count", (local.syntax || []).length);
+    setStatTile("tile-security", "stat-security-count", (local.security || []).length);
+    setStatTile("tile-duplicates", "stat-duplicates-count", (local.duplicates || []).length);
+    setStatTile("tile-complexity", "stat-complexity-count", hotspotCount);
+
+    document.getElementById("stat-dependencies-count").textContent = totalImports;
+
+    const depTile = document.getElementById("tile-dependencies");
+    depTile.classList.remove("has-issues", "clean");
+    depTile.classList.add("clean");
+}
+
+function setHealthSegment(id, count, total){
+    const el = document.getElementById(id);
+    const pct = total > 0 ? (count / total) * 100 : 0;
+    el.style.width = pct + "%";
+}
+
+function setStatTile(tileId, countId, count){
+    document.getElementById(countId).textContent = count;
+
+    const tile = document.getElementById(tileId);
+    tile.classList.remove("has-issues", "clean");
+    tile.classList.add(count > 0 ? "has-issues" : "clean");
+}
+
+function makeAccordion(title, count){
+    const details = document.createElement("details");
+    details.className = "review-category";
+    details.open = true;
+
+    details.innerHTML = `
+    <summary>
+        <div class="summary-title">${title}</div>
+        <span class="issue-count ${count === 0 ? 'success' : 'warning'}">${count}</span>
+    </summary>
+    <div class="category-content"></div>
     `;
 
-    container.appendChild(card);
+    return details;
+}
 
+function emptyState(body){
+    body.innerHTML = `<p class="empty-issues">No issues found.</p>`;
+}
+
+/* ---------------- Syntax ---------------- */
+function renderSyntaxSection(container, items){
+
+    items = items || [];
+    const details = makeAccordion("Syntax Errors", items.length);
+    const body = details.querySelector(".category-content");
+
+    if (items.length === 0) {
+        emptyState(body);
+    } else {
+        items.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "issue-card";
+            card.innerHTML = `
+                <div class="issue-header">
+                    <span class="severity-badge ${item.severity || ''}">${item.severity || "error"}</span>
+                    <span class="issue-file">${item.file || ""}${item.line ? " : Line " + item.line : ""}${item.column ? ", Col " + item.column : ""}</span>
+                </div>
+                <h5 class="issue-title">${item.type || "Syntax Error"}</h5>
+                <div class="issue-desc">${item.message || ""}</div>
+                <div class="local-meta-grid">
+                    <div class="local-meta-item">
+                        <span class="local-meta-label">Language</span>
+                        <span class="local-meta-value">${item.language || "-"}</span>
+                    </div>
+                </div>
+            `;
+            body.appendChild(card);
+        });
+    }
+
+    container.appendChild(details);
+}
+
+function renderSecuritySection(container, items){
+
+    items = items || [];
+    const details = makeAccordion("Security", items.length);
+    const body = details.querySelector(".category-content");
+
+    if (items.length === 0) {
+        emptyState(body);
+    } else {
+        items.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "issue-card";
+            card.innerHTML = `
+                <div class="issue-header">
+                    <span class="severity-badge ${item.severity || ''}">${item.severity || "-"}</span>
+                    <span class="issue-file">${item.file || ""}${item.line ? " : Line " + item.line : ""}</span>
+                </div>
+                <h5 class="issue-title">${formatRuleName(item.rule)}</h5>
+                <div class="issue-desc">${item.message || ""}</div>
+                ${item.snippet ? `
+                <div class="code-snippet-block">
+                    <code>${escapeHtml(item.snippet)}</code>
+                </div>` : ""}
+                <div class="local-meta-grid">
+                    <div class="local-meta-item">
+                        <span class="local-meta-label">Language</span>
+                        <span class="local-meta-value">${item.language || "-"}</span>
+                    </div>
+                </div>
+            `;
+            body.appendChild(card);
+        });
+    }
+
+    container.appendChild(details);
+}
+
+function formatRuleName(rule){
+    if (!rule) return "Security Finding";
+    return rule
+        .split("_")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}
+
+function escapeHtml(str){
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+}
+/* ---------------- Duplicates ---------------- */
+function renderDuplicatesSection(container, items){
+
+    items = items || [];
+    const details = makeAccordion("Duplicate Code", items.length);
+    const body = details.querySelector(".category-content");
+
+    if (items.length === 0) {
+        emptyState(body);
+    } else {
+        items.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "issue-card";
+            card.innerHTML = `
+                <div class="issue-header">
+                    <span class="severity-badge ${item.severity || ''}">${item.severity || "-"}</span>
+                    <span class="issue-file">${item.similarity}% similar</span>
+                </div>
+                <div class="duplicate-pair">
+                    <div class="duplicate-loc">
+                        <span class="local-meta-label">File 1</span>
+                        <span class="local-meta-value">${item.file1} : L${item.start_line1}-${item.end_line1}</span>
+                    </div>
+                    <div class="duplicate-loc">
+                        <span class="local-meta-label">File 2</span>
+                        <span class="local-meta-value">${item.file2} : L${item.start_line2}-${item.end_line2}</span>
+                    </div>
+                </div>
+            `;
+            body.appendChild(card);
+        });
+    }
+
+    container.appendChild(details);
+}
+
+/* ---------------- Dependencies ---------------- */
+function renderDependenciesSection(container, items){
+
+    items = items || [];
+    const totalImports = items.reduce((sum, f) => sum + (f.import_count || 0), 0);
+    const details = makeAccordion("Dependencies", totalImports);
+    const body = details.querySelector(".category-content");
+
+    if (items.length === 0 || totalImports === 0) {
+        emptyState(body);
+    } else {
+        items.forEach(fileEntry => {
+            if (!fileEntry.imports || fileEntry.imports.length === 0) return;
+
+            const card = document.createElement("div");
+            card.className = "issue-card";
+
+            let importsHtml = fileEntry.imports.map(imp => `
+                <div class="import-row">
+                    <span class="import-line">L${imp.line}</span>
+                    <code class="import-statement">${imp.statement}</code>
+                </div>
+            `).join("");
+
+            card.innerHTML = `
+                <div class="issue-header">
+                    <span class="issue-file">${fileEntry.filename}</span>
+                    <span class="severity-badge">${fileEntry.import_count} imports</span>
+                </div>
+                <div class="import-list">${importsHtml}</div>
+            `;
+            body.appendChild(card);
+        });
+    }
+
+    container.appendChild(details);
+}
+
+
+function renderComplexity(container, data){
+
+    const card = document.createElement("div");
+    card.className = "local-card complexity-card";
+
+    let html = `
+    <h4>Complexity Analysis</h4>
+    <div class="table-scroll-wrapper">
+    <table class="review-table">
+        <thead>
+            <tr>
+                <th>Function</th>
+                <th>Lines</th>
+                <th>Complexity</th>
+                <th>Nesting</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    (data || []).forEach(file => {
+        (file.functions || []).forEach(fn => {
+            const status = hotspotStatus(fn);
+            const badgeClass = status === "hot" ? "hot" : (status === "warm" ? "warm" : "cool");
+            const badgeLabel = status === "hot" ? "Hot" : (status === "warm" ? "Watch" : "Fine");
+            html += `
+            <tr>
+                <td class="cx-fn">${fn.name || "Function"}</td>
+                <td>${fn.function_length}</td>
+                <td>${fn.cyclomatic_complexity}</td>
+                <td>${fn.nesting_depth}</td>
+                <td><span class="hotspot-badge ${badgeClass}">${badgeLabel}</span></td>
+            </tr>
+            `;
+        });
+    });
+
+    html += `</tbody></table></div>`;
+
+    card.innerHTML = html;
+    container.appendChild(card);
 }
 
 function setProgress(bar,value,label){
     value=Math.max(0,Math.min(100,value));
     bar.style.width=value+"%";
     label.textContent=value+"%";
+
+    bar.classList.remove("warn","danger");
+
+    if (value < 50) {
+        bar.classList.add("danger");
+    } else if (value < 80) {
+        bar.classList.add("warn");
+    }
 }
-
-
 
 }
