@@ -30,65 +30,147 @@
   <main class="dashboard-main reviewer-main">
     
     <div class="upload-hero-section" id="upload-section">
+     <div class="upload-hero-inner">
+
+      <div class="upload-intro">
+        <h1>Ship cleaner code, faster</h1>
+        <p>AI Code Reviewer combines instant local static analysis with deep AI-powered review — catching logic bugs, security holes, duplicate code and complexity hotspots before they reach production. Upload a file, a whole project, or just paste a snippet to get a scored, actionable report in seconds.</p>
+      </div>
+
       <div class="upload-card">
         <div class="upload-header">
-      <h2>Upload Workspace</h2>
-      <p>Drop your project or paste a snippet to begin AI analysis.</p>
-    </div>
-
-    <div class="upload-mode-toggle">
-      <button class="mode-toggle-btn active" id="tab-upload">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
-        File Upload
-      </button>
-      <button class="mode-toggle-btn" id="tab-snippet">
-        <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-        Paste Snippet
-      </button>
-    </div>
-
-    <div class="file-drop-zone large-dropzone" id="project-dropzone">
-      <input type="file" id="file-upload" class="file-input-hidden" multiple webkitdirectory directory />
-      <div class="file-drop-content">
-        <div class="upload-icon-ring">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+          <h2>Upload Workspace</h2>
+          <p>Drop your project or paste a snippet to begin AI analysis.</p>
         </div>
-        <span class="upload-title">Click to upload or drag & drop</span>
-        <span class="upload-subtitle">Supports Single File, Multiple Files, Folder, or ZIP</span>
-      </div>
-    </div>
 
-    <div class="snippet-input-zone" id="snippet-dropzone" style="display: none;">
-      <div class="snippet-toolbar">
-        <span class="snippet-label">Raw Code</span>
-        <div class="select-wrap select-sm">
-          <select class="form-select" id="snippet-language">
-            <option>Auto-detect</option>
-            <option>TypeScript / JavaScript</option>
-            <option>Python</option>
-            <option>Java</option>
-            <option>C++ / C#</option>
-            <option>HTML / CSS</option>
-          </select>
-          <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        <div class="upload-mode-toggle">
+          <button class="mode-toggle-btn active" id="tab-upload">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+            File Upload
+          </button>
+          <button class="mode-toggle-btn" id="tab-snippet">
+            <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            Paste Snippet
+          </button>
+        </div>
+
+        <div class="file-drop-zone large-dropzone" id="project-dropzone">
+          <input type="file" id="file-upload" class="file-input-hidden" multiple webkitdirectory directory />
+          <div class="file-drop-content" id="dropzone-content">
+            <div class="upload-icon-ring">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5-5 5 5m-5-5v12"/></svg>
+            </div>
+            <span class="upload-title">Click to upload or drag & drop</span>
+            <span class="upload-subtitle">Supports Single File, Multiple Files, Folder, or ZIP</span>
+          </div>
+        </div>
+
+        <div class="snippet-input-zone" id="snippet-dropzone" style="display: none;">
+          <div class="snippet-toolbar">
+            <span class="snippet-label">Raw Code</span>
+            <div class="select-wrap select-sm">
+              <select class="form-select" id="snippet-language">
+                <option>Auto-detect</option>
+                <option>TypeScript / JavaScript</option>
+                <option>Python</option>
+                <option>Java</option>
+                <option>C++ / C#</option>
+                <option>HTML / CSS</option>
+              </select>
+              <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <textarea class="form-textarea snippet-textarea" id="snippet-input" placeholder="// Paste your code snippet here...&#10;&#10;function reviewMe() {&#10;  console.log('Ready for analysis');&#10;}"></textarea>
+        </div>
+
+        <div class="pre-review-stats" id="pre-review-stats" style="display: none;"></div>
+
+        <div class="upload-actions">
+          <button class="btn btn-primary start-review-btn" id="start-review-btn" disabled>
+            <span class="btn-content">
+              <svg viewBox="0 0 24 24"><path d="m5 3 14 9-14 9V3z"/></svg> Start AI Review
+            </span>
+          </button>
+        </div>
+
+        <div class="review-timeline-container" id="review-timeline" style="display: none;"></div>
+      </div>
+
+      <div class="examples-section">
+        <div class="examples-header">
+          <h3>Common Issues We Fix</h3>
+          <p>A sample of code patterns this tool automatically detects and corrects.</p>
+        </div>
+        <div class="examples-grid">
+
+          <div class="example-card">
+            <div class="example-label">Logic Bugs</div>
+            <div class="example-flow">
+              <span class="example-bad">if (x = 5)</span>
+              <span class="example-arrow">→</span>
+              <span class="example-good">if (x === 5)</span>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="example-label">SQL Injection</div>
+            <div class="example-flow">
+              <span class="example-bad">f"...WHERE id={id}"</span>
+              <span class="example-arrow">→</span>
+              <span class="example-good">execute(query, (id,))</span>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="example-label">Duplicate Code</div>
+            <div class="example-flow">
+              <span class="example-bad">calcTotal() ×2</span>
+              <span class="example-arrow">→</span>
+              <span class="example-good">shared calcTotal()</span>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="example-label">N+1 Queries</div>
+            <div class="example-flow">
+              <span class="example-bad">for u: db.get(u.id)</span>
+              <span class="example-arrow">→</span>
+              <span class="example-good">db.get_all(ids)</span>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="example-label">High Complexity</div>
+            <div class="example-flow">
+              <span class="example-bad">if/else ×12</span>
+              <span class="example-arrow">→</span>
+              <span class="example-good">early-return</span>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <div class="example-label">Missing Error Handling</div>
+            <div class="example-flow">
+              <span class="example-bad">fetch(url)</span>
+              <span class="example-arrow">→</span>
+              <span class="example-good">try {'{'} fetch(url) {'}'} catch</span>
+            </div>
+          </div>
+
         </div>
       </div>
-      <textarea class="form-textarea snippet-textarea" id="snippet-input" placeholder="// Paste your code snippet here...&#10;&#10;function reviewMe() {&#10;  console.log('Ready for analysis');&#10;}"></textarea>
-    </div>
 
-    <div class="pre-review-stats" id="pre-review-stats" style="display: none;">
+      <!-- Capability badges -->
+      <!-- Capability badges -->
+      <div class="upload-badges">
+        <span class="upload-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Syntax Check</span>
+        <span class="upload-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Security Scan</span>
+        <span class="upload-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Duplicate Detection</span>
+        <span class="upload-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Complexity Analysis</span>
+        <span class="upload-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> AI-Powered Fixes</span>
       </div>
 
-    <div class="upload-actions">
-      <button class="btn btn-primary start-review-btn" id="start-review-btn" disabled>
-        <svg viewBox="0 0 24 24"><path d="m5 3 14 9-14 9V3z"/></svg> Start AI Review
-      </button>
-    </div>
-
-<div class="review-timeline-container" id="review-timeline" style="display: none;">
-  </div>      
-        
-      </div>
+     </div>
     </div>
 
     <div class="reviewer-layout" id="reviewer-workspace" style="display: none;">
@@ -143,31 +225,17 @@
       </aside>
 
       <section class="panel-center editor-panel">
-        <div class="editor-toolbar">
-          <div class="toolbar-left">
-            <span class="active-file-path">src / ReviewDashboard.ts</span>
-          </div>
-          <div class="toolbar-right">
-            <div class="select-wrap select-sm">
-              <select class="form-select" id="input-type">
-                <option>Full Project</option>
-                <option>Active File</option>
-              </select>
-              <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
-            </div>
-            <div class="select-wrap select-sm">
-              <select class="form-select" id="review-type">
-                <option>Deep Analysis</option>
-                <option>Security Focus</option>
-                <option>Performance Focus</option>
-              </select>
-              <svg class="select-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
-            </div>
-            <button class="btn btn-primary btn-sm" id="btn-re-review">Review Active File</button>
-          </div>
-        </div>
         
         <div class="center-tabs">
+          <div class="editor-toolbar">
+            <div class="toolbar-left">
+            <span class="active-file-path" id="active-file-path">src / ReviewDashboard.ts</span>
+          </div>
+          <div class="toolbar-right">
+            
+          </div>
+        </div>
+           
 
           <button
               id="tab-ai-report"
@@ -334,8 +402,8 @@
         <div class="dashboard-scroll-area">
           
           <div class="post-review-metrics">
-            <div class="metric-tiny"><span>Tokens</span> <strong></strong></div>
-            <div class="metric-tiny"><span>Exec Time</span> <strong></strong></div>
+            <div class="metric-tiny"><span>Tokens</span> <strong id="stat-tokens">0</strong></div>
+            <div class="metric-tiny"><span>Exec Time</span> <strong id="stat-exec-time">0</strong></div>
           </div>
 
           <div class="score-card">

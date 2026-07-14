@@ -25,6 +25,8 @@ const AppState = {
 
     reviewResult: null,
 
+    isReviewing: false,
+
     projectStats: {
         files: 0,
         folders: 0,
@@ -85,6 +87,10 @@ function initialize(){
 
         language: document.getElementById("snippet-language"),
 
+        activeFilePath: document.getElementById("active-file-path"),
+        statTokens: document.getElementById("stat-tokens"),
+        statExecTime: document.getElementById("stat-exec-time"),
+
         // Buttons
         reviewButton: document.getElementById("start-review-btn"),
 
@@ -97,8 +103,6 @@ function initialize(){
         copyButton: document.getElementById("btn-copy-review"),
 
         downloadButton: document.getElementById("btn-download-json"),
-
-        reReviewButton: document.getElementById("btn-re-review"),
 
         // Editor
         editor: document.getElementById("editor"),
@@ -347,13 +351,12 @@ function enableReviewButton(){
  *****************************************************************/
 
 async function handleFileUpload(event) {
-
     const file = event.target.files[0];
-    const language = detectLanguage(file.name);
-
     if (!file) return;
 
+    const language = detectLanguage(file.name);
     const content = await file.text();
+
     AppState.inputType = "file";
     AppState.files = [{
         filename: file.name,
@@ -362,18 +365,32 @@ async function handleFileUpload(event) {
         language: language
     }];
 
-    AppState.currentFile = AppState.files[0];
-
-    editor.setValue(content, -1);
+    setActiveFile(AppState.files[0]);
 
     updateProjectStats();
-
     enableReviewButton();
-
-    detectLanguage(file.name);
-
     renderProjectTree();
 
+    // Update dropzone to show uploaded file info
+    const lines = content.split("\n").length;
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const ext = getFileExtension(file.name);
+
+    const dropContent = document.getElementById("dropzone-content");
+    if (dropContent) {
+        dropContent.innerHTML = `
+            <div class="upload-icon-ring" style="background:rgba(34,197,94,0.1);box-shadow:0 0 0 1px rgba(34,197,94,0.25);">
+                <svg viewBox="0 0 24 24" style="width:28px;height:28px;stroke:#22c55e;fill:none;stroke-width:2;stroke-linecap:round;">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <span class="upload-title" style="color:var(--success,#22c55e);">File ready — ${escapeHtml(file.name)}</span>
+            <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap;justify-content:center;">
+                <span class="upload-subtitle">${ext} &nbsp;·&nbsp; ${lines.toLocaleString()} lines &nbsp;·&nbsp; ${sizeKB} KB</span>
+            </div>
+            <span class="upload-subtitle" style="margin-top:6px;color:var(--text-muted);">Click to replace file</span>
+        `;
+    }
 }
 
 function detectLanguage(filename) {
@@ -475,7 +492,44 @@ function inputTypeChanged(){
 
 }
 
+function setReviewButtonLoading(isLoading){
+
+    if (!Elements.reviewButton) return;
+
+    if (isLoading) {
+
+        if (!Elements.reviewButton.dataset.originalContent) {
+            Elements.reviewButton.dataset.originalContent =
+                Elements.reviewButton.innerHTML;
+        }
+
+        Elements.reviewButton.disabled = true;
+
+        Elements.reviewButton.innerHTML = `
+            <span class="btn-content">
+                <span class="btn-spinner"></span> Reviewing...
+            </span>
+        `;
+
+    } else {
+
+        if (Elements.reviewButton.dataset.originalContent) {
+            Elements.reviewButton.innerHTML =
+                Elements.reviewButton.dataset.originalContent;
+        }
+
+        Elements.reviewButton.disabled = false;
+
+    }
+
+}
+
 async function startReview() {
+
+    if (AppState.isReviewing) return;
+
+    AppState.isReviewing = true;
+    setReviewButtonLoading(true);
 
     try {
 
@@ -510,6 +564,8 @@ async function startReview() {
         }
 
         const result = await response.json();
+        console.log("FULL RESULT:", result);
+        console.log("META:", result.review?.meta);
 
         AppState.reviewResult = result.review;
         document.getElementById("upload-section").style.display = "none";
@@ -523,6 +579,13 @@ async function startReview() {
         console.log(JSON.stringify(e, null, 2));
 
         alert(e);
+
+    }
+
+    finally {
+
+        AppState.isReviewing = false;
+        setReviewButtonLoading(false);
 
     }
 
@@ -558,7 +621,7 @@ function buildRequest() {
 
             input_type: "file",
 
-            review_type: document.getElementById("review-type").value,
+            review_type: "AI",
 
             language: file.language,
 
@@ -622,6 +685,18 @@ function buildRequest() {
 
 }
 
+function renderMeta(meta){
+    if (!meta) return;
+
+    if (Elements.statTokens) {
+        Elements.statTokens.textContent = (meta.tokens ?? 0).toLocaleString();
+    }
+
+    if (Elements.statExecTime) {
+        Elements.statExecTime.textContent = `${meta.exec_time ?? 0}s`;
+    }
+}
+
 function renderReview(review){
     renderProjectOverview(
         review.local_analysis
@@ -639,7 +714,25 @@ function renderReview(review){
     renderAIReport(
         review.ai_analysis
     );
+    renderMeta(review.meta);
+    if (AppState.files.length > 0) {      // NEW — default active file
+        setActiveFile(AppState.files[0]);
+    }
     showAIReport();
+}
+
+function setActiveFile(file){
+    if (!file) return;
+
+    AppState.currentFile = file;
+
+    editor.setValue(file.code, -1);
+    setEditorLanguage(file.language);
+
+    if (Elements.activeFilePath) {
+        const display = (file.path || file.filename).replace(/\//g, " / ");
+        Elements.activeFilePath.textContent = display;
+    }
 }
 
 function renderAIReport(ai){
@@ -742,7 +835,7 @@ function openFile(filename){
     setEditorLanguage(
         file.language
     );
-
+    setActiveFile(file);
     showSourceCode();
     AppState.currentFile=file;
 

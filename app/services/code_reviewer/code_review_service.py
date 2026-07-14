@@ -1,4 +1,4 @@
-import asyncio
+import asyncio, time 
 
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
@@ -481,6 +481,8 @@ class CodeReviewService:
         zip_path: str = None,
         language: str = None
     ):
+        
+        start_time = time.time()
         review_files = CodeReviewService._process_input(input_type, code, filename, files, zip_path, language)
         
         
@@ -540,11 +542,18 @@ class CodeReviewService:
         print("=================================\n")
             
         merged_ai_report = CodeReviewService._merge_ai_reports(reports)
+        total_tokens = sum(batch.get("token_count", 0) for batch in batches)  
+        exec_time = round(time.time() - start_time, 2) 
         
         final_report = {
             "local_analysis": local_report,
-            "ai_analysis": merged_ai_report
+            "ai_analysis": merged_ai_report,
+            "meta": {                     # NEW
+                "tokens": total_tokens,
+                "exec_time": exec_time
+            }
         }
+        
         
         ExecutionService.create_execution(
             db,

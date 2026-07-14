@@ -36,18 +36,54 @@
 
 /* ── Upload Experience ── */
 .upload-hero-section {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - var(--topbar-h));
-  padding: 40px;
+  width: 100%;
+  height: calc(100vh - var(--topbar-h));
   animation: fadeIn var(--dur-base) var(--ease) both;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding-right: 20%;
+}
+
+.upload-hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 40px 56px;
+  box-sizing: border-box;
+}
+
+.upload-intro {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+  font-weight: var(--weight-bold);
+}
+
+.upload-intro h1 {
+  font-size: 2.1rem;
+  font-weight: var(--weight-bold);
+  color: var(--ink-0);
+  letter-spacing: -0.03em;
+}
+
+.upload-intro p {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-top: 10px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .upload-card {
   width: 100%;
-  max-width: 720px;
-  padding: 48px;
+  max-width: 1100px;
+  padding: 48px 56px;
   border: 1px solid var(--border-1);
   border-radius: var(--radius-2xl);
   background: var(--surface-0);
@@ -64,14 +100,14 @@
 }
 
 .upload-header h2 {
-  font-size: var(--text-2xl);
+  font-size: 2rem;
   font-weight: var(--weight-bold);
   color: var(--ink-0);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .upload-header p {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--text-soft);
   margin-top: 8px;
 }
@@ -139,9 +175,128 @@
 
 .start-review-btn {
   font-size: var(--text-base);
-  padding: 0 32px;
-  min-height: 48px;
+  padding: 0 48px;
+  min-height: 52px;
   border-radius: var(--radius-pill);
+}
+
+/* ── How It Works strip ── */
+/* ── Common Issues We Fix (examples grid) ── */
+.examples-section {
+  max-width: 1100px;
+  width: 100%;
+}
+
+.examples-header h3 {
+  font-size: 15px;
+  font-weight: var(--weight-bold);
+  color: var(--ink-0);
+}
+
+.examples-header p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  margin-bottom: 14px;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.example-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  min-width: 0;
+}
+
+.example-label {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.example-flow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.example-bad {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+
+.example-good {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  white-space: nowrap;
+}
+
+.example-arrow {
+  color: var(--text-muted);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .examples-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .examples-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Capability badges ── */
+.upload-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.upload-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+.upload-badge svg {
+  width: 12px;
+  height: 12px;
+  stroke: var(--success, #22c55e);
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  flex-shrink: 0;
 }
 
 /* ── Progress Timeline ── */
@@ -207,6 +362,23 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Start Review Button: Loading State ── */
+.start-review-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
 
 /* ── Main Layout: 3 Columns ── */
 .reviewer-main {
@@ -274,7 +446,6 @@
 
 .panel-center{
 
-    flex:1;
 
     display:flex;
 

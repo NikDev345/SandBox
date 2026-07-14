@@ -7,6 +7,10 @@ class IssueGroup(BaseModel):
     medium: List[str]
     low: List[str]
 
+class ReviewMeta(BaseModel):
+    tokens: int
+    exec_time: float
+
 class ReviewScore(BaseModel):
     overall: int
     correctness: int
@@ -18,8 +22,8 @@ class ReviewScore(BaseModel):
 class CodeReviewResult(BaseModel):
 
     local_analysis: dict[str, Any]
-
     ai_analysis: dict[str, Any]
+    meta: ReviewMeta   
 
 class CodeReviewerRequest(BaseModel):
     '''
