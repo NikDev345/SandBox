@@ -31,6 +31,7 @@ import app.ui.pages.reset_password
 import app.ui.pages.text_summarizer
 import app.ui.pages.json_fixer
 import app.ui.pages.image_text_extractor
+import app.ui.pages.eli5
 # ui.run(
 #     title='SandBox',
 #     dark=True,

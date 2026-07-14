@@ -57,7 +57,7 @@ class GeminiService:
 
         try:
             response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.5-flash",
                 contents=prompt,
             )
             return response.text.strip()
@@ -250,7 +250,7 @@ Return ONLY valid JSON.
         
         try:
             response = await self.client.aio.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.5-flash",
                 contents=[system_prompt, prompt],
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",

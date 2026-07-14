@@ -1,0 +1,214 @@
+<section class="tool-page eli5-tool" aria-label="ELI5 Generator">
+
+  <!-- ── Hero ──────────────────────────────────────────────────────────── -->
+  <header class="eli5-hero">
+    <div class="eli5-hero-ambient" aria-hidden="true">
+      <span class="eli5-orb eli5-orb--1"></span>
+      <span class="eli5-orb eli5-orb--2"></span>
+      <span class="eli5-orb eli5-orb--3"></span>
+    </div>
+    <div class="eli5-hero-copy">
+      <div class="eli5-hero-icon" aria-hidden="true">🧠</div>
+      <div class="eli5-hero-text">
+        <h1 class="eli5-hero-title">ELI5 Generator</h1>
+        <p class="eli5-hero-desc">
+          Explain difficult concepts in simple language using real-world examples,
+          analogies, and beginner-friendly breakdowns — powered by AI.
+        </p>
+        <ul class="eli5-pills" aria-label="Tool features">
+          <li class="eli5-pill">AI Powered</li>
+          <li class="eli5-pill">Beginner Friendly</li>
+          <li class="eli5-pill">Easy Language</li>
+          <li class="eli5-pill">Real Examples</li>
+          <li class="eli5-pill">Fast Responses</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Example Chips ──────────────────────────────────────────────────── -->
+  <div class="eli5-chips-bar">
+    <span class="eli5-chips-label">Try an example:</span>
+    <div class="eli5-chip-group" role="group" aria-label="Load example topic">
+      <button type="button" class="eli5-chip" data-topic="Quantum Computing">Quantum Computing</button>
+      <button type="button" class="eli5-chip" data-topic="Black Holes">Black Holes</button>
+      <button type="button" class="eli5-chip" data-topic="Artificial Intelligence">Artificial Intelligence</button>
+      <button type="button" class="eli5-chip" data-topic="Blockchain">Blockchain</button>
+      <button type="button" class="eli5-chip" data-topic="Neural Networks">Neural Networks</button>
+      <button type="button" class="eli5-chip" data-topic="APIs">APIs</button>
+      <button type="button" class="eli5-chip" data-topic="Machine Learning">Machine Learning</button>
+      <button type="button" class="eli5-chip" data-topic="Dark Matter">Dark Matter</button>
+      <button type="button" class="eli5-chip" data-topic="Inflation">Inflation</button>
+      <button type="button" class="eli5-chip" data-topic="DNA">DNA</button>
+      <button type="button" class="eli5-chip" data-topic="Cloud Computing">Cloud Computing</button>
+      <button type="button" class="eli5-chip" data-topic="Operating Systems">Operating Systems</button>
+    </div>
+  </div>
+
+  <!-- ── Input Workspace ────────────────────────────────────────────────── -->
+  <div class="eli5-workspace" id="eli5-workspace">
+
+    <!-- Input card -->
+    <div class="eli5-input-card" id="eli5-input-card">
+      <label for="eli5-topic-input" class="eli5-input-label">Topic</label>
+      <div class="eli5-input-wrap">
+        <textarea
+          id="eli5-topic-input"
+          name="eli5-topic-input"
+          class="eli5-textarea"
+          placeholder="What would you like explained?"
+          aria-label="Topic to explain"
+          spellcheck="false"
+          autocomplete="off"
+          maxlength="300"
+          rows="3"
+        ></textarea>
+        <span class="eli5-char-count" id="eli5-char-count" aria-live="polite">0 / 300</span>
+      </div>
+
+      <div class="eli5-action-row">
+        <button
+          type="button"
+          class="btn btn-primary eli5-explain-btn"
+          id="eli5-explain-btn"
+          aria-label="Generate explanation"
+        >
+          <span class="eli5-btn-text">Explain</span>
+          <span class="eli5-btn-icon" aria-hidden="true">✦</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating title — animated from input -->
+    <div class="eli5-floating-title" id="eli5-floating-title" aria-hidden="true"></div>
+
+    <!-- Loading state -->
+    <div class="eli5-loading" id="eli5-loading" hidden>
+      <div class="eli5-thinking">
+        <span class="eli5-thinking-dot"></span>
+        <span class="eli5-thinking-dot"></span>
+        <span class="eli5-thinking-dot"></span>
+      </div>
+      <p class="eli5-thinking-label">Generating explanation…</p>
+      <div class="eli5-skeleton">
+        <div class="eli5-skeleton-line eli5-skeleton-line--wide"></div>
+        <div class="eli5-skeleton-line eli5-skeleton-line--mid"></div>
+        <div class="eli5-skeleton-line eli5-skeleton-line--wide"></div>
+        <div class="eli5-skeleton-line eli5-skeleton-line--narrow"></div>
+        <div class="eli5-skeleton-gap"></div>
+        <div class="eli5-skeleton-line eli5-skeleton-line--wide"></div>
+        <div class="eli5-skeleton-line eli5-skeleton-line--mid"></div>
+        <div class="eli5-skeleton-line eli5-skeleton-line--wide"></div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="eli5-empty" id="eli5-empty">
+      <div class="eli5-empty-illustration" aria-hidden="true">🧠</div>
+      <p class="eli5-empty-title">Your explanation will appear here</p>
+      <p class="eli5-empty-sub">Start by entering any topic above</p>
+    </div>
+
+    <!-- Output card -->
+    <div class="eli5-output-card" id="eli5-output-card" hidden aria-live="polite">
+
+      <h2 class="eli5-output-title" id="eli5-output-title"></h2>
+
+      <hr class="eli5-divider" aria-hidden="true" />
+
+      <div class="eli5-summary-block">
+        <span class="eli5-block-label">In a nutshell</span>
+        <p class="eli5-summary-text" id="eli5-summary-text"></p>
+      </div>
+
+      <hr class="eli5-divider" aria-hidden="true" />
+
+      <div class="eli5-explanation-block">
+        <span class="eli5-block-label">Full Explanation</span>
+        <div class="eli5-explanation-text" id="eli5-explanation-text"></div>
+      </div>
+
+      <hr class="eli5-divider" aria-hidden="true" />
+
+      <div class="eli5-output-actions">
+        <button type="button" class="eli5-action-btn" id="eli5-copy-btn" aria-label="Copy explanation">
+          <span aria-hidden="true">⧉</span> Copy
+        </button>
+        <button type="button" class="eli5-action-btn" id="eli5-again-btn" aria-label="Generate again">
+          <span aria-hidden="true">↺</span> Generate Again
+        </button>
+        <button type="button" class="eli5-action-btn eli5-action-btn--ghost" id="eli5-clear-btn" aria-label="Clear output">
+          <span aria-hidden="true">✕</span> Clear
+        </button>
+      </div>
+
+    </div>
+
+  </div><!-- /.eli5-workspace -->
+
+  <!-- ── Explore Topics ─────────────────────────────────────────────────── -->
+  <section class="eli5-explore" aria-labelledby="eli5-explore-heading">
+    <header class="eli5-explore-header">
+      <h2 id="eli5-explore-heading" class="eli5-explore-title">Explore Topics</h2>
+      <p class="eli5-explore-desc">Click any category to load an example and start learning.</p>
+    </header>
+    <div class="eli5-explore-grid">
+
+      <button type="button" class="eli5-topic-card" data-topic="Artificial Intelligence" aria-label="Explore Artificial Intelligence">
+        <span class="eli5-topic-icon" aria-hidden="true">🤖</span>
+        <span class="eli5-topic-name">Artificial Intelligence</span>
+        <span class="eli5-topic-sub">How machines learn and think</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="Quantum Physics" aria-label="Explore Quantum Physics">
+        <span class="eli5-topic-icon" aria-hidden="true">⚛️</span>
+        <span class="eli5-topic-name">Physics</span>
+        <span class="eli5-topic-sub">The rules that govern our universe</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="Calculus" aria-label="Explore Mathematics">
+        <span class="eli5-topic-icon" aria-hidden="true">∑</span>
+        <span class="eli5-topic-name">Mathematics</span>
+        <span class="eli5-topic-sub">Numbers, patterns, and structures</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="How the Internet works" aria-label="Explore Programming">
+        <span class="eli5-topic-icon" aria-hidden="true">💻</span>
+        <span class="eli5-topic-name">Programming</span>
+        <span class="eli5-topic-sub">Talking to computers with code</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="Black Holes" aria-label="Explore Astronomy">
+        <span class="eli5-topic-icon" aria-hidden="true">🔭</span>
+        <span class="eli5-topic-name">Astronomy</span>
+        <span class="eli5-topic-sub">Stars, galaxies, and spacetime</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="The French Revolution" aria-label="Explore History">
+        <span class="eli5-topic-icon" aria-hidden="true">📜</span>
+        <span class="eli5-topic-name">History</span>
+        <span class="eli5-topic-sub">Events that shaped the world</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="Supply and Demand" aria-label="Explore Economics">
+        <span class="eli5-topic-icon" aria-hidden="true">📈</span>
+        <span class="eli5-topic-name">Economics</span>
+        <span class="eli5-topic-sub">How money and markets work</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="How vaccines work" aria-label="Explore Medicine">
+        <span class="eli5-topic-icon" aria-hidden="true">🧬</span>
+        <span class="eli5-topic-name">Medicine</span>
+        <span class="eli5-topic-sub">The science of health and healing</span>
+      </button>
+
+      <button type="button" class="eli5-topic-card" data-topic="How encryption works" aria-label="Explore Cybersecurity">
+        <span class="eli5-topic-icon" aria-hidden="true">🔐</span>
+        <span class="eli5-topic-name">Cybersecurity</span>
+        <span class="eli5-topic-sub">Keeping data safe in a digital world</span>
+      </button>
+
+    </div>
+  </section>
+
+</section>

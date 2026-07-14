@@ -13,12 +13,11 @@ import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
 from app.api.image_text_extractor.image_text_extractor import router as image_text_extractor_router
-
 # tools
 from app.api.summarizer.summarizer import router as summarizer_router
 from app.api.json_fixer.json_fixer import router as json_fixer_router
 from app.api.code_reviewer.code_reviewer import router as code_reviewer_router
-
+from app.api.ELI5.eli5 import router as eli5_router
 import app.main 
 from nicegui import ui
 from app.seed.seed_tools import seed_tools
@@ -64,7 +63,7 @@ app.include_router(summarizer_router)
 app.include_router(json_fixer_router)
 app.include_router(code_reviewer_router)
 app.include_router(image_text_extractor_router)
-
+app.include_router(eli5_router)
 ui.run_with(
     app,
     title="SandBox",
