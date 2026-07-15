@@ -1,0 +1,426 @@
+<section class="qg-root" id="quiz-generator" aria-label="Quiz Generator">
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 1 — INPUT
+  ═══════════════════════════════════════════════ -->
+  <div class="qg-phase" id="qg-phase-input" data-phase="input">
+
+    <!-- Hero -->
+    <header class="qg-hero">
+      <div class="qg-hero-badge" aria-hidden="true">
+        <span class="qg-hero-badge-dot"></span>
+        AI-Powered
+      </div>
+      <h1 class="qg-hero-heading">
+        Generate quizzes from any
+        <span class="qg-hero-rotator" aria-live="polite" aria-atomic="true">
+          <span class="qg-rotator-track" id="qg-rotator-track">
+            <span class="qg-rotator-word" data-word="Text">Text</span>
+            <span class="qg-rotator-word" data-word="Document">Document</span>
+            <span class="qg-rotator-word" data-word="PDF">PDF</span>
+            <span class="qg-rotator-word" data-word="Notes">Notes</span>
+            <span class="qg-rotator-word" data-word="Markdown">Markdown</span>
+            <span class="qg-rotator-word" data-word="Prompt">Prompt</span>
+          </span>
+        </span>
+      </h1>
+      <p class="qg-hero-desc">
+        Turn any source material into a polished, interactive quiz in seconds.
+        Upload a document or describe a topic — SandBox handles the rest.
+      </p>
+    </header>
+
+    <!-- Mode Selector -->
+    <div class="qg-mode-selector" role="tablist" aria-label="Input mode">
+      <div class="qg-mode-pill" aria-hidden="true" id="qg-mode-pill"></div>
+      <button
+        class="qg-mode-btn qg-mode-btn--active"
+        id="qg-mode-doc"
+        role="tab"
+        aria-selected="true"
+        aria-controls="qg-panel-doc"
+        data-mode="document"
+        type="button"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h7l3 3v9H3V2z"/><path d="M10 2v3h3"/></svg>
+        Document
+      </button>
+      <button
+        class="qg-mode-btn"
+        id="qg-mode-prompt"
+        role="tab"
+        aria-selected="false"
+        aria-controls="qg-panel-prompt"
+        data-mode="prompt"
+        type="button"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+        Prompt
+      </button>
+    </div>
+
+    <!-- Document Panel -->
+    <div class="qg-panel" id="qg-panel-doc" role="tabpanel" aria-labelledby="qg-mode-doc">
+      <div class="qg-upload-zone" id="qg-upload-zone" aria-label="Upload document">
+        <input
+          type="file"
+          id="qg-file-input"
+          class="visually-hidden"
+          accept=".pdf,.docx,.pptx,.txt,.md"
+          aria-label="Choose a file to upload"
+        />
+        <div class="qg-upload-idle" id="qg-upload-idle">
+          <div class="qg-upload-icon-wrap" aria-hidden="true">
+            <svg class="qg-upload-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <p class="qg-upload-headline">Drag &amp; drop your file here</p>
+          <p class="qg-upload-sub">or <label for="qg-file-input" class="qg-upload-browse">browse files</label></p>
+          <ul class="qg-upload-formats" aria-label="Supported formats">
+            <li>PDF</li><li>DOCX</li><li>PPTX</li><li>TXT</li><li>Markdown</li>
+          </ul>
+        </div>
+        <div class="qg-upload-file" id="qg-upload-file" hidden>
+          <div class="qg-file-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="qg-file-info">
+            <span class="qg-file-name" id="qg-file-name"></span>
+            <span class="qg-file-size" id="qg-file-size"></span>
+          </div>
+          <button type="button" class="qg-file-remove" id="qg-file-remove" aria-label="Remove file">
+            <svg viewBox="0 0 16 16"><path d="M12 4 4 12M4 4l8 8"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prompt Panel -->
+    <div class="qg-panel qg-panel--hidden" id="qg-panel-prompt" role="tabpanel" aria-labelledby="qg-mode-prompt">
+      <div class="qg-prompt-editor">
+        <label for="qg-prompt-input" class="visually-hidden">Describe what you want a quiz about</label>
+        <textarea
+          id="qg-prompt-input"
+          class="qg-prompt-textarea"
+          placeholder="Describe what you want a quiz about…&#10;&#10;Example: Generate a quiz about the French Revolution covering causes, key events, and outcomes."
+          maxlength="5000"
+          rows="6"
+          spellcheck="true"
+          aria-describedby="qg-char-count"
+        ></textarea>
+        <div class="qg-prompt-footer">
+          <span class="qg-char-count" id="qg-char-count" aria-live="polite">0 / 5000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue CTA -->
+    <div class="qg-input-actions">
+      <button type="button" class="btn btn-primary qg-continue-btn" id="qg-continue-btn" disabled aria-disabled="true">
+        Continue
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 2 — CONFIGURATION
+  ═══════════════════════════════════════════════ -->
+  <div class="qg-phase qg-phase--hidden" id="qg-phase-config" data-phase="config" aria-label="Quiz configuration">
+
+    <header class="qg-config-header">
+      <button type="button" class="qg-back-btn" id="qg-back-btn" aria-label="Go back to input">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+        Back
+      </button>
+      <div>
+        <h2 class="qg-config-title">Configure your quiz</h2>
+        <p class="qg-config-desc">Adjust settings to match your learning goals.</p>
+      </div>
+    </header>
+
+    <div class="qg-config-grid">
+
+      <!-- Question Count -->
+      <div class="qg-config-card metric-card">
+        <label class="qg-config-label" for="qg-count-slider">Question Count</label>
+        <div class="qg-slider-row">
+          <input
+            type="range"
+            id="qg-count-slider"
+            class="qg-slider"
+            min="5"
+            max="50"
+            step="5"
+            value="10"
+            aria-valuemin="5"
+            aria-valuemax="50"
+            aria-valuenow="10"
+            aria-label="Number of questions"
+          />
+          <output class="qg-slider-value" id="qg-count-value" for="qg-count-slider">10</output>
+        </div>
+        <div class="qg-slider-marks" aria-hidden="true">
+          <span>5</span><span>15</span><span>25</span><span>35</span><span>50</span>
+        </div>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="qg-config-card metric-card">
+        <span class="qg-config-label" id="qg-diff-label">Difficulty</span>
+        <div class="qg-chip-group" role="group" aria-labelledby="qg-diff-label">
+          <button type="button" class="qg-chip" data-group="difficulty" data-value="easy">Easy</button>
+          <button type="button" class="qg-chip qg-chip--active" data-group="difficulty" data-value="medium">Medium</button>
+          <button type="button" class="qg-chip" data-group="difficulty" data-value="hard">Hard</button>
+          <button type="button" class="qg-chip" data-group="difficulty" data-value="mixed">Mixed</button>
+        </div>
+      </div>
+
+      <!-- Audience -->
+      <div class="qg-config-card metric-card">
+        <span class="qg-config-label" id="qg-aud-label">Audience</span>
+        <div class="qg-audience-grid" role="group" aria-labelledby="qg-aud-label">
+          <button type="button" class="qg-audience-card qg-audience-card--active" data-group="audience" data-value="school">
+            <span class="qg-audience-icon" aria-hidden="true">🎒</span>
+            <span>School</span>
+          </button>
+          <button type="button" class="qg-audience-card" data-group="audience" data-value="college">
+            <span class="qg-audience-icon" aria-hidden="true">🎓</span>
+            <span>College</span>
+          </button>
+          <button type="button" class="qg-audience-card" data-group="audience" data-value="interview">
+            <span class="qg-audience-icon" aria-hidden="true">💼</span>
+            <span>Interview</span>
+          </button>
+          <button type="button" class="qg-audience-card" data-group="audience" data-value="professional">
+            <span class="qg-audience-icon" aria-hidden="true">🏢</span>
+            <span>Professional</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="qg-config-card metric-card">
+        <label class="qg-config-label" for="qg-language-select">Language</label>
+        <div class="select-wrap">
+          <select id="qg-language-select" class="form-select qg-language-select" aria-label="Quiz language">
+            <option value="english">English</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+      </div>
+
+      <!-- Question Types -->
+      <div class="qg-config-card qg-config-card--full metric-card">
+        <span class="qg-config-label" id="qg-type-label">Question Types</span>
+        <div class="qg-type-grid" role="group" aria-labelledby="qg-type-label">
+          <button type="button" class="qg-type-card qg-type-card--active" data-group="types" data-value="mcq" aria-pressed="true">
+            <span class="qg-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
+            </span>
+            <span class="qg-type-name">Multiple Choice</span>
+            <span class="qg-type-desc">4 options per question</span>
+          </button>
+          <button type="button" class="qg-type-card" data-group="types" data-value="truefalse" aria-pressed="false">
+            <span class="qg-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M4 10h12"/><path d="M10 4v12"/></svg>
+            </span>
+            <span class="qg-type-name">True / False</span>
+            <span class="qg-type-desc">Binary answer questions</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Generate CTA -->
+    <div class="qg-config-actions">
+      <button type="button" class="btn btn-primary qg-generate-btn" id="qg-generate-btn">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v6H2"/><path d="M14 8A6 6 0 1 1 2 8"/></svg>
+        Generate Quiz
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LOADING OVERLAY
+  ═══════════════════════════════════════════════ -->
+  <div class="qg-loading-overlay" id="qg-loading-overlay" hidden aria-live="polite" aria-label="Generating quiz">
+    <div class="qg-loading-box">
+<div class="qg-loader-wrapper" aria-hidden="true">
+
+    <div class="qg-loader-word">
+
+        <span class="qg-loader-letter">G</span>
+        <span class="qg-loader-letter">e</span>
+        <span class="qg-loader-letter">n</span>
+        <span class="qg-loader-letter">e</span>
+        <span class="qg-loader-letter">r</span>
+        <span class="qg-loader-letter">a</span>
+        <span class="qg-loader-letter">t</span>
+        <span class="qg-loader-letter">i</span>
+        <span class="qg-loader-letter">n</span>
+        <span class="qg-loader-letter">g</span>
+
+    </div>
+
+    <div class="qg-loader"></div>
+
+</div>
+      <h2 class="qg-loading-title">Generating your quiz</h2>
+      <p class="qg-loading-subtitle">This usually takes 5–15 seconds</p>
+      <ul class="qg-loading-steps" id="qg-loading-steps" aria-label="Progress steps">
+        <li class="qg-step" data-step="0">
+          <span class="qg-step-icon" aria-hidden="true"></span>
+          Reading content
+        </li>
+        <li class="qg-step" data-step="1">
+          <span class="qg-step-icon" aria-hidden="true"></span>
+          Understanding context
+        </li>
+        <li class="qg-step" data-step="2">
+          <span class="qg-step-icon" aria-hidden="true"></span>
+          Generating questions
+        </li>
+        <li class="qg-step" data-step="3">
+          <span class="qg-step-icon" aria-hidden="true"></span>
+          Building answer options
+        </li>
+        <li class="qg-step" data-step="4">
+          <span class="qg-step-icon" aria-hidden="true"></span>
+          Validating quiz
+        </li>
+        <li class="qg-step" data-step="5">
+          <span class="qg-step-icon" aria-hidden="true"></span>
+          Finalizing
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 3 — QUIZ
+  ═══════════════════════════════════════════════ -->
+  <div class="qg-phase qg-phase--hidden" id="qg-phase-quiz" data-phase="quiz" aria-label="Quiz">
+
+    <!-- Quiz Header -->
+    <header class="qg-quiz-header">
+      <div class="qg-quiz-meta">
+        <span class="qg-quiz-counter" id="qg-quiz-counter" aria-live="polite">Question 1 of 10</span>
+        <button type="button" class="btn btn-ghost qg-btn-sm qg-quit-btn" id="qg-quit-btn">Exit Quiz</button>
+      </div>
+      <div class="qg-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Quiz progress">
+        <div class="qg-progress-fill" id="qg-progress-fill"></div>
+      </div>
+    </header>
+
+    <!-- Question Card -->
+    <div class="qg-question-card metric-card" id="qg-question-card">
+      <p class="qg-question-type-badge" id="qg-question-type-badge"></p>
+      <h2 class="qg-question-text" id="qg-question-text"></h2>
+    </div>
+
+    <!-- Options -->
+    <div class="qg-options" id="qg-options" role="group" aria-label="Answer options"></div>
+
+    <!-- Quiz Navigation -->
+    <div class="qg-quiz-nav">
+      <button type="button" class="btn btn-ghost qg-btn-sm" id="qg-prev-btn" disabled aria-label="Previous question">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+        Previous
+      </button>
+      <button type="button" class="btn btn-ghost qg-btn-sm" id="qg-skip-btn" aria-label="Skip question">
+        Skip
+      </button>
+      <button type="button" class="btn btn-primary qg-btn-sm" id="qg-next-btn" disabled aria-label="Next question">
+        Next
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+
+    <!-- Keyboard hint -->
+    <p class="qg-keyboard-hint" aria-label="Keyboard shortcuts">
+      <kbd>1</kbd>–<kbd>4</kbd> select · <kbd>→</kbd> next · <kbd>←</kbd> prev
+    </p>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 4 — RESULTS
+  ═══════════════════════════════════════════════ -->
+  <div class="qg-phase qg-phase--hidden" id="qg-phase-results" data-phase="results" aria-label="Quiz results">
+
+    <!-- Score Hero -->
+    <div class="qg-result-hero">
+      <div class="qg-score-ring" id="qg-score-ring" aria-hidden="true">
+        <svg class="qg-score-svg" viewBox="0 0 120 120">
+          <circle class="qg-score-track" cx="60" cy="60" r="52"/>
+          <circle class="qg-score-arc" id="qg-score-arc" cx="60" cy="60" r="52"/>
+        </svg>
+        <div class="qg-score-inner">
+          <span class="qg-score-pct" id="qg-score-pct">0%</span>
+          <span class="qg-score-label">Score</span>
+        </div>
+      </div>
+      <div class="qg-result-summary">
+        <h2 class="qg-result-title" id="qg-result-title">Quiz Complete</h2>
+        <p class="qg-result-subtitle" id="qg-result-subtitle"></p>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="qg-stat-grid">
+      <div class="qg-stat-card metric-card">
+        <span class="qg-stat-icon qg-stat-icon--correct" aria-hidden="true">✓</span>
+        <span class="qg-stat-value" id="qg-stat-correct">0</span>
+        <span class="qg-stat-label">Correct</span>
+      </div>
+      <div class="qg-stat-card metric-card">
+        <span class="qg-stat-icon qg-stat-icon--wrong" aria-hidden="true">✕</span>
+        <span class="qg-stat-value" id="qg-stat-wrong">0</span>
+        <span class="qg-stat-label">Incorrect</span>
+      </div>
+      <div class="qg-stat-card metric-card">
+        <span class="qg-stat-icon qg-stat-icon--skip" aria-hidden="true">—</span>
+        <span class="qg-stat-value" id="qg-stat-skip">0</span>
+        <span class="qg-stat-label">Skipped</span>
+      </div>
+      <div class="qg-stat-card metric-card">
+        <span class="qg-stat-icon qg-stat-icon--time" aria-hidden="true">◷</span>
+        <span class="qg-stat-value" id="qg-stat-time">0s</span>
+        <span class="qg-stat-label">Time Taken</span>
+      </div>
+      <div class="qg-stat-card metric-card">
+        <span class="qg-stat-icon qg-stat-icon--avg" aria-hidden="true">⌀</span>
+        <span class="qg-stat-value" id="qg-stat-avg">0s</span>
+        <span class="qg-stat-label">Avg / Question</span>
+      </div>
+      <div class="qg-stat-card metric-card">
+        <span class="qg-stat-icon qg-stat-icon--skill" aria-hidden="true">★</span>
+        <span class="qg-stat-value" id="qg-stat-skill">—</span>
+        <span class="qg-stat-label">Skill Level</span>
+      </div>
+    </div>
+
+    <!-- Review List -->
+    <section class="qg-review-section" aria-labelledby="qg-review-heading">
+      <h3 class="qg-review-heading" id="qg-review-heading">Answer Review</h3>
+      <ol class="qg-review-list" id="qg-review-list" aria-label="Question review"></ol>
+    </section>
+
+    <!-- Result Actions -->
+    <div class="qg-result-actions">
+      <button type="button" class="btn btn-ghost qg-btn-sm" id="qg-retake-btn">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8A6 6 0 1 1 8 14"/><path d="M2 4v4h4"/></svg>
+        Retake Quiz
+      </button>
+      <button type="button" class="btn btn-primary" id="qg-new-quiz-btn">
+        New Quiz
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+</section>
