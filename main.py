@@ -19,7 +19,7 @@ from app.api.json_fixer.json_fixer import router as json_fixer_router
 from app.api.code_reviewer.code_reviewer import router as code_reviewer_router
 from app.api.ELI5.eli5 import router as eli5_router
 from app.api.quiz.quiz_generator import router as quiz_router
-
+from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 import app.main 
 from nicegui import ui
 from app.seed.seed_tools import seed_tools
@@ -67,6 +67,8 @@ app.include_router(code_reviewer_router)
 app.include_router(image_text_extractor_router)
 app.include_router(eli5_router)
 app.include_router(quiz_router)
+app.include_router(youtube_summarizer_router)
+
 ui.run_with(
     
     app,

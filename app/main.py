@@ -33,6 +33,7 @@ import app.ui.pages.json_fixer
 import app.ui.pages.image_text_extractor
 import app.ui.pages.eli5
 import app.ui.pages.quiz_generator
+import app.ui.pages.youtube_summarizer
 # ui.run(
 #     title='SandBox',
 #     dark=True,
