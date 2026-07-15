@@ -1,0 +1,613 @@
+
+  <!-- Mouse glow follower -->
+  <div class="mouse-glow" id="mouseGlow"></div>
+
+  <!-- Ambient background -->
+  <div class="bg-canvas">
+    <div class="bg-grid"></div>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <canvas id="particleCanvas"></canvas>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+            <path d="M3 5v6c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+            <path d="M3 11v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SQL Generator</span>
+          <span class="brand-sub">Generate SQL using AI or Visual Builder</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      
+      <a href="#" class="header-btn" id="examplesBtn" aria-label="Examples">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        Examples
+      </a>
+      
+      <button class="header-btn icon-only" id="themeToggle" aria-label="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <div class="kbd-hint" id="cmdPaletteHint">
+        <kbd>⌘</kbd><kbd>K</kbd>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       WORKSPACE
+  ═══════════════════════════════════════════ -->
+  <main class="workspace" id="workspace">
+
+    <!-- ── LEFT PANEL ── -->
+    <section class="panel panel-left" id="panelLeft">
+      <div class="panel-header">
+        <div class="panel-tabs">
+          <button class="tab-btn active" data-tab="ai" aria-selected="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            AI Prompt
+          </button>
+          <button class="tab-btn" data-tab="builder" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            Visual Builder
+          </button>
+          <div class="tab-indicator"></div>
+        </div>
+      </div>
+
+      <!-- ── AI PROMPT TAB ── -->
+      <div class="tab-pane active" id="tabAi">
+        <div class="ai-prompt-area">
+          <div class="prompt-chips">
+            <span class="chips-label">Try an example</span>
+            <div class="chips-row">
+              <button class="chip" data-prompt="Show top 10 customers by total revenue, including their email and order count">Top 10 Customers</button>
+              <button class="chip" data-prompt="Show monthly revenue totals for the current year grouped by month">Monthly Revenue</button>
+              <button class="chip" data-prompt="List all employees grouped by department with average salary">Employees by Dept</button>
+              <button class="chip" data-prompt="Find products with inventory quantity less than 10 ordered by stock ascending">Low Inventory</button>
+              <button class="chip" data-prompt="Find all users with duplicate email addresses">Duplicate Emails</button>
+              <button class="chip" data-prompt="Generate a sales report showing total sales by product category for last 30 days">Sales Report</button>
+            </div>
+          </div>
+
+          <div class="prompt-input-wrap">
+            <textarea
+              id="aiPrompt"
+              class="prompt-textarea"
+              placeholder="Show all employees earning more than ₹50,000 in the IT department ordered by salary descending..."
+              rows="5"
+              aria-label="AI prompt for SQL generation"
+            ></textarea>
+            <div class="prompt-footer">
+              <span class="prompt-hint">
+                <kbd>Ctrl</kbd><kbd>Enter</kbd> to generate
+              </span>
+              <div class="prompt-actions">
+                <button class="btn-ghost-sm" id="clearPromptBtn">Clear</button>
+                <button class="btn-primary" id="generateBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                  Generate SQL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VISUAL BUILDER TAB ── -->
+      <div class="tab-pane" id="tabBuilder">
+        <div class="builder-scroll">
+
+          <!-- Database & Dialect -->
+          <div class="builder-section">
+            <div class="builder-row two-col">
+              <div class="form-group">
+                <label class="form-label">Database</label>
+                <input type="text" class="form-input" id="builderDatabase" placeholder="e.g. mydb" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Dialect</label>
+                <div class="select-wrap">
+                  <select class="form-select" id="builderDialect">
+                    <option value="mysql">MySQL</option>
+                    <option value="postgresql">PostgreSQL</option>
+                    <option value="sqlite">SQLite</option>
+                    <option value="sqlserver">SQL Server</option>
+                    <option value="oracle">Oracle</option>
+                  </select>
+                  <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="builder-section">
+            <div class="form-group">
+              <label class="form-label">Table <span class="required">*</span></label>
+              <input type="text" class="form-input" id="builderTable" placeholder="employees" />
+            </div>
+          </div>
+
+          <!-- Columns -->
+          <div class="builder-section">
+            <div class="section-label-row">
+              <span class="section-label">Columns</span>
+              <span class="section-hint">Leave empty for SELECT *</span>
+            </div>
+            <div class="column-input-row">
+              <input type="text" class="form-input" id="columnSearch" placeholder="Search or add column…" />
+              <button class="btn-add" id="addColumnBtn" aria-label="Add column">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+            <div class="pills-container" id="columnPills"></div>
+          </div>
+
+          <!-- Conditions -->
+          <div class="builder-section collapsible" id="conditionsSection">
+            <button class="collapse-toggle" data-target="conditionsBody">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
+                </svg>
+                Conditions
+              </span>
+              <span class="collapse-meta">
+                <span class="badge" id="conditionsBadge">0</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="collapse-body" id="conditionsBody">
+              <div class="conditions-list" id="conditionsList"></div>
+              <button class="btn-add-row" id="addConditionBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Condition
+              </button>
+            </div>
+          </div>
+
+          <!-- Joins -->
+          <div class="builder-section collapsible" id="joinsSection">
+            <button class="collapse-toggle" data-target="joinsBody">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+                  <path d="M6 21V9a9 9 0 0 0 9 9"/>
+                </svg>
+                Joins
+              </span>
+              <span class="collapse-meta">
+                <span class="badge" id="joinsBadge">0</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="collapse-body" id="joinsBody">
+              <div class="joins-list" id="joinsList"></div>
+              <button class="btn-add-row" id="addJoinBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Join
+              </button>
+            </div>
+          </div>
+
+          <!-- Group By -->
+          <div class="builder-section collapsible" id="groupBySection">
+            <button class="collapse-toggle" data-target="groupByBody">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+                  <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+                  <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+                Group By
+              </span>
+              <span class="collapse-meta">
+                <span class="badge" id="groupByBadge">0</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="collapse-body" id="groupByBody">
+              <div class="column-input-row">
+                <input type="text" class="form-input" id="groupByInput" placeholder="Add column to group by…" />
+                <button class="btn-add" id="addGroupByBtn" aria-label="Add group by">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+              <div class="pills-container" id="groupByPills"></div>
+            </div>
+          </div>
+
+          <!-- Having -->
+          <div class="builder-section collapsible" id="havingSection">
+            <button class="collapse-toggle" data-target="havingBody">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                Having
+              </span>
+              <span class="collapse-meta">
+                <span class="badge" id="havingBadge">0</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="collapse-body" id="havingBody">
+              <div class="conditions-list" id="havingList"></div>
+              <button class="btn-add-row" id="addHavingBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Having Condition
+              </button>
+            </div>
+          </div>
+
+          <!-- Sort -->
+          <div class="builder-section collapsible" id="sortSection">
+            <button class="collapse-toggle" data-target="sortBody">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/>
+                  <line x1="8" y1="18" x2="11" y2="18"/>
+                  <polyline points="3 8 1 6 3 4"/><polyline points="3 16 1 18 3 20"/>
+                  <line x1="1" y1="6" x2="1" y2="18"/>
+                </svg>
+                Sort
+              </span>
+              <span class="collapse-meta">
+                <span class="badge" id="sortBadge">0</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="collapse-body" id="sortBody">
+              <div class="sort-list" id="sortList"></div>
+              <button class="btn-add-row" id="addSortBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Sort
+              </button>
+            </div>
+          </div>
+
+          <!-- Limit -->
+          <div class="builder-section">
+            <div class="form-group">
+              <label class="form-label">Limit</label>
+              <input type="number" class="form-input" id="builderLimit" placeholder="e.g. 10" min="1" />
+            </div>
+          </div>
+
+          <!-- Builder Generate -->
+          <div class="builder-footer">
+            <button class="btn-ghost-sm" id="clearBuilderBtn">Reset</button>
+            <button class="btn-primary" id="generateBuilderBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              Build Query
+            </button>
+          </div>
+
+        </div><!-- /builder-scroll -->
+      </div><!-- /tabBuilder -->
+    </section>
+
+    <!-- Resize handle -->
+    <div class="resize-handle" id="resizeHandle" role="separator" aria-label="Resize panels"></div>
+
+    <!-- ── RIGHT PANEL ── -->
+    <section class="panel panel-right" id="panelRight">
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-illustration">
+          <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="20" width="160" height="120" rx="12" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+            <rect x="36" y="36" width="128" height="8" rx="4" fill="rgba(255,255,255,0.04)"/>
+            <rect x="36" y="52" width="96" height="8" rx="4" fill="rgba(255,255,255,0.04)"/>
+            <rect x="36" y="68" width="112" height="8" rx="4" fill="rgba(255,255,255,0.04)"/>
+            <rect x="36" y="84" width="80" height="8" rx="4" fill="rgba(255,255,255,0.04)"/>
+            <circle cx="100" cy="128" r="20" fill="none" stroke="rgba(37,99,235,0.3)" stroke-width="1.5"/>
+            <path d="M93 128l5 5 9-10" stroke="rgba(37,99,235,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- animated beam -->
+            <line x1="100" y1="108" x2="100" y2="36" stroke="url(#beamGrad)" stroke-width="1" stroke-dasharray="4 4">
+              <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.2s" repeatCount="indefinite"/>
+            </line>
+            <defs>
+              <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="userSpaceOnUse" x1="100" y1="108" x2="100" y2="36">
+                <stop offset="0" stop-color="#2563eb" stop-opacity="0.6"/>
+                <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <p class="empty-title">Describe your query or build one visually</p>
+        <p class="empty-sub">Your generated SQL will appear here with full analysis.</p>
+        <div class="empty-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div class="loading-state hidden" id="loadingState">
+        <div class="thinking-animation">
+          <div class="thinking-orb">
+            <div class="thinking-ring ring-1"></div>
+            <div class="thinking-ring ring-2"></div>
+            <div class="thinking-ring ring-3"></div>
+            <svg class="thinking-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <div class="thinking-dots">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <p class="thinking-label" id="thinkingLabel">Analyzing your query…</p>
+        <div class="thinking-skeleton">
+          <div class="sk-line sk-w-80"></div>
+          <div class="sk-line sk-w-60"></div>
+          <div class="sk-line sk-w-90"></div>
+          <div class="sk-line sk-w-50"></div>
+          <div class="sk-line sk-w-75"></div>
+        </div>
+      </div>
+
+      <!-- SQL Output -->
+      <div class="sql-output hidden" id="sqlOutput">
+        <!-- SQL Code Block -->
+        <div class="sql-code-panel">
+          <div class="sql-code-toolbar">
+            <div class="sql-code-meta">
+              <span class="code-dot dot-red"></span>
+              <span class="code-dot dot-yellow"></span>
+              <span class="code-dot dot-green"></span>
+              <span class="code-lang">SQL</span>
+            </div>
+            <div class="sql-code-actions">
+              <button class="toolbar-btn" id="copyBtn" aria-label="Copy SQL">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copy
+              </button>
+              <button class="toolbar-btn" id="formatBtn" aria-label="Format SQL">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/>
+                  <line x1="21" y1="14" x2="9" y2="14"/><line x1="21" y1="18" x2="9" y2="18"/>
+                </svg>
+                Format
+              </button>
+              <button class="toolbar-btn" id="downloadBtn" aria-label="Download SQL">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download
+              </button>
+              <button class="toolbar-btn" id="fullscreenBtn" aria-label="Fullscreen">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <pre class="sql-code" id="sqlCode"><code id="sqlCodeContent"></code></pre>
+        </div>
+
+        <!-- Query Analysis -->
+        <div class="analysis-grid" id="analysisGrid">
+          <div class="analysis-card" id="cardQueryType">
+            <div class="analysis-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+            <div class="analysis-content">
+              <span class="analysis-label">Query Type</span>
+              <span class="analysis-value" id="queryTypeVal">—</span>
+            </div>
+          </div>
+
+          <div class="analysis-card" id="cardTables">
+            <div class="analysis-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
+                <line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/>
+              </svg>
+            </div>
+            <div class="analysis-content">
+              <span class="analysis-label">Tables Used</span>
+              <div class="analysis-tags" id="tablesVal"></div>
+            </div>
+          </div>
+
+          <div class="analysis-card" id="cardComplexity">
+            <div class="analysis-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div class="analysis-content">
+              <span class="analysis-label">Complexity</span>
+              <span class="analysis-value" id="complexityVal">—</span>
+            </div>
+          </div>
+
+          <div class="analysis-card" id="cardCost">
+            <div class="analysis-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <div class="analysis-content">
+              <span class="analysis-label">Execution Cost</span>
+              <span class="analysis-value" id="executionCostVal">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explanation & Warnings -->
+        <div id="explanationBlock" class="explanation-block hidden">
+          <div class="explanation-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            Explanation
+          </div>
+          <p id="explanationText"></p>
+        </div>
+
+        <div id="warningsBlock" class="warnings-block hidden">
+          <div class="warnings-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Warnings
+          </div>
+          <ul id="warningsList"></ul>
+        </div>
+
+      </div><!-- /sqlOutput -->
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       COMMAND PALETTE
+  ═══════════════════════════════════════════ -->
+  <div class="cmd-overlay hidden" id="cmdOverlay" role="dialog" aria-label="Command palette" aria-modal="true">
+    <div class="cmd-box">
+      <div class="cmd-search-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="cmdInput" placeholder="Type a command…" autocomplete="off" spellcheck="false" />
+        <kbd class="cmd-esc">Esc</kbd>
+      </div>
+      <div class="cmd-results" id="cmdResults">
+        <div class="cmd-group-label">Actions</div>
+        <button class="cmd-item" data-action="generateAI">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Generate SQL
+          <kbd>⌃↵</kbd>
+        </button>
+        <button class="cmd-item" data-action="switchAI">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Switch to AI Prompt
+        </button>
+        <button class="cmd-item" data-action="switchBuilder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Switch to Visual Builder
+        </button>
+        <button class="cmd-item" data-action="copySQL">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy SQL
+        </button>
+        <button class="cmd-item" data-action="downloadSQL">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download SQL
+        </button>
+        <button class="cmd-item" data-action="clearBuilder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Clear Builder
+        </button>
+        <button class="cmd-item" data-action="toggleTheme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          Toggle Theme
+        </button>
+        <button class="cmd-item" data-action="shortcutHelp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Show Shortcuts
+          <kbd>?</kbd>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SHORTCUT MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="shortcutModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Keyboard Shortcuts</h3>
+        <button class="modal-close" id="closeShortcutModal" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcut-row"><span>Generate SQL</span><div><kbd>Ctrl</kbd><kbd>Enter</kbd></div></div>
+        <div class="shortcut-row"><span>Command palette</span><div><kbd>Ctrl</kbd><kbd>K</kbd></div></div>
+        <div class="shortcut-row"><span>Close dialogs</span><div><kbd>Esc</kbd></div></div>
+        <div class="shortcut-row"><span>Show shortcuts</span><div><kbd>?</kbd></div></div>
+        <div class="shortcut-row"><span>Copy SQL</span><div><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>C</kbd></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       FULLSCREEN MODAL
+  ═══════════════════════════════════════════ -->
+  <div class="fullscreen-overlay hidden" id="fullscreenOverlay">
+    <div class="fullscreen-box">
+      <div class="sql-code-toolbar">
+        <div class="sql-code-meta">
+          <span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span>
+          <span class="code-lang">SQL — Full View</span>
+        </div>
+        <div class="sql-code-actions">
+          <button class="toolbar-btn" id="fsCopyBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+          <button class="toolbar-btn" id="closeFullscreenBtn" aria-label="Close fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 0 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+            Exit
+          </button>
+        </div>
+      </div>
+      <pre class="sql-code fullscreen-code" id="fsSqlCode"><code id="fsSqlContent"></code></pre>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TOAST CONTAINER
+  ═══════════════════════════════════════════ -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+</body>
+</html>
