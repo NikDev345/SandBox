@@ -64,7 +64,49 @@ class GeminiService:
 
         except Exception as e:
             raise RuntimeError(f"Gemini API Error: {str(e)}")
-          
+    
+    async def generate_json(
+    self,
+    prompt: str,
+    temperature: float = 0.3,
+    max_output_tokens: int = 4096,
+    ) -> dict:
+        """
+        Generate a JSON response from Gemini or a local fallback.
+        """
+        if self._use_mock:
+            # Return a mock JSON response for testing purposes
+            return {"mock": "response"}
+
+        try:
+            response = await self.client.aio.models.generate_content(
+                model="gemini-3.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=temperature,
+                    max_output_tokens=max_output_tokens,
+                ),
+            )
+            text = response.text.strip()
+
+            if text.startswith("```"):
+                text = (
+                    text.replace("```json", "")
+                        .replace("```", "")
+                        .strip()
+                )
+
+            try:
+                return json.loads(text)
+            except json.JSONDecodeError as e:
+                raise RuntimeError(
+                    f"Gemini returned invalid JSON:\n{text}"
+                ) from e
+
+        except Exception as e:
+            raise RuntimeError(f"Gemini API Error: {str(e)}")
+        
     async def generate_code_review(self, batch, local_report, dependency_graph):
         """
         Generic Gemini generation.

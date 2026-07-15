@@ -1,0 +1,272 @@
+/* ==========================================
+   SANDBOX AI LOADER
+   ========================================== */
+
+.qg-loader-overlay{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    -webkit-backdrop-filter:blur(22px);
+    -moz-backdrop-filter:blur(22px);
+    -ms-backdrop-filter:blur(22px);
+    backdrop-filter:blur(22px);
+
+    background:rgba(7,10,22,.72);
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:
+        opacity .35s ease,
+        visibility .35s ease;
+}
+
+.qg-loader-overlay.active{
+    opacity:1;
+    visibility:visible;
+}
+
+.qg-loader-card{
+
+    width:min(520px,92vw);
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    padding:42px;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,.04);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.45),
+        inset 0 1px rgba(255,255,255,.08);
+}
+
+/* ------------------------------------------ */
+/* Title */
+/* ------------------------------------------ */
+
+.qg-loader-title{
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    letter-spacing:.05em;
+
+    color:#fff;
+
+    margin-bottom:18px;
+}
+
+/* ------------------------------------------ */
+/* Animated Word */
+/* ------------------------------------------ */
+
+.qg-loader-word{
+
+    display:flex;
+
+    gap:4px;
+
+    margin-bottom:32px;
+}
+
+.qg-loader-word span{
+
+    display:inline-flex;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    color:#fff;
+
+    opacity:.25;
+
+    animation:qgLetter 1.6s infinite;
+
+    transform-origin:center;
+}
+
+.qg-loader-word span:nth-child(1){animation-delay:.0s;}
+.qg-loader-word span:nth-child(2){animation-delay:.1s;}
+.qg-loader-word span:nth-child(3){animation-delay:.2s;}
+.qg-loader-word span:nth-child(4){animation-delay:.3s;}
+.qg-loader-word span:nth-child(5){animation-delay:.4s;}
+.qg-loader-word span:nth-child(6){animation-delay:.5s;}
+.qg-loader-word span:nth-child(7){animation-delay:.6s;}
+.qg-loader-word span:nth-child(8){animation-delay:.7s;}
+.qg-loader-word span:nth-child(9){animation-delay:.8s;}
+.qg-loader-word span:nth-child(10){animation-delay:.9s;}
+
+@keyframes qgLetter{
+
+0%,100%{
+
+opacity:.25;
+
+transform:translateY(0) scale(1);
+
+filter:blur(0);
+
+}
+
+30%{
+
+opacity:1;
+
+transform:translateY(-5px) scale(1.12);
+
+filter:drop-shadow(0 0 10px rgba(120,180,255,.7));
+
+}
+
+60%{
+
+opacity:.75;
+
+transform:translateY(0);
+
+}
+
+}
+
+/* ------------------------------------------ */
+/* Animated Progress */
+/* ------------------------------------------ */
+
+.qg-progress{
+
+    width:100%;
+
+    height:6px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.08);
+
+    margin-bottom:26px;
+}
+
+.qg-progress::before{
+
+    content:"";
+
+    display:block;
+
+    width:35%;
+
+    height:100%;
+
+    border-radius:inherit;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #6ea8ff,
+        #8b5cf6,
+        #6ea8ff,
+        transparent
+    );
+
+    animation:qgProgress 1.4s infinite linear;
+}
+
+@keyframes qgProgress{
+
+from{
+
+transform:translateX(-120%);
+
+}
+
+to{
+
+transform:translateX(350%);
+
+}
+
+}
+
+/* ------------------------------------------ */
+/* Status */
+/* ------------------------------------------ */
+
+.qg-loader-status{
+
+    min-height:26px;
+
+    font-size:1rem;
+
+    color:rgba(255,255,255,.78);
+
+    transition:all .3s ease;
+}
+
+.qg-loader-status.change{
+
+    opacity:.35;
+
+    transform:translateY(4px);
+}
+
+/* ------------------------------------------ */
+/* Floating Glow */
+/* ------------------------------------------ */
+
+.qg-loader-card::before{
+
+content:"";
+
+position:absolute;
+
+width:240px;
+
+height:240px;
+
+background:radial-gradient(circle,
+rgba(110,168,255,.18),
+transparent 70%);
+
+filter:blur(20px);
+
+animation:qgGlow 6s linear infinite;
+
+pointer-events:none;
+}
+
+@keyframes qgGlow{
+
+0%{
+
+transform:translate(-50px,-20px);
+
+}
+
+50%{
+
+transform:translate(50px,20px);
+
+}
+
+100%{
+
+transform:translate(-50px,-20px);
+
+}
+
+}
