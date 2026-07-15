@@ -80,7 +80,7 @@ class GeminiService:
 
         try:
             response = await self.client.aio.models.generate_content(
-                model="gemini-3.5-flash",
+                model=config.GEMINI_MODE,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
@@ -292,7 +292,7 @@ Return ONLY valid JSON.
         
         try:
             response = await self.client.aio.models.generate_content(
-                model="gemini-3.5-flash",
+                model=config.GEMINI_MODE,
                 contents=[system_prompt, prompt],
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
@@ -324,3 +324,31 @@ Return ONLY valid JSON.
 
         except Exception as e:
             raise RuntimeError(f"Gemini api error: {e}")
+        
+
+    async def generate_image_response(self, image_bytes, mime_type, prompt, temperature = 0.3, max_output_tokens = 10000):
+        if self._use_mock:
+            return "Mock image explanation."
+
+        try:
+            image_part = types.Part.from_bytes(
+                data=image_bytes,
+                mime_type=mime_type,
+            )
+
+            response = await self.client.aio.models.generate_content(
+                model=config.GEMINI_MODEL,
+                contents=[
+                    image_part,
+                    prompt,
+                ],
+                config=types.GenerateContentConfig(
+                    temperature=temperature,
+                    max_output_tokens=max_output_tokens,
+                ),
+            )
+
+            return response.text.strip()
+
+        except Exception as e:
+            raise RuntimeError(f"Gemini image generation failed: {e}") from e
