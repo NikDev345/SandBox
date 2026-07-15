@@ -25,6 +25,7 @@ from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 from app.api.quiz.quiz_generator import router as quiz_router
 
 
+from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 import app.main 
 from nicegui import ui
 from app.seed.seed_tools import seed_tools
@@ -76,6 +77,7 @@ app.include_router(sql_router)
 app.include_router(pro_cons_router)
 
 app.include_router(quiz_router)
+app.include_router(youtube_summarizer_router)
 
 ui.run_with(
     
