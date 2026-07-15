@@ -251,14 +251,15 @@
             </div>
           </a>
 
-          <a class="tool-card" href="/quiz-generator" data-tool-name="Quiz Generator" data-tool-category="Content Tools" data-tool-id="static-content-1">
+         <a class="tool-card" href="/quiz-generator" data-tool-name="Quiz Generator" data-tool-category="Content Tools" data-tool-id="static-content-1">
           <div class="tool-card-header">
-            <svg class="tool-logo" viewBox="0 0 48 48">
-              <rect x="11" y="8" width="26" height="32" rx="3"/>
-              <path d="M18 8h12v5H18z"/>
-              <path d="M20 18c0-2.2 1.8-4 4-4s4 1.8 4 4c0 1.6-1 2.5-2.2 3.3-1 .7-1.8 1.4-1.8 2.7"/>
-              <circle cx="24" cy="29" r="1.3" fill="currentColor"/>
-              <path d="M18 36l4-4 8 0" fill="none"/>
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="6" width="28" height="36" rx="5" stroke="currentColor" stroke-width="2"/>
+              <path d="M18 15H30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M18 21H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="20" cy="31" r="2.2" fill="currentColor"/>
+              <path d="M25 31L28 34L34 27" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
 
             <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
@@ -268,136 +269,396 @@
                 <circle cx="12" cy="19" r="1.5"/>
               </svg>
             </button>
+
           </div>
 
           <h3>Quiz Generator</h3>
 
           <p>
-            Generate AI-powered quizzes from documents or prompts with multiple question types.
+            Generate AI-powered quizzes from prompts or documents with multiple question
+            types, explanations, hints, and interactive scoring.
           </p>
 
           <div class="tool-meta">
-            <span class="tool-category-badge" data-cat="Content Tools">CONTENT TOOLS</span>
 
-            <svg class="tool-arrow" viewBox="0 0 24 24">
+            <span class="tool-category-badge" data-cat="Content Tools">
+              Content Tools
+            </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="5" y1="12" x2="19" y2="12"/>
               <polyline points="12 5 19 12 12 19"/>
             </svg>
+
           </div>
         </a>
 
           <a class="tool-card" href="/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer Tools" data-tool-id="static-3">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <path d="M18 10c-5 0-7 3-7 7v3c0 2-1 4-4 4 3 0 4 2 4 4v3c0 4 2 7 7 7"/>
-                <path d="M30 10c5 0 7 3 7 7v3c0 2 1 4 4 4-3 0-4 2-4 4v3c0 4-2 7-7 7"/>
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 10C13 10 11 13 11 18V20C11 23 9 25 6 25C9 25 11 27 11 30V32C11 37 13 40 18 40"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+              <path d="M30 10C35 10 37 13 37 18V20C37 23 39 25 42 25C39 25 37 27 37 30V32C37 37 35 40 30 40"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+              <path d="M21 24L23.5 27L28 21"
+                    stroke="currentColor"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
               </svg>
+            </button>
+
+          </div>
+
+          <h3>JSON Fixer</h3>
+
+          <p>
+            Repair malformed JSON, validate syntax, and instantly convert broken data
+            into clean, production-ready JSON.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Developer Tools">
+              Developer Tools
+            </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+        <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer Tools" data-tool-id="static-4">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <path d="M17 18L11 24L17 30"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+              <path d="M31 18L37 24L31 30"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+              <path d="M24 14L21 34"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"/>
+
+              <circle cx="35" cy="35" r="6"
+                      stroke="currentColor"
+                      stroke-width="2"/>
+
+              <path d="M32.8 35L34.5 36.8L37.6 33.6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+            </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>Code Reviewer</h3>
+
+          <p>
+            Analyze projects for bugs, security risks, code quality, performance, and
+            best practices with AI-powered review insights.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Developer Tools">
+              Developer Tools
+            </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+
+          <a class="tool-card" href="/youtube-summarizer" data-tool-name="YouTube Summarizer" data-tool-category="Content Tool" data-tool-id="static-yt-1">
+            <div class="tool-card-header">
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="12" width="36" height="24" rx="8" fill="#FF0000"/>
+                <path d="M20 18L31 24L20 30V18Z" fill="white"/>
+              </svg>
+
               <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
               </button>
             </div>
-            <h3>JSON Fixer</h3>
-            <p>Repair malformed JSON and reformat it into a clean, valid structure.</p>
+
+            <h3>YouTube Summarizer</h3>
+
+            <p>
+              Generate AI-powered summaries from YouTube videos with key points,
+              timelines, important quotes, action items, and keywords.
+            </p>
+
             <div class="tool-meta">
-              <span class="tool-category-badge">Developer Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <span class="tool-category-badge">Content Tool</span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
             </div>
           </a>
+          <a class="tool-card" href="/text-summarizer" data-tool-name="AI Text Summarizer" data-tool-category="Content Tools" data-tool-id="static-ai-1">
 
-          <a class="tool-card" href="/tools/code-reviewer" data-tool-name="Code Reviewer" data-tool-category="Developer Tools" data-tool-id="static-4">
             <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <path d="M9 11h30v21H24l-8 7v-7H9z"/>
-                <path d="m17 22 4 4 10-10"/>
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Code Reviewer</h3>
-            <p>Detect risks, defects, and maintainability issues across your codebase.</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">Developer Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
 
-          <a class="tool-card" href="/tools/dockerfile-generator" data-tool-name="Dockerfile Generator" data-tool-category="Developer Tools" data-tool-id="static-5">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <path d="M10 26h29c-2 8-8 12-16 12-7 0-12-3-15-9"/>
-                <path d="M13 18h5v5h-5zM20 18h5v5h-5zM27 18h5v5h-5zM20 11h5v5h-5zM27 11h5v5h-5z"/>
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Dockerfile Generator</h3>
-            <p>Generate production-ready Dockerfiles tailored to your stack.</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">Developer Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-          <a class="tool-card" href="/text-summarizer" data-tool-name="AI Text Summarizer" data-tool-category="AI Tool" data-tool-id="static-ai-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <rect x="6" y="8" width="36" height="28" rx="3" />
-                <path d="M12 16h24M12 22h24M12 28h16" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                <rect x="10" y="7" width="22" height="30" rx="3"
+                      stroke="currentColor"
+                      stroke-width="2"/>
+
+                <path d="M16 16H26"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+
+                <path d="M16 21H26"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+
+                <path d="M16 26H22"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+
+                <path d="M35 15L36.3 18.2L39.5 19.5L36.3 20.8L35 24L33.7 20.8L30.5 19.5L33.7 18.2L35 15Z"
+                      fill="currentColor"/>
+
+                <path d="M33 31H39"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+
+                <path d="M31 35H39"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+
               </svg>
+
               <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
               </button>
+
             </div>
+
             <h3>AI Text Summarizer</h3>
-            <p>Generate concise, accurate AI-powered summaries from text or PDF documents.</p>
+
+            <p>
+              Transform lengthy text and documents into clear, concise summaries while preserving key insights and context.
+            </p>
+
             <div class="tool-meta">
-              <span class="tool-category-badge">AI Tool</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
-          <a class="tool-card" href="/eli5" data-tool-name="ELI5 Tool" data-tool-category="AI Tool" data-tool-id="static-ai-2">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <circle cx="24" cy="20" r="12"/>
-                <path d="M24 8v0M24 32v0" stroke-linecap="round"/>
-                <line x1="24" y1="14" x2="24" y2="22" stroke-width="2.5" stroke-linecap="round"/>
-                <circle cx="24" cy="26" r="1.5" fill="currentColor"/>
-                <path d="M16 38 q8 6 16 0" stroke-linecap="round" fill="none"/>
+
+              <span class="tool-category-badge" data-cat="Content Tools">
+                Content Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
               </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
+
             </div>
-            <h3>ELI5 Tool</h3>
-            <p>Explain any complex topic in plain language — no jargon, just clear analogies and key concepts.</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">AI Tool</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
+
           </a>
+          <a class="tool-card" href="/eli5" data-tool-name="ELI5 Tool" data-tool-category="Content Tools" data-tool-id="static-ai-2">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <path d="M24 10C18.5 10 14 14.5 14 20C14 23.8 16 27 19 28.8V32C19 33.1 19.9 34 21 34H27C28.1 34 29 33.1 29 32V28.8C32 27 34 23.8 34 20C34 14.5 29.5 10 24 10Z"
+                    stroke="currentColor"
+                    stroke-width="2.3"
+                    stroke-linejoin="round"/>
+
+              <path d="M21 38H27"
+                    stroke="currentColor"
+                    stroke-width="2.3"
+                    stroke-linecap="round"/>
+
+              <path d="M22 34H26"
+                    stroke="currentColor"
+                    stroke-width="2.3"
+                    stroke-linecap="round"/>
+
+              <path d="M37 11L38 13L40 14L38 15L37 17L36 15L34 14L36 13L37 11Z"
+                    fill="currentColor"/>
+
+              <circle cx="24" cy="20" r="1.2"
+                      fill="currentColor"/>
+
+            </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>ELI5 Tool</h3>
+
+          <p>
+            Break down complex topics into simple, easy-to-understand explanations with clear examples and everyday analogies.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Content Tools">
+              Content Tools
+            </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
         <a class="tool-card" href="/image-text-extractor" data-tool-name="Image Text Extractor" data-tool-category="Image Tools" data-tool-id="static-img-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <rect x="6" y="8" width="36" height="28" rx="3"/>
-                <circle cx="16" cy="18" r="3"/>
-                <polyline points="6 30 16 20 24 27 31 21 42 30"/>
-                <line x1="28" y1="38" x2="36" y2="38"/>
-                <line x1="32" y1="34" x2="32" y2="42"/>
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Image Text Extractor</h3>
-            <p>Extract and export text from any image using high-accuracy OCR.</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge" data-cat="Image Tools">Image Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
+
+        <div class="tool-card-header">
+
+          <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- Image Frame -->
+            <rect x="8" y="9"
+                  width="22"
+                  height="22"
+                  rx="3"
+                  stroke="currentColor"
+                  stroke-width="2"/>
+
+            <!-- Mountains -->
+            <path d="M11 26L16 20L20 24L25 18L30 26"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+
+            <!-- Sun -->
+            <circle cx="15" cy="15"
+                    r="2"
+                    fill="currentColor"/>
+
+            <!-- OCR Scan Line -->
+            <line x1="6"
+                  y1="20"
+                  x2="42"
+                  y2="20"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"/>
+
+            <!-- Extracted Text -->
+            <path d="M35 15H41"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"/>
+
+            <path d="M33 21H41"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"/>
+
+            <path d="M35 27H41"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"/>
+
+          </svg>
+
+          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="5" r="1.5"/>
+              <circle cx="12" cy="12" r="1.5"/>
+              <circle cx="12" cy="19" r="1.5"/>
+            </svg>
+          </button>
+
         </div>
+
+        <h3>Image Text Extractor</h3>
+
+        <p>
+          Extract, recognize, and export text from images with high-accuracy AI-powered OCR while preserving formatting.
+        </p>
+
+        <div class="tool-meta">
+
+          <span class="tool-category-badge" data-cat="Image Tools">
+            Image Tools
+          </span>
+
+          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+
+        </div>
+
+      </a>
 
         <!-- Empty state -->
         <div class="empty-state" data-empty-state hidden>
