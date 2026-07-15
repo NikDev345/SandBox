@@ -18,6 +18,7 @@ from app.api.summarizer.summarizer import router as summarizer_router
 from app.api.json_fixer.json_fixer import router as json_fixer_router
 from app.api.code_reviewer.code_reviewer import router as code_reviewer_router
 from app.api.ELI5.eli5 import router as eli5_router
+from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 import app.main 
 from nicegui import ui
 from app.seed.seed_tools import seed_tools
@@ -64,6 +65,7 @@ app.include_router(json_fixer_router)
 app.include_router(code_reviewer_router)
 app.include_router(image_text_extractor_router)
 app.include_router(eli5_router)
+app.include_router(pro_cons_router)
 ui.run_with(
     app,
     title="SandBox",

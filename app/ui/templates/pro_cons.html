@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  Pro & Cons Generator
+  SandBox AI Platform — Tool Extension
+  Scoped under .pc-root
+  ============================================================
+-->
+<!-- ════════════════════════════════════════════════════════
+     ROOT SHELL
+════════════════════════════════════════════════════════ -->
+<div class="pc-root" id="pc-root">
+
+  <!-- ── HERO ─────────────────────────────────────────── -->
+  <div class="pc-hero">
+    <div class="pc-hero-glow pc-hero-glow--left"></div>
+    <div class="pc-hero-glow pc-hero-glow--right"></div>
+
+    <div class="pc-hero-badge">
+      <span class="pc-hero-badge-dot"></span>
+      AI Analysis Tool
+    </div>
+
+    <h1 class="pc-hero-heading">
+      Pro &amp; Cons
+      <span class="pc-hero-heading-accent">Generator</span>
+    </h1>
+
+    <p class="pc-hero-desc">
+      Instantly compare any idea, decision, product, technology or choice
+      with structured advantages and disadvantages.
+    </p>
+
+    <div class="pc-hero-pills">
+      <span class="pc-hero-pill">MacBook Pro vs Dell XPS</span>
+      <span class="pc-hero-pill">React vs Angular</span>
+      <span class="pc-hero-pill">Move to Australia?</span>
+      <span class="pc-hero-pill">Start a textile business</span>
+      <span class="pc-hero-pill">Learn Rust in 2026</span>
+    </div>
+  </div>
+
+  <!-- ── INPUT CARD ───────────────────────────────────── -->
+  <div class="pc-card pc-input-card" id="pc-input-section">
+
+    <div class="pc-card-header">
+      <div class="pc-card-header-left">
+        <div class="pc-card-icon">
+          <!-- Sparkle SVG -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l2.4 7.2H22l-6.2 4.5 2.4 7.2L12 16.7l-6.2 4.2 2.4-7.2L2 9.2h7.6z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="pc-card-title">What would you like to analyze?</h2>
+          <p class="pc-card-subtitle">Enter any topic, decision, product, or comparison</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Textarea -->
+    <div class="pc-textarea-wrap" id="pc-textarea-wrap">
+      <textarea
+        id="pc-topic-input"
+        class="pc-textarea"
+        placeholder="e.g. Should I buy a MacBook Pro?&#10;     React vs Angular&#10;     Start an online textile business&#10;     Buy an electric vehicle&#10;     Learn Rust in 2026"
+        maxlength="5000"
+        rows="6"
+        aria-label="Topic to analyze"
+      ></textarea>
+      <div class="pc-textarea-footer">
+        <div class="pc-counters">
+          <span class="pc-counter-item">
+            <span id="pc-char-count">0</span> / 5000 chars
+          </span>
+          <span class="pc-counter-sep">·</span>
+          <span class="pc-counter-item">
+            <span id="pc-word-count">0</span> words
+          </span>
+        </div>
+        <div class="pc-textarea-actions">
+          <button class="pc-btn-ghost pc-btn-sm" id="pc-paste-btn" title="Paste from clipboard">
+            <svg viewBox="0 0 24 24"><rect x="9" y="2" width="10" height="4" rx="1"/><path d="M9 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+            Paste
+          </button>
+          <button class="pc-btn-ghost pc-btn-sm" id="pc-clear-btn" title="Clear input">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            Clear
+          </button>
+          <button class="pc-btn-ghost pc-btn-sm" id="pc-example-btn" title="Load a random example">
+            <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.51"/></svg>
+            Example
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Settings (collapsible) -->
+    <div class="pc-settings-wrap">
+      <button class="pc-settings-toggle" id="pc-settings-toggle" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 19.07a10 10 0 0 0 14.14 0M1 12h2M21 12h2M12 1v2M12 21v2"/></svg>
+        Advanced Settings
+        <svg class="pc-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <div class="pc-settings-panel" id="pc-settings-panel" hidden>
+        <div class="pc-settings-grid">
+
+          <!-- Analysis Depth -->
+          <div class="pc-settings-field">
+            <label class="pc-settings-label" for="pc-depth">Analysis Depth</label>
+            <div class="pc-select-wrap">
+              <select id="pc-depth" class="pc-select">
+                <option value="quick">Quick</option>
+                <option value="balanced" selected>Balanced</option>
+                <option value="detailed">Detailed</option>
+              </select>
+              <svg class="pc-select-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <!-- Perspective -->
+          <div class="pc-settings-field">
+            <label class="pc-settings-label" for="pc-perspective">Perspective</label>
+            <div class="pc-select-wrap">
+              <select id="pc-perspective" class="pc-select">
+                <option value="neutral" selected>Neutral</option>
+                <option value="business">Business</option>
+                <option value="technical">Technical</option>
+                <option value="financial">Financial</option>
+                <option value="student">Student</option>
+                <option value="consumer">Consumer</option>
+              </select>
+              <svg class="pc-select-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Button -->
+    <div class="pc-input-actions">
+      <button class="pc-btn-primary" id="pc-generate-btn" disabled>
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Generate Analysis
+      </button>
+    </div>
+  </div>
+
+  <!-- ── EMPTY STATE ───────────────────────────────────── -->
+  <div class="pc-empty-state" id="pc-empty-state">
+    <div class="pc-empty-illustration">
+      <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="30" width="52" height="70" rx="8" fill="rgba(99,102,241,0.08)" stroke="rgba(99,102,241,0.2)" stroke-width="1.5"/>
+        <rect x="88" y="30" width="52" height="70" rx="8" fill="rgba(168,85,247,0.08)" stroke="rgba(168,85,247,0.2)" stroke-width="1.5"/>
+        <line x1="42" y1="50" x2="58" y2="50" stroke="rgba(99,102,241,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="42" y1="60" x2="62" y2="60" stroke="rgba(99,102,241,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="42" y1="70" x2="55" y2="70" stroke="rgba(99,102,241,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="42" y1="80" x2="60" y2="80" stroke="rgba(99,102,241,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="110" y1="50" x2="126" y2="50" stroke="rgba(168,85,247,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="110" y1="60" x2="130" y2="60" stroke="rgba(168,85,247,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="110" y1="70" x2="123" y2="70" stroke="rgba(168,85,247,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="110" y1="80" x2="128" y2="80" stroke="rgba(168,85,247,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="80" cy="65" r="14" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+        <path d="M75 65h10M80 60v10" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
+        <text x="24" y="44" fill="rgba(99,102,241,0.6)" font-size="8" font-weight="600" font-family="sans-serif">PROS</text>
+        <text x="92" y="44" fill="rgba(168,85,247,0.6)" font-size="8" font-weight="600" font-family="sans-serif">CONS</text>
+      </svg>
+    </div>
+    <h3 class="pc-empty-title">No comparison generated yet</h3>
+    <p class="pc-empty-desc">Enter a topic above and click Generate Analysis to see a structured breakdown of pros and cons.</p>
+    <button class="pc-btn-ghost" id="pc-load-example-empty">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.51"/></svg>
+      Load Example
+    </button>
+  </div>
+
+  <!-- ── LOADING STATE ─────────────────────────────────── -->
+  <div class="pc-loading-state" id="pc-loading-state" hidden>
+
+    <!-- Skeleton cards -->
+    <div class="pc-skeleton-summary"></div>
+
+    <div class="pc-stats-row">
+      <div class="pc-skeleton-stat"></div>
+      <div class="pc-skeleton-stat"></div>
+      <div class="pc-skeleton-stat"></div>
+      <div class="pc-skeleton-stat"></div>
+      <div class="pc-skeleton-stat"></div>
+    </div>
+
+    <div class="pc-tables-row">
+      <div class="pc-skeleton-table"></div>
+      <div class="pc-skeleton-table"></div>
+    </div>
+
+    <!-- Progress bar + messages -->
+    <div class="pc-loading-progress-wrap">
+      <div class="pc-loading-icon">
+        <div class="pc-loading-ring"></div>
+        <svg class="pc-loading-bolt" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="pc-loading-info">
+        <p class="pc-loading-message" id="pc-loading-message">Understanding your request…</p>
+        <div class="pc-progress-bar">
+          <div class="pc-progress-fill" id="pc-progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── RESULTS ───────────────────────────────────────── -->
+  <div class="pc-results" id="pc-results" hidden>
+
+    <!-- Sticky toolbar -->
+    <div class="pc-sticky-toolbar" id="pc-sticky-toolbar">
+      <div class="pc-toolbar-group">
+        <button class="pc-toolbar-btn" id="tb-copy-all" data-tooltip="Copy entire report">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy Report</span>
+        </button>
+        <button class="pc-toolbar-btn" id="tb-copy-pros" data-tooltip="Copy pros only">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Copy Pros</span>
+        </button>
+        <button class="pc-toolbar-btn" id="tb-copy-cons" data-tooltip="Copy cons only">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span>Copy Cons</span>
+        </button>
+      </div>
+      <div class="pc-toolbar-sep"></div>
+      <div class="pc-toolbar-group">
+        <button class="pc-toolbar-btn" id="tb-download-json" data-tooltip="Export as JSON">
+          <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span>JSON</span>
+        </button>
+        <button class="pc-toolbar-btn" id="tb-download-pdf" data-tooltip="Export as PDF">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+          <span>PDF</span>
+        </button>
+        <button class="pc-toolbar-btn" id="tb-print" data-tooltip="Print report">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span>Print</span>
+        </button>
+      </div>
+      <div class="pc-toolbar-sep"></div>
+      <div class="pc-toolbar-group">
+        <button class="pc-toolbar-btn" id="tb-expand-all" data-tooltip="Expand all rows">
+          <svg viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+          <span>Expand</span>
+        </button>
+        <button class="pc-toolbar-btn" id="tb-collapse-all" data-tooltip="Collapse all rows">
+          <svg viewBox="0 0 24 24"><polyline points="7 11 12 6 17 11"/><polyline points="7 18 12 13 17 18"/></svg>
+          <span>Collapse</span>
+        </button>
+        <button class="pc-toolbar-btn pc-toolbar-btn--primary" id="tb-regenerate" data-tooltip="Generate new analysis">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Regenerate</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary card -->
+    <div class="pc-card pc-summary-card" id="pc-summary-card">
+      <div class="pc-summary-header">
+        <div class="pc-summary-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <p class="pc-summary-eyebrow">Analysis Summary</p>
+          <h2 class="pc-summary-topic" id="pc-summary-topic">MacBook Pro</h2>
+        </div>
+        <div class="pc-summary-badge-wrap" id="pc-verdict-badge"></div>
+      </div>
+      <p class="pc-summary-text" id="pc-summary-text"></p>
+    </div>
+
+    <!-- Stats row -->
+    <div class="pc-stats-row" id="pc-stats-row">
+      <div class="pc-stat-card pc-stat-pros">
+        <div class="pc-stat-icon pc-stat-icon--pros">✓</div>
+        <div class="pc-stat-value" id="stat-pros">0</div>
+        <div class="pc-stat-label">Total Pros</div>
+      </div>
+      <div class="pc-stat-card pc-stat-cons">
+        <div class="pc-stat-icon pc-stat-icon--cons">✗</div>
+        <div class="pc-stat-value" id="stat-cons">0</div>
+        <div class="pc-stat-label">Total Cons</div>
+      </div>
+      <div class="pc-stat-card">
+        <div class="pc-stat-icon pc-stat-icon--score">◈</div>
+        <div class="pc-stat-value" id="stat-score">—</div>
+        <div class="pc-stat-label">Overall Score</div>
+      </div>
+      <div class="pc-stat-card">
+        <div class="pc-stat-icon pc-stat-icon--confidence">◉</div>
+        <div class="pc-stat-value" id="stat-confidence">0%</div>
+        <div class="pc-stat-label">Confidence</div>
+      </div>
+      <div class="pc-stat-card">
+        <div class="pc-stat-icon pc-stat-icon--risk">⚠</div>
+        <div class="pc-stat-value" id="stat-risk">—</div>
+        <div class="pc-stat-label">Risk Level</div>
+      </div>
+    </div>
+
+    <!-- Search + Filter + Sort bar -->
+    <div class="pc-filter-bar">
+      <div class="pc-search-wrap">
+        <svg class="pc-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="pc-search" class="pc-search-input" placeholder="Search pros and cons…" />
+        <button class="pc-search-clear" id="pc-search-clear" hidden>
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="pc-filter-group">
+        <span class="pc-filter-label">Impact:</span>
+        <button class="pc-filter-chip pc-filter-chip--active" data-impact="all">All</button>
+        <button class="pc-filter-chip" data-impact="high">High</button>
+        <button class="pc-filter-chip" data-impact="medium">Medium</button>
+        <button class="pc-filter-chip" data-impact="low">Low</button>
+      </div>
+
+      <div class="pc-filter-group">
+        <span class="pc-filter-label">Show:</span>
+        <button class="pc-filter-chip pc-filter-chip--active" data-content="all">All</button>
+        <button class="pc-filter-chip pc-filter-chip--pros" data-content="pros">Pros only</button>
+        <button class="pc-filter-chip pc-filter-chip--cons" data-content="cons">Cons only</button>
+      </div>
+
+      <div class="pc-filter-group">
+        <span class="pc-filter-label">Sort:</span>
+        <div class="pc-select-wrap pc-select-wrap--sm">
+          <select id="pc-sort" class="pc-select pc-select--sm">
+            <option value="original">Original</option>
+            <option value="impact">By Impact</option>
+            <option value="alpha">A–Z</option>
+          </select>
+          <svg class="pc-select-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
+      <button class="pc-btn-ghost pc-btn-sm" id="pc-reset-filters">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.51"/></svg>
+        Reset
+      </button>
+    </div>
+
+    <!-- Comparison tables -->
+    <div class="pc-tables-row" id="pc-tables-row">
+
+      <!-- Pros table -->
+      <div class="pc-table-card pc-table-card--pros" id="pc-pros-card">
+        <div class="pc-table-header">
+          <div class="pc-table-title-group">
+            <span class="pc-table-icon pc-table-icon--pros">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <h3 class="pc-table-title">Advantages</h3>
+            <span class="pc-table-count" id="pc-pros-count">0</span>
+          </div>
+        </div>
+        <div class="pc-table-wrap">
+          <table class="pc-table">
+            <thead>
+              <tr>
+                <th class="pc-th pc-th-num">#</th>
+                <th class="pc-th">Title</th>
+                <th class="pc-th pc-th-impact">Impact</th>
+              </tr>
+            </thead>
+            <tbody id="pc-pros-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pc-table-empty" id="pc-pros-empty" hidden>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          No pros match your filters
+        </div>
+      </div>
+
+      <!-- Cons table -->
+      <div class="pc-table-card pc-table-card--cons" id="pc-cons-card">
+        <div class="pc-table-header">
+          <div class="pc-table-title-group">
+            <span class="pc-table-icon pc-table-icon--cons">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span>
+            <h3 class="pc-table-title">Disadvantages</h3>
+            <span class="pc-table-count" id="pc-cons-count">0</span>
+          </div>
+        </div>
+        <div class="pc-table-wrap">
+          <table class="pc-table">
+            <thead>
+              <tr>
+                <th class="pc-th pc-th-num">#</th>
+                <th class="pc-th">Title</th>
+                <th class="pc-th pc-th-impact">Impact</th>
+              </tr>
+            </thead>
+            <tbody id="pc-cons-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pc-table-empty" id="pc-cons-empty" hidden>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          No cons match your filters
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recommendation card -->
+    <div class="pc-card pc-reco-card" id="pc-reco-card">
+      <div class="pc-reco-header">
+        <div class="pc-reco-icon" id="pc-reco-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div>
+          <p class="pc-reco-eyebrow">AI Recommendation</p>
+          <h3 class="pc-reco-title">Final Verdict</h3>
+        </div>
+        <div class="pc-reco-meta" id="pc-reco-meta"></div>
+      </div>
+
+      <div class="pc-reco-body">
+        <div class="pc-reco-block">
+          <p class="pc-reco-block-label">Summary</p>
+          <p class="pc-reco-block-text" id="pc-reco-summary-text"></p>
+        </div>
+        <div class="pc-reco-block">
+          <p class="pc-reco-block-label">Recommendation</p>
+          <p class="pc-reco-block-text" id="pc-reco-recommendation-text"></p>
+        </div>
+        <div class="pc-reco-block">
+          <p class="pc-reco-block-label">Verdict</p>
+          <p class="pc-reco-block-text" id="pc-reco-verdict-text"></p>
+        </div>
+      </div>
+
+      <div class="pc-confidence-bar-wrap">
+        <div class="pc-confidence-labels">
+          <span class="pc-confidence-label-text">Confidence</span>
+          <span class="pc-confidence-pct" id="pc-confidence-pct">0%</span>
+        </div>
+        <div class="pc-confidence-bar">
+          <div class="pc-confidence-fill" id="pc-confidence-fill"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── ERROR STATE ───────────────────────────────────── -->
+  <div class="pc-error-state" id="pc-error-state" hidden>
+    <div class="pc-error-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h3 class="pc-error-title">Something went wrong</h3>
+    <p class="pc-error-desc" id="pc-error-msg">Unable to generate analysis. Please try again.</p>
+    <div class="pc-error-actions">
+      <button class="pc-btn-primary" id="pc-retry-btn">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.51"/></svg>
+        Retry
+      </button>
+      <button class="pc-btn-ghost" id="pc-error-example-btn">
+        Load Example
+      </button>
+    </div>
+  </div>
+
+</div><!-- /.pc-root -->
+
+<!-- ── TOAST CONTAINER ───────────────────────────────── -->
+<div class="pc-toast-container" id="pc-toast-container" aria-live="polite"></div>
+
+</body>
+</html>
