@@ -19,7 +19,7 @@ from app.api.json_fixer.json_fixer import router as json_fixer_router
 from app.api.code_reviewer.code_reviewer import router as code_reviewer_router
 from app.api.ELI5.eli5 import router as eli5_router
 from app.api.sql_generator.sql_generator import router as sql_router
-
+from app.api.ss_explainer.ss_explainer import router as ss_router
 from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 
 from app.api.quiz.quiz_generator import router as quiz_router
@@ -73,6 +73,7 @@ app.include_router(code_reviewer_router)
 app.include_router(image_text_extractor_router)
 app.include_router(eli5_router)
 app.include_router(sql_router)
+app.include_router(ss_router)
 
 app.include_router(pro_cons_router)
 app.include_router(email_rewriter_router)

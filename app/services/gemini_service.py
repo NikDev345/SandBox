@@ -57,7 +57,7 @@ class GeminiService:
 
         try:
             response = self.client.models.generate_content(
-                model="gemini-3.5-flash",
+                model=config.GEMINI_MODEL,
                 contents=prompt,
             )
             return response.text.strip()
@@ -80,7 +80,7 @@ class GeminiService:
 
         try:
             response = await self.client.aio.models.generate_content(
-                model="gemini-3.5-flash",
+                model=config.GEMINI_MODEL,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
@@ -292,7 +292,7 @@ Return ONLY valid JSON.
         
         try:
             response = await self.client.aio.models.generate_content(
-                model="gemini-3.5-flash",
+                model=config.GEMINI_MODE,
                 contents=[system_prompt, prompt],
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
@@ -324,3 +324,40 @@ Return ONLY valid JSON.
 
         except Exception as e:
             raise RuntimeError(f"Gemini api error: {e}")
+        
+
+    async def generate_explanation(
+        self,
+        uploaded_image,
+        prompt: str,
+        temperature: float = 0.3,
+        max_output_tokens: int = 10000,
+    ):
+        if self._use_mock:
+            return "Mock screenshot explanation."
+
+        try:
+            response = await self.client.aio.models.generate_content(
+                model=config.GEMINI_MODEL,
+                contents=[
+                    uploaded_image,
+                    types.Part.from_text(text=prompt),
+                ],
+                config=types.GenerateContentConfig(
+                    temperature=temperature,
+                    max_output_tokens=max_output_tokens,
+                ),
+            )
+
+            text = response.text
+            if not text:
+                candidates = getattr(response, "candidates", [])
+                finish = candidates[0].finish_reason if candidates else "unknown"
+                raise RuntimeError(f"Gemini returned no text. Finish reason: {finish}")
+
+            return text.strip()
+        
+        except RuntimeError:
+            raise
+        except Exception as e:
+            raise RuntimeError(f"Gemini API error during explanation: {e}") from e
