@@ -32,7 +32,7 @@ import app.ui.pages.text_summarizer
 import app.ui.pages.json_fixer
 import app.ui.pages.image_text_extractor
 import app.ui.pages.eli5
-
+import app.ui.pages.ss_explain
 import app.ui.pages.sql_generator
 
 import app.ui.pages.pro_cons
