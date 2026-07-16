@@ -24,7 +24,7 @@ from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 from app.api.notes_cleaner.notes_cleaner import router as notes_cleaner_router
 from app.api.quiz.quiz_generator import router as quiz_router
 
-
+from app.api.email_rewriter.email_rewriter import router as email_rewriter_router
 from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 import app.main 
 from nicegui import ui
@@ -77,7 +77,7 @@ app.include_router(ss_router)
 app.include_router(notes_cleaner_router)
 
 app.include_router(pro_cons_router)
-
+app.include_router(email_rewriter_router)
 app.include_router(quiz_router)
 app.include_router(youtube_summarizer_router)
 

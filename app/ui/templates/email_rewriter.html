@@ -1,0 +1,545 @@
+  <!-- ═══════════════════════════════════════════════════
+       AMBIENT BACKGROUND
+  ═══════════════════════════════════════════════════ -->
+  <div class="er-ambient" aria-hidden="true">
+    <div class="er-ambient__orb er-ambient__orb--1"></div>
+    <div class="er-ambient__orb er-ambient__orb--2"></div>
+    <div class="er-ambient__orb er-ambient__orb--3"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       PAGE WRAPPER
+  ═══════════════════════════════════════════════════ -->
+  <main class="er-page" id="er-page">
+
+    <!-- ─── HERO ─────────────────────────────────────── -->
+    <header class="er-hero">
+      <div class="er-hero__badge">
+        <span class="er-hero__badge-dot"></span>
+        Powered by SandBox AI
+      </div>
+
+      <h1 class="er-hero__title">
+        AI Email Studio
+      </h1>
+
+      <p class="er-hero__subtitle">
+        Create and rewrite emails that sound
+        <span class="er-hero__rotating-word" id="er-rotating-word" aria-live="polite">Professional</span>
+      </p>
+    </header>
+
+    <!-- ─── MODE SWITCH ───────────────────────────────── -->
+    <div class="er-mode-switch-wrap">
+      <div class="er-mode-switch" role="tablist" aria-label="Email mode">
+        <div class="er-mode-switch__indicator" id="er-mode-indicator" aria-hidden="true"></div>
+
+        <button
+          class="er-mode-switch__btn er-mode-switch__btn--active"
+          id="er-btn-rewrite"
+          role="tab"
+          aria-selected="true"
+          aria-controls="er-panel-rewrite"
+          data-mode="rewrite"
+        >
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M11.5 1.5L13.5 3.5L5 12H3V10L11.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M1.5 13.5H13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Rewrite Email
+        </button>
+
+        <button
+          class="er-mode-switch__btn"
+          id="er-btn-generate"
+          role="tab"
+          aria-selected="false"
+          aria-controls="er-panel-generate"
+          data-mode="generate"
+        >
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M7.5 1L9.18 5.26L13.5 5.73L10.32 8.64L11.27 13L7.5 10.77L3.73 13L4.68 8.64L1.5 5.73L5.82 5.26L7.5 1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+          Generate Email
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── WORKSPACE ─────────────────────────────────── -->
+    <div class="er-workspace" id="er-workspace">
+
+      <!-- ══════════════════════════════════════════════
+           LEFT PANEL
+      ══════════════════════════════════════════════ -->
+      <section class="er-panel er-panel--left" aria-label="Input panel">
+
+        <!-- ── REWRITE PANEL ── -->
+        <div class="er-input-panel" id="er-panel-rewrite" role="tabpanel" aria-labelledby="er-btn-rewrite">
+
+          <!-- Subject -->
+          <div class="er-field">
+            <label class="er-label" for="er-subject">
+              Subject Line
+              <span class="er-label__hint">Optional — AI will improve it</span>
+            </label>
+            <input
+              class="er-input"
+              id="er-subject"
+              type="text"
+              placeholder="e.g. Follow up on our meeting"
+              autocomplete="off"
+              spellcheck="true"
+            />
+          </div>
+
+          <!-- Email body -->
+          <div class="er-field er-field--grow">
+            <div class="er-label-row">
+              <label class="er-label" for="er-email-body">Your Email</label>
+              <span class="er-counter" id="er-word-count" aria-live="polite">0 words</span>
+            </div>
+            <textarea
+              class="er-textarea"
+              id="er-email-body"
+              placeholder="Paste your email here and AI will rewrite it…"
+              spellcheck="true"
+              rows="10"
+            ></textarea>
+            <div class="er-char-bar">
+              <span class="er-char-count" id="er-char-count" aria-live="polite">0 characters</span>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div class="er-settings-wrap">
+            <div class="er-settings-grid">
+              <!-- Rewrite Style -->
+              <div class="er-field">
+                <label class="er-label" for="er-style">Rewrite Style</label>
+                <div class="er-select-wrap">
+                  <select class="er-select" id="er-style">
+                    <option value="improve">Improve</option>
+                    <option value="professional" selected>Professional</option>
+                    <option value="formal">Formal</option>
+                    <option value="friendly">Friendly</option>
+                    <option value="polite">Polite</option>
+                    <option value="confident">Confident</option>
+                    <option value="persuasive">Persuasive</option>
+                    <option value="concise">Concise</option>
+                    <option value="expand">Expand</option>
+                    <option value="simplify">Simplify</option>
+                    <option value="grammar">Grammar Fix</option>
+                    <option value="executive">Executive</option>
+                    <option value="customer_support">Customer Support</option>
+                    <option value="sales">Sales</option>
+                    <option value="marketing">Marketing</option>
+                  </select>
+                  <svg class="er-select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Tone -->
+              <div class="er-field">
+                <label class="er-label" for="er-tone">Tone</label>
+                <div class="er-select-wrap">
+                  <select class="er-select" id="er-tone">
+                    <option value="professional" selected>Professional</option>
+                    <option value="formal">Formal</option>
+                    <option value="friendly">Friendly</option>
+                    <option value="casual">Casual</option>
+                    <option value="confident">Confident</option>
+                    <option value="empathetic">Empathetic</option>
+                    <option value="respectful">Respectful</option>
+                    <option value="persuasive">Persuasive</option>
+                    <option value="enthusiastic">Enthusiastic</option>
+                    <option value="neutral">Neutral</option>
+                  </select>
+                  <svg class="er-select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Length -->
+              <div class="er-field">
+                <label class="er-label" for="er-length">Length</label>
+                <div class="er-select-wrap">
+                  <select class="er-select" id="er-length">
+                    <option value="preserve" selected>Preserve</option>
+                    <option value="short">Short</option>
+                    <option value="medium">Medium</option>
+                    <option value="long">Long</option>
+                  </select>
+                  <svg class="er-select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Language -->
+              <div class="er-field">
+                <label class="er-label" for="er-language">Language</label>
+                <div class="er-select-wrap">
+                  <select class="er-select" id="er-language">
+                    <option value="English" selected>English</option>
+                  </select>
+                  <svg class="er-select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advanced Settings -->
+            <div class="er-advanced">
+              <button class="er-advanced__toggle" id="er-advanced-toggle" aria-expanded="false" aria-controls="er-advanced-body">
+                <svg class="er-advanced__chevron" id="er-advanced-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Advanced Settings
+              </button>
+
+              <div class="er-advanced__body" id="er-advanced-body" aria-hidden="true">
+                <div class="er-toggles-grid">
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Preserve Intent</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-preserve-intent" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Improve Subject</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-improve-subject" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Improve Greeting</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-improve-greeting" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Improve Closing</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-improve-closing" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Fix Grammar</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-fix-grammar" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Improve Clarity</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-improve-clarity" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                  <label class="er-toggle-row">
+                    <span class="er-toggle-label">Improve Readability</span>
+                    <div class="er-switch">
+                      <input type="checkbox" id="er-improve-readability" checked />
+                      <span class="er-switch__track"></span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <button class="er-action-btn" id="er-submit-rewrite" type="button">
+            <span class="er-action-btn__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.5 2.5L6 10M13.5 2.5H9.5M13.5 2.5V6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6.5 3H3C2.45 3 2 3.45 2 4V13C2 13.55 2.45 14 3 14H12C12.55 14 13 13.55 13 13V9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="er-action-btn__text" id="er-submit-rewrite-text">Rewrite Email</span>
+          </button>
+        </div>
+
+        <!-- ── GENERATE PANEL ── -->
+        <div class="er-input-panel er-input-panel--hidden" id="er-panel-generate" role="tabpanel" aria-labelledby="er-btn-generate">
+
+          <div class="er-field er-field--grow">
+            <div class="er-label-row">
+              <label class="er-label" for="er-prompt">Describe your email</label>
+              <span class="er-counter" id="er-prompt-word-count" aria-live="polite">0 words</span>
+            </div>
+            <textarea
+              class="er-textarea er-textarea--tall"
+              id="er-prompt"
+              placeholder="e.g. Write a leave request for tomorrow. Professional tone. Addressed to HR manager."
+              spellcheck="true"
+              rows="10"
+            ></textarea>
+          </div>
+
+          <!-- Example chips -->
+          <div class="er-chips-wrap">
+            <p class="er-chips-label">Quick examples</p>
+            <div class="er-chips" id="er-chips" role="list">
+              <button class="er-chip" role="listitem" data-prompt="Write a professional leave request for tomorrow addressed to my HR manager." type="button">Leave Request</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a persuasive sales email introducing our new product to a potential client." type="button">Sales Pitch</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a professional meeting invitation for a project kickoff next Monday at 10 AM." type="button">Meeting Invite</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a thank-you email after a job interview, expressing gratitude and reaffirming interest." type="button">Thank You</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a polite follow-up email checking on the status of a proposal sent last week." type="button">Follow-Up</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a professional complaint email about a delayed shipment to customer support." type="button">Complaint</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a cold outreach email to a potential business partner introducing my company." type="button">Cold Email</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a formal resignation letter giving two weeks notice, maintaining professionalism." type="button">Resignation</button>
+              <button class="er-chip" role="listitem" data-prompt="Write an interview invitation email to a candidate for a software engineer position." type="button">Interview</button>
+              <button class="er-chip" role="listitem" data-prompt="Write a professional apology email to a client for a service delay or mistake." type="button">Apology</button>
+            </div>
+          </div>
+
+          <!-- Generate Settings -->
+          <div class="er-settings-wrap">
+            <div class="er-settings-grid">
+              <div class="er-field">
+                <label class="er-label" for="er-gen-tone">Tone</label>
+                <div class="er-select-wrap">
+                  <select class="er-select" id="er-gen-tone">
+                    <option value="professional" selected>Professional</option>
+                    <option value="formal">Formal</option>
+                    <option value="friendly">Friendly</option>
+                    <option value="casual">Casual</option>
+                    <option value="confident">Confident</option>
+                    <option value="empathetic">Empathetic</option>
+                    <option value="respectful">Respectful</option>
+                    <option value="persuasive">Persuasive</option>
+                    <option value="enthusiastic">Enthusiastic</option>
+                    <option value="neutral">Neutral</option>
+                  </select>
+                  <svg class="er-select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="er-field">
+                <label class="er-label" for="er-gen-length">Length</label>
+                <div class="er-select-wrap">
+                  <select class="er-select" id="er-gen-length">
+                    <option value="preserve">Auto</option>
+                    <option value="short">Short</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="long">Long</option>
+                  </select>
+                  <svg class="er-select-arrow" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <button class="er-action-btn" id="er-submit-generate" type="button">
+            <span class="er-action-btn__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 1.5L10 6.5L15 7L11 10.5L12.5 15.5L8 13L3.5 15.5L5 10.5L1 7L6 6.5L8 1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="er-action-btn__text" id="er-submit-generate-text">Generate Email</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ══════════════════════════════════════════════
+           RIGHT PANEL — OUTPUT
+      ══════════════════════════════════════════════ -->
+      <section class="er-panel er-panel--right" aria-label="Output panel" aria-live="polite">
+
+        <!-- Empty State -->
+        <div class="er-empty" id="er-empty">
+          <div class="er-empty__illustration" aria-hidden="true">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="14" width="48" height="36" rx="5" stroke="currentColor" stroke-width="2" stroke-opacity="0.3"/>
+              <path d="M8 20L32 36L56 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-opacity="0.3"/>
+              <circle cx="48" cy="42" r="10" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity="0.5"/>
+              <path d="M44 42L47 45L52 40" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.5"/>
+            </svg>
+          </div>
+          <h3 class="er-empty__title" id="er-empty-title">Ready to write</h3>
+          <p class="er-empty__desc" id="er-empty-desc">
+            Paste an email and click <strong>Rewrite Email</strong> to get an AI-improved version, or switch to Generate mode and describe what you need.
+          </p>
+          <div class="er-empty__hints">
+            <div class="er-empty__hint">
+              <span class="er-empty__hint-icon">✦</span>
+              Sounds more polished and natural
+            </div>
+            <div class="er-empty__hint">
+              <span class="er-empty__hint-icon">✦</span>
+              Preserves your original intent
+            </div>
+            <div class="er-empty__hint">
+              <span class="er-empty__hint-icon">✦</span>
+              Ready to send in seconds
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="er-loading" id="er-loading" aria-hidden="true">
+          <div class="er-loading__dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <p class="er-loading__status" id="er-loading-status" aria-live="assertive">Reading…</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="er-error" id="er-error" aria-hidden="true" role="alert">
+          <div class="er-error__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M12 7V13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="12" cy="16.5" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <p class="er-error__msg" id="er-error-msg">Something went wrong. Please try again.</p>
+          <button class="er-error__retry" id="er-error-retry" type="button">Try again</button>
+        </div>
+
+        <!-- Output Cards -->
+        <div class="er-output" id="er-output" aria-hidden="true">
+
+          <!-- Subject Card -->
+          <div class="er-card" id="er-card-subject">
+            <div class="er-card__header">
+              <span class="er-card__label">Subject</span>
+              <div class="er-card__actions">
+                <button class="er-card__btn" data-copy-target="er-out-subject" title="Copy subject" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Copy
+                </button>
+                <button class="er-card__btn" data-edit-target="er-out-subject" title="Edit subject" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9.5 2L12 4.5L4.5 12H2V9.5L9.5 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                  Edit
+                </button>
+              </div>
+            </div>
+            <p class="er-card__content er-card__content--subject" id="er-out-subject"></p>
+          </div>
+
+          <!-- Greeting Card -->
+          <div class="er-card" id="er-card-greeting">
+            <div class="er-card__header">
+              <span class="er-card__label">Greeting</span>
+              <div class="er-card__actions">
+                <button class="er-card__btn" data-copy-target="er-out-greeting" title="Copy greeting" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Copy
+                </button>
+                <button class="er-card__btn" data-edit-target="er-out-greeting" title="Edit greeting" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9.5 2L12 4.5L4.5 12H2V9.5L9.5 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                  Edit
+                </button>
+              </div>
+            </div>
+            <p class="er-card__content" id="er-out-greeting"></p>
+          </div>
+
+          <!-- Body Card -->
+          <div class="er-card er-card--body" id="er-card-body">
+            <div class="er-card__header">
+              <span class="er-card__label">Email Body</span>
+              <div class="er-card__actions">
+                <button class="er-card__btn" data-copy-target="er-out-body" title="Copy body" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Copy
+                </button>
+                <button class="er-card__btn" data-edit-target="er-out-body" title="Edit body" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9.5 2L12 4.5L4.5 12H2V9.5L9.5 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                  Edit
+                </button>
+              </div>
+            </div>
+            <p class="er-card__content er-card__content--body" id="er-out-body"></p>
+          </div>
+
+          <!-- Closing Card -->
+          <div class="er-card" id="er-card-closing">
+            <div class="er-card__header">
+              <span class="er-card__label">Closing</span>
+              <div class="er-card__actions">
+                <button class="er-card__btn" data-copy-target="er-out-closing" title="Copy closing" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Copy
+                </button>
+                <button class="er-card__btn" data-edit-target="er-out-closing" title="Edit closing" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9.5 2L12 4.5L4.5 12H2V9.5L9.5 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                  Edit
+                </button>
+              </div>
+            </div>
+            <p class="er-card__content" id="er-out-closing"></p>
+          </div>
+
+          <!-- Full Email Card -->
+          <div class="er-card er-card--full" id="er-card-full">
+            <div class="er-card__header">
+              <span class="er-card__label">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" style="display:inline;vertical-align:-1px;margin-right:5px;"><path d="M6.5 1L8.18 4.26L11.5 4.73L9.12 7.01L9.74 10.5L6.5 8.77L3.26 10.5L3.88 7.01L1.5 4.73L4.82 4.26L6.5 1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+                Complete Email
+              </span>
+              <div class="er-card__actions">
+                <button class="er-card__btn" data-copy-target="er-out-full" title="Copy complete email" type="button">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Copy
+                </button>
+              </div>
+            </div>
+            <pre class="er-card__content er-card__content--full" id="er-out-full"></pre>
+          </div>
+
+          <!-- Suggestions Card -->
+          <div class="er-card er-card--suggestions" id="er-card-suggestions">
+            <div class="er-card__header">
+              <span class="er-card__label">AI Suggestions</span>
+            </div>
+            <ul class="er-suggestions" id="er-out-suggestions"></ul>
+          </div>
+
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="er-action-bar" id="er-action-bar" aria-hidden="true">
+          <button class="er-bar-btn er-bar-btn--primary" id="er-btn-copy-all" type="button" title="Copy the complete email">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 10.5V2.5H10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Copy All
+          </button>
+          <button class="er-bar-btn" id="er-btn-download" type="button" title="Download as .txt">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 2V10M7.5 10L4.5 7M7.5 10L10.5 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Download
+          </button>
+          <button class="er-bar-btn" id="er-btn-mailto" type="button" title="Open in mail client">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.5" y="3.5" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 5L7.5 9L13.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Open in Email
+          </button>
+          <button class="er-bar-btn" id="er-btn-regenerate" type="button" title="Regenerate">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M2 7.5C2 4.46 4.46 2 7.5 2C9.4 2 11.07 2.97 12.07 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M13 7.5C13 10.54 10.54 13 7.5 13C5.6 13 3.93 12.03 2.93 10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 4.5L12.5 4.5L12.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 10.5H2.5V12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Regenerate
+          </button>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ─── TOAST ──────────────────────────────────────── -->
+    <div class="er-toast" id="er-toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  </main>
+</body>
+</html>
