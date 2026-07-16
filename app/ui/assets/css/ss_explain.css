@@ -277,7 +277,7 @@ button {
 }
 
 .brand-text h1 {
-  font-size: var(--text-xl);
+  font-size: var(--text-3xl);
   font-weight: var(--weight-bold);
   letter-spacing: -0.02em;
   color: var(--text);
@@ -285,7 +285,7 @@ button {
 
 .brand-text p {
   margin-top: 2px;
-  font-size: var(--text-sm);
+  font-size: var(--text-md);
   color: var(--text-muted);
   max-width: 380px;
 }
