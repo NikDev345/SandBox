@@ -1,0 +1,117 @@
+
+
+<div class="shell">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <main class="page">
+
+    <!-- ============ HEADER ============ -->
+    <header class="tool-header">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14z"/></svg>
+      </div>
+      <h1>Notes Cleaner</h1>
+      <p class="subtitle">Clean and organize your notes with AI while preserving their original meaning.</p>
+    </header>
+
+    <!-- ============ INPUT CARD ============ -->
+    <section class="input-card glass-card" id="inputCard" aria-labelledby="inputHeading">
+      <h2 id="inputHeading" class="visually-hidden">Provide your notes</h2>
+
+      <div class="field-group" id="textField">
+        <label for="notesText" class="visually-hidden">Paste your notes</label>
+        <textarea
+          id="notesText"
+          class="notes-textarea"
+          placeholder="Paste your notes here..."
+          maxlength="1000000"
+          rows="7"
+        ></textarea>
+        <div class="textarea-footer">
+          <span class="char-counter" id="charCounter">0 characters</span>
+        </div>
+      </div>
+
+      <div class="divider" role="separator">OR</div>
+
+      <div class="field-group" id="fileField">
+        <div class="dropzone" id="dropzone" role="button" tabindex="0"
+             aria-label="Upload a PDF, TXT or DOCX file, up to 50 megabytes">
+          <input type="file" id="fileInput" accept=".pdf,.txt,.docx" aria-hidden="true" tabindex="-1" />
+
+          <div class="dropzone-content" id="dropzoneContent">
+            <div class="dropzone-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+            </div>
+            <p class="dropzone-title">Drag &amp; drop a file here</p>
+            <p class="dropzone-sub">or <button type="button" class="browse-link" id="browseBtn">browse files</button></p>
+            <p class="dropzone-hint">PDF, TXT or DOCX · up to 50MB</p>
+          </div>
+
+          <div class="file-preview hidden" id="filePreview">
+            <div class="file-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            </div>
+            <div class="file-meta">
+              <p class="file-name" id="fileName"></p>
+              <p class="file-size" id="fileSize"></p>
+            </div>
+            <button type="button" class="file-remove" id="fileRemoveBtn" aria-label="Remove uploaded file">
+              <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="clean-btn" id="cleanBtn" disabled>
+        <span class="clean-btn-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14z"/></svg>
+        </span>
+        <span class="clean-btn-label">Clean Notes</span>
+        <span class="clean-btn-spinner hidden" id="cleanSpinner" aria-hidden="true"></span>
+      </button>
+    </section>
+
+    <!-- ============ LOADING CARD ============ -->
+    <section class="loading-card glass-card hidden" id="loadingCard" aria-live="polite" aria-atomic="true">
+      <div class="loading-inner">
+        <div class="loading-ring" aria-hidden="true"></div>
+        <p class="loading-status" id="loadingStatus">Extracting document...</p>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OUTPUT CARD ============ -->
+    <section class="output-card glass-card hidden" id="outputCard" aria-labelledby="outputTitle">
+      <div class="output-header">
+        <div class="output-title-group">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <h2 id="outputTitle">Cleaned Notes</h2>
+        </div>
+        <div class="output-actions">
+          <button type="button" class="icon-action" id="copyBtn">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+          <button type="button" class="icon-action" id="downloadBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 3v12M12 15l-4-4M12 15l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+            Download
+          </button>
+          <button type="button" class="icon-action danger" id="clearBtn">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+      <div class="output-body" id="outputBody"></div>
+    </section>
+
+  </main>
+
+  <div class="toast-stack" id="toastStack" aria-live="assertive" aria-atomic="false"></div>
+</div>
+
+</body>
+</html>
