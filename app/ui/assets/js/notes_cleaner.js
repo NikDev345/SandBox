@@ -370,19 +370,120 @@
   cleanBtn.addEventListener('click', handleClean);
 
   /* ============================================================
+     MARKDOWN RENDERING
+     The backend returns cleaned notes as markdown (#, **, -, >, etc).
+     Render it to HTML for display; keep the raw markdown source
+     around for copy / download so nothing is lost either way.
+     ============================================================ */
+  let rawCleanedText = '';
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function inlineFormat(line) {
+    return line
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__(.+?)__/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/(?<![\w*])_(.+?)_(?![\w*])/g, '<em>$1</em>');
+  }
+
+  function renderMarkdown(raw) {
+    const lines = escapeHtml(raw).replace(/\r\n/g, '\n').split('\n');
+    let html = '';
+    let listType = null; // 'ul' | 'ol'
+    let i = 0;
+
+    const closeList = () => {
+      if (listType) { html += `</${listType}>`; listType = null; }
+    };
+
+    const isBlockStart = (s) =>
+      s.trim() === '' ||
+      /^(#{1,6})\s+/.test(s.trim()) ||
+      /^(-{3,}|\*{3,}|_{3,})$/.test(s.trim()) ||
+      /^[-*]\s+/.test(s.trim()) ||
+      /^\d+\.\s+/.test(s.trim()) ||
+      /^>\s?/.test(s.trim());
+
+    while (i < lines.length) {
+      const trimmed = lines[i].trim();
+
+      if (trimmed === '') { closeList(); i++; continue; }
+
+      if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+        closeList();
+        html += '<hr>';
+        i++; continue;
+      }
+
+      const heading = trimmed.match(/^(#{1,6})\s+(.*)$/);
+      if (heading) {
+        closeList();
+        const level = heading[1].length;
+        html += `<h${level}>${inlineFormat(heading[2])}</h${level}>`;
+        i++; continue;
+      }
+
+      if (/^>\s?/.test(trimmed)) {
+        closeList();
+        const quoteLines = [];
+        while (i < lines.length && /^>\s?/.test(lines[i].trim())) {
+          quoteLines.push(lines[i].trim().replace(/^>\s?/, ''));
+          i++;
+        }
+        html += `<blockquote>${inlineFormat(quoteLines.join(' '))}</blockquote>`;
+        continue;
+      }
+
+      const ul = trimmed.match(/^[-*]\s+(.*)$/);
+      if (ul) {
+        if (listType !== 'ul') { closeList(); html += '<ul>'; listType = 'ul'; }
+        html += `<li>${inlineFormat(ul[1])}</li>`;
+        i++; continue;
+      }
+
+      const ol = trimmed.match(/^\d+\.\s+(.*)$/);
+      if (ol) {
+        if (listType !== 'ol') { closeList(); html += '<ol>'; listType = 'ol'; }
+        html += `<li>${inlineFormat(ol[1])}</li>`;
+        i++; continue;
+      }
+
+      closeList();
+      const paraLines = [trimmed];
+      i++;
+      while (i < lines.length && !isBlockStart(lines[i])) {
+        paraLines.push(lines[i].trim());
+        i++;
+      }
+      html += `<p>${inlineFormat(paraLines.join(' '))}</p>`;
+    }
+
+    closeList();
+    return html;
+  }
+
+  /* ============================================================
      OUTPUT
      ============================================================ */
   function showResult(payload) {
     stopLoading();
+    rawCleanedText = payload.cleaned_notes;
     outputTitle.textContent = payload.title || 'Cleaned Notes';
-    outputBody.textContent = payload.cleaned_notes;
+    outputBody.innerHTML = renderMarkdown(rawCleanedText);
     outputCard.classList.remove('hidden');
     outputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   copyBtn.addEventListener('click', async () => {
     try {
-      await navigator.clipboard.writeText(outputBody.textContent);
+      await navigator.clipboard.writeText(rawCleanedText);
       showToast('Copied to clipboard.', 'success', 2200);
     } catch (_) {
       showToast('Could not copy automatically — please select and copy manually.', 'error');
@@ -390,7 +491,7 @@
   });
 
   downloadBtn.addEventListener('click', () => {
-    const blob = new Blob([outputBody.textContent], { type: 'text/plain;charset=utf-8' });
+    const blob = new Blob([rawCleanedText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const safeName = (outputTitle.textContent || 'cleaned-notes').trim().replace(/[^\w\- ]+/g, '').slice(0, 60) || 'cleaned-notes';
@@ -405,7 +506,8 @@
 
   clearBtn.addEventListener('click', () => {
     outputCard.classList.add('hidden');
-    outputBody.textContent = '';
+    outputBody.innerHTML = '';
+    rawCleanedText = '';
     notesText.value = '';
     clearFile();
     updateCharCounter();
