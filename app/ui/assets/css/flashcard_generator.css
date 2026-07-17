@@ -1,0 +1,1916 @@
+/* ==========================================================================
+   flashcard_generator.css — Flashcard Generator
+   SandBox AI Platform — Tool Extension Stylesheet
+   Scoped under .fc-root
+   Uses only existing SandBox tokens:
+     --bg, --bg-panel, --surface-0/1/2, --border-0/1/2
+     --ink-0/1/2/6/7/8, --text, --text-soft, --text-muted
+     --text-xs/sm/base/md/lg/xl/2xl/3xl
+     --weight-medium/semi/bold
+     --radius-md/lg/xl/2xl/pill
+     --shadow-sm/md/lg/xl
+     --accent, --success, --error, --warning
+     --dur-fast/base/slow, --ease, --ease-spring
+     --font, --sidebar-w, --topbar-h
+   ========================================================================== */
+
+/* ─── 1. ROOT SHELL ────────────────────────────────────────────────────────── */
+
+.fc-root {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 2rem clamp(1rem, 3vw, 1.5rem) 4rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.fc-root .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── 2. PHASE MANAGEMENT ─────────────────────────────────────────────────── */
+
+.fc-phase {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  animation: fc-enter var(--dur-slow) var(--ease-spring) both;
+}
+
+.fc-phase--hidden {
+  display: none !important;
+}
+
+@keyframes fc-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── 3. HERO ──────────────────────────────────────────────────────────────── */
+
+.fc-hero {
+  padding: 2.25rem 2rem 2rem;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%),
+    var(--bg-panel);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.fc-hero::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.fc-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  width: fit-content;
+}
+
+.fc-hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: fc-pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes fc-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.25); }
+}
+
+.fc-hero-heading {
+  font-size: clamp(var(--text-xl), 3.5vw, var(--text-3xl));
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.03em;
+  color: var(--ink-0);
+  line-height: 1.15;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
+/* ─── 4. WORD ROTATOR ─────────────────────────────────────────────────────── */
+
+.fc-hero-rotator {
+  display: inline-block;
+  min-width: 10ch;
+  height: 1.2em;
+  overflow: hidden;
+  vertical-align: bottom;
+  position: relative;
+}
+
+.fc-rotator-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fc-rotator-word {
+  display: block;
+  height: 1.2em;
+  line-height: 1.2;
+  color: var(--ink-0);
+  font-style: italic;
+  opacity: 0.9;
+  white-space: nowrap;
+  background: linear-gradient(90deg, rgba(99,102,241,0.9), rgba(168,85,247,0.9));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fc-hero-desc {
+  font-size: var(--text-sm);
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 52ch;
+}
+
+/* ─── 5. MODE SELECTOR (segmented control) ────────────────────────────────── */
+
+.fc-mode-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  background: var(--surface-0);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-lg);
+  position: relative;
+  width: fit-content;
+  align-self: flex-start;
+}
+
+.fc-mode-pill {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  border-radius: calc(var(--radius-lg) - 4px);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  box-shadow: var(--shadow-sm);
+  transition: left 0.35s cubic-bezier(0.22,1,0.36,1), width 0.35s cubic-bezier(0.22,1,0.36,1);
+  pointer-events: none;
+  will-change: left, width;
+  z-index: 0;
+}
+
+.fc-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.125rem;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: calc(var(--radius-lg) - 4px);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.fc-mode-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.fc-mode-btn--active {
+  color: var(--ink-1);
+}
+
+/* ─── 6. PANELS ───────────────────────────────────────────────────────────── */
+
+.fc-panel {
+  animation: fc-panel-in var(--dur-base) var(--ease) both;
+}
+
+.fc-panel--hidden {
+  display: none !important;
+}
+
+@keyframes fc-panel-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── 7. PROMPT / PASTE EDITOR ────────────────────────────────────────────── */
+
+.fc-prompt-editor {
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-xl);
+  background: var(--surface-0);
+  overflow: hidden;
+  transition: border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+
+.fc-prompt-editor:focus-within {
+  border-color: var(--border-2);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04), 0 0 0 1px rgba(99,102,241,0.12);
+}
+
+.fc-prompt-textarea {
+  width: 100%;
+  min-height: 220px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 1.25rem 1.25rem 0.75rem;
+  font-family: var(--font);
+  font-size: var(--text-base);
+  color: var(--ink-1);
+  line-height: 1.7;
+  caret-color: var(--ink-0);
+  box-sizing: border-box;
+  display: block;
+}
+
+.fc-prompt-textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+
+.fc-prompt-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem 0.75rem;
+  border-top: 1px solid var(--border-0);
+}
+
+.fc-word-count,
+.fc-char-count {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── 8. UPLOAD ZONE ──────────────────────────────────────────────────────── */
+
+.fc-upload-zone {
+  border: 1.5px dashed var(--border-1);
+  border-radius: var(--radius-xl);
+  background: var(--surface-0);
+  transition:
+    border-color var(--dur-base) var(--ease),
+    background var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease);
+  cursor: pointer;
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fc-upload-zone:hover,
+.fc-upload-zone.fc-drag-over {
+  border-color: var(--border-2);
+  background: var(--surface-1);
+}
+
+.fc-upload-zone.fc-drag-over {
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.5);
+}
+
+.fc-upload-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.fc-upload-icon-wrap {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  margin-bottom: 0.25rem;
+  transition: transform var(--dur-base) var(--ease-spring), background var(--dur-base) var(--ease);
+}
+
+.fc-upload-zone:hover .fc-upload-icon-wrap {
+  transform: translateY(-3px);
+  background: var(--surface-2);
+}
+
+.fc-upload-icon {
+  width: 22px;
+  height: 22px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fc-upload-headline {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  color: var(--ink-1);
+  margin: 0;
+}
+
+.fc-upload-sub {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.fc-upload-browse {
+  color: var(--ink-1);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.fc-upload-browse:hover { color: var(--ink-0); }
+
+.fc-upload-formats {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.375rem 0 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fc-upload-formats li {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-pill);
+  padding: 0.2rem 0.55rem;
+}
+
+/* Upload notice (PDF/DOCX not yet supported) */
+.fc-upload-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  color: var(--warning);
+  line-height: 1.5;
+  max-width: 34ch;
+  text-align: left;
+}
+
+.fc-upload-notice svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* File loaded state */
+.fc-upload-file {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+  animation: fc-enter var(--dur-base) var(--ease) both;
+}
+
+.fc-file-icon {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.18);
+  border-radius: var(--radius-md);
+}
+
+.fc-file-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: #4ade80;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fc-file-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.fc-file-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fc-file-size {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.fc-file-remove {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.fc-file-remove:hover {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.25);
+  color: #f87171;
+}
+
+.fc-file-remove svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ─── 9. INPUT ACTIONS ────────────────────────────────────────────────────── */
+
+.fc-input-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fc-continue-btn {
+  min-width: 160px;
+  gap: 0.5rem;
+}
+
+.fc-continue-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fc-continue-btn:disabled,
+.fc-continue-btn[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* ─── 10. CONFIG HEADER ───────────────────────────────────────────────────── */
+
+.fc-config-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.fc-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 4px;
+  transition:
+    color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.fc-back-btn:hover {
+  color: var(--ink-1);
+  background: var(--surface-2);
+  border-color: var(--border-2);
+}
+
+.fc-back-btn svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fc-config-title {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--ink-0);
+  margin: 0 0 0.25rem;
+}
+
+.fc-config-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ─── 11. CONFIG GRID ─────────────────────────────────────────────────────── */
+
+.fc-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.fc-config-card {
+  padding: 1.25rem 1.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.fc-config-card--full {
+  grid-column: 1 / -1;
+}
+
+.fc-config-label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+}
+
+/* ─── 12. SLIDER ──────────────────────────────────────────────────────────── */
+
+.fc-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.fc-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  outline: none;
+  cursor: pointer;
+}
+
+.fc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink-0);
+  border: 2px solid var(--ink-6);
+  box-shadow: 0 0 0 1px var(--border-1), var(--shadow-sm);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease);
+}
+
+.fc-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.1), var(--shadow-md);
+}
+
+.fc-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink-0);
+  border: 2px solid var(--ink-6);
+  cursor: pointer;
+}
+
+.fc-slider-value {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--ink-0);
+  min-width: 2.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.fc-slider-marks {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  padding: 0 1px;
+}
+
+/* ─── 13. CHIP GROUP ──────────────────────────────────────────────────────── */
+
+.fc-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4375rem;
+}
+
+.fc-chip {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-soft);
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-md);
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+  user-select: none;
+}
+
+.fc-chip:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  color: var(--ink-1);
+  transform: translateY(-1px);
+}
+
+.fc-chip--active {
+  background: var(--ink-0);
+  border-color: var(--ink-0);
+  color: var(--ink-8);
+}
+
+.fc-chip--active:hover {
+  background: var(--ink-1);
+  border-color: var(--ink-1);
+  color: var(--ink-8);
+  transform: translateY(-1px);
+}
+
+/* ─── 14. LANGUAGE SELECT ─────────────────────────────────────────────────── */
+
+.fc-language-select {
+  width: 100%;
+}
+
+/* ─── 15. CARD TYPE GRID ──────────────────────────────────────────────────── */
+
+.fc-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.fc-type-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease-spring);
+  user-select: none;
+}
+
+.fc-type-card:hover {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  transform: translateY(-2px);
+}
+
+.fc-type-card--active {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  box-shadow: inset 0 0 0 1px var(--border-2);
+}
+
+.fc-type-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+
+.fc-type-card--active .fc-type-icon {
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+}
+
+.fc-type-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fc-type-card--active .fc-type-icon svg {
+  stroke: #a5b4fc;
+}
+
+.fc-type-name {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--ink-1);
+  line-height: 1.2;
+}
+
+.fc-type-desc {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: 0.125rem;
+}
+
+/* ─── 16. TOGGLES GRID ────────────────────────────────────────────────────── */
+
+.fc-toggles-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.fc-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-0);
+  cursor: pointer;
+}
+
+.fc-toggle-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.fc-toggle-row:first-child {
+  padding-top: 0;
+}
+
+.fc-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.fc-toggle-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink-1);
+}
+
+.fc-toggle-desc {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.fc-toggle-switch {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fc-toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.fc-toggle-track {
+  display: block;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  position: relative;
+  transition: background var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease);
+  cursor: pointer;
+}
+
+.fc-toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform var(--dur-base) var(--ease-spring), background var(--dur-base) var(--ease);
+}
+
+.fc-toggle-input:checked + .fc-toggle-track {
+  background: var(--ink-0);
+  border-color: var(--ink-0);
+}
+
+.fc-toggle-input:checked + .fc-toggle-track::after {
+  transform: translateX(16px);
+  background: var(--ink-8);
+}
+
+/* ─── 17. CONFIG ACTIONS ──────────────────────────────────────────────────── */
+
+.fc-config-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fc-generate-btn {
+  min-width: 200px;
+  gap: 0.5rem;
+}
+
+.fc-generate-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── 18. LOADING OVERLAY ─────────────────────────────────────────────────── */
+
+.fc-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(9,9,11,0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  animation: fc-overlay-in var(--dur-base) var(--ease) both;
+}
+
+.fc-loading-overlay[hidden] {
+  display: none;
+}
+
+@keyframes fc-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fc-loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2.5rem 2.25rem;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%),
+    var(--bg-panel);
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  min-width: 340px;
+  max-width: calc(100vw - 2rem);
+  animation: fc-box-in 0.3s var(--ease-spring) both;
+}
+
+@keyframes fc-box-in {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.fc-loader-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  font-family: var(--font);
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--text);
+  border-radius: 50%;
+  background-color: transparent;
+  user-select: none;
+  overflow: hidden;
+}
+
+.fc-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: transparent;
+  animation: fc-loader-rotate 2s linear infinite;
+  z-index: 0;
+}
+
+@keyframes fc-loader-rotate {
+  0% {
+    transform: rotate(90deg);
+    box-shadow:
+      0 10px 20px 0 #fff inset,
+      0 14px 18px 0 #ad5fff inset,
+      0 35px 35px 0 #471eec inset;
+  }
+  50% {
+    transform: rotate(270deg);
+    box-shadow:
+      0 10px 20px 0 #fff inset,
+      0 20px 10px 0 #d60a47 inset,
+      0 40px 60px 0 #311e80 inset;
+  }
+  100% {
+    transform: rotate(450deg);
+    box-shadow:
+      0 10px 20px 0 #fff inset,
+      0 14px 18px 0 #ad5fff inset,
+      0 35px 35px 0 #471eec inset;
+  }
+}
+
+.fc-loader-word {
+  display: flex;
+  gap: 2px;
+  z-index: 2;
+}
+
+.fc-loader-letter {
+  display: inline-block;
+  opacity: 0.45;
+  transform: translateY(0);
+  animation: fc-loader-letter-anim 2s ease-in-out infinite;
+  z-index: 1;
+  border-radius: 50ch;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.fc-loader-letter:nth-child(1)  { animation-delay: 0s; }
+.fc-loader-letter:nth-child(2)  { animation-delay: 0.1s; }
+.fc-loader-letter:nth-child(3)  { animation-delay: 0.2s; }
+.fc-loader-letter:nth-child(4)  { animation-delay: 0.3s; }
+.fc-loader-letter:nth-child(5)  { animation-delay: 0.4s; }
+.fc-loader-letter:nth-child(6)  { animation-delay: 0.5s; }
+.fc-loader-letter:nth-child(7)  { animation-delay: 0.6s; }
+.fc-loader-letter:nth-child(8)  { animation-delay: 0.7s; }
+.fc-loader-letter:nth-child(9)  { animation-delay: 0.8s; }
+.fc-loader-letter:nth-child(10) { animation-delay: 0.9s; }
+
+@keyframes fc-loader-letter-anim {
+  0%, 100% { opacity: 0.4; transform: translateY(0); }
+  20%       { opacity: 1; transform: scale(1.15); }
+  40%       { opacity: 0.7; transform: translateY(0); }
+}
+
+.fc-loading-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  color: var(--ink-1);
+  margin: 0;
+}
+
+.fc-loading-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: -0.5rem 0 0;
+}
+
+.fc-loading-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fc-step {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  transition: color var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+}
+
+.fc-step-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--border-1);
+  background: var(--surface-1);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  transition: all var(--dur-base) var(--ease);
+}
+
+.fc-step--active {
+  color: var(--ink-1);
+  background: var(--surface-1);
+}
+
+.fc-step--active .fc-step-icon {
+  border-color: rgba(99,102,241,0.5);
+  background: rgba(99,102,241,0.1);
+  animation: fc-pulse-dot 1s ease-in-out infinite;
+}
+
+.fc-step--done {
+  color: var(--text-soft);
+}
+
+.fc-step--done .fc-step-icon {
+  border-color: rgba(74,222,128,0.4);
+  background: rgba(74,222,128,0.08);
+  color: #4ade80;
+}
+
+.fc-step--done .fc-step-icon::after {
+  content: "✓";
+}
+
+/* ─── 19. VIEWER — ACTION BAR ─────────────────────────────────────────────── */
+
+.fc-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%),
+    var(--bg-panel);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-xl);
+  flex-wrap: wrap;
+}
+
+.fc-action-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.fc-action-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.fc-deck-title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 24ch;
+}
+
+.fc-action-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-1);
+  flex-shrink: 0;
+  margin: 0 0.125rem;
+}
+
+.fc-btn-sm {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: var(--text-xs);
+  gap: 0.375rem;
+}
+
+.fc-btn-sm svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* ─── 20. VIEWER — PROGRESS ───────────────────────────────────────────────── */
+
+.fc-viewer-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fc-card-counter {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.fc-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.fc-progress-fill {
+  height: 100%;
+  background: var(--ink-0);
+  border-radius: var(--radius-pill);
+  width: 0%;
+  transition: width var(--dur-slow) var(--ease);
+}
+
+/* ─── 21. EMPTY STATE ─────────────────────────────────────────────────────── */
+
+.fc-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3.5rem 2rem;
+  background: var(--surface-0);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.fc-empty-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.fc-empty-title {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semi);
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.fc-empty-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ─── 22. CARD STAGE ──────────────────────────────────────────────────────── */
+
+.fc-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 0.875rem 0;
+}
+
+.fc-deck {
+  position: relative;
+  width: min(760px, calc(100vw - 220px));
+  height: 440px;
+  perspective: 1800px;
+  flex-shrink: 0;
+}
+
+/* ─── 23. CARD ─────────────────────────────────────────────────────────────── */
+
+.fc-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition:
+    transform 0.65s var(--ease-spring),
+    opacity var(--dur-slow) var(--ease),
+    filter var(--dur-slow) var(--ease);
+}
+
+.fc-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  transform-style: preserve-3d;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fc-card-inner:active { cursor: grabbing; }
+
+/* Stack positions */
+.fc-card[data-pos="hidden"] {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.fc-card[data-pos="prev2"],
+.fc-card[data-pos="next2"] {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.fc-card[data-pos="next1"] {
+  transform: translateY(14px) scale(0.95) rotateZ(1.8deg);
+  opacity: 0.45;
+  filter: blur(0.5px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.fc-card[data-pos="prev1"] {
+  transform: translateY(14px) scale(0.95) rotateZ(-1.8deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.fc-card[data-pos="active"] {
+  transform: translateY(0) scale(1) rotateZ(0deg);
+  opacity: 1;
+  z-index: 5;
+}
+
+/* ─── 24. CARD FACES ───────────────────────────────────────────────────────── */
+
+.fc-card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-2xl);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 2.75rem;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%),
+    var(--bg-panel);
+  border: 1px solid var(--border-0);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  gap: 0.125rem;
+}
+
+.fc-card-face::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.fc-card-face--back {
+  transform: rotateY(180deg);
+}
+
+/* Card face header */
+.fc-face-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  z-index: 2;
+}
+
+.fc-face-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fc-face-kicker .fc-face-tag {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+  color: #a5b4fc;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semi);
+}
+
+.fc-card-face--back .fc-face-kicker .fc-face-tag {
+  background: var(--surface-2);
+  border-color: var(--border-1);
+  color: var(--text-soft);
+}
+
+.fc-difficulty-badge {
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.04em;
+}
+
+.fc-difficulty-badge--easy   { background: rgba(74,222,128,0.1);  color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+.fc-difficulty-badge--medium { background: rgba(245,158,11,0.1);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+.fc-difficulty-badge--hard   { background: rgba(239,68,68,0.1);   color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+/* Card body */
+.fc-face-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  overflow: auto;
+  min-height: 0;
+  padding-right: 0.125rem;
+}
+
+.fc-face-body p {
+  font-weight: var(--weight-bold);
+  font-size: var(--text-2xl);
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--ink-0);
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.fc-card-face--back .fc-face-body p {
+  font-weight: var(--weight-medium);
+  font-size: var(--text-xl);
+  color: var(--text-soft);
+}
+
+/* Card extras (example, memory tip) */
+.fc-face-extras {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+  flex-shrink: 0;
+}
+
+.fc-face-extra {
+  padding: 0.75rem 1rem;
+  background: var(--surface-0);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.fc-face-extra-label {
+  display: block;
+  font-size: 10px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+/* Card footer */
+.fc-face-footer {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+  flex-shrink: 0;
+}
+
+.fc-face-footer svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.5;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Category chip on card */
+.fc-card-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  font-size: 10px;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* ─── 25. NAV ARROWS ──────────────────────────────────────────────────────── */
+
+.fc-nav-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border-1);
+  background: var(--surface-1);
+  color: var(--ink-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-base) var(--ease),
+    opacity var(--dur-base) var(--ease),
+    background var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease);
+  flex-shrink: 0;
+}
+
+.fc-nav-arrow svg { width: 20px; height: 20px; stroke: currentColor; }
+
+.fc-nav-arrow:hover:not(:disabled) {
+  transform: scale(1.08);
+  background: var(--surface-2);
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-md);
+  color: var(--ink-0);
+}
+
+.fc-nav-arrow:active:not(:disabled) { transform: scale(0.96); }
+
+.fc-nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* ─── 26. KEYBOARD HINT & DOTS ────────────────────────────────────────────── */
+
+.fc-keyboard-hint {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.fc-keyboard-hint kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border-1);
+  border-radius: 4px;
+  background: var(--surface-1);
+  font-size: 10px;
+  font-family: var(--font);
+  color: var(--text-muted);
+}
+
+.fc-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.fc-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  transition: all 0.35s var(--ease-spring);
+}
+
+.fc-dot.is-active {
+  width: 18px;
+  background: var(--ink-0);
+  border-color: var(--ink-0);
+}
+
+/* ─── 27. CARD ENTRANCE ANIMATION ─────────────────────────────────────────── */
+
+@keyframes fc-card-intro {
+  from { opacity: 0; transform: translateY(24px) scale(0.93); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fc-card.intro {
+  animation: fc-card-intro 0.55s var(--ease-spring);
+}
+
+/* ─── 28. BOTTOM SUMMARY ──────────────────────────────────────────────────── */
+
+.fc-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.375rem;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%),
+    var(--bg-panel);
+  border: 1px solid var(--border-0);
+  border-radius: var(--radius-xl);
+}
+
+.fc-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.fc-summary-card {
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+}
+
+.fc-summary-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.fc-summary-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.fc-summary-icon--cards     { background: rgba(99,102,241,0.1);  color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); }
+.fc-summary-icon--time      { background: rgba(168,85,247,0.1);  color: #d8b4fe; border: 1px solid rgba(168,85,247,0.2); }
+.fc-summary-icon--categories{ background: rgba(74,222,128,0.1);  color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+.fc-summary-icon--keywords  { background: rgba(245,158,11,0.1);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+
+.fc-summary-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.03em;
+  color: var(--ink-0);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.fc-summary-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+}
+
+.fc-summary-keywords {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-0);
+}
+
+.fc-keyword-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.fc-keyword-chip {
+  padding: 0.2rem 0.625rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-soft);
+}
+
+/* ─── 29. ERROR PHASE ─────────────────────────────────────────────────────── */
+
+.fc-error-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  animation: fc-enter var(--dur-slow) var(--ease-spring) both;
+}
+
+.fc-error-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: var(--radius-lg);
+  color: #f87171;
+  flex-shrink: 0;
+}
+
+.fc-error-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.fc-error-title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--ink-0);
+  margin: 0;
+}
+
+.fc-error-message {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+  max-width: 38ch;
+  line-height: 1.6;
+}
+
+.fc-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* ─── 30. TOAST NOTIFICATIONS ─────────────────────────────────────────────── */
+
+.fc-toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.fc-toast {
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-1);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-sm);
+  color: var(--ink-1);
+  font-weight: var(--weight-medium);
+  opacity: 0;
+  transform: translateX(12px);
+  transition: opacity var(--dur-base) var(--ease), transform var(--dur-base) var(--ease-spring);
+  pointer-events: auto;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+.fc-toast--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.fc-toast--error  { border-color: rgba(239,68,68,0.3);   color: #f87171; }
+.fc-toast--success{ border-color: rgba(74,222,128,0.3);  color: #4ade80; }
+.fc-toast--info   { border-color: var(--border-1); }
+
+/* ─── 31. SCROLLBARS ──────────────────────────────────────────────────────── */
+
+.fc-root ::-webkit-scrollbar        { width: 4px; height: 4px; }
+.fc-root ::-webkit-scrollbar-track  { background: transparent; }
+.fc-root ::-webkit-scrollbar-thumb  { background: var(--border-1); border-radius: 10px; }
+
+/* ─── 32. RESPONSIVE — Tablet (≤ 1024px) ─────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .fc-root { max-width: 100%; }
+  .fc-summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .fc-type-grid { grid-template-columns: repeat(2, 1fr); }
+  .fc-deck {
+    width: min(680px, calc(100vw - 180px));
+    height: 420px;
+  }
+}
+
+/* ─── 33. RESPONSIVE — Mobile (≤ 768px) ──────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .fc-root {
+    padding: 1rem 0 3rem;
+  }
+
+  .fc-phase { gap: 0.875rem; }
+
+  .fc-hero { padding: 1.5rem 1.25rem 1.25rem; }
+
+  .fc-config-grid { grid-template-columns: 1fr; }
+
+  .fc-type-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .fc-deck {
+    width: min(520px, calc(100vw - 92px));
+    height: 390px;
+  }
+
+  .fc-card-face { padding: 1.75rem 1.5rem; }
+
+  .fc-face-body p { font-size: var(--text-xl); }
+
+  .fc-card-face--back .fc-face-body p { font-size: var(--text-lg); }
+
+  .fc-action-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fc-action-bar-right { flex-wrap: wrap; }
+
+  .fc-summary-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .fc-keyboard-hint { display: none; }
+
+  .fc-config-actions,
+  .fc-input-actions { flex-direction: column; }
+
+  .fc-continue-btn,
+  .fc-generate-btn { width: 100%; min-width: unset; justify-content: center; }
+}
+
+/* ─── 34. RESPONSIVE — Small (≤ 480px) ───────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .fc-hero-heading { font-size: var(--text-lg); }
+  .fc-stage { gap: 10px; }
+  .fc-deck {
+    width: min(360px, calc(100vw - 72px));
+    height: 360px;
+  }
+  .fc-card-face { padding: 1.375rem 1.125rem; }
+  .fc-face-body p { font-size: var(--text-lg); }
+  .fc-card-face--back .fc-face-body p { font-size: var(--text-base); }
+  .fc-nav-arrow { width: 40px; height: 40px; }
+  .fc-loading-box { min-width: unset; padding: 1.75rem 1.25rem; }
+  .fc-summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .fc-type-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── 35. FOCUS VISIBLE ───────────────────────────────────────────────────── */
+
+.fc-root :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── 36. REDUCED MOTION ──────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-phase,
+  .fc-card,
+  .fc-card.intro,
+  .fc-loading-box,
+  .fc-rotator-track,
+  .fc-dot {
+    animation: none !important;
+    transition: none !important;
+  }
+}

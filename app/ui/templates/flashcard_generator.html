@@ -1,0 +1,532 @@
+<section class="fc-root" id="flashcard-generator" aria-label="Flashcard Generator">
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 1 — INPUT
+  ═══════════════════════════════════════════════ -->
+  <div class="fc-phase" id="fc-phase-input" data-phase="input">
+
+    <!-- Hero -->
+    <header class="fc-hero">
+      <div class="fc-hero-badge" aria-hidden="true">
+        <span class="fc-hero-badge-dot"></span>
+        AI-Powered
+      </div>
+      <h1 class="fc-hero-heading">
+        Generate flashcards from any
+        <span class="fc-hero-rotator" aria-live="polite" aria-atomic="true">
+          <span class="fc-rotator-track" id="fc-rotator-track">
+            <span class="fc-rotator-word" data-word="Notes">Notes</span>
+            <span class="fc-rotator-word" data-word="PDF">PDF</span>
+            <span class="fc-rotator-word" data-word="Documents">Documents</span>
+            <span class="fc-rotator-word" data-word="Books">Books</span>
+            <span class="fc-rotator-word" data-word="Topics">Topics</span>
+            <span class="fc-rotator-word" data-word="Research">Research</span>
+            <span class="fc-rotator-word" data-word="Study Material">Study Material</span>
+          </span>
+        </span>
+      </h1>
+      <p class="fc-hero-desc">
+        Turn any source material into a polished, interactive flashcard deck in seconds.
+        Paste notes or upload a file — SandBox handles the rest.
+      </p>
+    </header>
+
+    <!-- Mode Selector -->
+    <div class="fc-mode-selector" role="tablist" aria-label="Input mode">
+      <div class="fc-mode-pill" aria-hidden="true" id="fc-mode-pill"></div>
+      <button
+        class="fc-mode-btn fc-mode-btn--active"
+        id="fc-mode-paste"
+        role="tab"
+        aria-selected="true"
+        aria-controls="fc-panel-paste"
+        data-mode="paste"
+        type="button"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12v10H2z"/><path d="M5 3V1h6v2"/><path d="M5 7h6M5 10h4"/></svg>
+        Paste Notes
+      </button>
+      <button
+        class="fc-mode-btn"
+        id="fc-mode-upload"
+        role="tab"
+        aria-selected="false"
+        aria-controls="fc-panel-upload"
+        data-mode="upload"
+        type="button"
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h7l3 3v9H3V2z"/><path d="M10 2v3h3"/></svg>
+        Upload File
+      </button>
+    </div>
+
+    <!-- Paste Panel -->
+    <div class="fc-panel" id="fc-panel-paste" role="tabpanel" aria-labelledby="fc-mode-paste">
+      <div class="fc-prompt-editor">
+        <label for="fc-content-input" class="visually-hidden">Paste your notes or content here</label>
+        <textarea
+          id="fc-content-input"
+          class="fc-prompt-textarea"
+          placeholder="Paste your notes, study material, or any text here…&#10;&#10;Example: The mitochondria is the powerhouse of the cell. It produces ATP through cellular respiration..."
+          maxlength="20000"
+          rows="8"
+          spellcheck="true"
+          aria-describedby="fc-char-count"
+        ></textarea>
+        <div class="fc-prompt-footer">
+          <span class="fc-word-count" id="fc-word-count" aria-live="polite">0 words</span>
+          <span class="fc-char-count" id="fc-char-count" aria-live="polite">0 / 20000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Panel -->
+    <div class="fc-panel fc-panel--hidden" id="fc-panel-upload" role="tabpanel" aria-labelledby="fc-mode-upload">
+      <div class="fc-upload-zone" id="fc-upload-zone" aria-label="Upload document">
+        <input
+          type="file"
+          id="fc-file-input"
+          class="visually-hidden"
+          accept=".txt,.md"
+          aria-label="Choose a file to upload"
+        />
+        <div class="fc-upload-idle" id="fc-upload-idle">
+          <div class="fc-upload-icon-wrap" aria-hidden="true">
+            <svg class="fc-upload-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <p class="fc-upload-headline">Drag &amp; drop your file here</p>
+          <p class="fc-upload-sub">or <label for="fc-file-input" class="fc-upload-browse">browse files</label></p>
+          <ul class="fc-upload-formats" aria-label="Supported formats">
+            <li>TXT</li><li>Markdown</li>
+          </ul>
+          <div class="fc-upload-notice" id="fc-upload-notice" hidden>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3v4m0 2v1"/></svg>
+            <span>PDF and DOCX parsing coming soon. Please use TXT or Markdown for now, or paste your content directly.</span>
+          </div>
+        </div>
+        <div class="fc-upload-file" id="fc-upload-file" hidden>
+          <div class="fc-file-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="fc-file-info">
+            <span class="fc-file-name" id="fc-file-name"></span>
+            <span class="fc-file-size" id="fc-file-size"></span>
+          </div>
+          <button type="button" class="fc-file-remove" id="fc-file-remove" aria-label="Remove file">
+            <svg viewBox="0 0 16 16"><path d="M12 4 4 12M4 4l8 8"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue CTA -->
+    <div class="fc-input-actions">
+      <button type="button" class="btn btn-primary fc-continue-btn" id="fc-continue-btn" disabled aria-disabled="true">
+        Continue
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 2 — CONFIGURATION
+  ═══════════════════════════════════════════════ -->
+  <div class="fc-phase fc-phase--hidden" id="fc-phase-config" data-phase="config" aria-label="Flashcard configuration">
+
+    <header class="fc-config-header">
+      <button type="button" class="fc-back-btn" id="fc-back-btn" aria-label="Go back to input">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+        Back
+      </button>
+      <div>
+        <h2 class="fc-config-title">Configure your flashcards</h2>
+        <p class="fc-config-desc">Adjust settings to match your learning goals.</p>
+      </div>
+    </header>
+
+    <div class="fc-config-grid">
+
+      <!-- Card Count -->
+      <div class="fc-config-card metric-card">
+        <label class="fc-config-label" for="fc-count-slider">Number of Cards</label>
+        <div class="fc-slider-row">
+          <input
+            type="range"
+            id="fc-count-slider"
+            class="fc-slider"
+            min="5"
+            max="50"
+            step="5"
+            value="10"
+            aria-valuemin="5"
+            aria-valuemax="50"
+            aria-valuenow="10"
+            aria-label="Number of flashcards"
+          />
+          <output class="fc-slider-value" id="fc-count-value" for="fc-count-slider">10</output>
+        </div>
+        <div class="fc-slider-marks" aria-hidden="true">
+          <span>5</span><span>15</span><span>25</span><span>35</span><span>50</span>
+        </div>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="fc-config-card metric-card">
+        <span class="fc-config-label" id="fc-diff-label">Difficulty</span>
+        <div class="fc-chip-group" role="group" aria-labelledby="fc-diff-label">
+          <button type="button" class="fc-chip" data-group="difficulty" data-value="easy">Easy</button>
+          <button type="button" class="fc-chip fc-chip--active" data-group="difficulty" data-value="medium">Medium</button>
+          <button type="button" class="fc-chip" data-group="difficulty" data-value="hard">Hard</button>
+          <button type="button" class="fc-chip" data-group="difficulty" data-value="mixed">Mixed</button>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="fc-config-card metric-card">
+        <label class="fc-config-label" for="fc-language-select">Language</label>
+        <div class="select-wrap">
+          <select id="fc-language-select" class="form-select fc-language-select" aria-label="Flashcard language">
+            <option value="english">English</option>
+            <option value="spanish">Spanish</option>
+            <option value="french">French</option>
+            <option value="german">German</option>
+            <option value="portuguese">Portuguese</option>
+            <option value="italian">Italian</option>
+            <option value="japanese">Japanese</option>
+            <option value="chinese">Chinese</option>
+            <option value="arabic">Arabic</option>
+            <option value="hindi">Hindi</option>
+          </select>
+          <svg class="select-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+        </div>
+      </div>
+
+      <!-- Card Type -->
+      <div class="fc-config-card fc-config-card--full metric-card">
+        <span class="fc-config-label" id="fc-type-label">Card Type</span>
+        <div class="fc-type-grid" role="group" aria-labelledby="fc-type-label">
+          <button type="button" class="fc-type-card fc-type-card--active" data-group="card_type" data-value="mixed" aria-pressed="true">
+            <span class="fc-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M3 10h14M10 3v14"/><circle cx="10" cy="10" r="8"/></svg>
+            </span>
+            <span class="fc-type-name">Mixed</span>
+            <span class="fc-type-desc">All types varied per card</span>
+          </button>
+          <button type="button" class="fc-type-card" data-group="card_type" data-value="basic" aria-pressed="false">
+            <span class="fc-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><rect x="3" y="5" width="14" height="10" rx="2"/><path d="M7 10h6"/></svg>
+            </span>
+            <span class="fc-type-name">Basic</span>
+            <span class="fc-type-desc">Simple front &amp; back</span>
+          </button>
+          <button type="button" class="fc-type-card" data-group="card_type" data-value="cloze" aria-pressed="false">
+            <span class="fc-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M4 10h3m6 0h3"/><rect x="7" y="7" width="6" height="6" rx="1"/></svg>
+            </span>
+            <span class="fc-type-name">Cloze</span>
+            <span class="fc-type-desc">Fill in the blank</span>
+          </button>
+          <button type="button" class="fc-type-card" data-group="card_type" data-value="definition" aria-pressed="false">
+            <span class="fc-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M4 6h12M4 10h8M4 14h10"/></svg>
+            </span>
+            <span class="fc-type-name">Definition</span>
+            <span class="fc-type-desc">Term → meaning</span>
+          </button>
+          <button type="button" class="fc-type-card" data-group="card_type" data-value="concept" aria-pressed="false">
+            <span class="fc-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/><path d="M10 4v2m0 8v2M4 10h2m8 0h2"/></svg>
+            </span>
+            <span class="fc-type-name">Concept</span>
+            <span class="fc-type-desc">Deep understanding</span>
+          </button>
+          <button type="button" class="fc-type-card" data-group="card_type" data-value="interview" aria-pressed="false">
+            <span class="fc-type-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20"><path d="M6 4h8a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3V6a2 2 0 0 1 1-2z"/></svg>
+            </span>
+            <span class="fc-type-name">Interview</span>
+            <span class="fc-type-desc">Q&amp;A style</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="fc-config-card fc-config-card--full metric-card">
+        <span class="fc-config-label">Options</span>
+        <div class="fc-toggles-grid">
+
+          <label class="fc-toggle-row" for="fc-toggle-examples">
+            <div class="fc-toggle-info">
+              <span class="fc-toggle-name">Examples</span>
+              <span class="fc-toggle-desc">Include a real-world example on each card</span>
+            </div>
+            <div class="fc-toggle-switch">
+              <input type="checkbox" id="fc-toggle-examples" class="fc-toggle-input" data-toggle="include_examples" checked aria-label="Include examples" />
+              <span class="fc-toggle-track" aria-hidden="true"></span>
+            </div>
+          </label>
+
+          <label class="fc-toggle-row" for="fc-toggle-memory">
+            <div class="fc-toggle-info">
+              <span class="fc-toggle-name">Memory Tips</span>
+              <span class="fc-toggle-desc">Add mnemonic hints to aid recall</span>
+            </div>
+            <div class="fc-toggle-switch">
+              <input type="checkbox" id="fc-toggle-memory" class="fc-toggle-input" data-toggle="include_memory_tips" checked aria-label="Include memory tips" />
+              <span class="fc-toggle-track" aria-hidden="true"></span>
+            </div>
+          </label>
+
+          <label class="fc-toggle-row" for="fc-toggle-keywords">
+            <div class="fc-toggle-info">
+              <span class="fc-toggle-name">Keywords</span>
+              <span class="fc-toggle-desc">Tag each card with key terms</span>
+            </div>
+            <div class="fc-toggle-switch">
+              <input type="checkbox" id="fc-toggle-keywords" class="fc-toggle-input" data-toggle="include_keywords" checked aria-label="Include keywords" />
+              <span class="fc-toggle-track" aria-hidden="true"></span>
+            </div>
+          </label>
+
+          <label class="fc-toggle-row" for="fc-toggle-tags">
+            <div class="fc-toggle-info">
+              <span class="fc-toggle-name">Tags</span>
+              <span class="fc-toggle-desc">Categorize cards with topic tags</span>
+            </div>
+            <div class="fc-toggle-switch">
+              <input type="checkbox" id="fc-toggle-tags" class="fc-toggle-input" data-toggle="include_tags" checked aria-label="Include tags" />
+              <span class="fc-toggle-track" aria-hidden="true"></span>
+            </div>
+          </label>
+
+          <label class="fc-toggle-row" for="fc-toggle-shuffle">
+            <div class="fc-toggle-info">
+              <span class="fc-toggle-name">Shuffle Cards</span>
+              <span class="fc-toggle-desc">Randomize card order on display</span>
+            </div>
+            <div class="fc-toggle-switch">
+              <input type="checkbox" id="fc-toggle-shuffle" class="fc-toggle-input" data-toggle="shuffle_cards" aria-label="Shuffle cards" />
+              <span class="fc-toggle-track" aria-hidden="true"></span>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Generate CTA -->
+    <div class="fc-config-actions">
+      <button type="button" class="btn btn-primary fc-generate-btn" id="fc-generate-btn">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v6H2"/><path d="M14 8A6 6 0 1 1 2 8"/></svg>
+        Generate Flashcards
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LOADING OVERLAY
+  ═══════════════════════════════════════════════ -->
+  <div class="fc-loading-overlay" id="fc-loading-overlay" hidden aria-live="polite" aria-label="Generating flashcards">
+    <div class="fc-loading-box">
+      <div class="fc-loader-wrapper" aria-hidden="true">
+        <div class="fc-loader-word">
+          <span class="fc-loader-letter">G</span>
+          <span class="fc-loader-letter">e</span>
+          <span class="fc-loader-letter">n</span>
+          <span class="fc-loader-letter">e</span>
+          <span class="fc-loader-letter">r</span>
+          <span class="fc-loader-letter">a</span>
+          <span class="fc-loader-letter">t</span>
+          <span class="fc-loader-letter">i</span>
+          <span class="fc-loader-letter">n</span>
+          <span class="fc-loader-letter">g</span>
+        </div>
+        <div class="fc-loader"></div>
+      </div>
+      <h2 class="fc-loading-title">Generating your flashcards</h2>
+      <p class="fc-loading-subtitle">This usually takes 5–15 seconds</p>
+      <ul class="fc-loading-steps" id="fc-loading-steps" aria-label="Progress steps">
+        <li class="fc-step" data-step="0">
+          <span class="fc-step-icon" aria-hidden="true"></span>
+          Reading your notes
+        </li>
+        <li class="fc-step" data-step="1">
+          <span class="fc-step-icon" aria-hidden="true"></span>
+          Finding key concepts
+        </li>
+        <li class="fc-step" data-step="2">
+          <span class="fc-step-icon" aria-hidden="true"></span>
+          Building flashcards
+        </li>
+        <li class="fc-step" data-step="3">
+          <span class="fc-step-icon" aria-hidden="true"></span>
+          Generating examples
+        </li>
+        <li class="fc-step" data-step="4">
+          <span class="fc-step-icon" aria-hidden="true"></span>
+          Creating memory tips
+        </li>
+        <li class="fc-step" data-step="5">
+          <span class="fc-step-icon" aria-hidden="true"></span>
+          Finalizing deck
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 3 — VIEWER
+  ═══════════════════════════════════════════════ -->
+  <div class="fc-phase fc-phase--hidden" id="fc-phase-viewer" data-phase="viewer" aria-label="Flashcard viewer">
+
+    <!-- Action Bar -->
+    <div class="fc-action-bar">
+      <div class="fc-action-bar-left">
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-quit-btn">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+          New Deck
+        </button>
+        <span class="fc-deck-title" id="fc-deck-title"></span>
+      </div>
+      <div class="fc-action-bar-right">
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-copy-card-btn" aria-label="Copy current card">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8" height="9" rx="1"/><path d="M3 11V3h8"/></svg>
+          Copy Card
+        </button>
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-copy-all-btn" aria-label="Copy all cards">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 5h9v9H2z"/><path d="M5 5V3h9v9h-2"/></svg>
+          Copy All
+        </button>
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-shuffle-btn" aria-label="Shuffle cards">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 5h2l8 6h2m0-6h-2l-2 1.5M2 11h2l2-1.5"/></svg>
+          Shuffle
+        </button>
+        <div class="fc-action-divider" aria-hidden="true"></div>
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-download-json-btn" aria-label="Download JSON">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m-3-3 3 3 3-3M3 13h10"/></svg>
+          JSON
+        </button>
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-download-md-btn" aria-label="Download Markdown">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8m-3-3 3 3 3-3M3 13h10"/></svg>
+          Markdown
+        </button>
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-print-btn" aria-label="Print cards">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 5V2h8v3M4 11H2V6h12v5h-2"/><path d="M4 9h8v5H4z"/></svg>
+          Print
+        </button>
+        <button type="button" class="btn btn-primary fc-btn-sm" id="fc-regenerate-btn" aria-label="Regenerate flashcards">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8A6 6 0 0 1 8 2l2 2m4 4A6 6 0 0 1 8 14l-2-2"/></svg>
+          Regenerate
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="fc-viewer-meta">
+      <span class="fc-card-counter" id="fc-card-counter" aria-live="polite">Card 1 of 10</span>
+      <div class="fc-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Deck progress" id="fc-progress-bar">
+        <div class="fc-progress-fill" id="fc-progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="fc-empty-state" id="fc-empty-state" hidden>
+      <div class="fc-empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><rect x="8" y="14" width="36" height="26" rx="4" stroke="currentColor" stroke-width="2" fill="none"/><rect x="20" y="24" width="36" height="26" rx="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M28 27h12M28 33h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <p class="fc-empty-title">No flashcards generated yet</p>
+      <p class="fc-empty-desc">Configure your settings and generate a deck to get started.</p>
+    </div>
+
+    <!-- Card Stage -->
+    <div class="fc-stage" id="fc-stage">
+
+      <button class="fc-nav-arrow fc-nav-arrow--left" id="fc-prev-btn" aria-label="Previous card" disabled>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="fc-deck" id="fc-deck" aria-live="polite">
+        <!-- Cards injected by JS -->
+      </div>
+
+      <button class="fc-nav-arrow fc-nav-arrow--right" id="fc-next-btn" aria-label="Next card">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+    </div>
+
+    <!-- Keyboard hint -->
+    <p class="fc-keyboard-hint" aria-label="Keyboard shortcuts">
+      <kbd>Space</kbd> or <kbd>Enter</kbd> flip · <kbd>←</kbd> <kbd>→</kbd> navigate
+    </p>
+
+    <!-- Dots -->
+    <div class="fc-dots" id="fc-dots" aria-hidden="true"></div>
+
+    <!-- Summary -->
+    <div class="fc-summary" id="fc-summary">
+      <div class="fc-summary-grid">
+        <div class="fc-summary-card metric-card">
+          <span class="fc-summary-icon fc-summary-icon--cards" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><rect x="2" y="5" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="5" y="3" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          </span>
+          <span class="fc-summary-value" id="fc-stat-total">—</span>
+          <span class="fc-summary-label">Total Cards</span>
+        </div>
+        <div class="fc-summary-card metric-card">
+          <span class="fc-summary-icon fc-summary-icon--time" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 6v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+          <span class="fc-summary-value" id="fc-stat-time">—</span>
+          <span class="fc-summary-label">Study Time</span>
+        </div>
+        <div class="fc-summary-card metric-card">
+          <span class="fc-summary-icon fc-summary-icon--categories" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M3 5h5l2 2h7v9H3V5z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          </span>
+          <span class="fc-summary-value" id="fc-stat-categories">—</span>
+          <span class="fc-summary-label">Categories</span>
+        </div>
+        <div class="fc-summary-card metric-card">
+          <span class="fc-summary-icon fc-summary-icon--keywords" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M4 4l2 12 4-8 4 8 2-12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </span>
+          <span class="fc-summary-value" id="fc-stat-keywords">—</span>
+          <span class="fc-summary-label">Keywords</span>
+        </div>
+      </div>
+      <div class="fc-summary-keywords" id="fc-summary-keywords" hidden>
+        <span class="fc-config-label">Top Keywords</span>
+        <div class="fc-keyword-chips" id="fc-keyword-chips"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PHASE 4 — ERROR
+  ═══════════════════════════════════════════════ -->
+  <div class="fc-phase fc-phase--hidden" id="fc-phase-error" data-phase="error" aria-label="Error">
+    <div class="fc-error-card metric-card">
+      <div class="fc-error-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 6v5m0 2v1" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <h2 class="fc-error-title">Generation Failed</h2>
+      <p class="fc-error-message" id="fc-error-message">Something went wrong. Please try again.</p>
+      <div class="fc-error-actions">
+        <button type="button" class="btn btn-ghost fc-btn-sm" id="fc-error-back-btn">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+          Back to Input
+        </button>
+        <button type="button" class="btn btn-primary" id="fc-error-retry-btn">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8A6 6 0 1 1 8 14"/><path d="M2 4v4h4"/></svg>
+          Retry
+        </button>
+      </div>
+    </div>
+  </div>
+
+</section>

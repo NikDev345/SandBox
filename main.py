@@ -30,7 +30,7 @@ import app.main
 from nicegui import ui
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
-
+from app.api.flashcard_generator.flashcard_generator import router as flashcard_generator_router
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
@@ -67,6 +67,7 @@ app.include_router(exe_router)
 app.include_router(analytic_router)
 app.include_router(google_router)
 app.include_router(user_router)
+
 app.include_router(summarizer_router)
 app.include_router(json_fixer_router)
 app.include_router(code_reviewer_router)
@@ -75,7 +76,7 @@ app.include_router(eli5_router)
 app.include_router(sql_router)
 app.include_router(ss_router)
 app.include_router(notes_cleaner_router)
-
+app.include_router(flashcard_generator_router)
 app.include_router(pro_cons_router)
 app.include_router(email_rewriter_router)
 app.include_router(quiz_router)

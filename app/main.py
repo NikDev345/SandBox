@@ -41,6 +41,7 @@ import app.ui.pages.email_rewriter
 
 import app.ui.pages.pro_cons
 import app.ui.pages.quiz_generator
+import app.ui.pages.flashcard_generator
 import app.ui.pages.youtube_summarizer
 
 # ui.run(
