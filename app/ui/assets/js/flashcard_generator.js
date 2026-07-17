@@ -15,8 +15,7 @@
 
   const API_ENDPOINT = '/flashcard-generator/generate';
   const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
-  const ACCEPTED_TEXT_EXTS = ['.txt', '.md'];
-  const BLOCKED_EXTS = ['.pdf', '.docx'];
+  const ACCEPTED_UPLOAD_EXTS = ['.txt', '.md', '.pdf', '.docx', '.pptx'];
   const LOADING_STEP_INTERVAL_MS = 1800;
 
   const CARD_TYPE_LABELS = {
@@ -44,8 +43,7 @@
 
   const state = {
     mode: 'paste',             // 'paste' | 'upload'
-    file: null,                // File object (txt/md only)
-    extractedText: '',         // text extracted from file client-side
+    file: null,                // File object (txt/md/pdf/docx/pptx) — parsed server-side
     config: {
       number_of_cards:    10,
       difficulty:         'medium',
@@ -238,15 +236,8 @@
 
     const ext = '.' + file.name.split('.').pop().toLowerCase();
 
-    // Blocked types — show inline notice, don't accept
-    if (BLOCKED_EXTS.includes(ext)) {
-      dom.uploadNotice.hidden = false;
-      toast('PDF and DOCX parsing is coming soon. Please use TXT or Markdown, or paste your content.', 'info');
-      return;
-    }
-
-    if (!ACCEPTED_TEXT_EXTS.includes(ext)) {
-      toast(`Unsupported file type. Please upload: ${ACCEPTED_TEXT_EXTS.join(', ')}`, 'error');
+    if (!ACCEPTED_UPLOAD_EXTS.includes(ext)) {
+      toast(`Unsupported file type. Please upload: ${ACCEPTED_UPLOAD_EXTS.join(', ')}`, 'error');
       return;
     }
 
@@ -255,33 +246,24 @@
       return;
     }
 
-    // Read text client-side
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      state.extractedText = e.target.result;
-      state.file = file;
+    // File is sent as-is to the backend; parsing happens server-side.
+    state.file = file;
 
-      dom.fileName.textContent = file.name;
-      dom.fileSize.textContent = formatBytes(file.size);
-      dom.uploadIdle.hidden = true;
-      dom.uploadFile.hidden = false;
-      dom.uploadNotice.hidden = true;
-      dom.uploadZone.classList.add('fc-upload-zone--has-file');
-      updateContinueBtn();
-    };
-    reader.onerror = () => {
-      toast('Failed to read file. Please try again.', 'error');
-    };
-    reader.readAsText(file);
+    dom.fileName.textContent = file.name;
+    dom.fileSize.textContent = formatBytes(file.size);
+    dom.uploadIdle.hidden = true;
+    dom.uploadFile.hidden = false;
+    if (dom.uploadNotice) dom.uploadNotice.hidden = true;
+    dom.uploadZone.classList.add('fc-upload-zone--has-file');
+    updateContinueBtn();
   };
 
   const clearUpload = () => {
     state.file = null;
-    state.extractedText = '';
     dom.fileInput.value = '';
     dom.uploadIdle.hidden = false;
     dom.uploadFile.hidden = true;
-    dom.uploadNotice.hidden = true;
+    if (dom.uploadNotice) dom.uploadNotice.hidden = true;
     dom.uploadZone.classList.remove('fc-upload-zone--has-file');
     updateContinueBtn();
   };
@@ -360,10 +342,9 @@
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify(payload),
+        body: payload,
       });
 
       const data = await response.json();
@@ -400,36 +381,34 @@
 
   const buildPayload = () => {
     const cfg = state.config;
-    let content = '';
+    const fd = new FormData();
 
     if (state.mode === 'paste') {
-      content = dom.contentInput.value.trim();
+      const content = dom.contentInput.value.trim();
       if (!content) {
         toast('Please paste some content first.', 'error');
         return null;
       }
+      fd.append('content', content);
     } else {
-      content = state.extractedText.trim();
-      if (!content) {
+      if (!state.file) {
         toast('Please upload a file first.', 'error');
         return null;
       }
+      fd.append('file', state.file);
     }
 
-    return {
-      content,
-      settings: {
-        number_of_cards:     cfg.number_of_cards,
-        difficulty:          cfg.difficulty,
-        card_type:           cfg.card_type,
-        language:            cfg.language,
-        include_examples:    cfg.include_examples,
-        include_memory_tips: cfg.include_memory_tips,
-        include_keywords:    cfg.include_keywords,
-        include_tags:        cfg.include_tags,
-        // shuffle_cards is NOT sent to backend — applied client-side after generation
-      },
-    };
+    fd.append('number_of_cards',     String(cfg.number_of_cards));
+    fd.append('difficulty',          cfg.difficulty);
+    fd.append('card_type',           cfg.card_type);
+    fd.append('language',            cfg.language);
+    fd.append('include_examples',    String(cfg.include_examples));
+    fd.append('include_memory_tips', String(cfg.include_memory_tips));
+    fd.append('include_keywords',    String(cfg.include_keywords));
+    fd.append('include_tags',        String(cfg.include_tags));
+    // shuffle_cards is NOT sent to backend — applied client-side after generation
+
+    return fd;
   };
 
   // ─────────────────────────────────────────────────────────────

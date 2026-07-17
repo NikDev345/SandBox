@@ -87,7 +87,7 @@
           type="file"
           id="fc-file-input"
           class="visually-hidden"
-          accept=".txt,.md"
+          accept=".txt,.md,.pdf,.docx,.pptx"
           aria-label="Choose a file to upload"
         />
         <div class="fc-upload-idle" id="fc-upload-idle">
@@ -97,11 +97,11 @@
           <p class="fc-upload-headline">Drag &amp; drop your file here</p>
           <p class="fc-upload-sub">or <label for="fc-file-input" class="fc-upload-browse">browse files</label></p>
           <ul class="fc-upload-formats" aria-label="Supported formats">
-            <li>TXT</li><li>Markdown</li>
+            <li>TXT</li><li>Markdown</li><li>PDF</li><li>DOCX</li><li>PPTX</li>
           </ul>
           <div class="fc-upload-notice" id="fc-upload-notice" hidden>
             <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3v4m0 2v1"/></svg>
-            <span>PDF and DOCX parsing coming soon. Please use TXT or Markdown for now, or paste your content directly.</span>
+            <span>We couldn't read that file. Please try a different file, or paste your content directly.</span>
           </div>
         </div>
         <div class="fc-upload-file" id="fc-upload-file" hidden>
