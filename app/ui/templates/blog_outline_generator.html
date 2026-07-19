@@ -1,0 +1,159 @@
+<!-- ============================================================
+     SANDBOX — Blog Outline Generator
+     Tool page: prompt in, AI-generated blog outline out (rendered).
+     ============================================================ -->
+<section class="bog-page" id="bog-page">
+
+  <!-- ──────────────────────────────────────────────
+       HERO
+       ────────────────────────────────────────────── -->
+  <header class="bog-hero">
+    <span class="bog-hero-eyebrow">AI Content Studio</span>
+
+    <h1 class="bog-hero-title">Blog Outline Generator</h1>
+
+    <div class="bog-rotator" aria-hidden="true">
+      <span class="bog-rotator-prefix">Built for</span>
+      <span class="bog-rotator-track" id="bog-rotator-track">
+        <span class="bog-rotator-word bog-rotator-word--active">SEO Blogs</span>
+        <span class="bog-rotator-word">Tutorials</span>
+        <span class="bog-rotator-word">Guides</span>
+        <span class="bog-rotator-word">Reviews</span>
+        <span class="bog-rotator-word">Case Studies</span>
+        <span class="bog-rotator-word">Listicles</span>
+        <span class="bog-rotator-word">Marketing</span>
+        <span class="bog-rotator-word">Content Strategy</span>
+      </span>
+    </div>
+
+    <p class="bog-hero-desc">
+      Generate professional SEO-ready blog outlines in seconds using AI.
+    </p>
+  </header>
+
+  <!-- ──────────────────────────────────────────────
+       INPUT CARD
+       ────────────────────────────────────────────── -->
+  <div class="bog-card bog-input-card" id="bog-input-card">
+    <div class="bog-input-head">
+      <span class="bog-input-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+        </svg>
+      </span>
+      <label class="bog-label" for="bog-topic-input">What's your blog topic?</label>
+    </div>
+
+    <textarea
+      id="bog-topic-input"
+      class="bog-textarea"
+      rows="5"
+      maxlength="300"
+      placeholder="How Artificial Intelligence is transforming Healthcare in 2026..."
+      aria-describedby="bog-char-count bog-error-msg"
+      aria-label="Blog topic"
+    ></textarea>
+
+    <div class="bog-input-footer">
+      <span class="bog-hint">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate</span>
+      <span class="bog-char-count" id="bog-char-count">0 / 300</span>
+    </div>
+
+    <p class="bog-error-msg" id="bog-error-msg" role="alert" hidden></p>
+
+    <div class="bog-actions">
+      <button type="button" class="bog-btn bog-btn--primary" id="bog-generate-btn">
+        <svg class="bog-btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"></path>
+        </svg>
+        <span class="bog-btn-label">Generate Outline</span>
+        <span class="bog-btn-spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────
+       EXAMPLE TOPICS — sits outside/below the card,
+       directly in the page layout.
+       ────────────────────────────────────────────── -->
+  <div class="bog-examples" id="bog-examples">
+    <div class="bog-examples-head">
+      <span class="bog-examples-label">Need inspiration?</span>
+      <span class="bog-examples-sub">Try one of these topics</span>
+    </div>
+
+    <div class="bog-examples-grid" id="bog-examples-grid">
+      <button type="button" class="bog-example" data-topic="How Artificial Intelligence is Transforming Healthcare in 2026">
+        <span class="bog-example-tag">Tech</span>
+        <span class="bog-example-text">How AI is Transforming Healthcare in 2026</span>
+      </button>
+
+      <button type="button" class="bog-example" data-topic="The Ultimate Guide to Remote Team Productivity">
+        <span class="bog-example-tag">Guide</span>
+        <span class="bog-example-text">The Ultimate Guide to Remote Team Productivity</span>
+      </button>
+
+      <button type="button" class="bog-example" data-topic="10 SEO Strategies Every Startup Should Know in 2026">
+        <span class="bog-example-tag">Listicle</span>
+        <span class="bog-example-text">10 SEO Strategies Every Startup Should Know</span>
+      </button>
+
+      <button type="button" class="bog-example" data-topic="Why Electric Vehicles Are the Future of Transportation">
+        <span class="bog-example-tag">Opinion</span>
+        <span class="bog-example-text">Why Electric Vehicles Are the Future of Transportation</span>
+      </button>
+
+      <button type="button" class="bog-example" data-topic="A Beginner's Guide to Personal Finance and Investing">
+        <span class="bog-example-tag">Beginner</span>
+        <span class="bog-example-text">A Beginner's Guide to Personal Finance and Investing</span>
+      </button>
+
+      <button type="button" class="bog-example" data-topic="The Rise of No-Code Tools in Modern Software Development">
+        <span class="bog-example-tag">Trend</span>
+        <span class="bog-example-text">The Rise of No-Code Tools in Software Development</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────
+       LOADING OVERLAY
+       ────────────────────────────────────────────── -->
+  <div class="bog-loading" id="bog-loading" hidden aria-live="polite">
+    <div class="bog-loading-ring"></div>
+    <p class="bog-loading-text" id="bog-loading-text">Analyzing topic...</p>
+    <div class="bog-loading-bar"><span></span></div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────
+       OUTPUT CARD
+       ────────────────────────────────────────────── -->
+  <div class="bog-card bog-output-card" id="bog-output-card" hidden>
+    <div class="bog-output-header">
+      <div class="bog-output-heading">
+        <span class="bog-output-badge">Generated</span>
+        <h2 class="bog-output-title">Your Blog Outline</h2>
+      </div>
+      <div class="bog-output-actions">
+        <button type="button" class="bog-icon-btn" id="bog-copy-btn" aria-label="Copy outline">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy</span>
+        </button>
+        <button type="button" class="bog-icon-btn" id="bog-clear-btn" aria-label="Clear outline">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+          </svg>
+          <span>Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <article class="bog-output-body" id="bog-output-body" tabindex="0"></article>
+  </div>
+
+</section>

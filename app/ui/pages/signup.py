@@ -5,8 +5,9 @@ from nicegui import ui
 def signup_page():
 
     ui.add_head_html("""
-    <link rel="stylesheet"
-    href="/assets/css/auth.css">
+    <link rel="stylesheet" href="/assets/css/tokens.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    <link rel="stylesheet" href="/assets/css/auth.css">
     """)
 
     ui.add_body_html("""

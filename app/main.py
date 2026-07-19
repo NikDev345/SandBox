@@ -38,7 +38,7 @@ import app.ui.pages.sql_generator
 import app.ui.pages.notes_cleaner
 
 import app.ui.pages.email_rewriter
-
+import app.ui.pages.blog_outline_generator
 import app.ui.pages.pro_cons
 import app.ui.pages.quiz_generator
 import app.ui.pages.flashcard_generator
