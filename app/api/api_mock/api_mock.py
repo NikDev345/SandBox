@@ -26,7 +26,7 @@ async def create_mock_api(
     return MockAPIService.create_mock_api(
         db=db,
         request=request,
-        user_id=current_user['id'],
+        user_id=current_user['sub'],
         user=current_user
     )
     
@@ -41,7 +41,7 @@ async def list_mock_apis(
 ):
     return MockAPIService.list_mock_apis(
         db=db,
-        user_id=current_user['id'],
+        user_id=current_user['sub'],
     )
     
 @router.get(
@@ -57,7 +57,7 @@ async def get_mock_api(
     return MockAPIService.get_mock_api(
         db=db,
         mock_id=id,
-        user_id=current_user['id'],
+        user_id=current_user['sub'],
     )
     
 @router.put(
@@ -75,7 +75,7 @@ async def update_mock_api(
         db=db,
         mock_id=id,
         request=request,
-        user_id=current_user['id'],
+        user_id=current_user['sub'],
     )
     
 @router.delete(
@@ -91,5 +91,5 @@ async def delete_mock_api(
     return MockAPIService.delete_mock_api(
         db=db,
         mock_id=id,
-        user_id=current_user['id']
+        user_id=current_user['sub']
     )
