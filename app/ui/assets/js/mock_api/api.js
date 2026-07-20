@@ -9,31 +9,34 @@
  *   PUT    /api_mock/{id}     -> update a mock API
  *   DELETE /api_mock/{id}     -> delete a mock API
  *
- * All routes require an authenticated user (get_current_user),
- * so every request is sent with an "Authorization: Bearer <token>"
- * header. The token is configured from the Settings view.
+ * Authentication is handled via HttpOnly session cookies sent
+ * automatically with credentials: 'include'. No token or base
+ * URL is stored on the client.
  * ============================================================
  */
 
 const API = (() => {
   const DEFAULT_BASE_URL = "http://127.0.0.1:8000";
-  const STORAGE_BASE_URL = "mockgen:baseUrl";
-  const STORAGE_TOKEN = "mockgen:authToken";
+
+  // Base URL is runtime config only — never persisted to localStorage.
+  let _baseUrl = DEFAULT_BASE_URL;
 
   function getBaseUrl() {
-    return localStorage.getItem(STORAGE_BASE_URL) || DEFAULT_BASE_URL;
+    return _baseUrl;
   }
 
   function setBaseUrl(url) {
-    localStorage.setItem(STORAGE_BASE_URL, url.replace(/\/+$/, ""));
+    _baseUrl = url.replace(/\/+$/, "");
   }
 
+  // Token is no longer stored or sent manually.
+  // Kept as no-ops so app.js / Settings wiring doesn't break.
   function getToken() {
-    return localStorage.getItem(STORAGE_TOKEN) || "";
+    return "";
   }
 
-  function setToken(token) {
-    localStorage.setItem(STORAGE_TOKEN, token || "");
+  function setToken(_token) {
+    // no-op: auth is cookie-based
   }
 
   /**
@@ -51,8 +54,8 @@ const API = (() => {
   async function request(method, path, body) {
     const url = `${getBaseUrl()}${path}`;
     const headers = { "Content-Type": "application/json" };
-    const token = getToken();
-    if (token) headers["Authorization"] = `Bearer ${token}`;
+    // No Authorization header — the browser sends the session
+    // cookie automatically because of credentials: "include".
 
     let res;
     try {
@@ -60,6 +63,7 @@ const API = (() => {
         method,
         headers,
         body: body !== undefined ? JSON.stringify(body) : undefined,
+        credentials: "include",
       });
     } catch (networkErr) {
       throw new ApiError(
@@ -91,8 +95,7 @@ const API = (() => {
   }
 
   /* ---------------------------------------------------------
-     CRUD operations — payload shape matches MockAPIRequest
-     exactly:
+     CRUD operations — payload shape matches MockAPIRequest:
      {
        name, method, status_code,
        response_body, response_headers, response_delay_ms,
@@ -125,8 +128,8 @@ const API = (() => {
     DEFAULT_BASE_URL,
     getBaseUrl,
     setBaseUrl,
-    getToken,
-    setToken,
+    getToken,   // no-op stub — kept for Settings UI compatibility
+    setToken,   // no-op stub — kept for Settings UI compatibility
     ApiError,
     createMock,
     listMocks,
