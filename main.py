@@ -24,7 +24,6 @@ from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 from app.api.notes_cleaner.notes_cleaner import router as notes_cleaner_router
 from app.api.quiz.quiz_generator import router as quiz_router
 from app.api.blog_generator.blog_outline_generator import (router as blog_outline_router,)
-from app.api.api_mock.api_mock import router as mock_api_router
 from app.api.email_rewriter.email_rewriter import router as email_rewriter_router
 from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 import app.main 
@@ -68,7 +67,6 @@ app.include_router(exe_router)
 app.include_router(analytic_router)
 app.include_router(google_router)
 app.include_router(user_router)
-app.include_router(mock_api_router)
 
 app.include_router(summarizer_router)
 app.include_router(json_fixer_router)
