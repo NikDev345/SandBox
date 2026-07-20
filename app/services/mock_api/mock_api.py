@@ -4,6 +4,7 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
+from app.models.user import Users
 
 class MockAPIService:
     BASE_URL='http://127.0.0.1:8000'
@@ -112,7 +113,7 @@ class MockAPIService:
         )
 # ----------------------------------------------------------------------------------------------------------------------------------- 
     @staticmethod
-    def create_mock_api(db: Session, request: MockAPIRequest, user_id: str, user=None) -> MockAPIResponse:
+    def create_mock_api(db: Session, request: MockAPIRequest, user_id: str, user:Users=None) -> MockAPIResponse:
         MockAPIService._validate_request(request)
 
         endpoint_token = MockAPIService._generate_endpoint_token()
@@ -250,7 +251,7 @@ class MockAPIService:
         ) 
         
     @staticmethod
-    async def execute_mock(db: Session, token: str, request: Request, user=None):
+    async def execute_mock(db: Session, token: str, request: Request, user:Users=None):
         mock = MockAPIService._find_mock_by_token(db, token)
         MockAPIService._validate_method(mock, request_method=request.method)
         MockAPIService._authenticate_request(mock, request)
@@ -404,7 +405,7 @@ class MockAPIService:
     def delete_mock_api(
         db: Session,
         mock_id: str,
-        user_id: str,
+        user_id: Users=str,
     )->DeleteResponse:
         """
         Delete a mock API owned by the given user.
