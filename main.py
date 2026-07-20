@@ -24,7 +24,7 @@ from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 from app.api.notes_cleaner.notes_cleaner import router as notes_cleaner_router
 from app.api.quiz.quiz_generator import router as quiz_router
 from app.api.blog_generator.blog_outline_generator import (router as blog_outline_router,)
-
+from app.api.chart_explainer.chart_explainer import router as chart_explainer_router
 from app.api.email_rewriter.email_rewriter import router as email_rewriter_router
 from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 import app.main 
@@ -83,6 +83,7 @@ app.include_router(email_rewriter_router)
 app.include_router(quiz_router)
 app.include_router(youtube_summarizer_router)
 app.include_router(blog_outline_router)
+app.include_router(chart_explainer_router)
 ui.run_with(
     
     app,
