@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-@ui.page("/table-extractor")
+@ui.page("/table_extractor")
 def table_extractor_page():
 
     ui.add_head_html("""
