@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 
 from app.database.engine import get_db
@@ -11,7 +11,26 @@ router = APIRouter(
     prefix="/api_mock",
     tags=["API Mock Generator"],
 )
-
+# for mock api's to actually open in the browser -----------------------------------------------
+public_router = APIRouter(
+    tags=["Mock Execution"],
+)
+@public_router.api_route(
+    "/mock/{token}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+    summary="Execute Mock API",
+)
+async def execute_mock(
+    token: str,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    return await MockAPIService.execute_mock(
+        db=db,
+        token=token,
+        request=request,
+    )
+# ------------------------------------------------------------------------------------------------------
 
 @router.post(
     "/create",

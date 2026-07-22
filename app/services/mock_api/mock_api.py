@@ -134,17 +134,18 @@ class MockAPIService:
     
     @staticmethod
     def _find_mock_by_token(db: Session, token: str):
-        
         existing_mock = db.query(MockAPI).filter(MockAPI.endpoint_token==token).first()
         
         if not existing_mock:
-            raise ValueError(
-                "No Mock API found!"
+            raise HTTPException(
+                status_code=404,
+                detail="No Mock API found."
             )
             
         if not existing_mock.is_active:
-            raise ValueError(
-                "Mock API is disabled"
+            raise HTTPException(
+                status_code=403,
+                detail="Mock API is disabled."
             )
             
         return existing_mock
@@ -152,8 +153,9 @@ class MockAPIService:
     @staticmethod
     def _validate_method(mock: MockAPI, request_method: str):
         if mock.method != request_method.upper():
-            raise ValueError(
-                "Method not allowed!"
+            raise HTTPException(
+                status_code=405,
+                detail=f"Method not allowed. This mock expects {mock.method}."
             )
             
     @staticmethod
@@ -283,7 +285,7 @@ class MockAPIService:
                 id=mock.id,
                 name=mock.name,
                 endpoint_token=mock.endpoint_token,
-                endpoint_url=f"/mock/{mock.endpoint_token}",
+                endpoint_url=f"{MockAPIService.BASE_URL}/mock/{mock.endpoint_token}",
                 method=HTTPMethod(mock.method),
                 status_code=mock.status_code,
                 hit_count=mock.hit_count,
@@ -327,7 +329,7 @@ class MockAPIService:
             id=mock.id,
             name=mock.name,
             endpoint_token=mock.endpoint_token,
-            endpoint_url=f"/mock/{mock.endpoint_token}",
+            endpoint_url=f"{MockAPIService.BASE_URL}/mock/{mock.endpoint_token}",   # CORRECT
             method=HTTPMethod(mock.method),
             status_code=mock.status_code,
             response_body=mock.response_body,
@@ -336,6 +338,9 @@ class MockAPIService:
             hit_count=mock.hit_count,
             is_active=mock.is_active,
             created_at=mock.created_at,
+            description=mock.description if hasattr(mock, 'description') else "",
+            response_headers=mock.response_headers if mock.response_headers else {},
+            updated_at=mock.updated_at if hasattr(mock, 'updated_at') else mock.created_at,
         )
         
     @staticmethod
@@ -368,13 +373,13 @@ class MockAPIService:
 
         # Update editable fields
         mock.name = request.name.strip()
-        mock.description = request.description
+        mock.description = None
         mock.method = request.method.value
         mock.status_code = request.status_code
         mock.response_body = request.response_body
         mock.response_headers = request.response_headers
         mock.response_delay_ms = request.response_delay_ms
-        mock.auth_type = request.authentication.value
+        mock.auth_type = request.authentication.auth_type.value
         mock.auth_config = request.authentication.model_dump()
 
         # Save changes
@@ -388,7 +393,8 @@ class MockAPIService:
             name=mock.name,
             description=mock.description,
             endpoint_token=mock.endpoint_token,
-            endpoint_url=f"/mock/{mock.endpoint_token}",
+            # CORRECT — absolute URL, consistent with every other method
+            endpoint_url=f"{MockAPIService.BASE_URL}/mock/{mock.endpoint_token}",
             method=HTTPMethod(mock.method),
             status_code=mock.status_code,
             response_body=mock.response_body,

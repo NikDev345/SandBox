@@ -46,7 +46,7 @@
   function cacheElements() {
     [
       "sidebar", "sidebarOverlay", "sidebarCollapseBtn", "topbarMenuBtn",
-      "globalSearch", "refreshBtn", "dashboardTableBody", "myApisTableBody",
+      "globalSearch", "dashboardTableBody", "myApisTableBody",
       "tableSearch", "methodFilter", "activeFilter", "navApiCount",
       "mockForm", "nameInput", "nameGroup", "methodSelect", "methodDot",
       "statusCodeInput", "statusCodeGroup", "delayInput", "delayGroup",
@@ -87,7 +87,10 @@
      --------------------------------------------------------- */
   function bindNavigation() {
     document.querySelectorAll(".nav-item[data-view]").forEach((item) => {
-      item.addEventListener("click", () => switchView(item.dataset.view));
+      item.addEventListener("click", () => {
+        if (item.dataset.view === "create") startCreateFlow();
+        switchView(item.dataset.view);
+      });
     });
     document.querySelectorAll("[data-view-link]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -136,7 +139,6 @@
      Topbar (search + refresh)
      --------------------------------------------------------- */
   function bindTopbar() {
-    els.refreshBtn.addEventListener("click", () => loadMocks(true));
 
     els.globalSearch.addEventListener("input", (e) => {
       const q = e.target.value.trim();
@@ -256,6 +258,14 @@
       }
     });
 
+    // Row click → open detail modal (ignore clicks on action buttons)
+    document.addEventListener("click", (e) => {
+      const row = e.target.closest("tr[data-id]");
+      if (!row) return;
+      if (e.target.closest("[data-action]") || e.target.closest(".switch")) return;
+      openDetailModal(row.dataset.id);
+    });
+
     document.addEventListener("change", (e) => {
       if (e.target.classList.contains("row-active-toggle")) {
         toggleActive(e.target.dataset.id, e.target.checked, e.target);
@@ -303,7 +313,7 @@
     document.querySelectorAll("[data-close-modal]").forEach((btn) => {
       btn.addEventListener("click", () => UI.closeModal(btn.dataset.closeModal));
     });
-    [els.modalDelete, els.modalSuccess].forEach((overlay) => {
+    [els.modalDelete, els.modalSuccess, document.getElementById("modalDetail")].forEach((overlay) => {
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) UI.closeModal(overlay.id);
       });
@@ -755,7 +765,10 @@
     // MockAPIResponse.endpoint_url is already a fully-qualified URL
     // (built server-side from the service's own BASE_URL), so it is
     // used as-is rather than prefixed again with the dashboard's base URL.
-    const fullUrl = created.endpoint_url;
+    const rawUrl = created.endpoint_url || "";
+    const fullUrl = rawUrl.startsWith("http")
+      ? rawUrl
+      : `${API.getBaseUrl()}${rawUrl}`;
     els.successSubText.textContent = created.message || "Your endpoint has been created and is ready to receive requests.";
     els.successEndpointUrl.value = fullUrl;
     els.successMethodBadge.textContent = created.method;
@@ -763,5 +776,78 @@
     els.successStatusBadge.textContent = created.status_code;
     els.successStatusBadge.className = `badge badge-status ${UI.statusClass(created.status_code)}`;
     UI.openModal("modalSuccess");
+  }
+
+  async function openDetailModal(id) {
+    UI.openModal("modalDetail");
+    document.getElementById("detailModalTitle").textContent = "Loading...";
+
+    try {
+      const detail = await API.getMock(id);
+
+      const rawUrl = detail.endpoint_url || "";
+      const fullUrl = rawUrl.startsWith("http")
+        ? rawUrl.replace(/^https?:\/\/[^\/]+/, API.getBaseUrl())
+        : `${API.getBaseUrl()}${rawUrl}`;
+
+      document.getElementById("detailModalTitle").textContent = detail.name;
+      document.getElementById("detailMethod").textContent = detail.method;
+      document.getElementById("detailMethod").className = `badge badge-method m-${detail.method}`;
+      document.getElementById("detailStatus").textContent = detail.status_code;
+      document.getElementById("detailStatus").className = `badge badge-status ${UI.statusClass(detail.status_code)}`;
+      document.getElementById("detailUrl").textContent = fullUrl;
+      document.getElementById("detailDelay").textContent = `${detail.response_delay_ms || 0} ms`;
+      document.getElementById("detailAuth").textContent = (detail.authentication?.auth_type) || "NONE";
+      document.getElementById("detailBody").textContent = JSON.stringify(detail.response_body || {}, null, 2);
+
+      const headers = detail.response_headers || {};
+      const headerStr = Object.keys(headers).length
+        ? JSON.stringify(headers, null, 2)
+        : "(none)";
+      document.getElementById("detailHeaders").textContent = headerStr;
+
+      // Python snippet
+      const auth = detail.authentication || {};
+      let authLines = "";
+      if (auth.auth_type === "BEARER") {
+        authLines = `    headers["Authorization"] = "Bearer ${auth.bearer_token || '<your-token>'}"`;
+      } else if (auth.auth_type === "API_KEY") {
+        authLines = `    headers["${auth.api_key_header || 'X-API-Key'}"] = "${auth.api_key || '<your-api-key>'}"`;
+      } else if (auth.auth_type === "BASIC") {
+        authLines = `    # Basic auth\n    auth = ("${auth.username || 'user'}", "${auth.password ? '***' : 'pass'}")`;
+      }
+
+      const bodyArg = ["POST", "PUT", "PATCH"].includes(detail.method)
+        ? `\n    json={}  # add your request body here` : "";
+
+      const pythonCode =
+  `import requests
+
+  url = "${fullUrl}"
+  headers = {}
+  ${authLines ? authLines + "\n" : ""}
+  response = requests.${detail.method.toLowerCase()}(url, headers=headers${bodyArg})
+
+  print(response.status_code)
+  print(response.json())`;
+
+      document.getElementById("detailPythonCode").textContent = pythonCode;
+
+      // Wire "Edit Mock" button
+      document.getElementById("detailEditBtn").onclick = () => {
+        UI.closeModal("modalDetail");
+        startEditFlow(id);
+        switchView("create");
+      };
+
+      // Wire copy button
+      document.getElementById("detailCopyBtn").onclick = () => {
+        copyToClipboard(fullUrl, document.getElementById("detailCopyBtn"));
+      };
+
+    } catch (err) {
+      UI.toast(err.message || "Failed to load API details.", "error");
+      UI.closeModal("modalDetail");
+    }
   }
 })();

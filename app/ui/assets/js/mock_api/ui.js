@@ -146,7 +146,10 @@ const UI = (() => {
   function renderTableRows(mocks, baseUrl) {
     return mocks
       .map((mock) => {
-        const fullUrl = `${baseUrl}${mock.endpoint_url}`;
+        const rawUrl = mock.endpoint_url || "";
+        const fullUrl = rawUrl.startsWith("http")
+          ? rawUrl
+          : `${baseUrl}${rawUrl}`;
         return `
         <tr data-id="${mock.id}" class="animate-fade-in-up">
           <td>

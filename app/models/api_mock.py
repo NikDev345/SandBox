@@ -187,6 +187,7 @@ class MockAPIListResponse(BaseModel):
     mocks: list[MockAPISummary]
     
 class MockAPIDetailResponse(BaseModel):
+    success: bool = True
     id: str
     name: str
     description: Optional[str]
