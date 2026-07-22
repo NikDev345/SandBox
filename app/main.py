@@ -36,6 +36,8 @@ import app.ui.pages.ss_explain
 import app.ui.pages.sql_generator
 import app.ui.pages.table_extractor
 import app.ui.pages.notes_cleaner
+import app.ui.pages.chart_explainer
+
 import app.ui.pages.email_rewriter
 import app.ui.pages.blog_outline_generator
 import app.ui.pages.pro_cons

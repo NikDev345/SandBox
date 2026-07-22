@@ -99,7 +99,11 @@ class GeminiService:
 
             try:
                 return json.loads(text)
+
             except json.JSONDecodeError as e:
+                print("=" * 80)
+                print(text)
+                print("=" * 80)
                 raise RuntimeError(
                     f"Gemini returned invalid JSON:\n{text}"
                 ) from e
@@ -333,6 +337,7 @@ Return ONLY valid JSON.
         temperature: float = 0.3,
         max_output_tokens: int = 10000,
     ):
+        
         if self._use_mock:
             return "Mock screenshot explanation."
 
@@ -361,3 +366,73 @@ Return ONLY valid JSON.
             raise
         except Exception as e:
             raise RuntimeError(f"Gemini API error during explanation: {e}") from e
+    
+    async def generate_image_json(
+        self,
+        uploaded_image,
+        prompt: str,
+        temperature: float = 0.3,
+        max_output_tokens: int = 10000,
+    ):
+        """
+        Generate a structured JSON response from Gemini Vision.
+        Used by Chart Explainer and future image-based AI tools.
+        """
+
+        if self._use_mock:
+            return {
+                "chart_type": "Bar Chart",
+                "executive_summary": "Mock summary.",
+                "axis_explanation": "Mock axis explanation.",
+                "key_insights": [
+                    "Mock insight 1",
+                    "Mock insight 2"
+                ],
+                "trend_analysis": "Mock trend analysis.",
+                "outliers": [],
+                "business_insights": "Mock business insight.",
+                "recommendations": [
+                    "Mock recommendation."
+                ],
+                "questions_answered": [
+                    "Mock question."
+                ],
+                "limitations": [],
+                "eli5_explanation": "Mock ELI5 explanation.",
+                "confidence_score": 95,
+            }
+
+        try:
+            response = await self.client.aio.models.generate_content(
+                model=config.GEMINI_MODEL,
+                contents=[
+                    uploaded_image,
+                    types.Part.from_text(text=prompt),
+                ],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=temperature,
+                    max_output_tokens=max_output_tokens,
+                ),
+            )
+
+            text = response.text.strip()
+
+            if text.startswith("```"):
+                text = (
+                    text.replace("```json", "")
+                        .replace("```", "")
+                        .strip()
+                )
+
+            return json.loads(text)
+
+        except json.JSONDecodeError as e:
+            raise RuntimeError(
+                f"Gemini returned invalid JSON:\n{text}"
+            ) from e
+
+        except Exception as e:
+            raise RuntimeError(
+                f"Gemini Vision JSON Error: {e}"
+            ) from e

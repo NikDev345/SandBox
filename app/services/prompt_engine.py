@@ -1,6 +1,5 @@
 from typing import Dict
-
-
+from app.models.chart_explainer import ChartExplainerRequest
 class PromptEngine:
     """
     Centralized Prompt Builder for AI Text Summarizer.
@@ -320,4 +319,207 @@ Requirements:
     - Produce professional-quality output suitable for publication.
 
     Return only the final outline.
+    """
+    @staticmethod
+    def build_chart_explainer_prompt(request: ChartExplainerRequest) -> str:
+        return f"""
+    You are an expert Data Analyst, Business Intelligence Consultant, and Data Visualization Specialist.
+
+    Analyze the uploaded chart or graph carefully.
+
+    Use ONLY the information visible in the chart.
+
+    If any information is unreadable, unclear, or missing, explicitly state that instead of guessing.
+
+    ======================================================================
+    OUTPUT REQUIREMENTS
+    ======================================================================
+
+    Return ONLY ONE valid JSON object.
+
+    DO NOT include:
+
+    - Markdown
+    - Headings
+    - Bullet points outside JSON
+    - Explanations outside JSON
+    - Code fences
+    - ```json
+    - Any text before or after the JSON
+
+    ======================================================================
+    JSON SCHEMA
+    ======================================================================
+
+    {{
+        "chart_type": "string",
+
+        "executive_summary": "string",
+
+        "axis_explanation": {{
+            "x_axis": "string",
+            "y_axis": "string",
+            "units": "string",
+            "legend": "string"
+        }},
+
+        "key_insights": [
+            "string"
+        ],
+
+        "trend_analysis": [
+            "string"
+        ],
+
+        "outliers": [
+            "string"
+        ],
+
+        "business_insights": [
+            "string"
+        ],
+
+        "recommendations": [
+            "string"
+        ],
+
+        "questions_answered": [
+            "string"
+        ],
+
+        "limitations": [
+            "string"
+        ],
+
+        "eli5_explanation": "string",
+
+        "confidence_score": 0
+    }}
+
+    ======================================================================
+    FIELD RULES
+    ======================================================================
+
+    chart_type
+    - String only.
+    - Example: "Bar Chart"
+
+    executive_summary
+    - String only.
+    - One concise paragraph summarizing the chart.
+
+    axis_explanation
+    - Return an OBJECT.
+
+    {{
+        "x_axis": "Describe the X-axis",
+        "y_axis": "Describe the Y-axis",
+        "units": "Measurement units",
+        "legend": "Explain the legend"
+    }}
+
+    key_insights
+    - Array of strings only.
+    - Each item must be one insight.
+
+    trend_analysis
+    - Return an ARRAY of strings.
+
+        Example:
+
+        [
+            "Trend 1",
+            "Trend 2",
+            "Trend 3"
+        ]
+
+    outliers
+    - Array of strings only.
+    - Empty array [] if none exist.
+
+    business_insights
+
+    - Return an ARRAY of strings.
+
+    Example:
+
+    [
+        "Business insight 1",
+        "Business insight 2"
+    ]
+
+    recommendations
+    - Array of strings only.
+
+    questions_answered
+    - Array of strings only.
+
+    limitations
+    - Array of strings only.
+
+    eli5_explanation
+    - String only.
+    - Explain the chart in very simple language.
+
+    confidence_score
+    - Integer only.
+    - Range: 0 to 100.
+
+    ======================================================================
+    ANALYSIS OPTIONS
+    ======================================================================
+
+    Language:
+    {request.language.value}
+
+    Explanation Level:
+    {request.explanation_level.value}
+
+    Include Summary:
+    {request.include_summary}
+
+    Include Axis Explanation:
+    {request.include_axis_explanation}
+
+    Include Key Insights:
+    {request.include_key_insights}
+
+    Include Trend Analysis:
+    {request.include_trend_analysis}
+
+    Include Outliers:
+    {request.include_outliers}
+
+    Include Business Insights:
+    {request.include_business_insights}
+
+    Include Recommendations:
+    {request.include_recommendations}
+
+    Include Questions Answered:
+    {request.include_questions_answered}
+
+    Include Limitations:
+    {request.include_limitations}
+
+    Include ELI5:
+    {request.include_eli5}
+
+    Include Confidence Score:
+    {request.include_confidence}
+
+    ======================================================================
+    IMPORTANT RULES
+    ======================================================================
+
+    - Never fabricate values.
+    - Never estimate numbers that are not visible.
+    - Mention uncertainty whenever necessary.
+    - Never change any JSON key names.
+    - Never omit any JSON keys.
+    - Every key must always be present.
+    - Return strings where strings are required.
+    - Return arrays where arrays are required.
+    - confidence_score must always be an integer.
+    - Return ONLY the JSON object.
     """

@@ -1,0 +1,540 @@
+<div class="ce-root" id="ce-root">
+
+        <!-- Full-screen drag overlay -->
+        <div class="ce-drop-overlay" id="ce-drop-overlay" hidden aria-hidden="true">
+            <div class="ce-drop-overlay-inner">
+                <svg viewBox="0 0 24 24" class="ce-drop-overlay-icon" aria-hidden="true">
+                    <path d="M12 3v14M12 3l-5 5M12 3l5 5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p>Drop your chart to upload</p>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════
+             PHASE: UPLOAD
+             ══════════════════════════════════════════════════════════ -->
+        <section class="ce-phase" id="ce-phase-upload" aria-labelledby="ce-upload-heading">
+
+            <!-- Hero -->
+            <header class="ce-hero">
+                <div class="ce-hero-badge">
+                    <span class="ce-hero-badge-dot" aria-hidden="true"></span>
+                    AI-Powered Analysis
+                </div>
+                <h1 class="ce-hero-title">
+                    AI <span class="ce-hero-highlight">Chart Explainer</span>
+                </h1>
+                <p class="ce-hero-sub">
+                    Upload any chart, dashboard, or spreadsheet export and get a structured, business-ready breakdown — summary, trends, insights, and more.
+                </p>
+                <div class="ce-hero-types" aria-label="Supported chart types">
+                    <span class="ce-pill">Bar</span>
+                    <span class="ce-pill">Line</span>
+                    <span class="ce-pill">Pie</span>
+                    <span class="ce-pill">Scatter</span>
+                    <span class="ce-pill">Heatmap</span>
+                    <span class="ce-pill">Radar</span>
+                    <span class="ce-pill">Power BI</span>
+                    <span class="ce-pill">Tableau</span>
+                    <span class="ce-pill">Excel</span>
+                    <span class="ce-pill ce-pill--muted">+ more</span>
+                </div>
+            </header>
+
+            <!-- Upload Zone -->
+            <div class="ce-upload-zone" id="ce-upload-zone" tabindex="0" role="button"
+                 aria-label="Upload a chart image. Click, drag and drop, or paste from clipboard.">
+                <input type="file" id="ce-file-input" class="visually-hidden" accept="image/png,image/jpeg,image/webp,image/gif" aria-hidden="true" />
+
+                <div class="ce-upload-idle" id="ce-upload-idle">
+                    <div class="ce-upload-icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" class="ce-upload-icon">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <p id="ce-upload-heading" class="ce-upload-headline">Drag &amp; drop your chart here</p>
+                    <p class="ce-upload-sub">
+                        or <label for="ce-file-input" class="ce-upload-browse">browse a file</label>
+                        &nbsp;·&nbsp; paste with <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>V</kbd>
+                    </p>
+                    <ul class="ce-upload-formats" aria-label="Supported formats">
+                        <li>PNG</li><li>JPG</li><li>WEBP</li><li>Screenshots</li>
+                    </ul>
+                </div>
+
+                <div class="ce-upload-preview" id="ce-upload-preview" hidden>
+                    <div class="ce-preview-image-wrap">
+                        <img id="ce-preview-image" alt="Uploaded chart preview" />
+                        <button type="button" class="ce-icon-btn ce-preview-fullscreen" id="ce-preview-fullscreen-btn" aria-label="View full preview">
+                            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m11-5v3a2 2 0 0 1-2 2h-3"/></svg>
+                        </button>
+                    </div>
+                    <div class="ce-preview-meta">
+                        <div class="ce-preview-meta-row">
+                            <span class="ce-preview-filename" id="ce-preview-filename">chart.png</span>
+                            <span class="ce-preview-dot" aria-hidden="true">·</span>
+                            <span class="ce-preview-filesize" id="ce-preview-filesize">0 KB</span>
+                            <span class="ce-preview-dot" aria-hidden="true">·</span>
+                            <span class="ce-preview-dims" id="ce-preview-dims">— × —</span>
+                        </div>
+                        <div class="ce-preview-actions">
+                            <button type="button" class="btn btn-ghost btn-sm" id="ce-replace-btn">Replace</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="ce-remove-btn">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ce-upload-footer">
+                <button type="button" class="btn btn-primary" id="ce-continue-btn" disabled aria-disabled="true">
+                    Continue
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════════
+             PHASE: CONFIGURE
+             ══════════════════════════════════════════════════════════ -->
+        <section class="ce-phase ce-phase--hidden" id="ce-phase-configure" aria-labelledby="ce-configure-heading">
+
+            <div class="ce-configure-header">
+                <button type="button" class="ce-icon-btn" id="ce-back-btn" aria-label="Back to upload">
+                    <svg viewBox="0 0 16 16"><path d="M10 3L5 8l5 5"/></svg>
+                </button>
+                <div>
+                    <h2 id="ce-configure-heading" class="ce-section-title">Configure the analysis</h2>
+                    <p class="ce-config-desc">Adjust settings to tailor the insights to your needs.</p>
+                </div>
+            </div>
+
+            <div class="ce-config-grid">
+
+                <!-- General -->
+                <fieldset class="metric-card ce-config-group ce-config-group--accent">
+                    <legend class="ce-config-group-title">
+                        <span class="ce-group-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+                        </span>
+                        General
+                    </legend>
+
+                    <div class="ce-field">
+                        <label class="ce-label" for="ce-language-select">Language</label>
+                        <select class="ce-select" id="ce-language-select">
+                            <option value="English" selected>English</option>
+                            <option value="Hindi">Hindi</option>
+                        </select>
+                    </div>
+
+                    <div class="ce-field">
+                        <span class="ce-label">Explanation level</span>
+                        <div class="ce-segmented" role="radiogroup" aria-label="Explanation level">
+                            <button type="button" class="ce-segmented-option" data-value="Beginner" role="radio" aria-checked="false">Beginner</button>
+                            <button type="button" class="ce-segmented-option ce-segmented-option--active" data-value="Intermediate" role="radio" aria-checked="true">Intermediate</button>
+                            <button type="button" class="ce-segmented-option" data-value="Advanced" role="radio" aria-checked="false">Advanced</button>
+                        </div>
+                        <p class="ce-field-hint" id="ce-level-hint">Balanced detail — clear for most audiences.</p>
+                    </div>
+                </fieldset>
+
+                <!-- Core Sections toggles, grouped -->
+                <details class="metric-card ce-config-collapsible" open>
+                    <summary class="ce-config-collapsible-summary">
+                        <span class="ce-summary-label">
+                            <span class="ce-group-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </span>
+                            Core Sections
+                        </span>
+                        <svg viewBox="0 0 16 16" class="ce-chevron" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                    </summary>
+                    <div class="ce-toggle-list">
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Executive summary</span>
+                                <span class="ce-toggle-caption">One clear paragraph covering the whole chart</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-summary" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Axis explanation</span>
+                                <span class="ce-toggle-caption">What each axis and unit represents</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-axis" checked />
+                        </label>
+                    </div>
+                </details>
+
+                <!-- Insights -->
+                <details class="metric-card ce-config-collapsible" open>
+                    <summary class="ce-config-collapsible-summary">
+                        <span class="ce-summary-label">
+                            <span class="ce-group-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+                            </span>
+                            Insights
+                        </span>
+                        <svg viewBox="0 0 16 16" class="ce-chevron" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                    </summary>
+                    <div class="ce-toggle-list">
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Key insights</span>
+                                <span class="ce-toggle-caption">The most important takeaways, ranked</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-insights" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Trend analysis</span>
+                                <span class="ce-toggle-caption">Direction and momentum over time</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-trend" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Outliers</span>
+                                <span class="ce-toggle-caption">Anomalies and unexpected spikes or dips</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-outliers" checked />
+                        </label>
+                    </div>
+                </details>
+
+                <!-- Business -->
+                <details class="metric-card ce-config-collapsible" open>
+                    <summary class="ce-config-collapsible-summary">
+                        <span class="ce-summary-label">
+                            <span class="ce-group-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                            </span>
+                            Business
+                        </span>
+                        <svg viewBox="0 0 16 16" class="ce-chevron" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                    </summary>
+                    <div class="ce-toggle-list">
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Business insights</span>
+                                <span class="ce-toggle-caption">What this means for decisions and strategy</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-business" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Recommendations</span>
+                                <span class="ce-toggle-caption">Concrete next steps based on the data</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-recommendations" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Questions answered</span>
+                                <span class="ce-toggle-caption">Common questions this chart resolves</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-questions" checked />
+                        </label>
+                    </div>
+                </details>
+
+                <!-- Advanced -->
+                <details class="metric-card ce-config-collapsible">
+                    <summary class="ce-config-collapsible-summary">
+                        <span class="ce-summary-label">
+                            <span class="ce-group-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+                            </span>
+                            Advanced
+                        </span>
+                        <svg viewBox="0 0 16 16" class="ce-chevron" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                    </summary>
+                    <div class="ce-toggle-list">
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Limitations</span>
+                                <span class="ce-toggle-caption">Gaps, ambiguity, or missing context</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-limitations" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Explain like I'm 5</span>
+                                <span class="ce-toggle-caption">A simple, plain-language version</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-eli5" checked />
+                        </label>
+                        <label class="ce-toggle-row">
+                            <span class="ce-toggle-content">
+                                <span class="ce-toggle-title">Confidence score</span>
+                                <span class="ce-toggle-caption">How certain the AI is about this reading</span>
+                            </span>
+                            <input type="checkbox" class="ce-switch" id="ce-toggle-confidence" checked />
+                        </label>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ce-analyze-bar">
+                <p class="ce-analyze-caption">Usually takes 5–15 seconds</p>
+                <button type="button" class="ce-analyze-btn" id="ce-analyze-btn">
+                    <span class="ce-analyze-btn-label">Analyze Chart</span>
+                    <svg viewBox="0 0 24 24" class="ce-analyze-btn-icon" aria-hidden="true"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════════
+             LOADING OVERLAY
+             ══════════════════════════════════════════════════════════ -->
+        <div class="ce-loading-overlay" id="ce-loading-overlay" hidden aria-hidden="true" aria-live="polite">
+            <div class="ce-loading-panel metric-card">
+                <div class="ce-loading-orb" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                </div>
+                <p class="ce-loading-status" id="ce-loading-status">Reading chart…</p>
+                <div class="ce-loading-track">
+                    <div class="ce-loading-fill" id="ce-loading-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════════
+             PHASE: RESULTS
+             ══════════════════════════════════════════════════════════ -->
+        <section class="ce-phase ce-phase--hidden" id="ce-phase-results" aria-labelledby="ce-results-heading">
+
+            <div class="ce-results-header">
+                <div class="ce-results-header-left">
+                    <span class="ce-badge" id="ce-chart-type-badge" hidden>Grouped Bar Chart</span>
+                    <h2 id="ce-results-heading" class="ce-section-title">Analysis</h2>
+                </div>
+                <div class="ce-results-header-actions">
+                    <button type="button" class="btn btn-ghost btn-sm" id="ce-copy-all-btn">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        Copy report
+                    </button>
+                    <div class="ce-export-menu">
+                        <button type="button" class="btn btn-ghost btn-sm" id="ce-export-btn" aria-haspopup="true" aria-expanded="false">
+                            Export
+                            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+                        </button>
+                        <div class="ce-dropdown ce-export-dropdown" id="ce-export-dropdown" hidden role="menu">
+                            <button type="button" class="ce-dropdown-item" data-export="markdown" role="menuitem">Markdown (.md)</button>
+                            <button type="button" class="ce-dropdown-item" data-export="txt" role="menuitem">Plain text (.txt)</button>
+                            <button type="button" class="ce-dropdown-item" data-export="json" role="menuitem">JSON (.json)</button>
+                            <div class="ce-dropdown-divider"></div>
+                            <button type="button" class="ce-dropdown-item" data-export="print" role="menuitem">Print</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" id="ce-new-analysis-btn">New analysis</button>
+                </div>
+            </div>
+
+            <div class="ce-results-body" id="ce-results-body">
+                <!-- Cards injected by JS — static preview shown below -->
+                <!-- Executive Summary -->
+                <div class="metric-card ce-card ce-card--hero">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 8h6v8H9z"/><path d="M16 8h2v8h-2z"/></svg>
+                            Executive Summary
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <div class="ce-card-body">
+                        The chart compares the monthly visitor numbers for four major museums—the History Museum, British Museum, National Museum, and Science Museum—across five selected months: June, July, August, September, and December. Overall, August sees the highest peak in visitors across almost all museums, with the British Museum leading significantly during this peak season. Conversely, December generally shows lower visitor numbers, particularly for the History Museum.
+                    </div>
+                </div>
+
+                <!-- Key Insights -->
+                <div class="metric-card ce-card">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+                            Key Insights
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <ul class="ce-card-list">
+                        <li>The British Museum consistently has the highest or second-highest visitor numbers in all shown months, peaking at over 700,000 in August.</li>
+                        <li>The National Museum consistently records the lowest visitor numbers among the four museums across all months shown, except in August where it reaches nearly 400,000.</li>
+                        <li>August is the peak month for visitor attendance for the History Museum, British Museum, and National Museum.</li>
+                        <li>The Science Museum peaks in September with approximately 500,000 visitors, unlike the other three museums which peak in August.</li>
+                    </ul>
+                </div>
+
+                <!-- Trend Analysis -->
+                <div class="metric-card ce-card">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            Trend Analysis
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <div class="ce-card-body">
+                        There is a sharp increase in visitors for the History, British, and National museums from July to August, followed by a decline in September. The Science Museum shows a unique upward trend from July to September, peaking at 500,000 before dropping in December. Visitor numbers generally decline towards December for all museums compared to their summer peaks.
+                    </div>
+                </div>
+
+                <!-- Outliers -->
+                <div class="metric-card ce-card ce-card--outliers">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            Outliers
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <ul class="ce-card-list">
+                        <li>The British Museum's spike to over 700,000 visitors in August is a notable peak compared to its other months.</li>
+                        <li>The National Museum's visitor count nearly doubles in August (~380,000) compared to its typical baseline of around 190,000–210,000 in other months.</li>
+                    </ul>
+                </div>
+
+                <!-- Business Insights -->
+                <div class="metric-card ce-card">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                            Business Insights
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <div class="ce-card-body">
+                        August represents peak tourist season, likely driven by summer holidays, making it the most critical period for staffing and resource allocation. The Science Museum's peak in September suggests potential school group visits or specific exhibitions starting in autumn that attract visitors when other museums are declining. December shows a significant drop-off, particularly for the History Museum, indicating a need for winter-themed marketing campaigns or holiday events to boost attendance.
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="metric-card ce-card">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                            Recommendations
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <ul class="ce-card-list">
+                        <li>Allocate maximum staffing, security, and operational resources to August to handle the peak volume, especially at the British Museum.</li>
+                        <li>Investigate the cause of the Science Museum's September peak to see if similar educational or seasonal strategies can be applied to other museums.</li>
+                        <li>Introduce targeted winter promotions or holiday events in December to counter the seasonal slump, particularly for the History Museum.</li>
+                    </ul>
+                </div>
+
+                <!-- Questions Answered -->
+                <div class="metric-card ce-card">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Questions Answered
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <ul class="ce-card-list">
+                        <li>Which museum attracts the most visitors overall during the peak summer month of August?</li>
+                        <li>How do visitor trends compare between the summer months (June–August) and the winter month of December?</li>
+                        <li>Which museum consistently has the lowest attendance across the analyzed months?</li>
+                    </ul>
+                </div>
+
+                <!-- Limitations -->
+                <div class="metric-card ce-card ce-card--limitations">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Limitations
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <ul class="ce-card-list">
+                        <li>Data for October and November is missing, creating a gap in the autumn-to-winter transition analysis.</li>
+                        <li>The exact numerical values are not labeled on the bars, requiring visual estimation against the Y-axis gridlines.</li>
+                        <li>No year is specified, making it unclear if this represents a single year's data or an average over multiple years.</li>
+                    </ul>
+                </div>
+
+                <!-- ELI5 -->
+                <div class="metric-card ce-card ce-card--eli5">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                            Explain Like I'm 5
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <div class="ce-card-body">
+                        This chart shows how many people visited four different museums in June, July, August, September, and December. The British Museum (medium blue) is usually the most popular, especially in August when it gets over 700,000 visitors. August is the busiest month for almost all the museums because of summer holidays, while December is much quieter.
+                    </div>
+                </div>
+
+                <!-- Confidence -->
+                <div class="metric-card ce-card">
+                    <div class="ce-card-header">
+                        <div class="ce-card-title">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 22v-4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M22 12h-4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                            Confidence Score
+                        </div>
+                        <button type="button" class="ce-icon-btn ce-card-copy" aria-label="Copy section">
+                            <svg viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3a1 1 0 0 1 1-1h8"/></svg>
+                        </button>
+                    </div>
+                    <div class="ce-confidence-row">
+                        <span class="ce-confidence-label">95%</span>
+                        <div class="ce-confidence-track">
+                            <div class="ce-confidence-fill" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════════════
+             PHASE: ERROR
+             ══════════════════════════════════════════════════════════ -->
+        <section class="ce-phase ce-phase--hidden" id="ce-phase-error" aria-labelledby="ce-error-heading">
+            <div class="ce-error-card metric-card">
+                <div class="ce-error-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <h2 id="ce-error-title" class="ce-error-title">Something went wrong</h2>
+                <p class="ce-error-message" id="ce-error-message">We couldn't analyze this chart. Please try again.</p>
+                <div class="ce-error-actions">
+                    <button type="button" class="btn btn-ghost" id="ce-error-retry-btn">Try again</button>
+                    <button type="button" class="btn btn-ghost" id="ce-error-back-btn">Start over</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Full-size image preview modal -->
+        <div class="ce-lightbox" id="ce-lightbox" hidden aria-hidden="true">
+            <button type="button" class="ce-icon-btn ce-lightbox-close" id="ce-lightbox-close" aria-label="Close preview">
+                <svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13"/></svg>
+            </button>
+            <img id="ce-lightbox-image" alt="Full size chart preview" />
+        </div>
+
+    </div> <!-- /ce-root -->
