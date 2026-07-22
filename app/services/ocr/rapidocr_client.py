@@ -87,11 +87,6 @@ class RapidOCRClient(BaseOCRClient):
         try:
 
             output = self._ocr(image)
-            
-            print("=" * 80)
-            print(type(output))
-            print(output)
-            print("=" * 80)
             return self._normalize(output)
 
         except Exception as exc:

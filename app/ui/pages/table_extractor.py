@@ -3,24 +3,22 @@ from datetime import datetime
 from pathlib import Path
 
 
-@ui.page("/mock_api")
-def mock_api():
+@ui.page("/table-extractor")
+def table_extractor_page():
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">
     <link rel="stylesheet" href="/assets/css/animations.css">
     <link rel="stylesheet" href="/assets/css/dashboard.css">
     <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/mock_api.css">
-    <script src="/assets/js/mock_api/api.js" defer></script>
-    <script src="/assets/js/mock_api/mock_api.js" defer></script>
-    <script src="/assets/js/mock_api/ui.js" defer></script>
+    <link rel="stylesheet" href="/assets/css/table_extractor.css">
+    <script src="/assets/js/table_extractor.js" defer></script>
     """)
 
     template_path = (
         Path(__file__).parent.parent
         / "templates"
-        / "mock_api.html"
+        / "table_extractor.html"
     )
 
     html = template_path.read_text(encoding="utf-8")
