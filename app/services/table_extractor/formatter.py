@@ -5,12 +5,17 @@ Converts extracted table data into various export formats.
 """
 
 from __future__ import annotations
-
+from dataclasses import asdict
 import json
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
+from sqlalchemy import table
+
+from app.services.table_extractor.parser import ParsedTable
+
+from app.services.table_extractor.parser import ParsedTable
 
 
 class TableFormatter:
@@ -23,20 +28,18 @@ class TableFormatter:
         self.output_directory = Path(output_directory)
         self.output_directory.mkdir(parents=True, exist_ok=True)
 
-    def _dataframe(self, table: dict[str, Any]) -> pd.DataFrame:
-        """
-        Convert canonical table into pandas DataFrame.
-        """
+    def _dataframe(self, table: ParsedTable) -> pd.DataFrame:
 
-        rows = table.get("rows", [])
+        data = asdict(table)
 
-        if not rows:
-            return pd.DataFrame()
+        headers = data["headers"]
 
-        headers = rows[0]
-        data = rows[1:]
+        rows = [
+            [cell.text for cell in row.cells]
+            for row in data["rows"]
+        ]
 
-        return pd.DataFrame(data, columns=headers)
+        return pd.DataFrame(rows, columns=headers)
 
     def to_excel(
         self,
@@ -80,18 +83,21 @@ class TableFormatter:
 
         return str(output)
 
+
+
     def to_json(
         self,
-        tables: list[dict[str, Any]],
+        tables: list[ParsedTable],
         filename: str,
     ) -> str:
 
         output = self.output_directory / f"{filename}.json"
 
-        with open(output, "w", encoding="utf-8") as file:
+        serializable = [asdict(table) for table in tables]
 
+        with open(output, "w", encoding="utf-8") as file:
             json.dump(
-                tables,
+                serializable,
                 file,
                 indent=4,
                 ensure_ascii=False,

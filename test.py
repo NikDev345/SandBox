@@ -1,12 +1,16 @@
 import os
-os.environ["PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT"] = "0"
+
+os.environ["FLAGS_use_mkldnn"] = "0"
 
 from paddleocr import PaddleOCR
+from PIL import Image
+import numpy as np
 
-ocr = PaddleOCR()
+ocr = PaddleOCR(
+    use_textline_orientation=True,
+    lang="en",
+)
 
-results = ocr.predict("sample_table.png")
+img = np.array(Image.open("sample_table.png").convert("RGB"))
 
-results[0].save_to_json("ocr_output.json")
-
-print("Saved!")
+print(ocr.predict(img))

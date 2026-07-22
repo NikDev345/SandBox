@@ -1,92 +1,91 @@
 """
 Table Extractor Models
 
-Pydantic models used by the Table Extractor API.
+Strongly typed dataclasses used internally by TableExtractor to replace
+anonymous dictionaries for page results and API responses.
 """
 
-from enum import Enum
-from typing import List, Optional
+from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
-
-class OutputFormat(str, Enum):
-    EXCEL = "excel"
-    CSV = "csv"
-    JSON = "json"
-    MARKDOWN = "markdown"
-    HTML = "html"
+from PIL import Image
 
 
-class TableCell(BaseModel):
+@dataclass(frozen=True)
+class OcrResult:
     """
-    Represents a single cell in a table.
-    """
+    Normalized OCR output for a single page.
 
-    row: int = Field(..., ge=0)
-    column: int = Field(..., ge=0)
-    text: str = ""
-    confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
-
-
-class TableRow(BaseModel):
-    """
-    Represents one row of a table.
+    ``data`` is an already-normalized, parser-ready dictionary.
+    ``item_count`` is supplied by the OCR service itself so the extractor
+    never has to inspect prediction field names.
     """
 
-    cells: List[str]
+    data: Dict[str, Any] = field(default_factory=dict)
+    item_count: int = 0
 
 
-class TableInfo(BaseModel):
-    """
-    Metadata and extracted content for a single table.
-    """
+@dataclass(frozen=True)
+class PageResult:
+    """Result of running table detection and OCR on a single page."""
 
-    table_index: int
-    page: int
-
-    rows: int
-    columns: int
-
-    headers: List[str] = Field(default_factory=list)
-
-    data: List[List[str]] = Field(default_factory=list)
-
-    average_confidence: Optional[float] = Field(
-        default=None,
-        ge=0.0,
-        le=1.0
-    )
+    page_number: int
+    image: Image.Image
+    table_predictions: List[Dict[str, Any]] = field(default_factory=list)
+    ocr_result: OcrResult = field(default_factory=OcrResult)
 
 
-class TableExtractorRequest(BaseModel):
-    """
-    API request body (used for metadata only).
-    The uploaded file is handled separately through FastAPI UploadFile.
-    """
+@dataclass(frozen=True)
+class ExtractionStatistics:
+    """Aggregate statistics for a completed extraction run."""
 
-    output_format: OutputFormat = OutputFormat.EXCEL
+    pages: int
+    tables: int
+    processing_time: float
+    ocr_items: int
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "pages": self.pages,
+            "tables": self.tables,
+            "processing_time": self.processing_time,
+            "ocr_items": self.ocr_items,
+        }
 
 
-class TableExtractorResponse(BaseModel):
-    """
-    API response returned after extraction.
-    """
+@dataclass(frozen=True)
+class ExtractionMetadata:
+    """Metadata describing how a response was produced."""
+
+    format: str
+    version: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {"format": self.format, "version": self.version}
+
+
+@dataclass(frozen=True)
+class ExtractionResponse:
+    """Final structured response returned by TableExtractor.extract()."""
 
     success: bool
+    tables: List[Dict[str, Any]]
+    statistics: ExtractionStatistics
+    metadata: ExtractionMetadata
+    output_path: Optional[str] = None
+    error: Optional[str] = None
 
-    filename: str
-
-    pages_processed: int
-
-    tables_found: int
-
-    output_format: OutputFormat
-
-    tables: List[TableInfo] = Field(default_factory=list)
-
-    download_file: Optional[str] = None
-
-    processing_time: float
-
-    message: str
+    def to_dict(self) -> Dict[str, Any]:
+        response: Dict[str, Any] = {
+            "success": self.success,
+            "tables": self.tables,
+            "statistics": self.statistics.to_dict(),
+            "metadata": self.metadata.to_dict(),
+        }
+        if self.output_path is not None:
+            response["output_path"] = self.output_path
+        if self.error is not None:
+            response["error"] = self.error
+        return response
