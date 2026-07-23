@@ -1,0 +1,328 @@
+
+  <!-- ================= AMBIENT BACKGROUND ================= -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <canvas id="particleCanvas"></canvas>
+  </div>
+  <div class="mouse-glow" id="mouseGlow" aria-hidden="true"></div>
+
+  <!-- ================= HEADER ================= -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 7h4l2 5-2 5H4M20 7h-4l-2 5 2 5h4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 12h6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Regex Generator</span>
+        <span class="brand-sub">Generate production-ready regular expressions with AI</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="header-btn icon-only" id="themeToggle" title="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.75"/></svg>
+      </button>
+      <button class="header-btn" id="shortcutsBtn">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.75"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        <span>Shortcuts</span>
+      </button>
+      <button class="header-btn" id="cmdPaletteBtn">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.75"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        <span>Search</span>
+        <span class="kbd-hint"><kbd>⌘</kbd><kbd>K</kbd></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= WORKSPACE ================= -->
+  <main class="workspace">
+
+    <!-- ============ LEFT PANEL — INPUT ============ -->
+    <section class="panel panel-left" id="panelLeft">
+      <div class="panel-header">
+        <div class="panel-tabs" style="border-bottom:none;">
+          <span class="tab-btn active" style="cursor:default;">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>
+            Generate
+          </span>
+        </div>
+      </div>
+
+      <form class="ai-prompt-area" id="regexForm" autocomplete="off">
+        <div class="prompt-input-wrap">
+
+          <!-- Description -->
+          <div class="form-group">
+            <div class="section-label-row">
+              <label class="form-label" for="promptInput">Regex Description</label>
+              <span class="section-hint" id="charCounter">0 / 500</span>
+            </div>
+            <textarea
+              id="promptInput"
+              class="prompt-textarea"
+              placeholder="Examples:&#10;Generate regex for email&#10;Generate regex for Indian mobile numbers&#10;Regex for yyyy-mm-dd date&#10;Generate regex for PAN card"
+              maxlength="500"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <!-- Engine + Mode -->
+          <div class="builder-row two-col">
+            <div class="form-group">
+              <label class="form-label" for="engineSelect">Regex Engine</label>
+              <div class="select-wrap">
+                <select id="engineSelect" class="form-select">
+                  <option value="python" selected>Python</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="java">Java</option>
+                  <option value="csharp">C#</option>
+                  <option value="go">Go</option>
+                  <option value="pcre">PCRE</option>
+                </select>
+                <svg class="select-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="modeSelect">Generation Mode</label>
+              <div class="select-wrap">
+                <select id="modeSelect" class="form-select">
+                  <option value="auto" selected>Auto</option>
+                  <option value="cache">Cache Only</option>
+                  <option value="ai">AI Only</option>
+                </select>
+                <svg class="select-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Test Strings -->
+          <div class="form-group">
+            <div class="section-label-row">
+              <label class="form-label" for="testStringsInput">Test Strings <span class="section-hint">one per line</span></label>
+              <span class="section-hint" id="testCounter">0 strings</span>
+            </div>
+            <textarea
+              id="testStringsInput"
+              class="prompt-textarea"
+              style="min-height:96px; flex:none;"
+              placeholder="9876543210&#10;1234567890&#10;+919876543210"
+              rows="4"
+            ></textarea>
+          </div>
+
+        </div>
+
+        <div class="prompt-footer" style="padding:0 16px 16px;">
+          <span class="prompt-hint">
+            <kbd>Ctrl</kbd>+<kbd>Enter</kbd>&nbsp;to generate
+          </span>
+          <div class="prompt-actions">
+            <button type="button" class="btn-ghost-sm" id="clearBtn">Clear</button>
+            <button type="submit" class="btn-primary" id="generateBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              <span class="btn-label">Generate Regex</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <div class="resize-handle" id="resizeHandle"></div>
+
+    <!-- ============ RIGHT PANEL — OUTPUT ============ -->
+    <section class="panel panel-right" id="panelRight">
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-illustration">
+          <svg width="88" height="88" viewBox="0 0 24 24" fill="none">
+            <path d="M5 7h3l2 5-2 5H5M19 7h-3l-2 5 2 5h3" stroke="var(--text-muted)" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="1.4" fill="var(--text-muted)"/>
+          </svg>
+        </div>
+        <div class="empty-title">No regex generated yet</div>
+        <div class="empty-sub">Describe the pattern you need on the left, choose an engine, and generate a production-ready regular expression.</div>
+        <div class="empty-arrow">
+          <svg viewBox="0 0 24 24"><path d="M14 5l-7 7 7 7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state hidden" id="loadingState">
+        <div class="thinking-animation">
+          <div class="thinking-orb">
+            <div class="thinking-ring ring-1"></div>
+            <div class="thinking-ring ring-2"></div>
+            <div class="thinking-ring ring-3"></div>
+            <svg class="thinking-icon" viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>
+          </div>
+          <div class="thinking-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="thinking-label" id="loadingLabel">Analyzing your description…</div>
+        </div>
+        <div class="thinking-skeleton">
+          <div class="sk-line sk-w-90"></div>
+          <div class="sk-line sk-w-60"></div>
+          <div class="sk-line sk-w-75"></div>
+        </div>
+      </div>
+
+      <!-- Output -->
+      <div class="sql-output hidden" id="outputState">
+
+        <!-- Regex Code Panel -->
+        <div class="sql-code-panel">
+          <div class="sql-code-toolbar">
+            <div class="sql-code-meta">
+              <span class="code-dot dot-red"></span>
+              <span class="code-dot dot-yellow"></span>
+              <span class="code-dot dot-green"></span>
+              <span class="code-lang" id="engineBadgeLabel">PYTHON</span>
+            </div>
+            <div class="sql-code-actions">
+              <button class="toolbar-btn" id="copyBtn" title="Copy regex">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.75"/><path d="M5 15V5a2 2 0 012-2h10" stroke="currentColor" stroke-width="1.75"/></svg>
+                <span>Copy</span>
+              </button>
+              <button class="toolbar-btn" id="downloadBtn" title="Download as .txt">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Download</span>
+              </button>
+              <button class="toolbar-btn" id="fullscreenBtn" title="Fullscreen">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <pre class="sql-code" id="regexCode"></pre>
+        </div>
+
+        <!-- Badges Row -->
+        <div class="analysis-tags" id="badgeRow" style="gap:8px;"></div>
+
+        <!-- Explanation -->
+        <div class="explanation-block">
+          <div class="explanation-label">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.75"/><path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+            Explanation
+          </div>
+          <p id="explanationText"></p>
+        </div>
+
+        <!-- Matches Table -->
+        <div id="matchesSection" class="explanation-block hidden">
+          <div class="explanation-label">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+            Matches
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="matches-table" id="matchesTable">
+              <thead>
+                <tr><th>Input</th><th>Matched</th><th>Use</th></tr>
+              </thead>
+              <tbody id="matchesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= COMMAND PALETTE ================= -->
+  <div class="cmd-overlay hidden" id="cmdOverlay">
+    <div class="cmd-box">
+      <div class="cmd-search-row">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.75"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+        <input type="text" id="cmdInput" placeholder="Try: email, indian mobile, pan card, date…" />
+        <span class="cmd-esc"><kbd>Esc</kbd></span>
+      </div>
+      <div class="cmd-results" id="cmdResults">
+        <div class="cmd-group-label">Quick prompts</div>
+        <button class="cmd-item" data-prompt="Generate regex for email">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.75"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.75"/></svg>
+          Generate regex for email
+        </button>
+        <button class="cmd-item" data-prompt="Generate regex for Indian mobile numbers">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="7" y="2" width="10" height="20" rx="2" stroke="currentColor" stroke-width="1.75"/></svg>
+          Generate regex for Indian mobile numbers
+        </button>
+        <button class="cmd-item" data-prompt="Regex for yyyy-mm-dd date">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.75"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.75"/></svg>
+          Regex for yyyy-mm-dd date
+        </button>
+        <button class="cmd-item" data-prompt="Generate regex for PAN card">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.75"/><circle cx="8" cy="12" r="2" stroke="currentColor" stroke-width="1.75"/></svg>
+          Generate regex for PAN card
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SHORTCUTS MODAL ================= -->
+  <div class="modal-overlay hidden" id="shortcutsModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Keyboard Shortcuts</h3>
+        <button class="modal-close" id="closeShortcuts">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcut-row"><span>Generate regex</span><div><kbd>Ctrl</kbd>+<kbd>Enter</kbd></div></div>
+        <div class="shortcut-row"><span>Command palette</span><div><kbd>⌘</kbd>+<kbd>K</kbd></div></div>
+        <div class="shortcut-row"><span>Copy regex</span><div><kbd>Ctrl</kbd>+<kbd>C</kbd></div></div>
+        <div class="shortcut-row"><span>Close dialog</span><div><kbd>Esc</kbd></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ERROR MODAL ================= -->
+  <div class="modal-overlay hidden" id="errorModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 style="color:var(--error); display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.75"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+          Generation Failed
+        </h3>
+        <button class="modal-close" id="closeError">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="errorMessage" style="color:var(--text-soft); font-size:var(--text-sm); line-height:1.7;"></p>
+      </div>
+      <div class="modal-body" style="padding-top:0; display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn-ghost-sm" id="errorRetryBtn">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FULLSCREEN CODE ================= -->
+  <div class="fullscreen-overlay hidden" id="fullscreenOverlay">
+    <div class="fullscreen-box">
+      <div class="sql-code-toolbar">
+        <div class="sql-code-meta">
+          <span class="code-dot dot-red"></span><span class="code-dot dot-yellow"></span><span class="code-dot dot-green"></span>
+          <span class="code-lang">FULLSCREEN</span>
+        </div>
+        <button class="toolbar-btn" id="closeFullscreen">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+          <span>Close</span>
+        </button>
+      </div>
+      <pre class="sql-code fullscreen-code" id="fullscreenCode"></pre>
+    </div>
+  </div>
+
+  <!-- ================= TOASTS ================= -->
+  <div class="toast-container" id="toastContainer"></div>
+
+</body>
+</html>

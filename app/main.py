@@ -45,7 +45,7 @@ import app.ui.pages.pro_cons
 import app.ui.pages.quiz_generator
 import app.ui.pages.flashcard_generator
 import app.ui.pages.youtube_summarizer
-
+import app.ui.pages.regex
 # ui.run(
 #     title='SandBox',
 #     dark=True,
