@@ -1,0 +1,257 @@
+
+  <!-- ================= AMBIENT BACKGROUND ================= -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <canvas id="particleCanvas"></canvas>
+  </div>
+  <div class="mouse-glow" id="mouseGlow"></div>
+
+  <!-- ================= HEADER ================= -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-code-commit"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">SandBox</span>
+        <span class="brand-sub">AI Commit Message Generator</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="header-btn" href="https://github.com" target="_blank" rel="noopener">
+        <i class="fa-brands fa-github"></i>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <main class="layout-page">
+
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-eyebrow"><i class="fa-solid fa-sparkles"></i><span>Powered by SandBox AI</span></div>
+      <h1 id="heroTitle" class="hero-title">AI Commit Message Generator</h1>
+      <p class="hero-subtitle">Generate intelligent Git commit messages from your repository changes.</p>
+    </section>
+
+    <!-- ================= MAIN CARD / FORM ================= -->
+    <section class="main-card glass-card animate-fade-in-up" aria-label="Commit message generator form">
+      <form id="generatorForm" novalidate>
+
+        <!-- Repository Path -->
+        <div class="form-group">
+          <label class="form-label" for="repoPath">Repository Path <span class="required">*</span></label>
+          <div class="path-input-row">
+            <div class="path-input-wrap">
+              <i class="fa-solid fa-folder-tree path-icon"></i>
+              <input
+                type="text"
+                id="repoPath"
+                class="form-input path-input"
+                placeholder="Enter a folder that contains .git folder"
+                autocomplete="off"
+                spellcheck="false"
+                required
+              >
+            </div>
+            <button type="button" class="btn-browse" id="browseBtn">
+              <i class="fa-regular fa-folder-open"></i>
+              <span>Browse</span>
+            </button>
+          </div>
+          <p class="field-error" id="repoPathError">Enter a repository path to continue.</p>
+        </div>
+
+        <!-- Diff Type -->
+        <div class="form-group">
+          <label class="form-label">Diff Type</label>
+          <div class="segmented" id="diffTypeSegmented" role="radiogroup" aria-label="Diff type">
+            <button type="button" class="segmented-option active" data-value="auto" role="radio" aria-checked="true">
+              <i class="fa-solid fa-wand-magic-sparkles"></i><span>Auto</span>
+            </button>
+            <button type="button" class="segmented-option" data-value="staged" role="radio" aria-checked="false">
+              <i class="fa-solid fa-layer-group"></i><span>Staged</span>
+            </button>
+            <button type="button" class="segmented-option" data-value="unstaged" role="radio" aria-checked="false">
+              <i class="fa-regular fa-file"></i><span>Unstaged</span>
+            </button>
+            <span class="segmented-indicator" id="segmentedIndicator"></span>
+          </div>
+        </div>
+
+        <!-- Commit Style -->
+        <div class="form-group">
+          <label class="form-label">Commit Style</label>
+          <div class="style-cards" id="styleCards" role="radiogroup" aria-label="Commit style">
+            <button type="button" class="style-card active" data-value="conventional" role="radio" aria-checked="true">
+              <div class="style-card-icon"><i class="fa-solid fa-code-branch"></i></div>
+              <div class="style-card-body">
+                <span class="style-card-title">Conventional</span>
+                <span class="style-card-desc">feat(auth): add login</span>
+              </div>
+              <i class="fa-solid fa-circle-check style-card-check"></i>
+            </button>
+            <button type="button" class="style-card" data-value="normal" role="radio" aria-checked="false">
+              <div class="style-card-icon"><i class="fa-regular fa-message"></i></div>
+              <div class="style-card-body">
+                <span class="style-card-title">Normal</span>
+                <span class="style-card-desc">Add login with OAuth</span>
+              </div>
+              <i class="fa-solid fa-circle-check style-card-check"></i>
+            </button>
+            <button type="button" class="style-card" data-value="emoji" role="radio" aria-checked="false">
+              <div class="style-card-icon"><i class="fa-regular fa-face-smile"></i></div>
+              <div class="style-card-body">
+                <span class="style-card-title">Emoji</span>
+                <span class="style-card-desc">✨ Add login with OAuth</span>
+              </div>
+              <i class="fa-solid fa-circle-check style-card-check"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Number of Suggestions -->
+        <div class="form-group">
+          <div class="slider-label-row">
+            <label class="form-label" for="suggestionsSlider">Number of Suggestions</label>
+            <span class="slider-value" id="suggestionsValue">3</span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="suggestionsSlider" class="slider" min="1" max="5" step="1" value="3">
+            <div class="slider-ticks" aria-hidden="true">
+              <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <button type="submit" class="btn-generate" id="generateBtn">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>Generate Commit Messages</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- ================= RESULTS ================= -->
+    <section class="results-area" id="resultsArea" aria-live="polite">
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-illustration"><i class="fa-solid fa-code-commit"></i></div>
+        <h3 class="empty-title">Nothing generated yet</h3>
+        <p class="empty-sub">Generate AI-powered commit messages for your repository.</p>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state hidden" id="loadingState">
+        <div class="thinking-orb">
+          <span class="thinking-ring ring-1"></span>
+          <span class="thinking-ring ring-2"></span>
+          <span class="thinking-ring ring-3"></span>
+          <i class="fa-solid fa-code-commit thinking-icon"></i>
+        </div>
+        <p class="thinking-label" id="thinkingLabel">Analyzing repository&hellip;</p>
+        <div class="thinking-skeleton">
+          <div class="sk-line sk-w-90"></div>
+          <div class="sk-line sk-w-75"></div>
+          <div class="sk-line sk-w-60"></div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-card hidden" id="errorState">
+        <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h3 class="error-title">Generation failed</h3>
+        <p class="error-message" id="errorMessage">Something went wrong while generating commit messages.</p>
+        <button class="btn-retry" id="retryBtn">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Retry</span>
+        </button>
+      </div>
+
+      <!-- Response -->
+      <div class="response-section hidden" id="responseSection">
+
+        <!-- Repository Info -->
+        <div class="repo-info-card">
+          <div class="repo-info-header">
+            <span class="repo-info-title"><i class="fa-solid fa-database"></i> Repository Information</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-regular fa-folder"></i></div>
+              <div class="stat-content">
+                <span class="stat-label">Repository</span>
+                <span class="stat-value" id="statRepoName">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-code-branch"></i></div>
+              <div class="stat-content">
+                <span class="stat-label">Branch</span>
+                <span class="stat-value" id="statBranch">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+              <div class="stat-content">
+                <span class="stat-label">Diff Type</span>
+                <span class="stat-value" id="statDiffType">—</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fa-regular fa-file-lines"></i></div>
+              <div class="stat-content">
+                <span class="stat-label">Files Changed</span>
+                <span class="stat-value" id="statFilesChanged">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="suggestions-header">
+          <span class="suggestions-title"><i class="fa-solid fa-sparkles"></i> Commit Suggestions</span>
+          <button class="btn-regenerate-all" id="regenerateAllBtn">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Regenerate All</span>
+          </button>
+        </div>
+        <div class="suggestions-list" id="suggestionsList"></div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Hidden folder picker fallback -->
+  <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
+
+  <!-- ================= TOASTS ================= -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Suggestion card template -->
+  <template id="suggestionCardTemplate">
+    <article class="suggestion-card">
+      <div class="suggestion-index"></div>
+      <div class="suggestion-body">
+        <code class="suggestion-message"></code>
+      </div>
+      <div class="suggestion-actions">
+        <button class="toolbar-btn btn-copy-message" type="button">
+          <i class="fa-regular fa-copy"></i><span>Copy Message</span>
+        </button>
+        <button class="toolbar-btn btn-copy-command" type="button">
+          <i class="fa-solid fa-terminal"></i><span>Copy Git Command</span>
+        </button>
+        <button class="toolbar-btn btn-regenerate-one" type="button">
+          <i class="fa-solid fa-rotate-right"></i><span>Regenerate</span>
+        </button>
+      </div>
+    </article>
+  </template>
+
+</body>
+</html>

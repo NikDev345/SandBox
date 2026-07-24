@@ -47,6 +47,8 @@ import app.ui.pages.flashcard_generator
 import app.ui.pages.youtube_summarizer
 import app.ui.pages.regex
 import app.ui.pages.decision_maker
+import app.ui.pages.commit
+
 # ui.run(
 #     title='SandBox',
 #     dark=True,
