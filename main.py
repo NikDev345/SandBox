@@ -31,6 +31,8 @@ from app.api.email_rewriter.email_rewriter import router as email_rewriter_route
 from app.api.table_extractor.table_extractor import router as table_extractor_router
 from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 from app.api.regex_generator.regex import router as regex_router
+from app.api.decision_maker.decision_maker import router as decision_maker_router
+
 import app.main 
 from nicegui import ui
 from app.seed.seed_tools import seed_tools
@@ -86,10 +88,12 @@ app.include_router(flashcard_generator_router)
 app.include_router(pro_cons_router)
 app.include_router(email_rewriter_router)
 app.include_router(quiz_router)
+app.include_router(decision_maker_router)
 app.include_router(youtube_summarizer_router)
 app.include_router(blog_outline_router)
 app.include_router(chart_explainer_router)
 app.include_router(regex_router)
+app.include_router(table_extractor_router)
 ui.run_with(
     
     app,

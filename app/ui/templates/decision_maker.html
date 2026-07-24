@@ -1,0 +1,322 @@
+<main class="dm-root">
+  <div class="dm-container">
+
+    <!-- ============== HERO ============== -->
+    <header class="dm-hero">
+      <span class="dm-hero-badge">
+        <span class="dm-hero-badge-dot" aria-hidden="true"></span>
+        AI Powered
+      </span>
+      <h1 class="dm-hero-title">Decision Maker</h1>
+      <p class="dm-hero-subtitle">Compare options objectively with AI-powered analysis.</p>
+    </header>
+
+    <!-- ============== STEPPER ============== -->
+    <nav class="dm-stepper" aria-label="Progress">
+      <div class="dm-step-item" data-step-item="1" data-state="active">
+        <span class="dm-step-num"><span data-step-num-idle>1</span><svg data-step-num-done width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M1 5L4.5 8.5L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="dm-step-label">Question</span>
+      </div>
+      <span class="dm-step-line" data-step-line="1"></span>
+      <div class="dm-step-item" data-step-item="2" data-state="idle">
+        <span class="dm-step-num"><span data-step-num-idle>2</span><svg data-step-num-done width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M1 5L4.5 8.5L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="dm-step-label">Analyzing</span>
+      </div>
+      <span class="dm-step-line" data-step-line="2"></span>
+      <div class="dm-step-item" data-step-item="3" data-state="idle">
+        <span class="dm-step-num"><span data-step-num-idle>3</span><svg data-step-num-done width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true"><path d="M1 5L4.5 8.5L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="dm-step-label">Result</span>
+      </div>
+    </nav>
+
+    <!-- ============================================================
+         STEP 1 — QUESTION
+         ============================================================ -->
+    <section class="dm-panel" id="dm-panel-1" data-step="1" data-active="true" aria-labelledby="dm-input-title">
+      <div class="dm-card dm-card--form">
+        <div class="dm-card-header">
+          <div>
+            <h2 class="dm-card-title" id="dm-input-title">Your Decision</h2>
+            <p class="dm-card-title-sub">Tell us what you're deciding between</p>
+          </div>
+        </div>
+
+        <form id="dm-form" novalidate>
+
+          <!-- Question -->
+          <div class="dm-field" id="dm-field-question">
+            <label class="dm-label dm-label-required" for="dm-question">
+              <span>Your Question</span>
+              <span class="dm-counter" id="dm-question-counter">0 / 2000</span>
+            </label>
+            <textarea
+              class="dm-textarea"
+              id="dm-question"
+              name="question"
+              rows="4"
+              maxlength="2000"
+              placeholder="Should I pursue higher studies or start working after graduation?"
+              aria-describedby="dm-question-error"
+            ></textarea>
+            <p class="dm-error-text" id="dm-question-error" role="alert"></p>
+          </div>
+
+          <!-- Decision type -->
+          <div class="dm-field">
+            <label class="dm-label" for="dm-decision-type">Decision Type</label>
+            <select class="dm-select" id="dm-decision-type" name="decision_type">
+              <option value="personal">Personal</option>
+              <option value="career">Career</option>
+              <option value="education">Education</option>
+              <option value="business">Business</option>
+              <option value="financial">Financial</option>
+              <option value="health">Health</option>
+              <option value="technology">Technology</option>
+              <option value="purchase">Purchase</option>
+              <option value="relationship">Relationship</option>
+              <option value="custom" selected>Custom</option>
+            </select>
+          </div>
+
+          <!-- Options -->
+          <div class="dm-field" id="dm-field-options">
+            <label class="dm-label dm-label-required">
+              <span>Options</span>
+              <span class="dm-counter" id="dm-options-counter">2 / 10</span>
+            </label>
+            <div class="dm-options-list" id="dm-options-list" aria-live="polite"></div>
+            <button type="button" class="dm-add-option" id="dm-add-option">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              Add Option
+            </button>
+            <p class="dm-options-hint">Add 2–10 options. Titles must be unique.</p>
+            <p class="dm-error-text" id="dm-options-error" role="alert"></p>
+          </div>
+
+          <!-- Criteria accordion -->
+          <div class="dm-field">
+            <div class="dm-accordion" id="dm-criteria-accordion" data-open="false">
+              <button type="button" class="dm-accordion-trigger" id="dm-criteria-trigger" aria-expanded="false" aria-controls="dm-criteria-panel">
+                <span>Criteria &amp; Context (optional)</span>
+                <svg class="dm-accordion-trigger-icon" width="14" height="8" viewBox="0 0 14 8" fill="none" aria-hidden="true"><path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="dm-accordion-panel" id="dm-criteria-panel">
+                <div class="dm-accordion-panel-inner">
+
+                  <div class="dm-grid-2">
+                    <div class="dm-field">
+                      <label class="dm-label" for="dm-budget">Budget</label>
+                      <input class="dm-input" type="text" id="dm-budget" name="budget" placeholder="e.g. $5,000" />
+                    </div>
+                    <div class="dm-field">
+                      <label class="dm-label" for="dm-timeline">Timeline</label>
+                      <input class="dm-input" type="text" id="dm-timeline" name="timeline" placeholder="e.g. 3 months" />
+                    </div>
+                  </div>
+
+                  <div class="dm-field">
+                    <label class="dm-label" for="dm-priorities-input">
+                      <span>Priorities</span>
+                      <span class="dm-counter" id="dm-priorities-counter">0 / 10</span>
+                    </label>
+                    <div class="dm-tag-input-box" id="dm-priorities-box" data-field="priorities">
+                      <input class="dm-tag-input-field" id="dm-priorities-input" type="text" placeholder="Type and press Enter" aria-describedby="dm-priorities-error" />
+                    </div>
+                    <div class="dm-tag-suggestions" data-suggestions-for="priorities">
+                      <button type="button" class="dm-tag-suggestion">Career Growth</button>
+                      <button type="button" class="dm-tag-suggestion">Salary</button>
+                      <button type="button" class="dm-tag-suggestion">Learning</button>
+                      <button type="button" class="dm-tag-suggestion">Work-Life Balance</button>
+                      <button type="button" class="dm-tag-suggestion">Location</button>
+                      <button type="button" class="dm-tag-suggestion">Remote Work</button>
+                    </div>
+                    <p class="dm-error-text" id="dm-priorities-error" role="alert"></p>
+                  </div>
+
+                  <div class="dm-field">
+                    <label class="dm-label" for="dm-constraints-input">
+                      <span>Constraints</span>
+                      <span class="dm-counter" id="dm-constraints-counter">0 / 10</span>
+                    </label>
+                    <div class="dm-tag-input-box" id="dm-constraints-box" data-field="constraints">
+                      <input class="dm-tag-input-field" id="dm-constraints-input" type="text" placeholder="Type and press Enter" aria-describedby="dm-constraints-error" />
+                    </div>
+                    <div class="dm-tag-suggestions" data-suggestions-for="constraints">
+                      <button type="button" class="dm-tag-suggestion">Budget</button>
+                      <button type="button" class="dm-tag-suggestion">Family</button>
+                      <button type="button" class="dm-tag-suggestion">Time</button>
+                      <button type="button" class="dm-tag-suggestion">Visa</button>
+                      <button type="button" class="dm-tag-suggestion">Experience</button>
+                    </div>
+                    <p class="dm-error-text" id="dm-constraints-error" role="alert"></p>
+                  </div>
+
+                  <div class="dm-field">
+                    <label class="dm-label" for="dm-context">Additional Context</label>
+                    <textarea class="dm-textarea" id="dm-context" name="additional_context" rows="3" placeholder="Anything else the AI should know?"></textarea>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="dm-actions">
+            <button type="submit" class="dm-btn dm-btn-primary" id="dm-analyze-btn" data-loading="false">
+              <span class="dm-btn-spinner" aria-hidden="true"></span>
+              <span class="dm-btn-label">Analyze Decision</span>
+            </button>
+            <button type="button" class="dm-btn dm-btn-secondary" id="dm-reset-btn">Reset</button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STEP 2 — ANALYZING (full-screen loading)
+         ============================================================ -->
+    <section class="dm-panel" id="dm-panel-2" data-step="2" data-active="false" aria-live="polite" aria-busy="true">
+      <div class="dm-loading-stage">
+        <div class="dm-loading-orb">
+          <div class="dm-loading-ring"></div>
+          <div class="dm-loading-ring dm-loading-ring--outer"></div>
+          <svg class="dm-loading-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/></svg>
+        </div>
+        <p class="dm-loading-text" id="dm-loading-text">Analyzing...</p>
+        <p class="dm-loading-sub">This usually takes a few seconds</p>
+        <div class="dm-skeleton" data-visible="true">
+          <div class="dm-skeleton-line" style="width:100%"></div>
+          <div class="dm-skeleton-line" style="width:82%"></div>
+          <div class="dm-skeleton-line" style="width:90%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STEP 3 — RESULT
+         ============================================================ -->
+    <section class="dm-panel" id="dm-panel-3" data-step="3" data-active="false" aria-labelledby="dm-results-title">
+      <div class="dm-results-head">
+        <div>
+          <h2 class="dm-card-title" id="dm-results-title">Analysis Complete</h2>
+          <p class="dm-card-title-sub">Here's your AI-powered recommendation</p>
+        </div>
+        <div class="dm-results-head-actions">
+          <button type="button" class="dm-btn dm-btn-secondary dm-btn-sm" id="dm-edit-btn">Edit Question</button>
+          <button type="button" class="dm-btn dm-btn-secondary dm-btn-sm" id="dm-new-btn">New Decision</button>
+        </div>
+      </div>
+
+      <div class="dm-results" id="dm-results">
+
+        <!-- Summary -->
+        <div class="dm-card dm-card--tight">
+          <p class="dm-summary-text" id="dm-summary"></p>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="dm-rec-card">
+          <span class="dm-rec-badge">Recommended</span>
+          <div class="dm-rec-option" id="dm-rec-option"></div>
+          <div class="dm-confidence-row">
+            <span class="dm-confidence-label">Confidence</span>
+            <div class="dm-confidence-track">
+              <div class="dm-confidence-fill" id="dm-confidence-fill"></div>
+            </div>
+            <span class="dm-confidence-value" id="dm-confidence-value">0%</span>
+          </div>
+          <p class="dm-rec-reasoning" id="dm-rec-reasoning"></p>
+        </div>
+
+        <!-- Per-option analysis -->
+        <div>
+          <h3 class="dm-section-title">Option Breakdown</h3>
+          <div class="dm-analysis-grid" id="dm-analysis-grid"></div>
+        </div>
+
+        <!-- Key factors -->
+        <div>
+          <h3 class="dm-section-title">Key Factors</h3>
+          <div class="dm-chips" id="dm-key-factors"></div>
+        </div>
+
+        <!-- Final advice -->
+        <div class="dm-advice-card">
+          <div class="dm-advice-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"/></svg>
+            Final Advice
+          </div>
+          <p class="dm-advice-text" id="dm-final-advice"></p>
+        </div>
+
+        <!-- Disclaimer -->
+        <p class="dm-disclaimer" id="dm-disclaimer"></p>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- Toast region for errors -->
+<div class="dm-toast-region" id="dm-toast-region" aria-live="assertive"></div>
+
+<!-- Template for a single option row (used by JS) -->
+<template id="dm-option-template">
+  <div class="dm-option-item" data-option-item>
+    <div class="dm-option-item-head">
+      <span class="dm-option-index" data-option-index>1</span>
+      <input type="text" class="dm-input dm-option-title-input" data-option-title placeholder="Option title" maxlength="120" />
+      <button type="button" class="dm-option-remove" data-option-remove aria-label="Remove option">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 1L11 11M1 11L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <textarea class="dm-textarea dm-option-desc-input" data-option-desc rows="2" placeholder="Description (optional)" maxlength="1000"></textarea>
+  </div>
+</template>
+
+<!-- Template for a single tag chip (used by JS) -->
+<template id="dm-tag-template">
+  <span class="dm-tag" data-tag>
+    <span data-tag-text></span>
+    <button type="button" class="dm-tag-remove" data-tag-remove aria-label="Remove tag">×</button>
+  </span>
+</template>
+
+<!-- Template for a single option analysis card (used by JS) -->
+<template id="dm-analysis-card-template">
+  <div class="dm-analysis-card">
+    <div class="dm-analysis-head">
+      <span class="dm-analysis-name" data-analysis-name></span>
+      <span class="dm-score-badge">
+        <span class="dm-score-track"><span class="dm-score-fill" data-analysis-score-fill></span></span>
+        <span class="dm-score-value" data-analysis-score-value></span>
+      </span>
+    </div>
+    <div class="dm-analysis-sections">
+      <div>
+        <p class="dm-analysis-section-title dm-analysis-section-title--pros">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 5L4 8L9 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Pros
+        </p>
+        <ul class="dm-analysis-list" data-analysis-pros></ul>
+      </div>
+      <div>
+        <p class="dm-analysis-section-title dm-analysis-section-title--cons">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 1L9 9M1 9L9 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Cons
+        </p>
+        <ul class="dm-analysis-list" data-analysis-cons></ul>
+      </div>
+      <div>
+        <p class="dm-analysis-section-title dm-analysis-section-title--risks">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 1L9 9H1L5 1Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          Risks
+        </p>
+        <ul class="dm-analysis-list" data-analysis-risks></ul>
+      </div>
+    </div>
+  </div>
+</template>
