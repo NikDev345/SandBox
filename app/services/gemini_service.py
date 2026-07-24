@@ -4,8 +4,8 @@ import re
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-import json
-
+import json, asyncio
+from typing import Optional
 load_dotenv()
 
 import config
@@ -436,3 +436,67 @@ Return ONLY valid JSON.
             raise RuntimeError(
                 f"Gemini Vision JSON Error: {e}"
             ) from e
+            
+    async def generate_for_text_and_files(self, prompt, files: Optional[list[str]] = None) ->str:
+        # -------------------------
+        # Mock mode
+        # -------------------------
+        if self._use_mock:
+            match = re.search(
+                r"Source Text:\s*-{10,}\s*(.*?)\s*-{10,}",
+                prompt,
+                re.DOTALL,
+            )
+
+            if match:
+                source = match.group(1).strip()
+            else:
+                blocks = [
+                    b.strip()
+                    for b in prompt.split("\n\n")
+                    if b.strip()
+                ]
+                source = blocks[-1] if blocks else prompt.strip()
+
+            sentences = re.split(r"(?<=[.!?])\s+", source)
+
+            if len(sentences) <= 3:
+                return " ".join(sentences).strip()
+
+            return " ".join(sentences[:3]).strip()
+        
+        uploaded_files = []
+        
+        try:
+            contents = [prompt]
+            
+            if files:
+                for path in files:
+                    uploaded = self.client.files.upload(file=path)
+                    uploaded_files.append(uploaded)
+                    contents.append(uploaded)
+                    
+            response = await asyncio.to_thread(
+                self.client.models.generate_content,
+                model=config.GEMINI_MODEL,
+                contents=contents,
+            )
+            return response.text.strip()
+        
+        except Exception as e:
+            raise RuntimeError(f"Gemini API Error: {e}")
+        
+        finally:
+            for uploaded in uploaded_files:
+                try:
+                    self.client.files.delete(name=uploaded.name)
+                except Exception:
+                    pass
+                
+            if files:
+                for path in files:
+                    try:
+                        if os.path.exists(path):
+                            os.remove(path)
+                    except Exception:
+                        pass

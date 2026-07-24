@@ -37,6 +37,7 @@ from nicegui import ui
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
 from app.api.flashcard_generator.flashcard_generator import router as flashcard_generator_router
+from app.api.error_explainer.error_explainer import router as error_router
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
@@ -92,6 +93,7 @@ app.include_router(blog_outline_router)
 app.include_router(chart_explainer_router)
 app.include_router(regex_router)
 app.include_router(commit_router)
+app.include_router(error_router)
 ui.run_with(
     
     app,

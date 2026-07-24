@@ -1,0 +1,264 @@
+
+<body>
+
+  <!-- ============ AMBIENT BACKGROUND ============ -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <canvas id="particleCanvas"></canvas>
+  </div>
+  <div class="mouse-glow" id="mouseGlow"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-bug-slash"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Error Explainer</span>
+        <span class="brand-sub">AI debugging assistant</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" id="shortcutsBtn" type="button">
+        <i class="fa-regular fa-keyboard"></i>
+        <span>Shortcuts</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout-page">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" data-animate="fade-in-up">
+      <div class="hero-copy">
+        <span class="hero-eyebrow"><i class="fa-solid fa-sparkles"></i> AI-Powered Diagnostics</span>
+        <h1 class="hero-title">Understand any error, <span class="text-gradient">instantly</span>.</h1>
+        <p class="hero-subtitle">Paste a stack trace, console log, or exception — get a plain-English explanation and a fix, powered by AI.</p>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="orb-scene">
+          <div class="orb-ring ring-a"></div>
+          <div class="orb-ring ring-b"></div>
+          <div class="orb-ring ring-c"></div>
+          <div class="orb-core">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div class="orb-chip chip-error">
+            <i class="fa-solid fa-triangle-exclamation"></i> TypeError
+          </div>
+          <div class="orb-chip chip-fix">
+            <i class="fa-solid fa-check"></i> Fixed
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ INPUT CARD ============ -->
+    <section class="input-card glass-card" data-animate="scale-in">
+      <div class="card-glow-border" aria-hidden="true"></div>
+
+      <div class="field-block">
+        <div class="field-label-row">
+          <label for="errorInput" class="field-label">
+            <i class="fa-solid fa-terminal"></i> Error <span class="required">*</span>
+          </label>
+          <span class="char-counter" id="errorCounter">0 / 1500</span>
+        </div>
+        <textarea
+          id="errorInput"
+          class="field-textarea"
+          placeholder="Paste your error message, stack trace, console log, or exception..."
+          rows="5"
+          required
+        ></textarea>
+
+        <!-- Large input status (hidden by default) -->
+        <div class="file-status-card" id="errorFileStatus" aria-live="polite">
+          <div class="file-status-icon">
+            <i class="fa-solid fa-file-lines"></i>
+            <span class="file-status-progress-ring"></span>
+          </div>
+          <div class="file-status-copy">
+            <p class="file-status-title">Large input detected</p>
+            <p class="file-status-desc">Automatically preparing a temporary .txt file for AI processing…</p>
+            <div class="file-status-progress-bar">
+              <span class="file-status-progress-fill"></span>
+            </div>
+          </div>
+          <div class="file-status-meta">
+            <span class="txt-badge">.txt</span>
+            <span class="optimized-label"><i class="fa-solid fa-bolt"></i> Optimized for large stack traces</span>
+          </div>
+        </div>
+
+        <!-- Collapsed file view (replaces the textarea once converted) -->
+        <div class="file-chip" id="errorFileChip">
+          <div class="file-chip-icon"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="file-chip-info">
+            <span class="file-chip-name">error.txt</span>
+            <span class="file-chip-meta">
+              <span class="file-chip-size" id="errorFileSize">0 chars</span>
+              <span class="txt-badge">.txt</span>
+            </span>
+          </div>
+          <div class="file-chip-actions">
+            <button type="button" class="file-chip-btn" data-chip="error" data-action="expand" title="Edit">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button type="button" class="file-chip-btn" data-chip="error" data-action="remove" title="Clear">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <div class="field-label-row">
+          <label for="codeInput" class="field-label">
+            <i class="fa-solid fa-code"></i> Source Code <span class="optional">optional</span>
+          </label>
+          <span class="char-counter" id="codeCounter">0 / 1500</span>
+        </div>
+        <textarea
+          id="codeInput"
+          class="field-textarea"
+          placeholder="Paste the relevant source code (optional)"
+          rows="5"
+        ></textarea>
+
+        <div class="file-status-card" id="codeFileStatus" aria-live="polite">
+          <div class="file-status-icon">
+            <i class="fa-solid fa-file-lines"></i>
+            <span class="file-status-progress-ring"></span>
+          </div>
+          <div class="file-status-copy">
+            <p class="file-status-title">Large input detected</p>
+            <p class="file-status-desc">Automatically preparing a temporary .txt file for AI processing…</p>
+            <div class="file-status-progress-bar">
+              <span class="file-status-progress-fill"></span>
+            </div>
+          </div>
+          <div class="file-status-meta">
+            <span class="txt-badge">.txt</span>
+            <span class="optimized-label"><i class="fa-solid fa-bolt"></i> Optimized for large stack traces</span>
+          </div>
+        </div>
+
+        <!-- Collapsed file view (replaces the textarea once converted) -->
+        <div class="file-chip" id="codeFileChip">
+          <div class="file-chip-icon"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="file-chip-info">
+            <span class="file-chip-name">source.txt</span>
+            <span class="file-chip-meta">
+              <span class="file-chip-size" id="codeFileSize">0 chars</span>
+              <span class="txt-badge">.txt</span>
+            </span>
+          </div>
+          <div class="file-chip-actions">
+            <button type="button" class="file-chip-btn" data-chip="code" data-action="expand" title="Edit">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button type="button" class="file-chip-btn" data-chip="code" data-action="remove" title="Clear">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-card-footer">
+        <div class="kbd-hint">
+          <kbd>Ctrl</kbd><span>+</span><kbd>Enter</kbd><span class="kbd-hint-label">to submit</span>
+        </div>
+        <button class="btn-explain" id="explainBtn" type="button">
+          <span class="btn-explain-content">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Explain Error</span>
+          </span>
+          <span class="btn-explain-loader">
+            <span class="spinner-ring"></span>
+            <span class="loader-text">Analyzing…</span>
+          </span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ RESULT SECTION ============ -->
+    <section class="result-section" id="resultSection" hidden>
+
+      <div class="result-card glass-card result-title-card" data-animate="fade-in-up">
+        <div class="result-icon-badge">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+          <span class="result-eyebrow">Diagnosis</span>
+          <h2 class="result-title" id="resultTitle"></h2>
+        </div>
+      </div>
+
+      <div class="result-card glass-card" data-animate="fade-in-up">
+        <div class="result-card-header">
+          <i class="fa-solid fa-comment-dots"></i>
+          <span>Explanation</span>
+        </div>
+        <p class="result-explanation" id="resultExplanation"></p>
+      </div>
+
+      <div class="result-card glass-card" id="codeCard" data-animate="fade-in-up">
+        <div class="result-card-header">
+          <i class="fa-solid fa-code"></i>
+          <span>Suggested Fix</span>
+          <button class="copy-btn" id="copyCodeBtn" type="button">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy</span>
+          </button>
+        </div>
+        <pre class="code-block"><code id="resultCode"></code></pre>
+      </div>
+    </section>
+
+    <!-- ============ EMPTY STATE ============ -->
+    <section class="empty-state" id="emptyState">
+      <div class="empty-state-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+      <p class="empty-state-title">Waiting for an error to diagnose</p>
+      <p class="empty-state-desc">Paste something above and hit "Explain Error" — your breakdown will appear right here.</p>
+    </section>
+
+  </main>
+
+  <!-- ============ STICKY MOBILE ACTION ============ -->
+  <div class="sticky-mobile-bar" id="stickyMobileBar">
+    <button class="btn-explain btn-explain-sticky" id="explainBtnMobile" type="button">
+      <span class="btn-explain-content">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Explain Error</span>
+      </span>
+      <span class="btn-explain-loader">
+        <span class="spinner-ring"></span>
+        <span class="loader-text">Analyzing…</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- ============ SHORTCUTS MODAL ============ -->
+  <div class="modal-overlay hidden" id="shortcutsModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3><i class="fa-regular fa-keyboard"></i> Keyboard shortcuts</h3>
+        <button class="modal-close" id="closeShortcuts"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcut-row"><span>Submit error</span><div><kbd>Ctrl</kbd>+<kbd>Enter</kbd></div></div>
+        <div class="shortcut-row"><span>Close dialogs</span><div><kbd>Esc</kbd></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TOASTS ============ -->
+  <div class="toast-container" id="toastContainer"></div>
+</body>
+</html>
