@@ -17,7 +17,6 @@ from app.api.image_text_extractor.image_text_extractor import router as image_te
 # tools
 from app.api.summarizer.summarizer import router as summarizer_router
 from app.api.json_fixer.json_fixer import router as json_fixer_router
-from app.api.code_reviewer.code_reviewer import router as code_reviewer_router
 from app.api.ELI5.eli5 import router as eli5_router
 from app.api.sql_generator.sql_generator import router as sql_router
 from app.api.ss_explainer.ss_explainer import router as ss_router
@@ -80,7 +79,6 @@ app.include_router(mock_api_router)
 app.include_router(mock_public_router) 
 app.include_router(summarizer_router)
 app.include_router(json_fixer_router)
-app.include_router(code_reviewer_router)
 app.include_router(image_text_extractor_router)
 app.include_router(eli5_router)
 app.include_router(sql_router)
