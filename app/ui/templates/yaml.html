@@ -1,0 +1,576 @@
+
+<body>
+
+<!-- ================= AMBIENT BACKGROUND ================= -->
+<div class="bg-canvas" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+  <div class="bg-blob bg-blob-3"></div>
+</div>
+<div class="mouse-glow" id="mouseGlow"></div>
+
+<!-- ================= HEADER ================= -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none">
+        <path d="M16 2 L28 9 V23 L16 30 L4 23 V9 Z" stroke="url(#hexGrad)" stroke-width="1.6" fill="rgba(50,108,229,0.08)"/>
+        <circle cx="16" cy="16" r="3.4" fill="url(#hexGrad)"/>
+        <path d="M16 16 L16 6.6M16 16 L24.4 20.8M16 16 L7.6 20.8" stroke="url(#hexGrad)" stroke-width="1.3" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="hexGrad" x1="4" y1="2" x2="28" y2="30">
+            <stop offset="0" stop-color="#4c8dff"/>
+            <stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">SandBox</span>
+      <span class="brand-sub">Kubernetes manifest generator</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <button class="header-btn icon-only" id="themeToggle" type="button" title="Toggle theme">
+      <svg id="themeIconMoon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="themeIconSun" viewBox="0 0 24 24" class="hidden"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ================= WORKSPACE ================= -->
+<main class="workspace">
+
+  <!-- LEFT PANEL — INPUT -->
+  <aside class="panel panel-left">
+    <div class="panel-header">
+      <div class="panel-tabs" role="tablist">
+        <button class="tab-btn active" data-tab="form" role="tab" type="button">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          App spec
+        </button>
+        <button class="tab-btn" data-tab="compose" role="tab" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v18M3 8h5M3 16h5"/></svg>
+          Compose import
+        </button>
+      </div>
+      <div class="tab-indicator" id="tabIndicator"></div>
+    </div>
+
+    <!-- ===== TAB: FORM BUILDER ===== -->
+    <div class="tab-pane active" id="tab-form">
+      <div class="builder-scroll">
+
+        <!-- Identity -->
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Identity</span>
+          </div>
+          <div class="builder-row two-col">
+            <div class="form-group">
+              <label class="form-label">Application name <span class="required">*</span></label>
+              <input class="form-input" id="f_app_name" type="text" placeholder="checkout-api" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Namespace</label>
+              <input class="form-input" id="f_namespace" type="text" placeholder="default" value="default" autocomplete="off" />
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:10px;">
+            <label class="form-label">Manifest output</label>
+            <div class="pill-toggle" id="f_output_format" data-value="multiple">
+              <button type="button" class="pill-toggle-opt active" data-val="multiple">Split files</button>
+              <button type="button" class="pill-toggle-opt" data-val="single">Single file</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Container -->
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Container</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image <span class="required">*</span></label>
+            <input class="form-input mono-input" id="f_image" type="text" placeholder="ghcr.io/acme/checkout-api:1.4.2" autocomplete="off" />
+          </div>
+          <div class="builder-row two-col" style="margin-top:10px;">
+            <div class="form-group">
+              <label class="form-label">Pull policy</label>
+              <div class="select-wrap">
+                <select class="form-select" id="f_pull_policy">
+                  <option value="IfNotPresent" selected>IfNotPresent</option>
+                  <option value="Always">Always</option>
+                  <option value="Never">Never</option>
+                </select>
+                <svg class="select-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Replicas</label>
+              <input class="form-input" id="f_replicas" type="number" min="1" value="1" />
+            </div>
+          </div>
+        </section>
+
+        <!-- Networking -->
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Networking</span>
+            <span class="badge" id="portsBadge">0</span>
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label class="form-label">Service type</label>
+            <div class="select-wrap">
+              <select class="form-select" id="f_service_type">
+                <option value="ClusterIP" selected>ClusterIP</option>
+                <option value="NodePort">NodePort</option>
+                <option value="LoadBalancer">LoadBalancer</option>
+              </select>
+              <svg class="select-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="dynamic-list" id="portsList"></div>
+          <button class="btn-add-row" id="addPortBtn" type="button">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Add port mapping
+          </button>
+        </section>
+
+        <!-- Environment -->
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Environment variables</span>
+            <span class="badge" id="envBadge">0</span>
+          </div>
+          <div class="dynamic-list" id="envList"></div>
+          <button class="btn-add-row" id="addEnvBtn" type="button">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Add variable
+          </button>
+        </section>
+
+        <!-- Secrets -->
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Secrets</span>
+            <span class="badge" id="secretsBadge">0</span>
+          </div>
+          <div class="dynamic-list" id="secretsList"></div>
+          <button class="btn-add-row" id="addSecretBtn" type="button">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Add secret
+          </button>
+        </section>
+
+        <!-- Resources (collapsible) -->
+        <section class="builder-section">
+          <button class="collapse-toggle" data-target="resourcesBody" type="button">
+            <span><svg viewBox="0 0 24 24"><path d="M4 21V8a2 2 0 0 1 2-2h3l2-3h2l2 3h3a2 2 0 0 1 2 2v13"/><path d="M9 21v-6h6v6"/></svg>Compute limits</span>
+            <span class="collapse-meta"><svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="collapsible" id="resourcesBody" aria-expanded="false">
+            <div class="collapse-body">
+              <div class="builder-row two-col">
+                <div class="form-group">
+                  <label class="form-label">CPU request</label>
+                  <input class="form-input mono-input" id="f_cpu_request" type="text" placeholder="250m" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CPU limit</label>
+                  <input class="form-input mono-input" id="f_cpu_limit" type="text" placeholder="500m" />
+                </div>
+              </div>
+              <div class="builder-row two-col" style="margin-top:10px;">
+                <div class="form-group">
+                  <label class="form-label">Memory request</label>
+                  <input class="form-input mono-input" id="f_mem_request" type="text" placeholder="256Mi" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Memory limit</label>
+                  <input class="form-input mono-input" id="f_mem_limit" type="text" placeholder="512Mi" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Storage (collapsible + enable) -->
+        <section class="builder-section">
+          <button class="collapse-toggle" data-target="storageBody" type="button">
+            <span><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>Persistent storage</span>
+            <span class="collapse-meta">
+              <label class="mini-switch" title="Enable">
+                <input type="checkbox" id="f_storage_enabled" />
+                <span class="mini-switch-track"></span>
+              </label>
+              <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible" id="storageBody" aria-expanded="false">
+            <div class="collapse-body">
+              <div class="builder-row two-col">
+                <div class="form-group">
+                  <label class="form-label">PVC name</label>
+                  <input class="form-input" id="f_pvc_name" type="text" placeholder="checkout-data" disabled />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Size</label>
+                  <input class="form-input mono-input" id="f_storage_size" type="text" placeholder="10Gi" disabled />
+                </div>
+              </div>
+              <div class="builder-row two-col" style="margin-top:10px;">
+                <div class="form-group">
+                  <label class="form-label">Mount path</label>
+                  <input class="form-input mono-input" id="f_mount_path" type="text" placeholder="/var/lib/data" disabled />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Access mode</label>
+                  <div class="select-wrap">
+                    <select class="form-select" id="f_access_mode" disabled>
+                      <option value="ReadWriteOnce" selected>ReadWriteOnce</option>
+                      <option value="ReadOnlyMany">ReadOnlyMany</option>
+                      <option value="ReadWriteMany">ReadWriteMany</option>
+                    </select>
+                    <svg class="select-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Probes (collapsible) -->
+        <section class="builder-section">
+          <button class="collapse-toggle" data-target="probesBody" type="button">
+            <span><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Health checks</span>
+            <span class="collapse-meta"><svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+          </button>
+          <div class="collapsible" id="probesBody" aria-expanded="false">
+            <div class="collapse-body">
+
+              <div class="probe-block">
+                <div class="probe-block-head">
+                  <span class="probe-block-title">Readiness probe</span>
+                  <label class="mini-switch">
+                    <input type="checkbox" id="f_readiness_enabled" />
+                    <span class="mini-switch-track"></span>
+                  </label>
+                </div>
+                <div class="builder-row two-col">
+                  <div class="form-group">
+                    <label class="form-label">HTTP path</label>
+                    <input class="form-input mono-input" id="f_readiness_path" type="text" placeholder="/healthz" disabled />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Port</label>
+                    <input class="form-input" id="f_readiness_port" type="number" placeholder="8080" disabled />
+                  </div>
+                </div>
+                <div class="builder-row two-col" style="margin-top:10px;">
+                  <div class="form-group">
+                    <label class="form-label">Initial delay (s)</label>
+                    <input class="form-input" id="f_readiness_delay" type="number" value="10" disabled />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Period (s)</label>
+                    <input class="form-input" id="f_readiness_period" type="number" value="10" disabled />
+                  </div>
+                </div>
+              </div>
+
+              <div class="probe-block">
+                <div class="probe-block-head">
+                  <span class="probe-block-title">Liveness probe</span>
+                  <label class="mini-switch">
+                    <input type="checkbox" id="f_liveness_enabled" />
+                    <span class="mini-switch-track"></span>
+                  </label>
+                </div>
+                <div class="builder-row two-col">
+                  <div class="form-group">
+                    <label class="form-label">HTTP path</label>
+                    <input class="form-input mono-input" id="f_liveness_path" type="text" placeholder="/livez" disabled />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Port</label>
+                    <input class="form-input" id="f_liveness_port" type="number" placeholder="8080" disabled />
+                  </div>
+                </div>
+                <div class="builder-row two-col" style="margin-top:10px;">
+                  <div class="form-group">
+                    <label class="form-label">Initial delay (s)</label>
+                    <input class="form-input" id="f_liveness_delay" type="number" value="10" disabled />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Period (s)</label>
+                    <input class="form-input" id="f_liveness_period" type="number" value="10" disabled />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Ingress (collapsible + enable) -->
+        <section class="builder-section">
+          <button class="collapse-toggle" data-target="ingressBody" type="button">
+            <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></svg>Ingress</span>
+            <span class="collapse-meta">
+              <label class="mini-switch" title="Enable">
+                <input type="checkbox" id="f_ingress_enabled" />
+                <span class="mini-switch-track"></span>
+              </label>
+              <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible" id="ingressBody" aria-expanded="false">
+            <div class="collapse-body">
+              <div class="form-group">
+                <label class="form-label">Host</label>
+                <input class="form-input mono-input" id="f_ingress_host" type="text" placeholder="checkout.acme.com" disabled />
+              </div>
+              <div class="builder-row two-col" style="margin-top:10px;">
+                <div class="form-group">
+                  <label class="form-label">Path</label>
+                  <input class="form-input mono-input" id="f_ingress_path" type="text" value="/" disabled />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">TLS</label>
+                  <label class="mini-switch mini-switch-standalone">
+                    <input type="checkbox" id="f_ingress_tls" disabled />
+                    <span class="mini-switch-track"></span>
+                    <span class="mini-switch-label">Terminate TLS</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HPA (collapsible + enable) -->
+        <section class="builder-section">
+          <button class="collapse-toggle" data-target="hpaBody" type="button">
+            <span><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-3-3L4 16.6"/></svg>Autoscaling</span>
+            <span class="collapse-meta">
+              <label class="mini-switch" title="Enable">
+                <input type="checkbox" id="f_hpa_enabled" />
+                <span class="mini-switch-track"></span>
+              </label>
+              <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="collapsible" id="hpaBody" aria-expanded="false">
+            <div class="collapse-body">
+              <div class="builder-row two-col">
+                <div class="form-group">
+                  <label class="form-label">Min replicas</label>
+                  <input class="form-input" id="f_hpa_min" type="number" min="1" value="1" disabled />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Max replicas</label>
+                  <input class="form-input" id="f_hpa_max" type="number" min="1" value="5" disabled />
+                </div>
+              </div>
+              <div class="form-group" style="margin-top:10px;">
+                <label class="form-label">Target CPU utilization — <span id="hpaCpuVal">80</span>%</label>
+                <input class="form-range" id="f_hpa_cpu" type="range" min="1" max="100" value="80" disabled />
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="builder-footer">
+        <button class="btn-ghost-sm" id="resetFormBtn" type="button">Reset</button>
+        <button class="btn-primary" id="generateFormBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          Generate manifests
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== TAB: COMPOSE IMPORT ===== -->
+    <div class="tab-pane" id="tab-compose">
+      <div class="builder-scroll">
+
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">docker-compose file</span>
+          </div>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="composeFileInput" accept=".yml,.yaml" hidden />
+            <svg viewBox="0 0 24 24" class="dropzone-icon"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M20 21H4"/></svg>
+            <p class="dropzone-title">Drop your compose file here</p>
+            <p class="dropzone-sub">or click to browse — .yml / .yaml</p>
+          </div>
+          <div class="file-chip hidden" id="composeFileChip">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span id="composeFileName">docker-compose.yaml</span>
+            <button type="button" id="composeFileRemove" title="Remove">✕</button>
+          </div>
+        </section>
+
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Target</span>
+          </div>
+          <div class="builder-row two-col">
+            <div class="form-group">
+              <label class="form-label">Namespace</label>
+              <input class="form-input" id="c_namespace" type="text" placeholder="default" value="default" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Override service type</label>
+              <div class="select-wrap">
+                <select class="form-select" id="c_service_type">
+                  <option value="ClusterIP" selected>ClusterIP</option>
+                  <option value="NodePort">NodePort</option>
+                  <option value="LoadBalancer">LoadBalancer</option>
+                </select>
+                <svg class="select-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:10px;">
+            <label class="form-label">Manifest output</label>
+            <div class="pill-toggle" id="c_output_format" data-value="multiple">
+              <button type="button" class="pill-toggle-opt active" data-val="multiple">Split files</button>
+              <button type="button" class="pill-toggle-opt" data-val="single">Single file</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="builder-section">
+          <div class="section-label-row">
+            <span class="section-label">Per-service extras</span>
+          </div>
+          <label class="switch-row">
+            <div>
+              <span class="switch-row-title">Generate Ingress</span>
+              <span class="switch-row-sub">One host rule per exposed service</span>
+            </div>
+            <label class="mini-switch">
+              <input type="checkbox" id="c_enable_ingress" />
+              <span class="mini-switch-track"></span>
+            </label>
+          </label>
+          <label class="switch-row">
+            <div>
+              <span class="switch-row-title">Generate HPA</span>
+              <span class="switch-row-sub">Default 1–5 replicas at 80% CPU</span>
+            </div>
+            <label class="mini-switch">
+              <input type="checkbox" id="c_enable_hpa" />
+              <span class="mini-switch-track"></span>
+            </label>
+          </label>
+        </section>
+
+      </div>
+
+      <div class="builder-footer">
+        <button class="btn-ghost-sm" id="resetComposeBtn" type="button">Reset</button>
+        <button class="btn-primary" id="generateComposeBtn" type="button" disabled>
+          <svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          Generate manifests
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="resize-handle" id="resizeHandle"></div>
+
+  <!-- RIGHT PANEL — OUTPUT -->
+  <section class="panel panel-right">
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <svg viewBox="0 0 120 120" class="empty-illustration" width="108" height="108">
+        <path d="M60 8 L104 33 V83 L60 108 L16 83 V33 Z" fill="none" stroke="var(--border-2)" stroke-width="1.5"/>
+        <path d="M60 8 L60 108M16 33 L104 83M104 33 L16 83" stroke="var(--border-1)" stroke-width="1"/>
+        <circle cx="60" cy="58" r="6" fill="var(--accent)" opacity="0.85"/>
+        <circle cx="60" cy="8" r="3" fill="var(--border-2)"/>
+        <circle cx="104" cy="33" r="3" fill="var(--border-2)"/>
+        <circle cx="104" cy="83" r="3" fill="var(--border-2)"/>
+        <circle cx="60" cy="108" r="3" fill="var(--border-2)"/>
+        <circle cx="16" cy="83" r="3" fill="var(--border-2)"/>
+        <circle cx="16" cy="33" r="3" fill="var(--border-2)"/>
+      </svg>
+      <p class="empty-title">No manifests yet</p>
+      <p class="empty-sub">Fill in the app spec on the left, or drop a compose file, then generate — your Deployment, Service and friends will render here.</p>
+      <div class="empty-arrow">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </div>
+    </div>
+
+    <!-- Loading state — "manifest constellation" build graph -->
+    <div class="loading-state hidden" id="loadingState">
+      <svg id="constellationSvg" viewBox="0 0 320 290" class="constellation">
+        <g id="constLines"></g>
+        <g id="constNodes"></g>
+      </svg>
+      <div class="build-log" id="buildLog"></div>
+    </div>
+
+    <!-- Results state -->
+    <div class="results-state hidden" id="resultsState">
+
+      <div class="results-summary">
+        <div class="results-summary-top">
+          <div class="summary-badge-row">
+            <span class="badge-pill badge-pill-ok" id="validationBadge">
+              <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+              Validated
+            </span>
+            <span class="badge-pill" id="namespaceBadge">ns/default</span>
+            <span class="badge-pill" id="countBadge">0 resources</span>
+          </div>
+          <button class="header-btn" id="downloadAllBtn" type="button">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            <span>Download all</span>
+          </button>
+        </div>
+        <p class="results-summary-text" id="summaryText"></p>
+        <div class="resource-pills" id="resourcePills"></div>
+      </div>
+
+      <div class="sql-code-panel">
+        <div class="sql-code-toolbar">
+          <div class="file-tabs" id="fileTabs"></div>
+          <div class="sql-code-actions">
+            <button class="toolbar-btn" id="copyBtn" type="button">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+            <button class="toolbar-btn" id="downloadFileBtn" type="button">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+              Save
+            </button>
+          </div>
+        </div>
+        <pre class="sql-code" id="yamlCode"><code></code></pre>
+      </div>
+
+    </div>
+
+    <!-- Error state -->
+    <div class="error-state hidden" id="errorState">
+      <svg viewBox="0 0 24 24" class="error-icon"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+      <p class="empty-title">Generation failed</p>
+      <p class="empty-sub" id="errorMessage">Something went wrong talking to the API.</p>
+      <button class="btn-ghost-sm" id="errorRetryBtn" type="button">Back to editing</button>
+    </div>
+
+  </section>
+</main>
+
+
+<div class="toast-container" id="toastContainer"></div>
+
+</body>
+</html>
