@@ -17,7 +17,6 @@
   const testStringsInput = $("testStringsInput");
   const testCounter = $("testCounter");
   const engineSelect = $("engineSelect");
-  const modeSelect = $("modeSelect");
   const generateBtn = $("generateBtn");
   const clearBtn = $("clearBtn");
   const panelRight = $("panelRight");
@@ -146,7 +145,6 @@
     promptInput.value = "";
     testStringsInput.value = "";
     engineSelect.value = "python";
-    modeSelect.value = "auto";
     promptInput.dispatchEvent(new Event("input"));
     testStringsInput.dispatchEvent(new Event("input"));
     autoResize(promptInput);
@@ -231,7 +229,6 @@
     const payload = {
       prompt,
       engine: engineSelect.value,
-      mode: modeSelect.value,
       test_strings: testStrings.length ? testStrings : null
     };
 
@@ -308,7 +305,6 @@
     stopLoadingLabelCycle();
     currentRegex = data.regex;
     currentEngine = data.engine || engineSelect.value;
-
     regexCode.innerHTML = highlightRegex(data.regex);
     engineBadgeLabel.textContent = ENGINE_LABELS[currentEngine] || currentEngine.toUpperCase();
 
