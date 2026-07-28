@@ -33,12 +33,13 @@ from app.api.regex_generator.regex import router as regex_router
 from app.api.yaml_generator.yaml import router as yaml_router
 from app.api.decision_maker.decision_maker import router as decision_maker_router
 from app.api.commit_message.commit import router as commit_router
-import app.main 
 from nicegui import ui
+import app.main
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
 from app.api.flashcard_generator.flashcard_generator import router as flashcard_generator_router
 from app.api.error_explainer.error_explainer import router as error_router
+from app.api.code_reviewer.code_reviewer import router as code_router
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
@@ -99,6 +100,7 @@ app.include_router(table_extractor_router)
 
 app.include_router(commit_router)
 app.include_router(error_router)
+app.include_router(code_router)
 ui.run_with(
     
     app,

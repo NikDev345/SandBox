@@ -1,0 +1,234 @@
+
+<body>
+
+<!-- ============ AMBIENT BACKGROUND ============ -->
+<div class="bg-canvas" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+  <div class="bg-blob bg-blob-3"></div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-icon">
+      <i data-lucide="scan-line"></i>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">CodeLens</span>
+      <span class="brand-sub">SandBox Code Reviewer</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="status-pill">
+      <span class="status-dot"></span>
+      SandBox engine online
+    </span>
+  </div>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main class="layout-page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="hero-eyebrow"><i data-lucide="sparkles"></i> Static analysis + LLM reasoning</span>
+    <h1 class="hero-title">AI Code Reviewer</h1>
+    <p class="hero-subtitle">Review your code using deterministic local analysis combined with AI-powered reasoning.</p>
+
+    <div class="lang-pills" role="list" aria-label="Supported languages">
+      <span class="lang-pill" data-lang="python" role="listitem"><i class="pill-dot" style="background:#3776ab"></i>Python</span>
+      <span class="lang-pill" data-lang="javascript" role="listitem"><i class="pill-dot" style="background:#f7df1e"></i>JavaScript</span>
+      <span class="lang-pill" data-lang="c" role="listitem"><i class="pill-dot" style="background:#5c6bc0"></i>C</span>
+      <span class="lang-pill" data-lang="cpp" role="listitem"><i class="pill-dot" style="background:#00599c"></i>C++</span>
+      <span class="lang-pill" data-lang="java" role="listitem"><i class="pill-dot" style="background:#e76f00"></i>Java</span>
+      <span class="lang-pill" data-lang="rust" role="listitem"><i class="pill-dot" style="background:#dea584"></i>Rust</span>
+    </div>
+  </section>
+
+  <!-- MAIN TOOL CARD -->
+  <section class="tool-card">
+
+    <!-- LEFT :: INPUT -->
+    <div class="tool-col tool-col-input">
+
+      <div class="col-heading">
+        <span class="col-heading-label"><i data-lucide="file-code-2"></i> Input</span>
+        <div class="lang-select-wrap">
+          <select id="languageSelect" class="lang-select" aria-label="Language">
+            <option value="auto">Auto-detect</option>
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+            <option value="rust">Rust</option>
+          </select>
+          <i data-lucide="chevron-down" class="select-chevron"></i>
+        </div>
+      </div>
+
+      <!-- Code editor -->
+      <div class="editor-shell" id="editorShell">
+        <div class="editor-gutter" id="editorGutter" aria-hidden="true"><span>1</span></div>
+        <textarea
+          id="codeInput"
+          class="editor-textarea"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          placeholder="def binary_search(arr, target):&#10;    lo, hi = 0, len(arr) - 1&#10;    while lo &lt;= hi:&#10;        mid = (lo + hi) // 2&#10;        ..."></textarea>
+        <div class="editor-scanline" id="editorScanline" aria-hidden="true"></div>
+      </div>
+
+      <!-- Divider -->
+      <div class="or-divider"><span>OR</span></div>
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload a source file">
+        <input type="file" id="fileInput" accept=".py,.js,.c,.cpp,.java,.rs" hidden />
+        <div class="upload-empty" id="uploadEmpty">
+          <div class="upload-icon"><i data-lucide="upload-cloud"></i></div>
+          <p class="upload-title">Drag file here</p>
+          <p class="upload-sub">or <span class="upload-browse">browse</span> from your device</p>
+          <div class="upload-exts">
+            <span>.py</span><span>.js</span><span>.c</span><span>.cpp</span><span>.java</span><span>.rs</span>
+          </div>
+        </div>
+        <div class="upload-file-preview hidden" id="uploadPreview">
+          <div class="file-icon"><i data-lucide="file-check-2"></i></div>
+          <div class="file-meta">
+            <p class="file-name" id="fileName">—</p>
+            <div class="file-stats">
+              <span id="fileLang">Auto</span>
+              <span class="stat-dot"></span>
+              <span id="fileSize">0 KB</span>
+              <span class="stat-dot"></span>
+              <span id="fileLines">— lines</span>
+            </div>
+          </div>
+          <button class="file-remove" id="fileRemove" aria-label="Remove file" type="button">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="input-actions">
+        <button class="btn-primary btn-review" id="reviewBtn" type="button" disabled>
+          <i data-lucide="scan-search" class="btn-icon-default"></i>
+          <span class="spinner-ring hidden" aria-hidden="true"></span>
+          <span class="btn-label">Review Code</span>
+        </button>
+        <button class="btn-secondary" id="clearBtn" type="button">
+          <i data-lucide="eraser"></i>
+          Clear
+        </button>
+      </div>
+
+      <div class="progress-track hidden" id="progressTrack">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT :: OUTPUT -->
+    <div class="tool-col tool-col-output">
+
+      <div class="col-heading">
+        <span class="col-heading-label"><i data-lucide="clipboard-list"></i> Review Result</span>
+        <span class="result-badge hidden" id="resultBadge"><i data-lucide="check-circle-2"></i> Complete</span>
+      </div>
+
+      <div class="output-viewport" id="outputViewport">
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-illustration">
+            <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="14" width="68" height="60" rx="10" stroke="url(#eg1)" stroke-width="1.6"/>
+              <path d="M24 34h24M24 44h34M24 54h18" stroke="url(#eg1)" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="66" cy="58" r="13" fill="var(--bg)" stroke="url(#eg1)" stroke-width="1.6"/>
+              <path d="M75.5 67.5L82 74" stroke="url(#eg1)" stroke-width="1.8" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="eg1" x1="10" y1="14" x2="82" y2="74" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#2563eb"/>
+                  <stop offset="1" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <p class="empty-title">Your review will appear here</p>
+          <p class="empty-sub">Paste a snippet or upload a source file, then run the review to get a full breakdown.</p>
+        </div>
+
+        <!-- LOADING STATE -->
+        <div class="loading-state hidden" id="loadingState">
+          <div class="thinking-orb">
+            <span class="thinking-ring ring-1"></span>
+            <span class="thinking-ring ring-2"></span>
+            <span class="thinking-ring ring-3"></span>
+            <i data-lucide="scan-search" class="thinking-icon"></i>
+          </div>
+          <p class="thinking-label" id="thinkingLabel">Analyzing code…</p>
+          <div class="thinking-skeleton">
+            <div class="sk-line sk-w-90"></div>
+            <div class="sk-line sk-w-70"></div>
+            <div class="sk-line sk-w-80"></div>
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results hidden" id="resultsState">
+
+          <!-- Overview metrics -->
+          <div class="overview-grid" id="overviewGrid"></div>
+
+          <!-- Summary -->
+          <div class="doc-card" id="summaryCard">
+            <div class="doc-card-head">
+              <i data-lucide="file-text"></i>
+              <span>Summary</span>
+            </div>
+            <p class="doc-card-body" id="summaryBody"></p>
+          </div>
+
+          <!-- Errors -->
+          <div class="doc-card doc-card-error">
+            <div class="doc-card-head">
+              <i data-lucide="octagon-alert"></i>
+              <span>Issues Found</span>
+              <span class="count-badge" id="errorsCount">0</span>
+            </div>
+            <div class="issue-list" id="errorsList"></div>
+          </div>
+
+          <!-- Suggestions -->
+          <div class="doc-card doc-card-suggest">
+            <div class="doc-card-head">
+              <i data-lucide="lightbulb"></i>
+              <span>Suggestions</span>
+              <span class="count-badge" id="suggestionsCount">0</span>
+            </div>
+            <div class="issue-list" id="suggestionsList"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="page-footer">
+    <span>CodeLens performs local static analysis before invoking the model — no source leaves your review session unnecessarily.</span>
+  </footer>
+
+</main>
+
+<!-- Toasts -->
+<div class="toast-container" id="toastContainer"></div>
+
+
+</body>
+</html>

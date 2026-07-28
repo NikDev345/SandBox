@@ -50,6 +50,7 @@ import app.ui.pages.decision_maker
 import app.ui.pages.commit
 import app.ui.pages.error_explainer
 import app.ui.pages.yaml
+import app.ui.pages.code_reviewer
 
 # ui.run(
 #     title='SandBox',
