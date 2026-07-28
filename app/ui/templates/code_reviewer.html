@@ -138,6 +138,18 @@
       <div class="col-heading">
         <span class="col-heading-label"><i data-lucide="clipboard-list"></i> Review Result</span>
         <span class="result-badge hidden" id="resultBadge"><i data-lucide="check-circle-2"></i> Complete</span>
+        <div class="col-heading">
+          <span class="col-heading-label"><i data-lucide="clipboard-list"></i> Review Result</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="result-badge hidden" id="resultBadge"><i data-lucide="check-circle-2"></i> Complete</span>
+            <button class="btn-secondary hidden" id="downloadJson" type="button" style="height:32px;padding:0 12px;font-size:11px;">
+              <i data-lucide="download"></i> JSON
+            </button>
+            <button class="btn-secondary hidden" id="downloadPdf" type="button" style="height:32px;padding:0 12px;font-size:11px;">
+              <i data-lucide="file-text"></i> PDF
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="output-viewport" id="outputViewport">

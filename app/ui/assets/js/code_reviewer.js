@@ -69,6 +69,9 @@
     suggestionsCount: document.getElementById("suggestionsCount"),
 
     toastContainer: document.getElementById("toastContainer"),
+
+    downloadJson: document.getElementById("downloadJson"),
+    downloadPdf: document.getElementById("downloadPdf"),
   };
 
   /* ============================================================
@@ -78,6 +81,7 @@
     selectedFile: null,
     loadingInterval: null,
     progressInterval: null,
+    lastResult: null,
   };
 
   /* ============================================================
@@ -282,6 +286,8 @@
     el.loadingState.classList.toggle("hidden", mode !== "loading");
     el.resultsState.classList.toggle("hidden", mode !== "results");
     el.resultBadge.classList.toggle("hidden", mode !== "results");
+    el.downloadJson.classList.toggle("hidden", mode !== "results");  
+    el.downloadPdf.classList.toggle("hidden", mode !== "results"); 
   }
 
   function startLoadingMessages() {
@@ -400,6 +406,16 @@
      or a nested shape:
        { overview:{...}, summary, issues[], suggestions[] }
      ============================================================ */
+  function formatFileSize(mb) {
+    if (mb === null || mb === undefined) return "—";
+    const bytes = mb * 1024 * 1024;
+    if (bytes === 0) return "0 B";
+    if (bytes < 1024) return `${Math.round(bytes)} B`;
+    const kb = bytes / 1024;
+    if (kb < 1024) return `${kb.toFixed(1)} KB`;
+    return `${mb.toFixed(2)} MB`;
+  }
+  
   function normalizeResponse(data) {
     const overview = data.overview || data;
     const cyclomatic = overview.cyclomatic_complexity;
@@ -408,7 +424,7 @@
     return {
       language: overview.language || "—",
       linesOfCode: overview.lines_of_code ?? "—",
-      fileSize: overview.file_size ?? "—",
+      fileSize: formatFileSize(overview.file_size),
       complexityMax: isComplexityObject ? cyclomatic.maximum : cyclomatic ?? "—",
       complexityAvg: isComplexityObject ? cyclomatic.average : "—",
       timeComplexity: data.time_complexity || overview.estimated_time_complexity || "—",
@@ -472,11 +488,12 @@
 
   function renderResults(r) {
     // Overview grid
+    state.lastResult = r;
     el.overviewGrid.innerHTML = "";
     const cards = [
       metricCard({ icon: "code-2", label: "Language", value: LANGUAGE_LABEL[r.language] || r.language }),
       metricCard({ icon: "align-left", label: "Lines of Code", value: r.linesOfCode }),
-      metricCard({ icon: "database", label: "File Size", value: typeof r.fileSize === "number" ? `${r.fileSize} MB` : r.fileSize }),
+      metricCard({ icon: "database", label: "File Size", value: r.fileSize }),
       metricCard({ label: "Max Complexity", value: r.complexityMax, gauge: true }),
       metricCard({ icon: "activity", label: "Avg Complexity", value: r.complexityAvg }),
       metricCard({ icon: "clock", label: "Time Complexity", value: r.timeComplexity }),
@@ -540,6 +557,65 @@
       container.appendChild(row);
     });
   }
+
+  /* ============================================================
+   DOWNLOADS
+   ============================================================ */
+  el.downloadJson.addEventListener("click", () => {
+    if (!state.lastResult) return;
+    const blob = new Blob([JSON.stringify(state.lastResult, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "code_review.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  el.downloadPdf.addEventListener("click", () => {
+    if (!state.lastResult) return;
+    const r = state.lastResult;
+
+    const lines = [
+      "CodeLens — AI Code Review Report",
+      "=".repeat(48),
+      "",
+      `Language       : ${r.language}`,
+      `Lines of Code  : ${r.linesOfCode}`,
+      `File Size      : ${r.fileSize} MB`,
+      `Max Complexity : ${r.complexityMax}`,
+      `Avg Complexity : ${r.complexityAvg}`,
+      `Time Complexity: ${r.timeComplexity}`,
+      `Space Complexity: ${r.spaceComplexity}`,
+      "",
+      "SUMMARY",
+      "-".repeat(48),
+      r.summary,
+      "",
+      "ISSUES FOUND",
+      "-".repeat(48),
+      ...(r.errors.length
+        ? r.errors.map((e, i) => `${i + 1}. ${e.title}\n   ${e.description}`)
+        : ["No issues detected."]),
+      "",
+      "SUGGESTIONS",
+      "-".repeat(48),
+      ...(r.suggestions.length
+        ? r.suggestions.map((s, i) => `${i + 1}. ${s.title}\n   ${s.description}`)
+        : ["No suggestions."]),
+    ];
+
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html><head><title>Code Review Report</title>
+      <style>
+        body { font-family: monospace; font-size: 13px; padding: 32px; color: #111; white-space: pre-wrap; }
+      </style></head>
+      <body>${lines.join("\n")}</body></html>
+    `);
+    win.document.close();
+    win.print(); // triggers browser's Save as PDF dialog
+  });
 
   /* ============================================================
      INIT
