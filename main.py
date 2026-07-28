@@ -40,6 +40,7 @@ from app.database.engine import SessionLocal
 from app.api.flashcard_generator.flashcard_generator import router as flashcard_generator_router
 from app.api.error_explainer.error_explainer import router as error_router
 from app.api.code_reviewer.code_reviewer import router as code_router
+from app.api.docker_generator.docker_generator import router as docker_router
 warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
@@ -101,6 +102,7 @@ app.include_router(table_extractor_router)
 app.include_router(commit_router)
 app.include_router(error_router)
 app.include_router(code_router)
+app.include_router(docker_router)
 ui.run_with(
     
     app,

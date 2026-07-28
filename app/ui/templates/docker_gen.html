@@ -1,0 +1,282 @@
+
+<body>
+
+  <!-- ============================================================
+       AMBIENT BACKGROUND — layered mesh + grid + drifting glows
+       ============================================================ -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-blob blob-a"></div>
+    <div class="bg-blob blob-b"></div>
+    <div class="bg-blob blob-c"></div>
+    <canvas id="containerField"></canvas>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" class="brand-icon" aria-hidden="true">
+          <path d="M2 13.5h2.2v2h-2.2v-2Zm3 0h2.2v2H5v-2Zm3 0h2.2v2H8v-2Zm3 0h2.2v2H11v-2Zm3 0h2.2v2H14v-2Zm-9-3h2.2v2H5v-2Zm3 0h2.2v2H8v-2Zm3 0h2.2v2H11v-2Zm3 0h2.2v2H14v-2Zm3 0h2.2v2H17v-2ZM8 7.5h2.2v2H8v-2Zm3 0h2.2v2H11v-2Z"/>
+          <path d="M22.3 12.9s-1-1-2.8-.7c-.2-1.6-1.6-2.5-1.6-2.5s-1.2 1.4-.5 3c-.4.2-1 .3-1.7.3H2.4c-.5 2 .1 4.6 1.7 6.2 1.5 1.6 3.7 2.3 5.9 2.3 4.5 0 8.3-2 10.1-6.1 1.3.1 2.6-.5 3-1.4.1-.3-.3-.6-.8-1.1Z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Dockerfile Generator</span>
+        <span class="brand-sub">by SandBox</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-link icon-only" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+        🌙
+    </button>
+    </div>
+  </header>
+
+  <main class="layout-shell">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero" id="hero">
+      <div class="hero-badge animate-in" style="--d:0ms">
+        <span class="pulse-dot"></span>
+        Detects language, framework, runtime &amp; entrypoint automatically
+      </div>
+
+      <h1 class="hero-title animate-in" style="--d:60ms">
+        Ship any project in a
+        <span class="hero-title-accent">
+          container
+          <svg class="hero-underline" viewBox="0 0 340 18" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M2 13 C 80 4, 260 4, 338 13" />
+          </svg>
+        </span>
+      </h1>
+
+      <p class="hero-subtitle animate-in" style="--d:120ms">
+        Drop your project root and get a production-ready Dockerfile — with the runtime,
+        entrypoint, and start command already figured out for you.
+      </p>
+
+      <!-- Signature visual: layered "build" stack that assembles itself -->
+      <div class="hero-visual animate-in" style="--d:180ms" aria-hidden="true">
+        <div class="stack-scene">
+          <div class="stack-layer" style="--i:0"><span>FROM node:22-alpine</span></div>
+          <div class="stack-layer" style="--i:1"><span>WORKDIR /app</span></div>
+          <div class="stack-layer" style="--i:2"><span>COPY package*.json ./</span></div>
+          <div class="stack-layer" style="--i:3"><span>RUN npm ci</span></div>
+          <div class="stack-layer" style="--i:4"><span>COPY . .</span></div>
+          <div class="stack-layer stack-layer--final" style="--i:5"><span>CMD ["node","index.js"]</span></div>
+          <div class="stack-glow"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         UPLOAD CARD
+         ============================================================ -->
+    <section class="tool-zone">
+
+      <div class="upload-card" id="uploadCard">
+        <div class="upload-card-inner">
+
+          <div class="upload-dropzone" id="dropzone" tabindex="0" role="button"
+               aria-label="Choose or drop your project folder">
+
+            <div class="dropzone-glow"></div>
+
+            <div class="dz-icon">
+              <i class="fa-solid fa-folder-tree"></i>
+            </div>
+
+            <h3 class="dz-title">Drag &amp; drop your project folder</h3>
+            <p class="dz-sub">Only folders are accepted — we preserve the full directory structure.</p>
+
+            <button class="btn-choose" id="chooseFolderBtn" type="button">
+              <i class="fa-regular fa-folder-open"></i>
+              Choose Folder
+            </button>
+
+            <!-- Hidden native input driving the folder picker -->
+            <input type="file" id="folderInput" webkitdirectory directory multiple hidden />
+
+            <p class="dz-hint">or click anywhere in this box</p>
+          </div>
+
+          <!-- Selected-folder summary, appears once files are chosen -->
+          <div class="folder-summary hidden" id="folderSummary">
+            <div class="fs-icon"><i class="fa-solid fa-cubes"></i></div>
+            <div class="fs-meta">
+              <div class="fs-name" id="fsName">—</div>
+              <div class="fs-stats">
+                <span><i class="fa-regular fa-file"></i><span id="fsFileCount">0</span> files</span>
+                <span class="fs-dot">•</span>
+                <span><i class="fa-solid fa-weight-hanging"></i><span id="fsSize">0 KB</span></span>
+              </div>
+            </div>
+            <button class="fs-clear" id="fsClear" type="button" aria-label="Remove selected folder" title="Remove folder">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="upload-status" id="uploadStatus" aria-live="polite"></div>
+
+          <button class="btn-generate" id="generateBtn" type="button" disabled>
+            <span class="btn-generate-glow"></span>
+            <span class="btn-generate-content">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              Generate Dockerfile
+            </span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- ==========================================================
+           LOADING STATE — layered "build" progress, not a spinner
+           ========================================================== -->
+      <div class="build-console hidden" id="buildConsole">
+        <div class="build-console-inner">
+
+          <div class="build-visual" aria-hidden="true">
+            <div class="build-layers">
+              <div class="build-layer" data-layer="0"></div>
+              <div class="build-layer" data-layer="1"></div>
+              <div class="build-layer" data-layer="2"></div>
+              <div class="build-layer" data-layer="3"></div>
+              <div class="build-layer" data-layer="4"></div>
+            </div>
+            <div class="build-scan"></div>
+          </div>
+
+          <div class="build-message" id="buildMessage">Scanning project…</div>
+
+          <div class="build-progress">
+            <div class="build-progress-fill" id="buildProgressFill"></div>
+          </div>
+
+          <div class="build-terminal" id="buildTerminal">
+            <span class="term-caret">_</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==========================================================
+           ERROR STATE
+           ========================================================== -->
+      <div class="error-panel hidden" id="errorPanel" role="alert">
+        <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="error-body">
+          <h3 class="error-title">Couldn't generate a Dockerfile</h3>
+          <p class="error-message" id="errorMessage">Something went wrong on our end.</p>
+        </div>
+        <button class="btn-retry" id="retryBtn" type="button">
+          <i class="fa-solid fa-rotate-right"></i>
+          Retry
+        </button>
+      </div>
+
+      <!-- ==========================================================
+           EMPTY STATE (default, before any run)
+           ========================================================== -->
+      <div class="empty-panel" id="emptyPanel">
+        <div class="empty-illustration" aria-hidden="true">
+          <svg viewBox="0 0 120 90" class="empty-svg">
+            <rect x="10" y="40" width="24" height="24" rx="4"/>
+            <rect x="38" y="40" width="24" height="24" rx="4"/>
+            <rect x="66" y="40" width="24" height="24" rx="4"/>
+            <rect x="24" y="14" width="24" height="24" rx="4"/>
+            <rect x="52" y="14" width="24" height="24" rx="4"/>
+            <path d="M6 68h108" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Upload your project folder to begin</h3>
+        <p>We'll detect the language, framework, and runtime, then write the Dockerfile for you.</p>
+      </div>
+
+      <!-- ==========================================================
+           RESULTS
+           ========================================================== -->
+      <div class="results-grid hidden" id="resultsGrid">
+
+        <!-- CARD 1 — Dockerfile -->
+        <div class="result-card code-card" id="dockerfileCard">
+          <div class="result-card-header">
+            <div class="rc-title">
+              <span class="rc-dot rc-dot--red"></span>
+              <span class="rc-dot rc-dot--yellow"></span>
+              <span class="rc-dot rc-dot--green"></span>
+              <span class="rc-name">Dockerfile</span>
+            </div>
+            <div class="rc-actions">
+              <button class="rc-btn" id="wrapToggleBtn" title="Toggle word wrap">
+                <i class="fa-solid fa-text-width"></i>
+                <span>Wrap</span>
+              </button>
+              <button class="rc-btn" id="copyDockerfileBtn" title="Copy Dockerfile">
+                <i class="fa-regular fa-copy"></i>
+                <span>Copy</span>
+              </button>
+              <button class="rc-btn" id="downloadDockerfileBtn" title="Download Dockerfile">
+                <i class="fa-solid fa-download"></i>
+                <span>Download</span>
+              </button>
+              <button class="rc-btn icon-only" id="fullscreenBtn" title="Fullscreen">
+                <i class="fa-solid fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="code-scroll" id="codeScroll">
+            <pre class="code-block" id="codeBlock"><code id="codeContent"></code></pre>
+          </div>
+          <div class="result-card-footer">
+            <span><i class="fa-regular fa-file-lines"></i> <span id="lineCount">0</span> lines</span>
+            <span><i class="fa-solid fa-weight-hanging"></i> <span id="byteCount">0 B</span></span>
+          </div>
+        </div>
+
+        <!-- CARD 2 — Quick Start -->
+        <div class="result-card quickstart-card" id="quickstartCard">
+          <div class="result-card-header">
+            <div class="rc-title">
+              <i class="fa-solid fa-terminal"></i>
+              <span class="rc-name">Quick Start</span>
+            </div>
+            <div class="rc-actions">
+              <span class="qs-progress" id="qsProgress">0/0 done</span>
+            </div>
+          </div>
+          <ol class="qs-list" id="qsList"><!-- populated by JS --></ol>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FULLSCREEN CODE OVERLAY
+       ============================================================ -->
+  <div class="fullscreen-overlay hidden" id="fullscreenOverlay">
+    <div class="fullscreen-box">
+      <div class="fs-toolbar">
+        <span class="fs-toolbar-title"><i class="fa-solid fa-file-code"></i> Dockerfile</span>
+        <button class="rc-btn icon-only" id="closeFullscreenBtn" title="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <pre class="code-block fullscreen-code" id="fullscreenCode"><code id="fullscreenCodeContent"></code></pre>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TOASTS
+       ============================================================ -->
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+</body>
+</html>

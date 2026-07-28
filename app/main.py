@@ -51,7 +51,7 @@ import app.ui.pages.commit
 import app.ui.pages.error_explainer
 import app.ui.pages.yaml
 import app.ui.pages.code_reviewer
-
+import app.ui.pages.docker_generator
 # ui.run(
 #     title='SandBox',
 #     dark=True,
