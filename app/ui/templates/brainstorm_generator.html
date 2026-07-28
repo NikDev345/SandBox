@@ -1,0 +1,251 @@
+<div class="brn-tool">
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="brn-hero">
+    <div class="brn-hero-copy">
+      <div class="brn-hero-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18h6"/>
+          <path d="M10 22h4"/>
+          <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3v.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-.5c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2z"/>
+        </svg>
+      </div>
+      <div class="brn-hero-text">
+        <h1 class="brn-hero-title">Brainstorm <span class="brn-gradient-text">Generator</span></h1>
+        <p class="brn-hero-sub">Turn a rough topic into a set of sharp, actionable ideas.</p>
+        <p class="brn-hero-desc">Describe what you're working on and let AI explore business, product, and creative angles you haven't considered — complete with next steps, tips, and pitfalls to avoid.</p>
+      </div>
+    </div>
+
+    <div class="brn-badge" aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.8 5.6L20 9l-5.6 1.8L12 16l-1.8-5.2L5 9l5.2-1.4L12 2z"/></svg>
+      AI Powered
+    </div>
+
+    <ul class="feature-pills" role="list">
+      <li class="feature-pill">3–20 Ideas</li>
+      <li class="feature-pill">19 Categories</li>
+      <li class="feature-pill">Adjustable Creativity</li>
+      <li class="feature-pill">Innovation Scoring</li>
+      <li class="feature-pill">Implementation Tips</li>
+    </ul>
+
+    <div class="brn-examples" id="brnExamples" role="list" aria-label="Example topics">
+      <span class="brn-examples-label">Try:</span>
+      <button type="button" class="brn-example-chip" data-example="AI Attendance System">AI Attendance System</button>
+      <button type="button" class="brn-example-chip" data-example="Food Delivery Startup">Food Delivery Startup</button>
+      <button type="button" class="brn-example-chip" data-example="Fitness App">Fitness App</button>
+      <button type="button" class="brn-example-chip" data-example="AI Resume Builder">AI Resume Builder</button>
+      <button type="button" class="brn-example-chip" data-example="Travel Planner">Travel Planner</button>
+      <button type="button" class="brn-example-chip" data-example="Content Calendar">Content Calendar</button>
+    </div>
+  </section>
+
+  <!-- ── INPUT CARD ───────────────────────────────────────────────────── -->
+  <form class="brn-input-card glass-panel" id="brnForm" novalidate>
+
+    <div class="form-group">
+      <label class="form-label form-label-required" for="brnTopic">Topic</label>
+      <div class="form-textarea-wrapper">
+        <textarea
+          id="brnTopic"
+          class="form-textarea"
+          rows="3"
+          maxlength="300"
+          placeholder="Describe what you want ideas for… e.g. &quot;A mobile app that helps students study together&quot;"
+          aria-describedby="brnTopicError"
+          required
+        ></textarea>
+        <span class="char-counter" id="brnTopicCounter"><span class="count">0</span>/300</span>
+      </div>
+      <p class="form-error-message" id="brnTopicError" hidden>Topic must be at least 3 characters.</p>
+    </div>
+
+    <div class="brn-field-row">
+      <div class="form-group">
+        <label class="form-label" for="brnCategory">Category</label>
+        <select id="brnCategory" class="form-select">
+          <option value="business">Business</option>
+          <option value="startup">Startup</option>
+          <option value="product">Product</option>
+          <option value="marketing">Marketing</option>
+          <option value="content">Content</option>
+          <option value="social_media">Social Media</option>
+          <option value="blog">Blog</option>
+          <option value="youtube">YouTube</option>
+          <option value="app">App</option>
+          <option value="website">Website</option>
+          <option value="ai">AI</option>
+          <option value="machine_learning">Machine Learning</option>
+          <option value="research">Research</option>
+          <option value="education">Education</option>
+          <option value="event">Event</option>
+          <option value="creative_writing">Creative Writing</option>
+          <option value="problem_solving">Problem Solving</option>
+          <option value="personal">Personal</option>
+          <option value="general" selected>General</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="brnGoal">Goal</label>
+        <input type="text" id="brnGoal" class="form-input" maxlength="300" placeholder="What are you trying to achieve?">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="brnAudience">Target Audience</label>
+        <input type="text" id="brnAudience" class="form-input" maxlength="200" placeholder="Who is this for?">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Creativity Level</label>
+      <div class="brn-creativity-grid" id="brnCreativityGrid" role="radiogroup" aria-label="Creativity level">
+        <button type="button" class="brn-creativity-card" data-value="low" role="radio" aria-checked="false">
+          <span class="brn-creativity-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+          </span>
+          <span class="brn-creativity-title">Low</span>
+          <span class="brn-creativity-desc">Safe, proven, practical ideas</span>
+        </button>
+        <button type="button" class="brn-creativity-card is-active" data-value="medium" role="radio" aria-checked="true">
+          <span class="brn-creativity-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.8 5.6L20 9l-5.6 1.8L12 16l-1.8-5.2L5 9l5.2-1.4L12 2z"/></svg>
+          </span>
+          <span class="brn-creativity-title">Medium</span>
+          <span class="brn-creativity-desc">Balanced mix of safe and bold</span>
+        </button>
+        <button type="button" class="brn-creativity-card" data-value="high" role="radio" aria-checked="false">
+          <span class="brn-creativity-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          </span>
+          <span class="brn-creativity-title">High</span>
+          <span class="brn-creativity-desc">Bold, unconventional, novel</span>
+        </button>
+      </div>
+      <input type="hidden" id="brnCreativity" value="medium">
+    </div>
+
+    <div class="form-group">
+      <div class="brn-slider-header">
+        <label class="form-label" for="brnIdeaCount">Number of Ideas</label>
+        <span class="brn-slider-value" id="brnIdeaCountValue">10</span>
+      </div>
+      <input type="range" id="brnIdeaCount" class="brn-slider" min="3" max="20" step="1" value="10" aria-valuemin="3" aria-valuemax="20" aria-valuenow="10">
+      <div class="brn-slider-scale"><span>3</span><span>20</span></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="brnConstraintInput">Constraints</label>
+      <div class="brn-chip-input" id="brnChipInput">
+        <div class="brn-chip-list" id="brnConstraintChips" aria-live="polite"></div>
+        <input type="text" id="brnConstraintInput" class="brn-chip-field" maxlength="100" placeholder="Type a constraint and press Enter…">
+      </div>
+      <p class="form-error-message" id="brnConstraintError" hidden></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="brnContext">Additional Context</label>
+      <textarea id="brnContext" class="form-textarea" rows="3" maxlength="2000" placeholder="Anything else the AI should know? Budget, timeline, existing constraints…"></textarea>
+    </div>
+
+    <div class="brn-actions">
+      <button type="button" class="btn btn-secondary" id="brnResetBtn">Reset</button>
+      <button type="submit" class="btn btn-primary brn-generate-btn" id="brnGenerateBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l1.8 5.6L20 9l-5.6 1.8L12 16l-1.8-5.2L5 9l5.2-1.4L12 2z"/></svg>
+        <span>Generate Ideas</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- ── LOADING STATE ────────────────────────────────────────────────── -->
+  <div class="brn-loading glass-panel" id="brnLoading" hidden>
+    <div class="brn-loading-orb" aria-hidden="true">
+      <span class="brn-orb-ring"></span>
+      <span class="brn-orb-ring"></span>
+      <span class="brn-orb-core"></span>
+    </div>
+    <p class="brn-loading-text" id="brnLoadingText">Analyzing possibilities…</p>
+    <div class="brn-loading-bar"><div class="brn-loading-bar-fill"></div></div>
+  </div>
+
+  <!-- ── EMPTY STATE ──────────────────────────────────────────────────── -->
+  <div class="brn-empty-state" id="brnEmptyState">
+    <div class="brn-empty-illustration" aria-hidden="true">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18h6"/>
+        <path d="M10 22h4"/>
+        <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3v.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-.5c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2z"/>
+      </svg>
+    </div>
+    <p class="brn-empty-title">Your ideas will appear here</p>
+    <p class="brn-empty-desc">Fill in a topic above and generate — or try one of the examples in the hero.</p>
+  </div>
+
+  <!-- ── RESULT SECTION ───────────────────────────────────────────────── -->
+  <div class="brn-results" id="brnResults" hidden>
+
+    <!-- Summary -->
+    <div class="brn-summary-card glass-panel" id="brnSummaryCard">
+      <div class="brn-summary-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div>
+        <h2 class="brn-summary-title">Summary</h2>
+        <p class="brn-summary-text" id="brnSummaryText"></p>
+      </div>
+    </div>
+
+    <!-- Ideas -->
+    <div class="brn-ideas-section">
+      <h2 class="brn-section-title">Ideas</h2>
+      <div class="brn-ideas-grid" id="brnIdeasGrid"></div>
+    </div>
+
+    <!-- Best Idea -->
+    <div class="brn-best-idea glass-panel" id="brnBestIdea" hidden>
+      <div class="brn-best-idea-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.8 5.6L20 9l-5.6 1.8L12 16l-1.8-5.2L5 9l5.2-1.4L12 2z"/></svg>
+        Best Idea
+      </div>
+      <p class="brn-best-idea-text" id="brnBestIdeaText"></p>
+    </div>
+
+    <!-- Implementation Tips -->
+    <div class="brn-tips-section" id="brnTipsSection" hidden>
+      <h2 class="brn-section-title">Implementation Tips</h2>
+      <div class="brn-tips-grid" id="brnTipsGrid"></div>
+    </div>
+
+    <!-- Common Mistakes -->
+    <div class="brn-mistakes-section" id="brnMistakesSection" hidden>
+      <h2 class="brn-section-title">Common Mistakes</h2>
+      <div class="brn-mistakes-grid" id="brnMistakesGrid"></div>
+    </div>
+
+    <!-- Final Recommendation -->
+    <div class="brn-recommendation glass-panel" id="brnRecommendation" hidden>
+      <div class="brn-recommendation-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div>
+        <h2 class="brn-section-title">Final Recommendation</h2>
+        <p class="brn-recommendation-text" id="brnRecommendationText"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATUS / TOAST TARGET ────────────────────────────────────────── -->
+  <div class="brn-status-card" id="brnStatusCard" hidden>
+    <span class="brn-status-icon" id="brnStatusIcon" aria-hidden="true"></span>
+    <div>
+      <p class="brn-status-title" id="brnStatusTitle"></p>
+      <p class="brn-status-body" id="brnStatusBody"></p>
+    </div>
+  </div>
+
+  <!-- ── FOOTER NOTE ──────────────────────────────────────────────────── -->
+  <p class="brn-footer-note">Generated <span id="brnFooterTimestamp">{{TIMESTAMP}}</span> · Ideas are AI-generated suggestions — validate before acting on them.</p>
+
+</div>
+<!-- /.brn-tool -->
