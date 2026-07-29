@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn","app.main:app"]
+CMD ["uvicorn","main:fast_app"]
