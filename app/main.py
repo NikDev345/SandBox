@@ -19,7 +19,7 @@ ui.add_head_html("""
 """, shared=True)
 
 
-import app.main
+# import app.main
 
 import app.ui.pages.brainstorm_generator
 import app.ui.pages.login

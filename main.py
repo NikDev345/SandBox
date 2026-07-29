@@ -1,20 +1,40 @@
 # main.py--------------------------------------------------
 from fastapi import FastAPI
-from app.models import *
-from app.database.engine import *
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
+from starlette.middleware.sessions import SessionMiddleware
+import os
+from dotenv import load_dotenv
+from app.routes.user import router as user_router
+warnings.filterwarnings("ignore", category=UserWarning)
+load_dotenv()
+fast_app = FastAPI()
+
+fast_app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("JWT_SECRET_KEY")
+)
+
+fast_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://127.0.0.1:5501",
+        "http://127.0.0.1:8000"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# tools
+from app.models import *
+from app.database.engine import *
+from app.api.image_text_extractor.image_text_extractor import router as image_text_extractor_router
 from app.api.auth import router as auth_router
 from app.api.tools import router as tool_router
 from app.api.exec import router as exe_router
 from app.api.analytics import router as analytic_router
 from app.routes.auth import router as google_router
-from starlette.middleware.sessions import SessionMiddleware
-import os
-from dotenv import load_dotenv
-from app.routes.user import router as user_router
-from app.api.image_text_extractor.image_text_extractor import router as image_text_extractor_router
-# tools
 from app.api.summarizer.summarizer import router as summarizer_router
 from app.api.json_fixer.json_fixer import router as json_fixer_router
 from app.api.ELI5.eli5 import router as eli5_router
@@ -35,14 +55,13 @@ from app.api.yaml_generator.yaml import router as yaml_router
 from app.api.decision_maker.decision_maker import router as decision_maker_router
 from app.api.commit_message.commit import router as commit_router
 from nicegui import ui
-import app.main
+# import app.main
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
 from app.api.flashcard_generator.flashcard_generator import router as flashcard_generator_router
 from app.api.error_explainer.error_explainer import router as error_router
 from app.api.code_reviewer.code_reviewer import router as code_router
 from app.api.docker_generator.docker_generator import router as docker_router
-warnings.filterwarnings("ignore", category=UserWarning)
 Base.metadata.create_all(bind=engine)   
 
 db = SessionLocal()
@@ -52,62 +71,43 @@ try:
 finally:
     db.close()
 
-app = FastAPI()
 
-load_dotenv()
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=os.getenv("JWT_SECRET_KEY")
-)
+fast_app.include_router(auth_router)
+fast_app.include_router(tool_router)
+fast_app.include_router(exe_router)
+fast_app.include_router(analytic_router)
+fast_app.include_router(google_router)
+fast_app.include_router(brainstorm_router)
+fast_app.include_router(user_router)
+fast_app.include_router(mock_api_router)
+fast_app.include_router(mock_public_router) 
+fast_app.include_router(summarizer_router)
+fast_app.include_router(json_fixer_router)
+fast_app.include_router(image_text_extractor_router)
+fast_app.include_router(eli5_router)
+fast_app.include_router(sql_router)
+fast_app.include_router(ss_router)
+fast_app.include_router(notes_cleaner_router)
+fast_app.include_router(flashcard_generator_router)
+fast_app.include_router(pro_cons_router)
+fast_app.include_router(email_rewriter_router)
+fast_app.include_router(quiz_router)
+fast_app.include_router(decision_maker_router)
+fast_app.include_router(youtube_summarizer_router)
+fast_app.include_router(blog_outline_router)
+fast_app.include_router(chart_explainer_router)
+fast_app.include_router(regex_router)
+fast_app.include_router(yaml_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://127.0.0.1:5501",
-        "http://127.0.0.1:8000"
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+fast_app.include_router(table_extractor_router)
 
-app.include_router(auth_router)
-app.include_router(tool_router)
-app.include_router(exe_router)
-app.include_router(analytic_router)
-app.include_router(google_router)
-app.include_router(brainstorm_router)
-app.include_router(user_router)
-app.include_router(mock_api_router)
-app.include_router(mock_public_router) 
-app.include_router(summarizer_router)
-app.include_router(json_fixer_router)
-app.include_router(image_text_extractor_router)
-app.include_router(eli5_router)
-app.include_router(sql_router)
-app.include_router(ss_router)
-app.include_router(notes_cleaner_router)
-app.include_router(flashcard_generator_router)
-app.include_router(pro_cons_router)
-app.include_router(email_rewriter_router)
-app.include_router(quiz_router)
-app.include_router(decision_maker_router)
-app.include_router(youtube_summarizer_router)
-app.include_router(blog_outline_router)
-app.include_router(chart_explainer_router)
-app.include_router(regex_router)
-app.include_router(yaml_router)
-
-app.include_router(table_extractor_router)
-
-app.include_router(commit_router)
-app.include_router(error_router)
-app.include_router(code_router)
-app.include_router(docker_router)
+fast_app.include_router(commit_router)
+fast_app.include_router(error_router)
+fast_app.include_router(code_router)
+fast_app.include_router(docker_router)
+import app.main
 ui.run_with(
-    
-    app,
+    fast_app,
     title="SandBox",
     mount_path="/",
     favicon='app/ui/assets/logo.png'
