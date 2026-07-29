@@ -21,6 +21,7 @@ ui.add_head_html("""
 
 import app.main
 
+import app.ui.pages.brainstorm_generator
 import app.ui.pages.login
 import app.ui.pages.signup
 import app.ui.pages.dashboard
