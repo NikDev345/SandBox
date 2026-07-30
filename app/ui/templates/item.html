@@ -1,0 +1,297 @@
+
+<body>
+
+  <!-- ================= AMBIENT BACKGROUND ================= -->
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+  </div>
+  <div class="mouse-glow" id="mouseGlow" aria-hidden="true"></div>
+
+  <!-- ================= HEADER ================= -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12.5l2 2 4-4.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="#fff" stroke-width="1.6" opacity="0.55"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Action Item Extractor</span>
+        <span class="brand-sub">AI task &amp; deadline detection</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn icon-only" id="themeToggle" aria-label="Toggle color theme" type="button">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" hidden><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow animate-fade-in-up">
+          <span class="eyebrow-dot"></span> Powered by AI
+        </span>
+        <h1 class="hero-title animate-fade-in-up delay-100">Action Item Extractor</h1>
+        <p class="hero-subtitle animate-fade-in-up delay-200">
+          Extract structured action items from meeting notes, emails, documents, and conversations using AI.
+        </p>
+      </div>
+
+      <div class="hero-visual animate-scale-in delay-300" aria-hidden="true">
+        <div class="hero-visual-glow"></div>
+        <svg class="hero-illustration" viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="docGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6366F1"/>
+              <stop offset="100%" stop-color="#8B5CF6"/>
+            </linearGradient>
+            <linearGradient id="scanGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#8B5CF6" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- orbit rings -->
+          <circle class="orbit-ring ring-a" cx="160" cy="130" r="108" />
+          <circle class="orbit-ring ring-b" cx="160" cy="130" r="88" />
+
+          <!-- document -->
+          <g class="doc-group">
+            <rect x="112" y="52" width="96" height="128" rx="10" fill="#111113" stroke="url(#docGrad)" stroke-width="1.6"/>
+            <rect x="128" y="76" width="64" height="6" rx="3" class="doc-line l1"/>
+            <rect x="128" y="92" width="52" height="6" rx="3" class="doc-line l2"/>
+            <rect x="128" y="108" width="58" height="6" rx="3" class="doc-line l3"/>
+            <rect x="128" y="124" width="40" height="6" rx="3" class="doc-line l4"/>
+            <rect x="112" y="52" width="96" height="128" rx="10" fill="none" class="scan-mask"/>
+            <rect x="112" y="50" width="96" height="18" fill="url(#scanGrad)" class="scan-line"/>
+          </g>
+
+          <!-- floating checks -->
+          <g class="float-badge badge-1">
+            <rect x="18" y="40" width="88" height="30" rx="15" fill="#111113" stroke="rgba(255,255,255,0.12)"/>
+            <circle cx="36" cy="55" r="7" fill="#22C55E" opacity="0.18"/>
+            <path d="M32.5 55l2.5 2.5 5-5" stroke="#22C55E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="50" y="59" fill="#A1A1AA" font-size="10" font-family="Inter, sans-serif">John · Friday</text>
+          </g>
+
+          <g class="float-badge badge-2">
+            <rect x="206" y="176" width="98" height="30" rx="15" fill="#111113" stroke="rgba(255,255,255,0.12)"/>
+            <circle cx="224" cy="191" r="7" fill="#6366F1" opacity="0.18"/>
+            <path d="M220.5 191l2.5 2.5 5-5" stroke="#6366F1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="238" y="195" fill="#A1A1AA" font-size="10" font-family="Inter, sans-serif">Sarah · Tomorrow</text>
+          </g>
+
+          <g class="float-badge badge-3">
+            <rect x="20" y="188" width="80" height="28" rx="14" fill="#111113" stroke="rgba(255,255,255,0.12)"/>
+            <circle cx="37" cy="202" r="6.5" fill="#8B5CF6" opacity="0.2"/>
+            <path d="M33.8 202l2.2 2.2 4.4-4.4" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="49" y="206" fill="#A1A1AA" font-size="9.5" font-family="Inter, sans-serif">Mike · Monday</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ================= WORKSPACE ================= -->
+    <section class="workspace">
+
+      <!-- LEFT: INPUT PANEL -->
+      <div class="panel panel-input glass-card animate-fade-in-up delay-200">
+
+        <div class="segmented" role="tablist" aria-label="Input method">
+          <button class="segmented-btn active" id="tabTextBtn" role="tab" aria-selected="true" aria-controls="textPane" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+            Text
+          </button>
+          <button class="segmented-btn" id="tabFileBtn" role="tab" aria-selected="false" aria-controls="filePane" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+            File Upload
+          </button>
+          <div class="segmented-indicator" id="segmentedIndicator"></div>
+        </div>
+
+        <!-- TEXT MODE -->
+        <div class="input-pane active" id="textPane" role="tabpanel">
+          <label class="field-label" for="textInput">Meeting notes, emails, or conversation</label>
+          <textarea
+            id="textInput"
+            class="text-input"
+            placeholder="Example:&#10;&#10;John should update the API documentation by Friday.&#10;Sarah needs to review the pull request before tomorrow.&#10;Mike will deploy the backend next Monday."
+            aria-describedby="charCounter"
+          ></textarea>
+          <div class="field-meta">
+            <span class="char-counter" id="charCounter">0 characters</span>
+          </div>
+        </div>
+
+        <!-- FILE MODE -->
+        <div class="input-pane" id="filePane" role="tabpanel" hidden>
+          <label class="field-label" for="fileInput">Upload a document</label>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload a PDF, DOCX, or TXT file">
+            <input type="file" id="fileInput" accept=".pdf,.docx,.txt" hidden />
+            <div class="dropzone-idle" id="dropzoneIdle">
+              <div class="dropzone-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5l5 5"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+              </div>
+              <p class="dropzone-title">Drop your file here, or <span>browse</span></p>
+              <p class="dropzone-hint">Supports PDF, DOCX, and TXT · up to 25MB</p>
+            </div>
+            <div class="dropzone-file" id="dropzoneFile" hidden>
+              <div class="file-icon" id="fileIcon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+              </div>
+              <div class="file-meta">
+                <span class="file-name" id="fileName">document.pdf</span>
+                <span class="file-size" id="fileSize">—</span>
+              </div>
+              <button class="file-remove" id="fileRemoveBtn" type="button" aria-label="Remove file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+              <div class="file-success-ring" id="fileSuccessRing" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="validation-msg" id="validationMsg" hidden></div>
+
+        <button class="submit-btn" id="submitBtn" type="button">
+          <span class="submit-btn-bg"></span>
+          <span class="submit-content submit-idle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+            Extract Action Items
+          </span>
+          <span class="submit-content submit-loading" hidden>
+            <span class="btn-spinner"></span>
+            Analyzing…
+          </span>
+          <span class="submit-content submit-success" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Extracted
+          </span>
+          <span class="submit-content submit-error" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+            Try Again
+          </span>
+        </button>
+      </div>
+
+      <!-- RIGHT: OUTPUT PANEL -->
+      <div class="panel panel-output glass-card animate-fade-in-up delay-300">
+
+        <!-- EMPTY STATE -->
+        <div class="state-view" id="stateEmpty">
+          <div class="empty-illustration" aria-hidden="true">
+            <svg viewBox="0 0 120 120" fill="none">
+              <circle cx="60" cy="60" r="46" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+              <circle cx="60" cy="60" r="32" stroke="rgba(255,255,255,0.10)" stroke-width="1.5"/>
+              <rect x="42" y="38" width="36" height="44" rx="6" fill="none" stroke="#71717A" stroke-width="1.6"/>
+              <path d="M50 50h20M50 58h14M50 66h17" stroke="#52525B" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3 class="state-title">No action items yet</h3>
+          <p class="state-desc">Paste your notes or upload a document, then extract to see structured tasks appear here.</p>
+        </div>
+
+        <!-- LOADING STATE -->
+        <div class="state-view" id="stateLoading" hidden>
+          <div class="scan-loader" aria-hidden="true">
+            <svg viewBox="0 0 96 120" class="scan-loader-doc">
+              <rect x="4" y="4" width="88" height="112" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.14)" stroke-width="1.4"/>
+              <g class="scan-loader-lines">
+                <rect x="18" y="26" width="52" height="6" rx="3"/>
+                <rect x="18" y="42" width="60" height="6" rx="3"/>
+                <rect x="18" y="58" width="40" height="6" rx="3"/>
+                <rect x="18" y="74" width="48" height="6" rx="3"/>
+                <rect x="18" y="90" width="34" height="6" rx="3"/>
+              </g>
+              <rect x="4" y="0" width="88" height="20" fill="url(#loaderScanGrad)" class="scan-loader-beam"/>
+              <defs>
+                <linearGradient id="loaderScanGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0"/>
+                  <stop offset="50%" stop-color="#8B5CF6" stop-opacity="0.85"/>
+                  <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <ul class="progress-steps" id="progressSteps" aria-live="polite">
+            <li data-step="0"><span class="step-check"></span>Reading document</li>
+            <li data-step="1"><span class="step-check"></span>Detecting action items</li>
+            <li data-step="2"><span class="step-check"></span>Understanding context</li>
+            <li data-step="3"><span class="step-check"></span>Finding assignees</li>
+            <li data-step="4"><span class="step-check"></span>Detecting deadlines</li>
+            <li data-step="5"><span class="step-check"></span>Formatting results</li>
+          </ul>
+        </div>
+
+        <!-- ERROR STATE -->
+        <div class="state-view" id="stateError" hidden>
+          <div class="error-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9.5"/></svg>
+          </div>
+          <h3 class="state-title">Extraction failed</h3>
+          <p class="state-desc" id="errorMessage">Something went wrong while extracting action items.</p>
+          <button class="retry-btn" id="retryBtn" type="button">Retry</button>
+        </div>
+
+        <!-- RESULTS STATE -->
+        <div class="state-view state-results" id="stateResults" hidden>
+          <div class="results-header">
+            <div class="results-title-group">
+              <h3 class="state-title">Extracted Action Items</h3>
+              <span class="results-count" id="resultsCount">0 items</span>
+            </div>
+            <div class="results-actions">
+              <button class="icon-action-btn" id="collapseAllBtn" type="button" title="Collapse/Expand all">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
+              </button>
+              <button class="icon-action-btn" id="copyAllBtn" type="button" title="Copy all tasks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+              </button>
+              <button class="icon-action-btn" id="downloadJsonBtn" type="button" title="Download JSON">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+              </button>
+              <button class="icon-action-btn danger" id="clearResultsBtn" type="button" title="Clear results">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2m-9 0l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="results-toolbar">
+            <div class="search-field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="searchInput" placeholder="Search tasks…" aria-label="Search extracted tasks" />
+            </div>
+            <div class="sort-field">
+              <label for="sortSelect" class="sr-only">Sort by</label>
+              <select id="sortSelect">
+                <option value="default">Sort: Default</option>
+                <option value="task">Sort: Task</option>
+                <option value="assignee">Sort: Assignee</option>
+                <option value="deadline">Sort: Deadline</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="results-list" id="resultsList"></div>
+          <p class="no-match-msg" id="noMatchMsg" hidden>No tasks match your search.</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY requirements1.txt .
 
+# TODO: RUN pip install -r requirements.txt && \ python -m spacy download en_core_web_sm
 RUN pip install -r requirements1.txt
 
 COPY . .
