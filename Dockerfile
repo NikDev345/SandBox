@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["uvicorn","main:fast_app"]
+CMD ["uvicorn","main:fast_app", "--host", "0.0.0.0"]
