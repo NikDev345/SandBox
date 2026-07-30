@@ -3,6 +3,9 @@ import tempfile, textwrap, json, asyncio
 from app.services.gemini_service import GeminiService
 from typing import Optional
 from pydantic import ValidationError
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from sqlalchemy.orm import Session
 
 class ErrorExplainer:
     client = GeminiService()
@@ -140,7 +143,7 @@ Rules:
             raise ValueError(f"AI response does not match the expected schema: {e}") from e
      
     @staticmethod
-    async def explain_error(request: ErrorExplainerRequest,) -> ErrorExplainerResponse:
+    async def explain_error(request: ErrorExplainerRequest, user_id: str, db: Session) -> ErrorExplainerResponse:
         (
             error,
             code,
@@ -159,5 +162,22 @@ Rules:
             error_file_path=error_file_path,
             code_file_path=code_file_path,
         )
+        
+        tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="ERROR-EXPLAINER",
+                )
+        tool_id = tool.id if tool else "ERROR-EXPLAINER"
+                
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=json.dumps({"error": request.error, "code": request.code}),
+                output=str(raw_response),
+            )
+        except Exception:
+            pass
         
         return ErrorExplainer._parse_response(raw_response)

@@ -7,6 +7,8 @@ from app.models.sql_generator import (
 from app.services.sql_generator.sql_generator import SQLGeneratorService
 from app.utils.auth import get_current_user
 from app.models.user import Users
+from app.database.engine import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/sql-generator",
@@ -26,14 +28,14 @@ Generate a SQL query using either:
 """,
 )
 async def generate_sql(
-    request: SQLGeneratorRequest, current_user:Users = Depends(get_current_user)
+    request: SQLGeneratorRequest, current_user:Users = Depends(get_current_user), db: Session = Depends(get_db)
 ) -> SQLGeneratorResponse:
     """
     Generates a SQL query.
     """
 
     try:
-        return SQLGeneratorService.generate(request, current_user)
+        return SQLGeneratorService.generate(request, current_user, db)
 
     except ValueError as e:
         raise HTTPException(

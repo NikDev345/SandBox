@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 import yaml
-
+from app.database.engine import get_db
 from app.models.yaml import (
     KubernetesComposeRequest,
     KubernetesFormRequest,
@@ -10,7 +10,7 @@ from app.models.yaml import (
 from app.services.yaml_generator.yaml import YAMLGen
 from app.utils.auth import get_current_user
 from app.models.user import Users
-
+from sqlalchemy.orm import Session
 router = APIRouter(prefix="/yaml-generator", tags=["Tools"])
 
 
@@ -23,6 +23,7 @@ async def generate_kubernetes_yaml(
     data: str = Form(...),
     compose_file: UploadFile | None = File(None),
     current_user: Users =Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
 
     try:
@@ -31,7 +32,7 @@ async def generate_kubernetes_yaml(
 
             request = KubernetesFormRequest.model_validate_json(data)
 
-            return YAMLGen.generate(request)
+            return YAMLGen.generate(request, current_user['sub'], db)
 
         if compose_file is None:
             raise HTTPException(
@@ -49,6 +50,8 @@ async def generate_kubernetes_yaml(
 
         return YAMLGen.generate(
             request=request,
+            user_id=current_user['sub'],
+            db=db,
             compose_data=compose_dict,
         )
 

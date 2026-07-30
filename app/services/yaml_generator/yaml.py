@@ -1,7 +1,10 @@
 from app.models.yaml import *
-import yaml, re
+import yaml, re, json
 from typing import Any
 from app.services.yaml_generator.utils import Utils
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 class YAMLGen:
     
@@ -530,6 +533,8 @@ class YAMLGen:
     @staticmethod
     def generate(
         request: KubernetesFormRequest | KubernetesComposeRequest,
+        user_id: str,
+        db: Session,
         compose_data: dict | None = None,
     ) -> KubernetesGeneratorResponse:
 
@@ -575,10 +580,41 @@ class YAMLGen:
                         ),
                     )
                 )
+                
+        if isinstance(request, KubernetesComposeRequest):
+            user_input = json.dumps({
+                "mode": "compose",
+                "compose_file": request.filename,
+            })
 
-        # Step 7: Return response
-        return KubernetesGeneratorResponse(
+        elif isinstance(request, KubernetesFormRequest):
+            user_input = json.dumps({
+                "mode": "manual",
+                "request": request.model_dump(),
+            })
+            
+        res = KubernetesGeneratorResponse(
             summary=summary,
             resources=resources,
             files=files,
-        )
+        ).model_dump_json()
+                
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="YAML-GENERATOR",
+            )
+        tool_id = tool.id if tool else "YAML-GENERATOR"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=user_input,
+                output=res,
+            )
+        except Exception:
+            pass
+
+        # Step 7: Return response
+        return res

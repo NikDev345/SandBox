@@ -6,6 +6,8 @@ from app.models.ss_explainer import (
     ExplanationAction,
 )
 from app.services.ss_explainer.ss_explainer import SSExplainer
+from app.database.engine import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/screenshot-explainer",
@@ -21,7 +23,8 @@ async def explain_screenshot(
     image: UploadFile = File(...),
     action: ExplanationAction = Form(...),
     custom_action: str | None = Form(None),
-    current_user: Users = Depends(get_current_user)
+    current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     try:
         request = ScreenshotExplainerRequest(
@@ -32,6 +35,7 @@ async def explain_screenshot(
         return await SSExplainer.explain(
             request,
             image,
+            db,
             current_user
         )
 

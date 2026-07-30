@@ -25,7 +25,9 @@ from app.services.flashcard_generator.validator import (
     FlashcardGeneratorValidator,
 )
 from app.services.gemini_service import GeminiService
-
+from sqlalchemy.orm import Session
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
 
 class FlashcardGeneratorService:
     """
@@ -35,6 +37,7 @@ class FlashcardGeneratorService:
     @staticmethod
     async def generate(
         request: FlashcardGeneratorRequest,
+        db: Session,
         user=None,
     ) -> FlashcardGeneratorResponse:
         """
@@ -69,6 +72,23 @@ class FlashcardGeneratorService:
             response,
             cleaned_request,
         )
+        
+        tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="FLASHCARD-GENERATOR",
+                )
+        tool_id = tool.id if tool else "FLASHCARD-GENERATOR"
+                
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user["sub"],
+                tool_id=tool_id,
+                user_input=request.content,
+                output=str(response),
+            )
+        except Exception:
+            pass
 
         return response
 

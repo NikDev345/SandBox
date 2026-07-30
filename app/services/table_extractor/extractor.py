@@ -15,10 +15,10 @@ from __future__ import annotations
 
 import logging
 import mimetypes
-import time
+import time, json
 from pathlib import Path
 from typing import List, Optional
-
+from sqlalchemy.orm import Session
 from PIL import Image
 
 from app.services.table_extractor.config import DEFAULT_CONFIG, ExtractorConfig
@@ -33,7 +33,8 @@ from app.models.table_extractor import (
 from app.services.table_extractor.paddle_client import PaddleTableClient
 from app.services.table_extractor.parser import TableParser
 from app.services.table_extractor.pdf_processor import PDFProcessor
-
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
 logger = logging.getLogger(__name__)
 
 
@@ -96,6 +97,8 @@ class TableExtractor:
     def extract(
         self,
         file_path: str,
+        user_id: str, 
+        db: Session,
         output_format: str = "",
         fast_mode: bool = False,
     ) -> dict:
@@ -161,14 +164,41 @@ class TableExtractor:
                 ocr_item_count=total_ocr_items,
                 processing_time=time.monotonic() - start_time,
             )
-
-            return self._create_response(
+            
+            validated_input = {
+                "filename": Path(file_path).name,
+                "file_type": file_type,          # "pdf" or "image"
+                "output_format": output_format,
+                "fast_mode": fast_mode,
+            }
+            
+            response = self._create_response(
                 success=True,
                 tables=all_parsed_tables,
                 statistics=statistics,
                 output_format=output_format,
                 output_path=output_path,
             ).to_dict()
+
+            
+            tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="TABLE-EXTRACTOR",
+                )
+            tool_id = tool.id if tool else "TABLE-EXTRACTOR"
+            
+            try:
+                ExecutionService.create_execution(
+                    db=db,
+                    user_id=user_id,
+                    tool_id=tool_id,
+                    user_input=json.dumps(validated_input),
+                    output=json.dumps(response),
+                )
+            except Exception:
+                pass
+
+            return response
 
         except TableExtractorError as exc:
             logger.error("Extraction failed for %s: %s", file_path, exc)

@@ -15,7 +15,9 @@ from app.services.quiz.validator import QuizValidator
 from app.services.quiz.formatter import QuizFormatter
 from app.services.gemini_service import GeminiService
 from app.utils.text_cleaner import TextCleaner
-
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 class QuizGeneratorService:
     """
@@ -25,6 +27,7 @@ class QuizGeneratorService:
     async def generate_quiz(
         self,
         request: QuizRequest,
+        db: Session,
         user=None,
     ) -> QuizResponse:
         """
@@ -41,18 +44,20 @@ class QuizGeneratorService:
         # --------------------------------------------------
         # Clean Text
         # --------------------------------------------------
-
+        ip = ""
         if request.input_type.value == "document":
 
             request.extracted_text = TextCleaner.clean(
                 request.extracted_text
             )
+            ip = request.extracted_text
 
         else:
 
             request.prompt = TextCleaner.clean(
                 request.prompt
             )
+            ip = request.prompt
 
         # --------------------------------------------------
         # Build Prompt
@@ -88,5 +93,22 @@ class QuizGeneratorService:
             response,
             request,
         )
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="QUIZ-GENERATOR",
+            )
+        tool_id = tool.id if tool else "QUIZ-GENERATOR"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user['sub'],
+                tool_id=tool_id,
+                user_input=ip,
+                output=str(response.questions),
+            )
+        except Exception:
+            pass
 
         return response

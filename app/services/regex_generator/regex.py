@@ -2,6 +2,9 @@ from app.models.regex import RegexGeneratorRequest, RegexEngine, RegexMatchResul
 import re, string, json
 from typing import Optional,List
 from app.services.gemini_service import GeminiService
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from sqlalchemy.orm import Session
 
 class Regex:
     client = GeminiService()
@@ -345,7 +348,7 @@ class Regex:
         
 # main function  
     @staticmethod
-    def generate_regex(request: RegexGeneratorRequest) -> RegexGeneratorResponse:
+    def generate_regex(request: RegexGeneratorRequest, user_id: str, db: Session) -> RegexGeneratorResponse:
         # Validate request
         request = Regex._validate_request(request)
 
@@ -386,6 +389,23 @@ class Regex:
             response.regex,
             request.test_strings
         )
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="REGEX-GENERATOR",
+            )
+        tool_id = tool.id if tool else "REGEX-GENERATOR"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=json.dumps({"prompt": request.prompt, "engine": request.engine}),
+                output=response.regex,
+            )
+        except Exception:
+            pass
 
         return response
             

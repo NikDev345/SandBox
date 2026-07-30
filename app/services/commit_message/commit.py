@@ -1,8 +1,11 @@
 from app.models.commit import CommitMessageRequest, CommitMessageResponse, CommitSuggestion, GitData
 from pathlib import Path
-import subprocess, re
+import subprocess, re, json
 from typing import Literal, List
 from app.services.gemini_service import GeminiService
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 class NotGitRepositoryError(Exception):
     """Raised when the given directory is not a valid Git repository."""
@@ -197,7 +200,7 @@ class CommitMessageGenerator:
         
     # main function--------------------------------------------------------------------------------
     @staticmethod
-    def generate(request: CommitMessageRequest, user_id: str,)->CommitMessageResponse:
+    def generate(request: CommitMessageRequest, user_id: str, db: Session,)->CommitMessageResponse:
         # Validate repository
         repo = CommitMessageGenerator._validate_git_repo(
             request.repository_path
@@ -237,6 +240,28 @@ class CommitMessageGenerator:
             raw_response,
             request.suggestions,
         )
+        
+        user_input = json.dumps({
+            "repo_name": git_data.repository_name,
+            "branch": git_data.branch,
+        })
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="COMMIT-MSG",
+            )
+        tool_id = tool.id if tool else "COMMIT-MSG"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=user_input,
+                output=str(commit_suggestions),
+            )
+        except Exception:
+            pass
 
         # Build response
         return CommitMessageResponse(

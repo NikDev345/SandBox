@@ -21,11 +21,11 @@ Author: Sandbox AI
 ============================================================
 """
 
-import traceback
+import traceback, json
 
 from fastapi import HTTPException
 from sqlalchemy import exc
-
+from sqlalchemy.orm import Session
 from app.models.decision_maker import (
     DecisionMakerRequest,
     DecisionMakerResponse,
@@ -38,7 +38,8 @@ from app.services.decision_maker.prompt_engine import PromptEngine
 from app.services.decision_maker.validator import (
     DecisionMakerValidator,
 )
-
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
 
 class DecisionMakerService:
     """Decision Maker business logic."""
@@ -46,6 +47,8 @@ class DecisionMakerService:
     @staticmethod
     async def analyze(
         request: DecisionMakerRequest,
+        user_id: str,
+        db: Session,
     ) -> DecisionMakerResponse:
         """
         Analyze a user's decision using AI.
@@ -83,6 +86,18 @@ class DecisionMakerService:
         try:
             client = GeminiService()
             ai_response = client.generate(prompt)
+            tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="DECISION-MAKER",
+                )
+            tool_id = tool.id if tool else "DECISION-MAKER"
+            ExecutionService.create_execution(
+                    db=db,
+                    user_id=user_id,
+                    tool_id=tool_id,
+                    user_input=request.question,
+                    output=json.dumps(ai_response),
+                )
         except Exception as exc:
             traceback.print_exc()
             raise HTTPException(
@@ -90,11 +105,3 @@ class DecisionMakerService:
                 detail=str(exc),
             ) from exc
         return DecisionMakerFormatter.format(ai_response)
-
-        # ----------------------------------------------------
-        # Format Response
-        # ----------------------------------------------------
-
-        return DecisionMakerFormatter.format(
-            ai_response
-        )

@@ -7,7 +7,8 @@ from app.models.error_explainer import (
     ErrorExplainerResponse,
 )
 from app.services.error_explainer.error_explainer import ErrorExplainer
-
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 router = APIRouter(
     prefix="/error-explainer",
     tags=["Error Explainer"],
@@ -22,6 +23,7 @@ router = APIRouter(
 async def explain_error(
     request: ErrorExplainerRequest,
     current_user: Users = Depends(get_current_user),
+    db: Session = get_db
 ):
     """
     Analyze a programming error or stack trace and return
@@ -30,7 +32,7 @@ async def explain_error(
     """
     try:
         service = ErrorExplainer()
-        return await service.explain_error(request)
+        return await service.explain_error(request, current_user["sub"], db)
 
     except ValueError as e:
         raise HTTPException(

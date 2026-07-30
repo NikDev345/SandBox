@@ -16,9 +16,9 @@ import time
 import uuid
 from pathlib import Path
 from typing import Optional
-
+from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
-
+from app.database.engine import get_db
 from app.utils.auth import get_current_user
 from app.models.user import Users
 from app.services.table_extractor.extractor import (
@@ -108,6 +108,7 @@ async def extract_tables(
         ),
     ),
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db),
     extractor: TableExtractor = Depends(get_table_extractor),
 ) -> dict:
     """Validate the upload, run table extraction, and return the result."""
@@ -141,7 +142,7 @@ async def extract_tables(
             normalized_format,
         )
 
-        result = extractor.extract(str(temp_file_path), normalized_format, fast_mode)
+        result = extractor.extract(str(temp_file_path),current_user['sub'], db, normalized_format, fast_mode)
 
         elapsed = time.monotonic() - request_start
         logger.info(

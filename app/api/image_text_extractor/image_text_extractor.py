@@ -13,7 +13,7 @@ Responsibilities
 """
 
 from __future__ import annotations
-
+from sqlalchemy.orm import Session
 import logging
 from typing import Annotated
 
@@ -26,7 +26,7 @@ from fastapi import (
     UploadFile,
     status,
 )
-
+from app.database.engine import get_db
 from app.models.image_text_extractor import (
     ImageTextExtractorRequest,
     ImageTextExtractorResponse,
@@ -61,6 +61,7 @@ SUPPORTED_CONTENT_TYPES = {
 )
 async def extract_text(
     current_user = Depends(get_current_user),
+    db: Session = Depends(get_db),
     image: UploadFile = File(...),
     language: str = Form("auto"),
     preserve_layout: bool = Form(True),
@@ -86,7 +87,7 @@ async def extract_text(
 
     logger.info(
         "Image OCR request | user=%s | file=%s",
-current_user.get("sub"),
+        current_user.get("sub"),
         image.filename,
     )
 
@@ -108,6 +109,8 @@ current_user.get("sub"),
         response = await image_text_extractor_service.process(
             file=image,
             request=request,
+            user_id=current_user["sub"],
+            db=db,
         )
 
         logger.info(

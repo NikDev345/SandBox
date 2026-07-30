@@ -6,6 +6,9 @@ from io import BytesIO
 from docx import Document
 import re, asyncio
 from app.services.gemini_service import GeminiService
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from sqlalchemy.orm import Session
 
 class NotesCleaner:
     
@@ -229,7 +232,7 @@ class NotesCleaner:
         )
         
     @staticmethod
-    async def _clean_notes(user: None, request: NotesCleanerRequest, file: UploadFile | None = None) -> NotesCleanerResponse:
+    async def _clean_notes(user: None, db: Session, request: NotesCleanerRequest, file: UploadFile | None = None) -> NotesCleanerResponse:
         source, data = await NotesCleaner._validate_request(request, file)
         
         if source != "text":
@@ -248,5 +251,22 @@ class NotesCleaner:
         merged_text = NotesCleaner._merge_chunks(cleaned_chunks)
         
         final_text = NotesCleaner._final_clean(merged_text)
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="NOTES-CLEANER",
+            )
+        tool_id = tool.id if tool else "NOTES-CLEANER"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user['sub'],
+                tool_id=tool_id,
+                user_input=text,
+                output=final_text,
+            )
+        except Exception:
+            pass
         
         return NotesCleaner._parse_response(final_text)

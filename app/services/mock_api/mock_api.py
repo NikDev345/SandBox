@@ -1,10 +1,13 @@
 from app.models.api_mock import MockAPIRequest, DeleteResponse, AuthType,MockAPIResponse, MockAPI, HTTPMethod, MockAPIListResponse, MockAPISummary, MockAPIDetailResponse, AuthConfig
-import secrets, string, base64, asyncio
+import secrets, string, base64, asyncio, json
 from uuid import uuid4
 from sqlalchemy.orm import Session
 from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.user import Users
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from app.database.engine import get_db
 
 class MockAPIService:
     BASE_URL='http://127.0.0.1:8000'
@@ -113,7 +116,7 @@ class MockAPIService:
         )
 # ----------------------------------------------------------------------------------------------------------------------------------- 
     @staticmethod
-    def create_mock_api(db: Session, request: MockAPIRequest, user_id: str, user:Users=None) -> MockAPIResponse:
+    def create_mock_api(db: Session, request: MockAPIRequest, user_id: str,) -> MockAPIResponse:
         MockAPIService._validate_request(request)
 
         endpoint_token = MockAPIService._generate_endpoint_token()
@@ -128,6 +131,32 @@ class MockAPIService:
             db=db,
             mock=mock,
         )
+        user_input = json.dumps({
+            "name": request.name,
+            "method": request.method,
+            "status_code": request.status_code,
+            "response_body": request.response_body,
+            "response_headers": request.response_headers,
+            "response_delay_ms": request.response_delay_ms,
+            "authentication": request.authentication,
+        })
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="MOCK-API",
+            )
+        tool_id = tool.id if tool else "MOCK-API"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=user_input,
+                output=endpoint_token,
+            )
+        except Exception:
+            pass
 
         return MockAPIService._build_response(saved_mock)
 # -------------------------------------------------------------------------------------------------------------------------------------

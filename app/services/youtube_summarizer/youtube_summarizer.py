@@ -1,4 +1,4 @@
-import time
+import time, json
 
 from app.models.youtube_summarizer import (
     YouTubeSummaryRequest,
@@ -18,7 +18,9 @@ from app.services.youtube_summarizer.validator import (
 from app.services.youtube_summarizer.youtube_client import (
     YouTubeClient,
 )
-
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 class YouTubeSummarizerService:
     """
@@ -32,6 +34,8 @@ class YouTubeSummarizerService:
     async def generate(
         self,
         request: YouTubeSummaryRequest,
+        user_id: str,
+        db: Session
     ) -> YouTubeSummaryResponse:
         """
         Generate a structured summary for a YouTube video.
@@ -74,12 +78,32 @@ class YouTubeSummarizerService:
                 time.perf_counter() - start_time,
                 2,
             )
-
-            # Step 7 — Format response
-            return YouTubeSummaryFormatter.format(
+            
+            output = YouTubeSummaryFormatter.format(
                 data=response,
                 processing_time=processing_time,
             )
+            user_output = output.model_dump_json()         
+            
+            tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="YOUTUBE-SUMMARIZER",
+                )
+            tool_id = tool.id if tool else "YOUTUBE-SUMMARIZER"
+            
+            try:
+                ExecutionService.create_execution(
+                    db=db,
+                    user_id=user_id,
+                    tool_id=tool_id,
+                    user_input=str(request.youtube_url),
+                    output=user_output,
+                )
+            except Exception:
+                pass
+
+            # Step 7 — Format response
+            return output
 
         except ValueError:
             raise

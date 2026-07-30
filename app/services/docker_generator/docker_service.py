@@ -4,6 +4,9 @@ from pathlib import Path
 from collections import Counter
 from app.services.docker_generator.utils import *
 import json, re, tomllib
+from sqlalchemy.orm import Session
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
 
 class DockerService:
     
@@ -1526,7 +1529,7 @@ class DockerService:
         return quick_start  
     
     @staticmethod
-    def generate(project_root: Path) -> DockerfileGeneratorResponse:
+    def generate(project_root: Path, user_id: str, db: Session) -> DockerfileGeneratorResponse:
 
         # --------------------------------------------------------
         # Scan project
@@ -1575,6 +1578,23 @@ class DockerService:
 
         if not quick_start:
             raise ValueError("Failed to generate Quick Start guide.")
+        
+        tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="DOCKER-GENERATOR",
+                )
+        tool_id = tool.id if tool else "DOCKER-GENERATOR"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=json.dumps(context),
+                output=dockerfile,
+            )
+        except Exception:
+            pass
 
         return DockerfileGeneratorResponse(
             dockerfile=dockerfile,

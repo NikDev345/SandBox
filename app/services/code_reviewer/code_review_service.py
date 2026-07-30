@@ -2,9 +2,12 @@ from app.models.code_reviewer import *
 from fastapi import UploadFile, HTTPException, status
 from typing import Optional
 from pathlib import Path
-import re, tempfile, lizard, asyncio, json, os
+import re, tempfile, lizard, json, os
 from app.services.gemini_service import GeminiService
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
 
 class CodeReview:
     
@@ -496,7 +499,10 @@ class CodeReview:
     @staticmethod
     async def generate_review(
         request: CodeReviewRequest,
+        user_id: str,
+        db: Session,
         uploaded_file: UploadFile | None = None,
+        
     ) -> CodeReviewResponse:
 
         # Task 1
@@ -533,6 +539,31 @@ class CodeReview:
             local_report,
             chunks,
         )
+        
+        user_output = json.dumps({
+            "summary":ai_review.summary,
+            "errors": ai_review.summary,
+            "suggestions": ai_review.suggestions,
+            "time complexity": ai_review.time_complexity,
+            "space complexity": ai_review.space_complexity,
+        })
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="CODE-REVIEWER",
+            )
+        tool_id = tool.id if tool else "CODE-REVIEWER"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=json.dumps(validated_input),
+                output=user_output,
+            )
+        except Exception:
+            pass
 
         # Final Response
         return CodeReviewResponse(

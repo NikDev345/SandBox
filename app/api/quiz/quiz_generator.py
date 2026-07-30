@@ -25,7 +25,7 @@ from fastapi import (
     UploadFile,
     status,
 )
-
+from app.database.engine import get_db
 from app.models.quiz_generator import (
     Audience,
     Difficulty,
@@ -42,6 +42,7 @@ from app.services.quiz.parser import DocumentParser
 from app.services.quiz.quiz_generator import QuizGeneratorService
 from app.utils.auth import get_current_user
 from app.utils.text_cleaner import TextCleaner
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/quiz",
@@ -75,6 +76,8 @@ async def generate_quiz(
     include_hints: bool = Form(False),
 
     current_user: Users = Depends(get_current_user),
+    
+    db: Session = Depends(get_db),
 ):
 
     try:
@@ -156,6 +159,7 @@ async def generate_quiz(
 
         return await service.generate_quiz(
             request=request,
+            db=db,
             user=current_user,
         )
 

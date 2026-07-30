@@ -13,11 +13,12 @@ No AI logic or prompt engineering should exist in this file.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-
+from app.database.engine import get_db
 from app.models.eli5 import ELI5Request, ELI5Response
 from app.services.ELI5.eli5_services import ELI5Service
 from app.utils.auth import get_current_user
 from app.models.user import Users
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/eli5",
@@ -34,6 +35,7 @@ router = APIRouter(
 async def explain_topic(
     request: ELI5Request,
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ) -> ELI5Response:
     """
     Generate a beginner-friendly explanation for a topic.
@@ -47,6 +49,7 @@ async def explain_topic(
 
         response = await service.generate_explanation(
             request=request,
+            db=db,
             user=current_user,
         )
 

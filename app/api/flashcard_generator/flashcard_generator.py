@@ -14,7 +14,7 @@ No AI logic should exist in this file.
 
 import os
 import tempfile
-
+from sqlalchemy.orm import Session
 from fastapi import (
     APIRouter,
     Depends,
@@ -24,7 +24,7 @@ from fastapi import (
     UploadFile,
     status,
 )
-
+from app.database.engine import get_db
 from app.models.flashcard_generator import (
     FlashcardDifficulty,
     FlashcardGeneratorRequest,
@@ -76,6 +76,8 @@ async def generate_flashcards(
     shuffle_cards: bool = Form(False),
 
     current_user: Users = Depends(get_current_user),
+    
+    db: Session = Depends(get_db)
 ) -> FlashcardGeneratorResponse:
     """
     Generate educational flashcards from pasted content or an uploaded document.
@@ -133,6 +135,7 @@ async def generate_flashcards(
 
         return await FlashcardGeneratorService.generate(
             request=request,
+            db=db,
             user=current_user,
         )
 

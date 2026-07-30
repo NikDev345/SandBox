@@ -9,7 +9,7 @@ Author: Sandbox AI
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
-
+from sqlalchemy.orm import Session
 from app.models.decision_maker import (
     DecisionMakerRequest,
     DecisionMakerResponse,
@@ -18,6 +18,7 @@ from app.utils.auth import get_current_user
 from app.services.decision_maker.decision_maker_service import (
     DecisionMakerService,
 )
+from app.database.engine import get_db
 
 router = APIRouter(
     prefix="/decision-maker",
@@ -33,6 +34,7 @@ router = APIRouter(
 async def analyze_decision(
     request: DecisionMakerRequest,
     current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Analyze a user's decision using AI.
@@ -41,7 +43,9 @@ async def analyze_decision(
     try:
 
         response = await DecisionMakerService.analyze(
-            request
+            request,
+            current_user["sub"],
+            db
         )
 
         return response

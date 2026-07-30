@@ -19,12 +19,12 @@ from fastapi import (
     HTTPException,
     status,
 )
-
+from sqlalchemy.orm import Session
 from app.models.email_rewriter import (
     EmailStudioRequest,
     EmailStudioResponse,
 )
-
+from app.database.engine import get_db
 from app.services.email_rewriter.email_rewriter import (
     EmailStudioService,
 )
@@ -48,6 +48,7 @@ router = APIRouter(
 async def generate_email(
     request: EmailStudioRequest,
     current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     """
     AI Email Studio Endpoint
@@ -65,7 +66,9 @@ async def generate_email(
     try:
 
         return await EmailStudioService.generate(
-            request
+            request,
+            current_user["sub"],
+            db,
         )
 
     except ValueError as exc:

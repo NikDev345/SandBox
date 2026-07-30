@@ -15,7 +15,7 @@ The service never imports RapidOCR directly; all OCR communication
 goes through app.services.ocr.factory.ocr_client.
 """
 
-import logging
+import logging, json
 import threading
 import time
 from typing import Optional
@@ -36,6 +36,9 @@ from app.utils.image_processing import (
     validate_extension,
     validate_size,
 )
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +108,8 @@ class ImageTextExtractorService:
         self,
         file: UploadFile,
         request: ImageTextExtractorRequest,
+        user_id: str,
+        db: Session
     ) -> ImageTextExtractorResponse:
         """Run the full OCR workflow for a single uploaded image.
 
@@ -155,6 +160,32 @@ class ImageTextExtractorService:
                 statistics.confidence,
                 elapsed,
             )
+            
+            user_input = json.dumps({
+                "filename": filename,
+                "mime_type": file.content_type,
+                "file_size": len(raw_bytes),
+                "language": request.language,
+                "enhance_image": request.enhance_image,
+            })
+            
+            tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="IMAGE-TEXT-EXTRACTOR",
+                )
+            tool_id = tool.id if tool else "IMAGE-TEXT-EXTRACTOR"
+            
+            try:
+                ExecutionService.create_execution(
+                    db=db,
+                    user_id=user_id,
+                    tool_id=tool_id,
+                    user_input=user_input,
+                    output=response.message,
+                )
+            except Exception:
+                pass
+            
             return response
 
         except ValueError as exc:

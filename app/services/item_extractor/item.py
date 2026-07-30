@@ -5,6 +5,9 @@ import fitz, re, json, spacy
 from spacy.language import Language
 from app.services.gemini_service import GeminiService
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
 
 class ActionItemService:
     ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt"}
@@ -285,10 +288,12 @@ class ActionItemService:
         return ActionItemExtractorResponse(
             action_items=action_items,
         )
-        
+    
+    @staticmethod
     async def generate(
-        ActionItemService,
         request: ActionItemExtractorRequest,
+        user_id: str,
+        db: Session
     ) -> ActionItemExtractorResponse:
 
         ActionItemService._validate_request(request)
@@ -310,5 +315,22 @@ class ActionItemService:
         action_items = ActionItemService._parse_response(ai_response)
 
         action_items = ActionItemService._remove_duplicates(action_items)
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="ITEM-EXTRACTOR",
+            )
+        tool_id = tool.id if tool else "ITEM-EXTRACTOR"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=text,
+                output=str(ai_response),
+            )
+        except Exception:
+            pass
 
         return ActionItemService._build_response(action_items)

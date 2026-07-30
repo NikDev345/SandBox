@@ -1,12 +1,14 @@
 from google.genai import types
-
+import json
 from app.models.chart_explainer import (
     ChartExplainerRequest,
     ChartExplainerResponse,
 )
 from app.services.gemini_service import GeminiService
 from app.services.prompt_engine import PromptEngine
-
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 class ChartExplainerService:
     """
@@ -21,6 +23,8 @@ class ChartExplainerService:
         request: ChartExplainerRequest,
         image_bytes: bytes,
         mime_type: str,
+        user_id: str,
+        db: Session,
     ) -> ChartExplainerResponse:
         """
         Analyze the uploaded chart image.
@@ -37,6 +41,28 @@ class ChartExplainerService:
             uploaded_image=uploaded_image,
             prompt=prompt,
         )
+        user_input = json.dumps({
+            "mime_type": mime_type,
+            "filename": request.filename if hasattr(request, "filename") else None,
+            "prompt_options": request.model_dump() if hasattr(request, "model_dump") else {}
+        })
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="CHART-EXPLAINER",
+            )
+        tool_id = tool.id if tool else "CHART-EXPLAINER"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=user_input,
+                output=str(result),
+            )
+        except Exception:
+            pass
 
         return ChartExplainerResponse(
             chart_type=result.get("chart_type", ""),

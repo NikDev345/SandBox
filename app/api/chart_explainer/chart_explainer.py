@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
-
+from sqlalchemy.orm import Session
 from app.utils.auth import get_current_user
 from app.models.chart_explainer import (
     ChartExplainerRequest,
@@ -9,6 +9,7 @@ from app.models.chart_explainer import (
 )
 from app.models.user import Users
 from app.services.chart_explainer.chart_explainer import ChartExplainerService
+from app.database.engine import get_db
 
 router = APIRouter(
     prefix="/chart-explainer",
@@ -42,7 +43,6 @@ async def analyze_chart(
     include_limitations: bool = Form(True),
     include_eli5: bool = Form(True),
     include_confidence: bool = Form(True),
-
     current_user: Users = Depends(get_current_user),
 ):
     """
@@ -77,4 +77,6 @@ async def analyze_chart(
         request=request,
         image_bytes=image_bytes,
         mime_type=image.content_type,
+        user_id=current_user["sub"],
+        db=Depends(get_db),
     )

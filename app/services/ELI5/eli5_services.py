@@ -10,7 +10,9 @@ from app.services.ELI5.validator import ELI5Validator
 from app.services.ELI5.formatter import ELI5Formatter
 from app.services.gemini_service import GeminiService
 from app.utils.eli5 import normalize_topic
-
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
+from sqlalchemy.orm import Session
 
 class ELI5Service:
     """
@@ -20,6 +22,7 @@ class ELI5Service:
     async def generate_explanation(
         self,
         request: ELI5Request,
+        db: Session,
         user=None,
     ) -> ELI5Response:
         """
@@ -47,6 +50,23 @@ class ELI5Service:
         explanation = gemini.generate(
             prompt=prompt
         )
+        
+        tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="ELI5",
+                )
+        tool_id = tool.id if tool else "ELI5"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user["sub"],
+                tool_id=tool_id,
+                user_input=request.topic,
+                output=explanation,
+            )
+        except Exception:
+            pass
 
         # Format response
         return ELI5Formatter.format(explanation)

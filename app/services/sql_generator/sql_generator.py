@@ -1,14 +1,17 @@
 from app.models.sql_generator import SQLGeneratorRequest, SQLGeneratorResponse, GenerationMode, SQLDialect, ExecutionCost
 from app.services.gemini_service import GeminiService
-import sqlparse, re
+import sqlparse, re, json
 from sqlparse.sql import Identifier, IdentifierList
 from sqlparse.tokens import Keyword
 from typing import List
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from sqlalchemy.orm import Session
 
 class SQLGeneratorService:
 
     @staticmethod
-    def generate(request: SQLGeneratorRequest, user=None) -> SQLGeneratorResponse:
+    def generate(request: SQLGeneratorRequest, db: Session, user=None) -> SQLGeneratorResponse:
         """
         Main entry point for SQL generation.
 
@@ -38,6 +41,35 @@ class SQLGeneratorService:
             raise ValueError(f"Unsupported generation mode: {request.mode}")
 
         formatted_sql = SQLGeneratorService._format_sql(sql)
+        
+        if request.mode == "prompt":
+            user_input = json.dumps({
+                "mode": "prompt",
+                "prompt": request.prompt,
+                "dialect": request.dialect,
+            })
+        else:
+            user_input = json.dumps({
+                "mode": "visual",
+                "request": request.model_dump(),
+            })
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="SQL-GENERATOR",
+            )
+        tool_id = tool.id if tool else "SQL-GENERATOR"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user['sub'],
+                tool_id=tool_id,
+                user_input=user_input,
+                output=formatted_sql,
+            )
+        except Exception:
+            pass
 
         return SQLGeneratorResponse(
             success=True,

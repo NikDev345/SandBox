@@ -6,6 +6,8 @@ from app.models.commit import (
 from app.services.commit_message.commit import CommitMessageGenerator
 from app.utils.auth import get_current_user
 from app.models.user import Users
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 
 router = APIRouter(
     prefix="/commit-message",
@@ -21,6 +23,7 @@ router = APIRouter(
 async def generate_commit_message(
     request: CommitMessageRequest,
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ) -> CommitMessageResponse:
     """
     Generate AI-powered Git commit message suggestions
@@ -28,7 +31,7 @@ async def generate_commit_message(
     """
 
     try:
-        return CommitMessageGenerator.generate(request, current_user["sub"])
+        return CommitMessageGenerator.generate(request, current_user["sub"], db)
 
     except FileNotFoundError as e:
         raise HTTPException(

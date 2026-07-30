@@ -4,6 +4,8 @@ from app.models.pro_cons import ProConsResponse, ProConsRequest, AnalysisDepth
 from app.services.pro_cons_gen.pro_cons import ProConsService
 from app.utils.auth import get_current_user
 from app.models.user import Users
+from app.database.engine import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix='/pro_cons',
@@ -11,10 +13,10 @@ router = APIRouter(
 )
 
 @router.post('/generate', response_model=ProConsResponse)
-async def generate_pro_cons(request: ProConsRequest, current_user: Users = Depends(get_current_user)) -> ProConsResponse:
+async def generate_pro_cons(request: ProConsRequest, current_user: Users = Depends(get_current_user), db: Session = Depends(get_db)) -> ProConsResponse:
     
     try:
-        response = await ProConsService._generate_analysis(request, current_user)
+        response = await ProConsService._generate_analysis(request, db, current_user)
         return response
     except  HTTPException:
         raise

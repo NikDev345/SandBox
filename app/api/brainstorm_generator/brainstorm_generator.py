@@ -14,6 +14,8 @@ from app.models.brainstorm_generator import (
 from app.services.brainstorm_generator.brainstorm_generator_service import (
     BrainstormGeneratorService,
 )
+from app.database.engine import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/brainstorm-generator",
@@ -29,13 +31,14 @@ router = APIRouter(
 def generate_brainstorm(
     request: BrainstormRequest,
     current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Generate brainstorming ideas using AI.
     """
 
     try:
-        return BrainstormGeneratorService.generate(request)
+        return BrainstormGeneratorService.generate(request, current_user["sub"], db)
 
     except ValueError as exc:
         raise HTTPException(

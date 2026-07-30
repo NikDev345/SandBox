@@ -1,7 +1,8 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, UploadFile
-
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 from app.utils.auth import get_current_user
 from app.models.code_reviewer import (
     CodeReviewRequest,
@@ -25,6 +26,7 @@ async def code_review(
     code: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     input_type = ReviewInputType.FILE if file is not None else ReviewInputType.SNIPPET
     request = CodeReviewRequest(
@@ -35,5 +37,7 @@ async def code_review(
 
     return await CodeReview.generate_review(
         request=request,
+        user_id=current_user["sub"],
+        db=db,
         uploaded_file=file,
     )

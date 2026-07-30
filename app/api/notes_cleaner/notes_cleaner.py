@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
-
-
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 from app.models.notes_cleaner import (
     NotesCleanerRequest,
     NotesCleanerResponse,
@@ -25,12 +25,14 @@ async def clean_notes(
     text: str | None = Form(None),
     file: UploadFile | None = File(None),
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     try:
         request = NotesCleanerRequest(text=text)
 
         response = await NotesCleaner._clean_notes(
             current_user,
+            db=db,
             request=request,
             file=file,
         )

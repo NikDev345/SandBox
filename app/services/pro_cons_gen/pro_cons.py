@@ -3,9 +3,12 @@ from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
 from app.services.gemini_service import GeminiService
 from app.models.pro_cons import ProConsRequest, AnalysisDepth, ProConsResponse
-import re, json
+import re, json, unicodedata
 from pydantic import ValidationError
-import unicodedata
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from sqlalchemy.orm import Session
+
 
 class ProConsService:
     MIN_TOPIC_LENGTH = 3
@@ -17,7 +20,7 @@ class ProConsService:
     )
     
     @staticmethod
-    async def _generate_analysis(request: ProConsRequest, user=None) -> ProConsResponse:
+    async def _generate_analysis(request: ProConsRequest, db: Session, user=None) -> ProConsResponse:
         cleaned_req = ProConsService._preprocess_input(request)
         prompt = ProConsService._prompt_builder(cleaned_req)
         final_prompt = (
@@ -37,6 +40,28 @@ class ProConsService:
         parsed_res["topic"] = cleaned_req.topic          # ← add this
         parsed_res["generated_at"] = datetime.now(timezone.utc).isoformat()
         final = ProConsService._validate_response(parsed_res)
+        
+        user_output = json.dumps({
+            "pros": final.pros,
+            "cons": final.cons,
+        })
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="PRO-CONS",
+            )
+        tool_id = tool.id if tool else "PRO-CONS"
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user["sub"],
+                tool_id=tool_id,
+                user_input=request.topic,
+                output=user_output,
+            )
+        except Exception:
+            pass
         
         return final
         

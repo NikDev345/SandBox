@@ -6,6 +6,8 @@ from app.services.docker_generator.docker_service import DockerService
 from app.models.user import Users
 from app.utils.auth import get_current_user
 import shutil
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 
 router = APIRouter(prefix="/docker-generator", tags=["Docker Generator"])
 
@@ -17,6 +19,7 @@ router = APIRouter(prefix="/docker-generator", tags=["Docker Generator"])
 async def generate_dockerfile(
     folder: list[UploadFile] = File(...),
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ) -> DockerfileGeneratorResponse:
     
     if not folder:
@@ -53,7 +56,7 @@ async def generate_dockerfile(
                 shutil.copyfileobj(file.file, buffer)
 
         try:
-            return DockerService.generate(project_root)
+            return DockerService.generate(project_root, current_user["sub"], db)
 
         except ValueError as e:
             raise HTTPException(

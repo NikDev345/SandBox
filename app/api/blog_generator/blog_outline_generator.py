@@ -9,6 +9,8 @@ from app.models.user import Users
 from app.services.blog_generator.blog_outline_generator import (
     BlogOutlineGeneratorService,
 )
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 
 router = APIRouter(
     prefix="/blog-outline-generator",
@@ -24,13 +26,14 @@ router = APIRouter(
 async def generate_blog_outline(
     request: BlogOutlineRequest,
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     """
     Generate a professional SEO-friendly blog outline using AI.
     """
 
     try:
-        return await BlogOutlineGeneratorService.generate(request)
+        return await BlogOutlineGeneratorService.generate(request, current_user['sub'], db)
 
     except Exception as e:
         raise HTTPException(

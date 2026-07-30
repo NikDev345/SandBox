@@ -6,7 +6,7 @@ import json
 import re
 import unicodedata
 from typing import Any
-
+from sqlalchemy.orm import Session
 from app.models.email_rewriter import (
     EmailMode,
     EmailStudioRequest,
@@ -21,7 +21,8 @@ from app.services.email_rewriter.prompts import (
 )
 from app.services.email_rewriter.validator import EmailStudioValidator
 from app.services.gemini_service import GeminiService
-
+from app.services.tool_service import ToolService
+from app.services.tool_executor import ExecutionService
 
 class EmailStudioService:
     """Run the Email Rewriter generation pipeline."""
@@ -30,6 +31,8 @@ class EmailStudioService:
     async def generate(
         cls,
         request: EmailStudioRequest,
+        user_id: str,
+        db: Session,
     ) -> EmailStudioResponse:
         """Generate or rewrite an email."""
 
@@ -38,6 +41,25 @@ class EmailStudioService:
         raw_response = cls._generate_email(prompt)
         parsed_response = cls._parse_response(raw_response)
         response = EmailStudioFormatter.format(parsed_response)
+        tool = ToolService.get_tool_by_slug(
+                    db=db,
+                    slug="EMAIL-REWRITER",
+                )
+        tool_id = tool.id if tool else "EMAIL-REWRITER"
+        user_input = json.dumps({
+            "subject": cleaned_request.subject,
+            "email": cleaned_request.email,
+        })
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=json.dumps(user_input),
+                output=response.full_email,
+            )
+        except Exception:
+            pass
         return cls._validate_response(response)
 
     @classmethod

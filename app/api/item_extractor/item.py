@@ -9,6 +9,8 @@ from app.models.item import (
 from app.services.item_extractor.item import ActionItemService
 from app.models.user import Users
 from app.utils.auth import get_current_user
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 
 router = APIRouter(
     prefix="/item-extractor",
@@ -62,10 +64,11 @@ async def upload_file(
 async def extract_action_items(
     request: ActionItemExtractorRequest,
     current_user: Users = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ) -> ActionItemExtractorResponse:
 
     try:
-        return await service.generate(request)
+        return await service.generate(request, current_user["sub"], db)
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))

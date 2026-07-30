@@ -4,6 +4,10 @@ from PIL import Image, UnidentifiedImageError, ImageOps
 from io import BytesIO
 from app.services.gemini_service import GeminiService
 from google.genai import types
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from sqlalchemy.orm import Session
+import json
 
 class SSExplainer:
     
@@ -319,6 +323,7 @@ class SSExplainer:
     async def explain(
         request: ScreenshotExplainerRequest,
         image: UploadFile,
+        db: Session,
         user=None
     ):
         
@@ -365,5 +370,28 @@ class SSExplainer:
 
         # 9. Parse response
         response = SSExplainer._parse_response(raw_response)
+        
+        tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="SS-EXPLAINER",
+            )
+        tool_id = tool.id if tool else "SS-EXPLAINER"
+        
+        user_input = json.dumps({
+            "filename": image.filename,
+            "content_type": image.content_type,
+            "size": len(image),
+        })
+        
+        try:
+            ExecutionService.create_execution(
+                db=db,
+                user_id=user['sub'],
+                tool_id=tool_id,
+                user_input=user_input,
+                output=response.explanation,
+            )
+        except Exception:
+            pass
 
         return response
