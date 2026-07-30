@@ -23,7 +23,7 @@ router = APIRouter(
 async def explain_error(
     request: ErrorExplainerRequest,
     current_user: Users = Depends(get_current_user),
-    db: Session = get_db
+    db: Session = Depends(get_db)
 ):
     """
     Analyze a programming error or stack trace and return
