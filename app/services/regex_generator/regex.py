@@ -401,7 +401,7 @@ class Regex:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=json.dumps({"prompt": request.prompt, "engine": request.engine}),
+                user_input=request.model_dump_json(),
                 output=response.regex,
             )
         except Exception:

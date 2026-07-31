@@ -96,7 +96,7 @@ class YouTubeSummarizerService:
                     db=db,
                     user_id=user_id,
                     tool_id=tool_id,
-                    user_input=str(request.youtube_url),
+                    user_input=request.model_dump_json(),
                     output=user_output,
                 )
             except Exception:

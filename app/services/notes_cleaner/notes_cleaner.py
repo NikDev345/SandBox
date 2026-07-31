@@ -263,7 +263,7 @@ class NotesCleaner:
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
-                user_input=text,
+                user_input=request.model_dump_json(),
                 output=final_text,
             )
         except Exception:

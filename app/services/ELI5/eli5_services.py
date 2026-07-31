@@ -62,7 +62,7 @@ class ELI5Service:
                 db=db,
                 user_id=user["sub"],
                 tool_id=tool_id,
-                user_input=request.topic,
+                user_input=request.model_dump_json(),
                 output=explanation,
             )
         except Exception:

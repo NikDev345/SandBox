@@ -165,8 +165,7 @@ class ImageTextExtractorService:
                 "filename": filename,
                 "mime_type": file.content_type,
                 "file_size": len(raw_bytes),
-                "language": request.language,
-                "enhance_image": request.enhance_image,
+                "extra": request.model_dump_json()
             })
             
             tool = ToolService.get_tool_by_slug(

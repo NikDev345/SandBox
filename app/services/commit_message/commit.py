@@ -241,11 +241,6 @@ class CommitMessageGenerator:
             request.suggestions,
         )
         
-        user_input = json.dumps({
-            "repo_name": git_data.repository_name,
-            "branch": git_data.branch,
-        })
-        
         tool = ToolService.get_tool_by_slug(
                 db=db,
                 slug="COMMIT-MSG",
@@ -257,7 +252,7 @@ class CommitMessageGenerator:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=user_input,
+                user_input=request.model_dump_json(),
                 output=str(commit_suggestions),
             )
         except Exception:

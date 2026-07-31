@@ -559,7 +559,7 @@ class CodeReview:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=json.dumps(validated_input),
+                user_input=json.dumps(validated_input, default=str),
                 output=user_output,
             )
         except Exception:

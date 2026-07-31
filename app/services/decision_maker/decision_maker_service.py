@@ -95,7 +95,7 @@ class DecisionMakerService:
                     db=db,
                     user_id=user_id,
                     tool_id=tool_id,
-                    user_input=request.question,
+                    user_input=request.model_dump_json(),
                     output=json.dumps(ai_response),
                 )
         except Exception as exc:

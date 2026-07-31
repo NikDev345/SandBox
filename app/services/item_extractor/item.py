@@ -327,7 +327,7 @@ class ActionItemService:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=text,
+                user_input=request.model_dump_json(),
                 output=str(ai_response),
             )
         except Exception:

@@ -30,6 +30,7 @@ from app.services.gemini_service import GeminiService
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
+import json
 
 class BrainstormGeneratorService:
     """Service responsible for generating AI-powered brainstorming ideas."""
@@ -65,6 +66,13 @@ class BrainstormGeneratorService:
 
         # Step 4: Format & validate response
         response = BrainstormFormatter.format(raw_response)
+        user_input = json.dumps({
+            "topic": request.topic,
+            "category": request.category,
+            "creativity":request.creativity,
+            "idea_count": request.idea_count,
+            "criteria": request.criteria,
+        })
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -77,7 +85,7 @@ class BrainstormGeneratorService:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=request.topic,
+                user_input=user_input,
             output=response,
         )
         except Exception:

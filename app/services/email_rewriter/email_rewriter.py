@@ -46,16 +46,13 @@ class EmailStudioService:
                     slug="EMAIL-REWRITER",
                 )
         tool_id = tool.id if tool else "EMAIL-REWRITER"
-        user_input = json.dumps({
-            "subject": cleaned_request.subject,
-            "email": cleaned_request.email,
-        })
+        
         try:
             ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=json.dumps(user_input),
+                user_input=request.model_dump_json(),
                 output=response.full_email,
             )
         except Exception:

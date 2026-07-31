@@ -581,17 +581,6 @@ class YAMLGen:
                     )
                 )
                 
-        if isinstance(request, KubernetesComposeRequest):
-            user_input = json.dumps({
-                "mode": "compose",
-                "compose_file": request.filename,
-            })
-
-        elif isinstance(request, KubernetesFormRequest):
-            user_input = json.dumps({
-                "mode": "manual",
-                "request": request.model_dump(),
-            })
             
         res = KubernetesGeneratorResponse(
             summary=summary,
@@ -610,7 +599,7 @@ class YAMLGen:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=user_input,
+                user_input=request.model_dump_json(),
                 output=res,
             )
         except Exception:

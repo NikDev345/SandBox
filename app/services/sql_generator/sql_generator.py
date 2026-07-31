@@ -42,18 +42,6 @@ class SQLGeneratorService:
 
         formatted_sql = SQLGeneratorService._format_sql(sql)
         
-        if request.mode == "prompt":
-            user_input = json.dumps({
-                "mode": "prompt",
-                "prompt": request.prompt,
-                "dialect": request.dialect,
-            })
-        else:
-            user_input = json.dumps({
-                "mode": "visual",
-                "request": request.model_dump(),
-            })
-        
         tool = ToolService.get_tool_by_slug(
                 db=db,
                 slug="SQL-GENERATOR",
@@ -65,7 +53,7 @@ class SQLGeneratorService:
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
-                user_input=user_input,
+                user_input=request.model_dump_json(),
                 output=formatted_sql,
             )
         except Exception:

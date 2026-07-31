@@ -84,7 +84,7 @@ class FlashcardGeneratorService:
                 db=db,
                 user_id=user["sub"],
                 tool_id=tool_id,
-                user_input=request.content,
+                user_input=request.model_dump_json(),
                 output=str(response),
             )
         except Exception:

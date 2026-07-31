@@ -174,7 +174,7 @@ Rules:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=json.dumps({"error": request.error, "code": request.code}),
+                user_input=request.model_dump_json(),
                 output=str(raw_response),
             )
         except Exception:

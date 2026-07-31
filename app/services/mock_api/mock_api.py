@@ -131,15 +131,6 @@ class MockAPIService:
             db=db,
             mock=mock,
         )
-        user_input = json.dumps({
-            "name": request.name,
-            "method": request.method,
-            "status_code": request.status_code,
-            "response_body": request.response_body,
-            "response_headers": request.response_headers,
-            "response_delay_ms": request.response_delay_ms,
-            "authentication": request.authentication,
-        })
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -152,7 +143,7 @@ class MockAPIService:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=user_input,
+                user_input=request.model_dump_json(),
                 output=endpoint_token,
             )
         except Exception:

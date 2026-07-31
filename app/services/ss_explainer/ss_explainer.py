@@ -381,6 +381,7 @@ class SSExplainer:
             "filename": image.filename,
             "content_type": image.content_type,
             "size": len(image),
+            "actions": request.model_dump_json(),
         })
         
         try:

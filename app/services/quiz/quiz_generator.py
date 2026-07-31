@@ -50,14 +50,12 @@ class QuizGeneratorService:
             request.extracted_text = TextCleaner.clean(
                 request.extracted_text
             )
-            ip = request.extracted_text
 
         else:
 
             request.prompt = TextCleaner.clean(
                 request.prompt
             )
-            ip = request.prompt
 
         # --------------------------------------------------
         # Build Prompt
@@ -105,7 +103,7 @@ class QuizGeneratorService:
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
-                user_input=ip,
+                user_input=request.model_dump_json(),
                 output=str(response.questions),
             )
         except Exception:

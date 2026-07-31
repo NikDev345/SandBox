@@ -3,6 +3,7 @@ from app.services.gemini_service import GeminiService
 from app.services.prompt_engine import PromptEngine
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
+import json
 
 class SummarizerService:
     """
@@ -71,7 +72,7 @@ class SummarizerService:
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=text,
+                user_input=json.dumps({"text": text, "length": length, "instructions": instructions,}),
                 output=summary,
             )
         except Exception:
