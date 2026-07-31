@@ -1,0 +1,1741 @@
+[
+    {
+        "page": 1,
+        "table_index": 1,
+        "rows": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 3.0,
+                            "y1": 1.0,
+                            "x2": 31.0,
+                            "y2": 21.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 36.0,
+                            "y1": 1.0,
+                            "x2": 162.0,
+                            "y2": 23.0
+                        },
+                        "text": "Product ∇",
+                        "confidence": 0.6058787629008293,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 155.0,
+                            "y1": 1.0,
+                            "x2": 272.0,
+                            "y2": 21.0
+                        },
+                        "text": "Qtr1 ∇",
+                        "confidence": 0.715903639793396,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 265.0,
+                            "y1": 1.0,
+                            "x2": 377.0,
+                            "y2": 21.0
+                        },
+                        "text": "Qtr2 ∇",
+                        "confidence": 0.7009944021701813,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 371.0,
+                            "y1": 1.0,
+                            "x2": 479.0,
+                            "y2": 18.0
+                        },
+                        "text": "Grand Tota",
+                        "confidence": 0.9396710395812988,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": true,
+                "confidence": 0.7406119611114264
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 2.0,
+                            "y1": 43.0,
+                            "x2": 30.0,
+                            "y2": 64.0
+                        },
+                        "text": "2",
+                        "confidence": 0.9984549283981323,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 31.0,
+                            "y1": 43.0,
+                            "x2": 166.0,
+                            "y2": 64.0
+                        },
+                        "text": "Chocolade",
+                        "confidence": 0.9967616200447083,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 162.0,
+                            "y1": 22.0,
+                            "x2": 268.0,
+                            "y2": 42.0
+                        },
+                        "text": "$744.60",
+                        "confidence": 0.9979424476623535,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 270.0,
+                            "y1": 22.0,
+                            "x2": 378.0,
+                            "y2": 43.0
+                        },
+                        "text": "$162.56",
+                        "confidence": 0.9767972230911255,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 397.0,
+                            "y1": 43.0,
+                            "x2": 484.0,
+                            "y2": 66.0
+                        },
+                        "text": "$907.16",
+                        "confidence": 0.9468163251876831,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9833545088768005
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 3.0,
+                            "y1": 65.0,
+                            "x2": 31.0,
+                            "y2": 86.0
+                        },
+                        "text": "3",
+                        "confidence": 0.9983323216438293,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 30.0,
+                            "y1": 63.0,
+                            "x2": 163.0,
+                            "y2": 87.0
+                        },
+                        "text": "Gummibarchen",
+                        "confidence": 0.9995550513267517,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 169.0,
+                            "y1": 64.0,
+                            "x2": 274.0,
+                            "y2": 88.0
+                        },
+                        "text": "$5,079.60",
+                        "confidence": 0.9593981504440308,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 277.0,
+                            "y1": 64.0,
+                            "x2": 385.0,
+                            "y2": 87.0
+                        },
+                        "text": "$1.249.20",
+                        "confidence": 0.9601512551307678,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 395.0,
+                            "y1": 64.0,
+                            "x2": 484.0,
+                            "y2": 88.0
+                        },
+                        "text": "$6.328.80",
+                        "confidence": 0.9421011805534363,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9719075918197632
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 2.0,
+                            "y1": 87.0,
+                            "x2": 33.0,
+                            "y2": 109.0
+                        },
+                        "text": "4",
+                        "confidence": 0.9995256662368774,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 32.0,
+                            "y1": 85.0,
+                            "x2": 172.0,
+                            "y2": 110.0
+                        },
+                        "text": "Scottish Longbreads",
+                        "confidence": 0.9876418113708496,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 171.0,
+                            "y1": 86.0,
+                            "x2": 274.0,
+                            "y2": 111.0
+                        },
+                        "text": "$1.267.50",
+                        "confidence": 0.950829803943634,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 278.0,
+                            "y1": 86.0,
+                            "x2": 385.0,
+                            "y2": 110.0
+                        },
+                        "text": "$1.062.50",
+                        "confidence": 0.9472871422767639,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 395.0,
+                            "y1": 87.0,
+                            "x2": 485.0,
+                            "y2": 111.0
+                        },
+                        "text": "$2,330.00",
+                        "confidence": 0.9705905914306641,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9711750030517579
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 2.0,
+                            "y1": 109.0,
+                            "x2": 32.0,
+                            "y2": 131.0
+                        },
+                        "text": "5",
+                        "confidence": 0.9913161993026733,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 32.0,
+                            "y1": 107.0,
+                            "x2": 170.0,
+                            "y2": 132.0
+                        },
+                        "text": "Sir Rodney's Scones",
+                        "confidence": 0.9752179384231567,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 172.0,
+                            "y1": 108.0,
+                            "x2": 274.0,
+                            "y2": 132.0
+                        },
+                        "text": "$1.418.00",
+                        "confidence": 0.9655551910400391,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 279.0,
+                            "y1": 108.0,
+                            "x2": 385.0,
+                            "y2": 132.0
+                        },
+                        "text": "$756.00",
+                        "confidence": 0.9978780746459961,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 392.0,
+                            "y1": 109.0,
+                            "x2": 485.0,
+                            "y2": 133.0
+                        },
+                        "text": "$2,174.00",
+                        "confidence": 0.9221006035804749,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.970413601398468
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 131.0,
+                            "x2": 29.0,
+                            "y2": 154.0
+                        },
+                        "text": "6",
+                        "confidence": 0.9994675517082214,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 129.0,
+                            "x2": 171.0,
+                            "y2": 154.0
+                        },
+                        "text": "Tarte au sucre",
+                        "confidence": 0.9976705312728882,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 170.0,
+                            "y1": 131.0,
+                            "x2": 275.0,
+                            "y2": 154.0
+                        },
+                        "text": "$4,728.00",
+                        "confidence": 0.9935710430145264,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 279.0,
+                            "y1": 131.0,
+                            "x2": 385.0,
+                            "y2": 154.0
+                        },
+                        "text": "$4,547.92",
+                        "confidence": 0.985849142074585,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 387.0,
+                            "y1": 131.0,
+                            "x2": 484.0,
+                            "y2": 155.0
+                        },
+                        "text": "$9.275.92",
+                        "confidence": 0.9677504301071167,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9888617396354675
+            },
+            {
+                "index": 6,
+                "cells": [
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 153.0,
+                            "x2": 30.0,
+                            "y2": 174.0
+                        },
+                        "text": "7",
+                        "confidence": 0.9994296431541443,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 152.0,
+                            "x2": 173.0,
+                            "y2": 175.0
+                        },
+                        "text": "Chocolate Biscuits",
+                        "confidence": 0.9611833095550537,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 171.0,
+                            "y1": 153.0,
+                            "x2": 278.0,
+                            "y2": 176.0
+                        },
+                        "text": "$943.89",
+                        "confidence": 0.996947169303894,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 280.0,
+                            "y1": 153.0,
+                            "x2": 388.0,
+                            "y2": 176.0
+                        },
+                        "text": "$349.60",
+                        "confidence": 0.9974543452262878,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 387.0,
+                            "y1": 153.0,
+                            "x2": 484.0,
+                            "y2": 175.0
+                        },
+                        "text": "$1.293.49",
+                        "confidence": 0.9310601353645325,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9772149205207825
+            },
+            {
+                "index": 7,
+                "cells": [
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 192.0,
+                            "x2": 30.0,
+                            "y2": 205.0
+                        },
+                        "text": "8",
+                        "confidence": 0.9672891497612,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 32.0,
+                            "y1": 193.0,
+                            "x2": 163.0,
+                            "y2": 205.0
+                        },
+                        "text": "Total",
+                        "confidence": 0.9964793920516968,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 174.0,
+                            "y1": 177.0,
+                            "x2": 280.0,
+                            "y2": 196.0
+                        },
+                        "text": "$14,181.59",
+                        "confidence": 0.9861418604850769,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 281.0,
+                            "y1": 177.0,
+                            "x2": 387.0,
+                            "y2": 197.0
+                        },
+                        "text": "$8,127.78",
+                        "confidence": 0.955596387386322,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 388.0,
+                            "y1": 177.0,
+                            "x2": 484.0,
+                            "y2": 197.0
+                        },
+                        "text": "$22,309.37",
+                        "confidence": 0.9497033953666687,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9710420370101929
+            }
+        ],
+        "columns": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 3.0,
+                            "y1": 1.0,
+                            "x2": 31.0,
+                            "y2": 21.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 5.0,
+                            "y1": 22.0,
+                            "x2": 34.0,
+                            "y2": 41.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 2.0,
+                            "y1": 43.0,
+                            "x2": 30.0,
+                            "y2": 64.0
+                        },
+                        "text": "2",
+                        "confidence": 0.9984549283981323,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 3.0,
+                            "y1": 65.0,
+                            "x2": 31.0,
+                            "y2": 86.0
+                        },
+                        "text": "3",
+                        "confidence": 0.9983323216438293,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 2.0,
+                            "y1": 87.0,
+                            "x2": 33.0,
+                            "y2": 109.0
+                        },
+                        "text": "4",
+                        "confidence": 0.9995256662368774,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 2.0,
+                            "y1": 109.0,
+                            "x2": 32.0,
+                            "y2": 131.0
+                        },
+                        "text": "5",
+                        "confidence": 0.9913161993026733,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 131.0,
+                            "x2": 29.0,
+                            "y2": 154.0
+                        },
+                        "text": "6",
+                        "confidence": 0.9994675517082214,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 153.0,
+                            "x2": 30.0,
+                            "y2": 174.0
+                        },
+                        "text": "7",
+                        "confidence": 0.9994296431541443,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 176.0,
+                            "x2": 30.0,
+                            "y2": 196.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 1.0,
+                            "y1": 192.0,
+                            "x2": 30.0,
+                            "y2": 205.0
+                        },
+                        "text": "8",
+                        "confidence": 0.9672891497612,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9934022086007255
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 36.0,
+                            "y1": 1.0,
+                            "x2": 162.0,
+                            "y2": 23.0
+                        },
+                        "text": "Product ∇",
+                        "confidence": 0.6058787629008293,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 35.0,
+                            "y1": 21.0,
+                            "x2": 162.0,
+                            "y2": 42.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 31.0,
+                            "y1": 43.0,
+                            "x2": 166.0,
+                            "y2": 64.0
+                        },
+                        "text": "Chocolade",
+                        "confidence": 0.9967616200447083,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 30.0,
+                            "y1": 63.0,
+                            "x2": 163.0,
+                            "y2": 87.0
+                        },
+                        "text": "Gummibarchen",
+                        "confidence": 0.9995550513267517,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 32.0,
+                            "y1": 85.0,
+                            "x2": 172.0,
+                            "y2": 110.0
+                        },
+                        "text": "Scottish Longbreads",
+                        "confidence": 0.9876418113708496,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 32.0,
+                            "y1": 107.0,
+                            "x2": 170.0,
+                            "y2": 132.0
+                        },
+                        "text": "Sir Rodney's Scones",
+                        "confidence": 0.9752179384231567,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 129.0,
+                            "x2": 171.0,
+                            "y2": 154.0
+                        },
+                        "text": "Tarte au sucre",
+                        "confidence": 0.9976705312728882,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 152.0,
+                            "x2": 173.0,
+                            "y2": 175.0
+                        },
+                        "text": "Chocolate Biscuits",
+                        "confidence": 0.9611833095550537,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 177.0,
+                            "x2": 165.0,
+                            "y2": 197.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 32.0,
+                            "y1": 193.0,
+                            "x2": 163.0,
+                            "y2": 205.0
+                        },
+                        "text": "Total",
+                        "confidence": 0.9964793920516968,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9400485521182418
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 155.0,
+                            "y1": 1.0,
+                            "x2": 272.0,
+                            "y2": 21.0
+                        },
+                        "text": "Qtr1 ∇",
+                        "confidence": 0.715903639793396,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 162.0,
+                            "y1": 22.0,
+                            "x2": 268.0,
+                            "y2": 42.0
+                        },
+                        "text": "$744.60",
+                        "confidence": 0.9979424476623535,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 167.0,
+                            "y1": 43.0,
+                            "x2": 272.0,
+                            "y2": 66.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 169.0,
+                            "y1": 64.0,
+                            "x2": 274.0,
+                            "y2": 88.0
+                        },
+                        "text": "$5,079.60",
+                        "confidence": 0.9593981504440308,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 171.0,
+                            "y1": 86.0,
+                            "x2": 274.0,
+                            "y2": 111.0
+                        },
+                        "text": "$1.267.50",
+                        "confidence": 0.950829803943634,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 172.0,
+                            "y1": 108.0,
+                            "x2": 274.0,
+                            "y2": 132.0
+                        },
+                        "text": "$1.418.00",
+                        "confidence": 0.9655551910400391,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 170.0,
+                            "y1": 131.0,
+                            "x2": 275.0,
+                            "y2": 154.0
+                        },
+                        "text": "$4,728.00",
+                        "confidence": 0.9935710430145264,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 171.0,
+                            "y1": 153.0,
+                            "x2": 278.0,
+                            "y2": 176.0
+                        },
+                        "text": "$943.89",
+                        "confidence": 0.996947169303894,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 174.0,
+                            "y1": 177.0,
+                            "x2": 280.0,
+                            "y2": 196.0
+                        },
+                        "text": "$14,181.59",
+                        "confidence": 0.9861418604850769,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 168.0,
+                            "y1": 193.0,
+                            "x2": 279.0,
+                            "y2": 205.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9457861632108688
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 265.0,
+                            "y1": 1.0,
+                            "x2": 377.0,
+                            "y2": 21.0
+                        },
+                        "text": "Qtr2 ∇",
+                        "confidence": 0.7009944021701813,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 270.0,
+                            "y1": 22.0,
+                            "x2": 378.0,
+                            "y2": 43.0
+                        },
+                        "text": "$162.56",
+                        "confidence": 0.9767972230911255,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 276.0,
+                            "y1": 43.0,
+                            "x2": 385.0,
+                            "y2": 65.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 277.0,
+                            "y1": 64.0,
+                            "x2": 385.0,
+                            "y2": 87.0
+                        },
+                        "text": "$1.249.20",
+                        "confidence": 0.9601512551307678,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 278.0,
+                            "y1": 86.0,
+                            "x2": 385.0,
+                            "y2": 110.0
+                        },
+                        "text": "$1.062.50",
+                        "confidence": 0.9472871422767639,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 279.0,
+                            "y1": 108.0,
+                            "x2": 385.0,
+                            "y2": 132.0
+                        },
+                        "text": "$756.00",
+                        "confidence": 0.9978780746459961,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 279.0,
+                            "y1": 131.0,
+                            "x2": 385.0,
+                            "y2": 154.0
+                        },
+                        "text": "$4,547.92",
+                        "confidence": 0.985849142074585,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 280.0,
+                            "y1": 153.0,
+                            "x2": 388.0,
+                            "y2": 176.0
+                        },
+                        "text": "$349.60",
+                        "confidence": 0.9974543452262878,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 281.0,
+                            "y1": 177.0,
+                            "x2": 387.0,
+                            "y2": 197.0
+                        },
+                        "text": "$8,127.78",
+                        "confidence": 0.955596387386322,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 276.0,
+                            "y1": 192.0,
+                            "x2": 387.0,
+                            "y2": 205.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9402509965002537
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 371.0,
+                            "y1": 1.0,
+                            "x2": 479.0,
+                            "y2": 18.0
+                        },
+                        "text": "Grand Tota",
+                        "confidence": 0.9396710395812988,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 386.0,
+                            "y1": 21.0,
+                            "x2": 484.0,
+                            "y2": 43.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 397.0,
+                            "y1": 43.0,
+                            "x2": 484.0,
+                            "y2": 66.0
+                        },
+                        "text": "$907.16",
+                        "confidence": 0.9468163251876831,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 395.0,
+                            "y1": 64.0,
+                            "x2": 484.0,
+                            "y2": 88.0
+                        },
+                        "text": "$6.328.80",
+                        "confidence": 0.9421011805534363,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 395.0,
+                            "y1": 87.0,
+                            "x2": 485.0,
+                            "y2": 111.0
+                        },
+                        "text": "$2,330.00",
+                        "confidence": 0.9705905914306641,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 392.0,
+                            "y1": 109.0,
+                            "x2": 485.0,
+                            "y2": 133.0
+                        },
+                        "text": "$2,174.00",
+                        "confidence": 0.9221006035804749,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 387.0,
+                            "y1": 131.0,
+                            "x2": 484.0,
+                            "y2": 155.0
+                        },
+                        "text": "$9.275.92",
+                        "confidence": 0.9677504301071167,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 387.0,
+                            "y1": 153.0,
+                            "x2": 484.0,
+                            "y2": 175.0
+                        },
+                        "text": "$1.293.49",
+                        "confidence": 0.9310601353645325,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 388.0,
+                            "y1": 177.0,
+                            "x2": 484.0,
+                            "y2": 197.0
+                        },
+                        "text": "$22,309.37",
+                        "confidence": 0.9497033953666687,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 385.0,
+                            "y1": 192.0,
+                            "x2": 484.0,
+                            "y2": 205.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9462242126464844
+            }
+        ],
+        "headers": [
+            "",
+            "Product ∇",
+            "Qtr1 ∇",
+            "Qtr2 ∇",
+            "Grand Tota"
+        ],
+        "bbox": {
+            "x1": 1.0,
+            "y1": 1.0,
+            "x2": 485.0,
+            "y2": 205.0
+        },
+        "confidence": 0.9468226704280823,
+        "metadata": {
+            "merged_cell_count": 0,
+            "synthetic_cell_count": 0,
+            "total_ocr_items": 42,
+            "matched_ocr_items": 42,
+            "unmatched_ocr_items": 0,
+            "header_row_count": 1,
+            "row_count": 8,
+            "col_count": 5,
+            "parser_version": "2.0"
+        }
+    }
+]
