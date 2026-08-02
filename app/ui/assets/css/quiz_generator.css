@@ -20,7 +20,7 @@
   width: 100%;
   max-width: 860px;
   margin: 0 auto;
-  padding: 2rem clamp(1rem, 3vw, 1.5rem) 4rem;
+  padding: 1.25rem clamp(1rem, 3vw, 1.5rem) 1.5rem;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -44,7 +44,7 @@
 .qg-phase {
   display: flex;
   flex-direction: column;
-  gap: 1.125rem;
+  gap: 0.875rem;
   animation: qg-enter var(--dur-slow) var(--ease-spring) both;
 }
 
@@ -1208,7 +1208,9 @@
   letter-spacing: -0.015em;
   color: var(--ink-0);
   line-height: 1.45;
-  margin: 0;
+  /* Fix: was margin:0, which left no breathing room before the options
+     list. Adding bottom margin separates the question from its answers. */
+  margin: 0 0 1.25rem;
 }
 
 /* ─── 21. OPTIONS ─────────────────────────────────────────────────────────── */
@@ -1307,16 +1309,18 @@
 .qg-quiz-nav {
   display: flex;
   align-items: center;
+  justify-content: flex-end; /* Fix: keeps Skip and Next grouped together
+                                 instead of Skip being centered via auto
+                                 margins across the whole row. */
   gap: 0.625rem;
 }
 
 .qg-quiz-nav #qg-skip-btn {
-  margin-left: auto;
-  margin-right: auto;
+  order: 1;
 }
 
 .qg-quiz-nav #qg-next-btn {
-  margin-left: auto;
+  order: 2;
 }
 
 .qg-btn-sm {
@@ -1610,7 +1614,7 @@
 
 @media (max-width: 768px) {
   .qg-root {
-    padding: 1rem 0 3rem;
+    padding: 1rem 0 1.5rem;
     gap: 0;
   }
 
