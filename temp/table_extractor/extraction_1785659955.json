@@ -1,0 +1,4639 @@
+[
+    {
+        "page": 1,
+        "table_index": 1,
+        "rows": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 2112.0,
+                            "x2": 596.0,
+                            "y2": 2224.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 557.0,
+                            "y1": 2114.0,
+                            "x2": 951.0,
+                            "y2": 2226.0
+                        },
+                        "text": "Table 2: Department Project Allocations (8 Rows)",
+                        "confidence": 0.9885613322257996,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 962.0,
+                            "y1": 2115.0,
+                            "x2": 1295.0,
+                            "y2": 2229.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1285.0,
+                            "y1": 2116.0,
+                            "x2": 1599.0,
+                            "y2": 2228.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1578.0,
+                            "y1": 2116.0,
+                            "x2": 1948.0,
+                            "y2": 2228.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1924.0,
+                            "y1": 2117.0,
+                            "x2": 2272.0,
+                            "y2": 2227.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": true,
+                "confidence": 0.9885613322257996
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 180.0,
+                            "y1": 2230.0,
+                            "x2": 662.0,
+                            "y2": 2328.0
+                        },
+                        "text": "Project ID Department",
+                        "confidence": 0.999060869216919,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 588.0,
+                            "y1": 2231.0,
+                            "x2": 932.0,
+                            "y2": 2321.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 980.0,
+                            "y1": 2230.0,
+                            "x2": 1302.0,
+                            "y2": 2334.0
+                        },
+                        "text": "Allocated",
+                        "confidence": 0.9980533123016357,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1288.0,
+                            "y1": 2232.0,
+                            "x2": 1609.0,
+                            "y2": 2332.0
+                        },
+                        "text": "Spent",
+                        "confidence": 0.9997488260269165,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1577.0,
+                            "y1": 2234.0,
+                            "x2": 1918.0,
+                            "y2": 2337.0
+                        },
+                        "text": "Remaining",
+                        "confidence": 0.9573831558227539,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1931.0,
+                            "y1": 2230.0,
+                            "x2": 2279.0,
+                            "y2": 2337.0
+                        },
+                        "text": "Status",
+                        "confidence": 0.9997842311859131,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9908060789108276
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 186.0,
+                            "y1": 2345.0,
+                            "x2": 552.0,
+                            "y2": 2447.0
+                        },
+                        "text": "PR0J-2026-01",
+                        "confidence": 0.9754858016967773,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 552.0,
+                            "y1": 2345.0,
+                            "x2": 926.0,
+                            "y2": 2439.0
+                        },
+                        "text": "Engineering",
+                        "confidence": 0.9952180981636047,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 975.0,
+                            "y1": 2345.0,
+                            "x2": 1305.0,
+                            "y2": 2446.0
+                        },
+                        "text": "$81,426.00",
+                        "confidence": 0.9992469549179077,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1290.0,
+                            "y1": 2346.0,
+                            "x2": 1601.0,
+                            "y2": 2446.0
+                        },
+                        "text": "$51,358.30",
+                        "confidence": 0.9984485507011414,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1586.0,
+                            "y1": 2347.0,
+                            "x2": 1917.0,
+                            "y2": 2448.0
+                        },
+                        "text": "$30,067.70",
+                        "confidence": 0.998503565788269,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1929.0,
+                            "y1": 2343.0,
+                            "x2": 2281.0,
+                            "y2": 2449.0
+                        },
+                        "text": "Approved",
+                        "confidence": 0.9997098445892334,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9944354693094889
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 183.0,
+                            "y1": 2460.0,
+                            "x2": 557.0,
+                            "y2": 2566.0
+                        },
+                        "text": "PR0J-2026-02",
+                        "confidence": 0.9665895104408264,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 552.0,
+                            "y1": 2462.0,
+                            "x2": 919.0,
+                            "y2": 2561.0
+                        },
+                        "text": "Marketing",
+                        "confidence": 0.9995996952056885,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 976.0,
+                            "y1": 2463.0,
+                            "x2": 1299.0,
+                            "y2": 2565.0
+                        },
+                        "text": "$46,463.00",
+                        "confidence": 0.9996479749679565,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1294.0,
+                            "y1": 2464.0,
+                            "x2": 1600.0,
+                            "y2": 2566.0
+                        },
+                        "text": "$39,269.91",
+                        "confidence": 0.998105525970459,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1591.0,
+                            "y1": 2465.0,
+                            "x2": 1919.0,
+                            "y2": 2567.0
+                        },
+                        "text": "$7,193.09",
+                        "confidence": 0.9992603659629822,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1922.0,
+                            "y1": 2461.0,
+                            "x2": 2282.0,
+                            "y2": 2569.0
+                        },
+                        "text": "Completed",
+                        "confidence": 0.9997885227203369,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9938319325447083
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 182.0,
+                            "y1": 2573.0,
+                            "x2": 546.0,
+                            "y2": 2681.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 548.0,
+                            "y1": 2573.0,
+                            "x2": 949.0,
+                            "y2": 2676.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 977.0,
+                            "y1": 2574.0,
+                            "x2": 1305.0,
+                            "y2": 2677.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1296.0,
+                            "y1": 2574.0,
+                            "x2": 1601.0,
+                            "y2": 2678.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1592.0,
+                            "y1": 2575.0,
+                            "x2": 1921.0,
+                            "y2": 2678.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1923.0,
+                            "y1": 2572.0,
+                            "x2": 2282.0,
+                            "y2": 2681.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.0
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 181.0,
+                            "y1": 2691.0,
+                            "x2": 542.0,
+                            "y2": 2794.0
+                        },
+                        "text": "PR0J-2026-03 Sales",
+                        "confidence": 0.9918764233589172,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 548.0,
+                            "y1": 2691.0,
+                            "x2": 940.0,
+                            "y2": 2789.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 978.0,
+                            "y1": 2691.0,
+                            "x2": 1305.0,
+                            "y2": 2789.0
+                        },
+                        "text": "$30,926.00",
+                        "confidence": 0.9968599081039429,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1296.0,
+                            "y1": 2692.0,
+                            "x2": 1604.0,
+                            "y2": 2790.0
+                        },
+                        "text": "$24,245.26",
+                        "confidence": 0.9975924491882324,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1594.0,
+                            "y1": 2692.0,
+                            "x2": 1921.0,
+                            "y2": 2791.0
+                        },
+                        "text": "$6,680.74",
+                        "confidence": 0.9989892244338989,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1929.0,
+                            "y1": 2689.0,
+                            "x2": 2278.0,
+                            "y2": 2791.0
+                        },
+                        "text": "Pending Review",
+                        "confidence": 0.9996234774589539,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9969882965087891
+            },
+            {
+                "index": 6,
+                "cells": [
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 180.0,
+                            "y1": 2809.0,
+                            "x2": 533.0,
+                            "y2": 2908.0
+                        },
+                        "text": "PR0J-2026-04",
+                        "confidence": 0.9776875376701355,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 544.0,
+                            "y1": 2809.0,
+                            "x2": 952.0,
+                            "y2": 2903.0
+                        },
+                        "text": "Human Resources",
+                        "confidence": 0.9712905287742615,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 981.0,
+                            "y1": 2808.0,
+                            "x2": 1316.0,
+                            "y2": 2903.0
+                        },
+                        "text": "$46,421.00",
+                        "confidence": 0.9994890093803406,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1299.0,
+                            "y1": 2807.0,
+                            "x2": 1609.0,
+                            "y2": 2903.0
+                        },
+                        "text": "$22,538.03",
+                        "confidence": 0.999163031578064,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1599.0,
+                            "y1": 2807.0,
+                            "x2": 1922.0,
+                            "y2": 2904.0
+                        },
+                        "text": "$23,882.97",
+                        "confidence": 0.999102771282196,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1938.0,
+                            "y1": 2804.0,
+                            "x2": 2277.0,
+                            "y2": 2900.0
+                        },
+                        "text": "Pending Review",
+                        "confidence": 0.9958710372447968,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.990433985988299
+            },
+            {
+                "index": 7,
+                "cells": [
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 182.0,
+                            "y1": 2913.0,
+                            "x2": 547.0,
+                            "y2": 3015.0
+                        },
+                        "text": "PR0J-2026-05",
+                        "confidence": 0.9903898239135742,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 546.0,
+                            "y1": 2914.0,
+                            "x2": 969.0,
+                            "y2": 3011.0
+                        },
+                        "text": "Finance",
+                        "confidence": 0.9996294379234314,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 981.0,
+                            "y1": 2913.0,
+                            "x2": 1323.0,
+                            "y2": 3009.0
+                        },
+                        "text": "$23,396.00",
+                        "confidence": 0.9982646107673645,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1303.0,
+                            "y1": 2912.0,
+                            "x2": 1615.0,
+                            "y2": 3010.0
+                        },
+                        "text": "$10,551.83",
+                        "confidence": 0.9989808797836304,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1603.0,
+                            "y1": 2912.0,
+                            "x2": 1922.0,
+                            "y2": 3008.0
+                        },
+                        "text": "$12,844.17",
+                        "confidence": 0.9986224174499512,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1947.0,
+                            "y1": 2912.0,
+                            "x2": 2275.0,
+                            "y2": 3008.0
+                        },
+                        "text": "Completed",
+                        "confidence": 0.9997512102127075,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9976063966751099
+            },
+            {
+                "index": 8,
+                "cells": [
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 179.0,
+                            "y1": 3041.0,
+                            "x2": 558.0,
+                            "y2": 3129.0
+                        },
+                        "text": "PR0J-2026-06",
+                        "confidence": 0.97601717710495,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 533.0,
+                            "y1": 3043.0,
+                            "x2": 922.0,
+                            "y2": 3128.0
+                        },
+                        "text": "Product Design",
+                        "confidence": 0.9825398325920105,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 978.0,
+                            "y1": 3043.0,
+                            "x2": 1318.0,
+                            "y2": 3128.0
+                        },
+                        "text": "$57,052.00",
+                        "confidence": 0.999077320098877,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1294.0,
+                            "y1": 3042.0,
+                            "x2": 1613.0,
+                            "y2": 3127.0
+                        },
+                        "text": "$49,413.99",
+                        "confidence": 0.9989093542098999,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1595.0,
+                            "y1": 3042.0,
+                            "x2": 1922.0,
+                            "y2": 3126.0
+                        },
+                        "text": "$7,638.01",
+                        "confidence": 0.9992655515670776,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1948.0,
+                            "y1": 3041.0,
+                            "x2": 2269.0,
+                            "y2": 3126.0
+                        },
+                        "text": "On Hold",
+                        "confidence": 0.9825388789176941,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9897246857484182
+            }
+        ],
+        "columns": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 2112.0,
+                            "x2": 596.0,
+                            "y2": 2224.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 180.0,
+                            "y1": 2230.0,
+                            "x2": 662.0,
+                            "y2": 2328.0
+                        },
+                        "text": "Project ID Department",
+                        "confidence": 0.999060869216919,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 186.0,
+                            "y1": 2345.0,
+                            "x2": 552.0,
+                            "y2": 2447.0
+                        },
+                        "text": "PR0J-2026-01",
+                        "confidence": 0.9754858016967773,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 183.0,
+                            "y1": 2460.0,
+                            "x2": 557.0,
+                            "y2": 2566.0
+                        },
+                        "text": "PR0J-2026-02",
+                        "confidence": 0.9665895104408264,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 182.0,
+                            "y1": 2573.0,
+                            "x2": 546.0,
+                            "y2": 2681.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 181.0,
+                            "y1": 2691.0,
+                            "x2": 542.0,
+                            "y2": 2794.0
+                        },
+                        "text": "PR0J-2026-03 Sales",
+                        "confidence": 0.9918764233589172,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 180.0,
+                            "y1": 2809.0,
+                            "x2": 533.0,
+                            "y2": 2908.0
+                        },
+                        "text": "PR0J-2026-04",
+                        "confidence": 0.9776875376701355,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 182.0,
+                            "y1": 2913.0,
+                            "x2": 547.0,
+                            "y2": 3015.0
+                        },
+                        "text": "PR0J-2026-05",
+                        "confidence": 0.9903898239135742,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 179.0,
+                            "y1": 3041.0,
+                            "x2": 558.0,
+                            "y2": 3129.0
+                        },
+                        "text": "PR0J-2026-06",
+                        "confidence": 0.97601717710495,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9824438776288714
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 557.0,
+                            "y1": 2114.0,
+                            "x2": 951.0,
+                            "y2": 2226.0
+                        },
+                        "text": "Table 2: Department Project Allocations (8 Rows)",
+                        "confidence": 0.9885613322257996,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 588.0,
+                            "y1": 2231.0,
+                            "x2": 932.0,
+                            "y2": 2321.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 552.0,
+                            "y1": 2345.0,
+                            "x2": 926.0,
+                            "y2": 2439.0
+                        },
+                        "text": "Engineering",
+                        "confidence": 0.9952180981636047,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 552.0,
+                            "y1": 2462.0,
+                            "x2": 919.0,
+                            "y2": 2561.0
+                        },
+                        "text": "Marketing",
+                        "confidence": 0.9995996952056885,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 548.0,
+                            "y1": 2573.0,
+                            "x2": 949.0,
+                            "y2": 2676.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 548.0,
+                            "y1": 2691.0,
+                            "x2": 940.0,
+                            "y2": 2789.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 544.0,
+                            "y1": 2809.0,
+                            "x2": 952.0,
+                            "y2": 2903.0
+                        },
+                        "text": "Human Resources",
+                        "confidence": 0.9712905287742615,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 546.0,
+                            "y1": 2914.0,
+                            "x2": 969.0,
+                            "y2": 3011.0
+                        },
+                        "text": "Finance",
+                        "confidence": 0.9996294379234314,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 533.0,
+                            "y1": 3043.0,
+                            "x2": 922.0,
+                            "y2": 3128.0
+                        },
+                        "text": "Product Design",
+                        "confidence": 0.9825398325920105,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9894731541474661
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 962.0,
+                            "y1": 2115.0,
+                            "x2": 1295.0,
+                            "y2": 2229.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 980.0,
+                            "y1": 2230.0,
+                            "x2": 1302.0,
+                            "y2": 2334.0
+                        },
+                        "text": "Allocated",
+                        "confidence": 0.9980533123016357,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 975.0,
+                            "y1": 2345.0,
+                            "x2": 1305.0,
+                            "y2": 2446.0
+                        },
+                        "text": "$81,426.00",
+                        "confidence": 0.9992469549179077,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 976.0,
+                            "y1": 2463.0,
+                            "x2": 1299.0,
+                            "y2": 2565.0
+                        },
+                        "text": "$46,463.00",
+                        "confidence": 0.9996479749679565,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 977.0,
+                            "y1": 2574.0,
+                            "x2": 1305.0,
+                            "y2": 2677.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 978.0,
+                            "y1": 2691.0,
+                            "x2": 1305.0,
+                            "y2": 2789.0
+                        },
+                        "text": "$30,926.00",
+                        "confidence": 0.9968599081039429,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 981.0,
+                            "y1": 2808.0,
+                            "x2": 1316.0,
+                            "y2": 2903.0
+                        },
+                        "text": "$46,421.00",
+                        "confidence": 0.9994890093803406,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 981.0,
+                            "y1": 2913.0,
+                            "x2": 1323.0,
+                            "y2": 3009.0
+                        },
+                        "text": "$23,396.00",
+                        "confidence": 0.9982646107673645,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 978.0,
+                            "y1": 3043.0,
+                            "x2": 1318.0,
+                            "y2": 3128.0
+                        },
+                        "text": "$57,052.00",
+                        "confidence": 0.999077320098877,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9986627272197178
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1285.0,
+                            "y1": 2116.0,
+                            "x2": 1599.0,
+                            "y2": 2228.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1288.0,
+                            "y1": 2232.0,
+                            "x2": 1609.0,
+                            "y2": 2332.0
+                        },
+                        "text": "Spent",
+                        "confidence": 0.9997488260269165,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1290.0,
+                            "y1": 2346.0,
+                            "x2": 1601.0,
+                            "y2": 2446.0
+                        },
+                        "text": "$51,358.30",
+                        "confidence": 0.9984485507011414,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1294.0,
+                            "y1": 2464.0,
+                            "x2": 1600.0,
+                            "y2": 2566.0
+                        },
+                        "text": "$39,269.91",
+                        "confidence": 0.998105525970459,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1296.0,
+                            "y1": 2574.0,
+                            "x2": 1601.0,
+                            "y2": 2678.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1296.0,
+                            "y1": 2692.0,
+                            "x2": 1604.0,
+                            "y2": 2790.0
+                        },
+                        "text": "$24,245.26",
+                        "confidence": 0.9975924491882324,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1299.0,
+                            "y1": 2807.0,
+                            "x2": 1609.0,
+                            "y2": 2903.0
+                        },
+                        "text": "$22,538.03",
+                        "confidence": 0.999163031578064,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1303.0,
+                            "y1": 2912.0,
+                            "x2": 1615.0,
+                            "y2": 3010.0
+                        },
+                        "text": "$10,551.83",
+                        "confidence": 0.9989808797836304,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1294.0,
+                            "y1": 3042.0,
+                            "x2": 1613.0,
+                            "y2": 3127.0
+                        },
+                        "text": "$49,413.99",
+                        "confidence": 0.9989093542098999,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.998706945351192
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1578.0,
+                            "y1": 2116.0,
+                            "x2": 1948.0,
+                            "y2": 2228.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1577.0,
+                            "y1": 2234.0,
+                            "x2": 1918.0,
+                            "y2": 2337.0
+                        },
+                        "text": "Remaining",
+                        "confidence": 0.9573831558227539,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1586.0,
+                            "y1": 2347.0,
+                            "x2": 1917.0,
+                            "y2": 2448.0
+                        },
+                        "text": "$30,067.70",
+                        "confidence": 0.998503565788269,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1591.0,
+                            "y1": 2465.0,
+                            "x2": 1919.0,
+                            "y2": 2567.0
+                        },
+                        "text": "$7,193.09",
+                        "confidence": 0.9992603659629822,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1592.0,
+                            "y1": 2575.0,
+                            "x2": 1921.0,
+                            "y2": 2678.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1594.0,
+                            "y1": 2692.0,
+                            "x2": 1921.0,
+                            "y2": 2791.0
+                        },
+                        "text": "$6,680.74",
+                        "confidence": 0.9989892244338989,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1599.0,
+                            "y1": 2807.0,
+                            "x2": 1922.0,
+                            "y2": 2904.0
+                        },
+                        "text": "$23,882.97",
+                        "confidence": 0.999102771282196,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1603.0,
+                            "y1": 2912.0,
+                            "x2": 1922.0,
+                            "y2": 3008.0
+                        },
+                        "text": "$12,844.17",
+                        "confidence": 0.9986224174499512,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1595.0,
+                            "y1": 3042.0,
+                            "x2": 1922.0,
+                            "y2": 3126.0
+                        },
+                        "text": "$7,638.01",
+                        "confidence": 0.9992655515670776,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9930181503295898
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1924.0,
+                            "y1": 2117.0,
+                            "x2": 2272.0,
+                            "y2": 2227.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1931.0,
+                            "y1": 2230.0,
+                            "x2": 2279.0,
+                            "y2": 2337.0
+                        },
+                        "text": "Status",
+                        "confidence": 0.9997842311859131,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1929.0,
+                            "y1": 2343.0,
+                            "x2": 2281.0,
+                            "y2": 2449.0
+                        },
+                        "text": "Approved",
+                        "confidence": 0.9997098445892334,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1922.0,
+                            "y1": 2461.0,
+                            "x2": 2282.0,
+                            "y2": 2569.0
+                        },
+                        "text": "Completed",
+                        "confidence": 0.9997885227203369,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1923.0,
+                            "y1": 2572.0,
+                            "x2": 2282.0,
+                            "y2": 2681.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1929.0,
+                            "y1": 2689.0,
+                            "x2": 2278.0,
+                            "y2": 2791.0
+                        },
+                        "text": "Pending Review",
+                        "confidence": 0.9996234774589539,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1938.0,
+                            "y1": 2804.0,
+                            "x2": 2277.0,
+                            "y2": 2900.0
+                        },
+                        "text": "Pending Review",
+                        "confidence": 0.9958710372447968,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1947.0,
+                            "y1": 2912.0,
+                            "x2": 2275.0,
+                            "y2": 3008.0
+                        },
+                        "text": "Completed",
+                        "confidence": 0.9997512102127075,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1948.0,
+                            "y1": 3041.0,
+                            "x2": 2269.0,
+                            "y2": 3126.0
+                        },
+                        "text": "On Hold",
+                        "confidence": 0.9825388789176941,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9967238860470908
+            }
+        ],
+        "headers": [
+            "",
+            "Table 2: Department Project Allocations (8 Rows)",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "bbox": {
+            "x1": 178.0,
+            "y1": 2112.0,
+            "x2": 2282.0,
+            "y2": 3129.0
+        },
+        "confidence": 0.9927985222389301,
+        "metadata": {
+            "merged_cell_count": 0,
+            "synthetic_cell_count": 0,
+            "total_ocr_items": 128,
+            "matched_ocr_items": 45,
+            "unmatched_ocr_items": 83,
+            "header_row_count": 1,
+            "row_count": 9,
+            "col_count": 6,
+            "parser_version": "2.0"
+        }
+    },
+    {
+        "page": 1,
+        "table_index": 2,
+        "rows": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 175.0,
+                            "y1": 667.0,
+                            "x2": 430.0,
+                            "y2": 787.0
+                        },
+                        "text": "PRD-1001",
+                        "confidence": 0.9985613822937012,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 427.0,
+                            "y1": 669.0,
+                            "x2": 926.0,
+                            "y2": 772.0
+                        },
+                        "text": "Wireless Mouse",
+                        "confidence": 0.9985976219177246,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1056.0,
+                            "y1": 669.0,
+                            "x2": 1373.0,
+                            "y2": 782.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.999513566493988,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1413.0,
+                            "y1": 670.0,
+                            "x2": 1763.0,
+                            "y2": 782.0
+                        },
+                        "text": "Qty in Stock 178",
+                        "confidence": 0.998047798871994,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1714.0,
+                            "y1": 670.0,
+                            "x2": 2017.0,
+                            "y2": 777.0
+                        },
+                        "text": "Unit Price $73.43",
+                        "confidence": 0.9954586625099182,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1980.0,
+                            "y1": 670.0,
+                            "x2": 2295.0,
+                            "y2": 783.0
+                        },
+                        "text": "Total Value $13,070.54",
+                        "confidence": 0.9960974156856537,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": true,
+                "confidence": 0.9977127412954966
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 789.0,
+                            "x2": 501.0,
+                            "y2": 886.0
+                        },
+                        "text": "PRD-1002",
+                        "confidence": 0.9995730519294739,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 453.0,
+                            "y1": 788.0,
+                            "x2": 970.0,
+                            "y2": 875.0
+                        },
+                        "text": "Mechanical Keyboard",
+                        "confidence": 0.9824845194816589,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1078.0,
+                            "y1": 790.0,
+                            "x2": 1404.0,
+                            "y2": 884.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.9996904730796814,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1510.0,
+                            "y1": 793.0,
+                            "x2": 1740.0,
+                            "y2": 886.0
+                        },
+                        "text": "204",
+                        "confidence": 0.9998175501823425,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1765.0,
+                            "y1": 795.0,
+                            "x2": 2017.0,
+                            "y2": 889.0
+                        },
+                        "text": "$152.00",
+                        "confidence": 0.998916745185852,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2007.0,
+                            "y1": 790.0,
+                            "x2": 2295.0,
+                            "y2": 888.0
+                        },
+                        "text": "$31,008.00",
+                        "confidence": 0.998824417591095,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.996551126241684
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 179.0,
+                            "y1": 898.0,
+                            "x2": 451.0,
+                            "y2": 1001.0
+                        },
+                        "text": "PRD-1003",
+                        "confidence": 0.9989364147186279,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 441.0,
+                            "y1": 897.0,
+                            "x2": 1020.0,
+                            "y2": 990.0
+                        },
+                        "text": "USB-C Hub",
+                        "confidence": 0.9954659938812256,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1071.0,
+                            "y1": 900.0,
+                            "x2": 1416.0,
+                            "y2": 993.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9984920024871826,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1522.0,
+                            "y1": 1020.0,
+                            "x2": 1744.0,
+                            "y2": 1119.0
+                        },
+                        "text": "72",
+                        "confidence": 0.9981443285942078,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1769.0,
+                            "y1": 1022.0,
+                            "x2": 2013.0,
+                            "y2": 1118.0
+                        },
+                        "text": "$86.97",
+                        "confidence": 0.999538242816925,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2014.0,
+                            "y1": 1019.0,
+                            "x2": 2292.0,
+                            "y2": 1119.0
+                        },
+                        "text": "$6,261.84",
+                        "confidence": 0.9977054595947266,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9980470736821493
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1130.0,
+                            "x2": 435.0,
+                            "y2": 1234.0
+                        },
+                        "text": "PRD-1004",
+                        "confidence": 0.9994845390319824,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 432.0,
+                            "y1": 1125.0,
+                            "x2": 983.0,
+                            "y2": 1226.0
+                        },
+                        "text": "27-inch Monitor",
+                        "confidence": 0.9982703924179077,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1082.0,
+                            "y1": 1129.0,
+                            "x2": 1408.0,
+                            "y2": 1226.0
+                        },
+                        "text": "Displays",
+                        "confidence": 0.9997761249542236,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1528.0,
+                            "y1": 1133.0,
+                            "x2": 1747.0,
+                            "y2": 1232.0
+                        },
+                        "text": "41",
+                        "confidence": 0.9998068809509277,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1775.0,
+                            "y1": 1134.0,
+                            "x2": 2021.0,
+                            "y2": 1232.0
+                        },
+                        "text": "$344.81",
+                        "confidence": 0.9997557401657104,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2015.0,
+                            "y1": 1130.0,
+                            "x2": 2294.0,
+                            "y2": 1234.0
+                        },
+                        "text": "$14,137.21",
+                        "confidence": 0.9995864629745483,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.99944669008255
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 177.0,
+                            "y1": 1249.0,
+                            "x2": 436.0,
+                            "y2": 1353.0
+                        },
+                        "text": "PRD-1005",
+                        "confidence": 0.9986594915390015,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 431.0,
+                            "y1": 1244.0,
+                            "x2": 983.0,
+                            "y2": 1345.0
+                        },
+                        "text": "Ergonomic Chair",
+                        "confidence": 0.9969537258148193,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1082.0,
+                            "y1": 1247.0,
+                            "x2": 1418.0,
+                            "y2": 1344.0
+                        },
+                        "text": "Furniture",
+                        "confidence": 0.9995655417442322,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1532.0,
+                            "y1": 1251.0,
+                            "x2": 1748.0,
+                            "y2": 1349.0
+                        },
+                        "text": "243",
+                        "confidence": 0.9995462894439697,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1775.0,
+                            "y1": 1251.0,
+                            "x2": 2020.0,
+                            "y2": 1348.0
+                        },
+                        "text": "$281.77",
+                        "confidence": 0.9991748929023743,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2017.0,
+                            "y1": 1248.0,
+                            "x2": 2294.0,
+                            "y2": 1352.0
+                        },
+                        "text": "$68,470.11",
+                        "confidence": 0.9995988607406616,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9989164670308431
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1369.0,
+                            "x2": 441.0,
+                            "y2": 1472.0
+                        },
+                        "text": "PRD-1006",
+                        "confidence": 0.9994760751724243,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 438.0,
+                            "y1": 1366.0,
+                            "x2": 1052.0,
+                            "y2": 1470.0
+                        },
+                        "text": "Noise-Canceling Headphones",
+                        "confidence": 0.9796037673950195,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1080.0,
+                            "y1": 1369.0,
+                            "x2": 1424.0,
+                            "y2": 1465.0
+                        },
+                        "text": "Audio",
+                        "confidence": 0.9993953704833984,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1534.0,
+                            "y1": 1372.0,
+                            "x2": 1751.0,
+                            "y2": 1468.0
+                        },
+                        "text": "166",
+                        "confidence": 0.9999322295188904,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1777.0,
+                            "y1": 1371.0,
+                            "x2": 2021.0,
+                            "y2": 1466.0
+                        },
+                        "text": "$222.51",
+                        "confidence": 0.9996868968009949,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2017.0,
+                            "y1": 1367.0,
+                            "x2": 2294.0,
+                            "y2": 1469.0
+                        },
+                        "text": "$36,936.66",
+                        "confidence": 0.9981751441955566,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.996044913927714
+            },
+            {
+                "index": 6,
+                "cells": [
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1483.0,
+                            "x2": 434.0,
+                            "y2": 1581.0
+                        },
+                        "text": "PRD-1007",
+                        "confidence": 0.9988435506820679,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 431.0,
+                            "y1": 1477.0,
+                            "x2": 1018.0,
+                            "y2": 1575.0
+                        },
+                        "text": "Webcam 4K",
+                        "confidence": 0.996342658996582,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1078.0,
+                            "y1": 1480.0,
+                            "x2": 1423.0,
+                            "y2": 1575.0
+                        },
+                        "text": "Video",
+                        "confidence": 0.9990156888961792,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1535.0,
+                            "y1": 1484.0,
+                            "x2": 1752.0,
+                            "y2": 1578.0
+                        },
+                        "text": "22",
+                        "confidence": 0.9976809024810791,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1778.0,
+                            "y1": 1483.0,
+                            "x2": 2020.0,
+                            "y2": 1575.0
+                        },
+                        "text": "$64.96",
+                        "confidence": 0.9996750950813293,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2018.0,
+                            "y1": 1481.0,
+                            "x2": 2294.0,
+                            "y2": 1579.0
+                        },
+                        "text": "$1,429.12",
+                        "confidence": 0.9978792667388916,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9982395271460215
+            },
+            {
+                "index": 7,
+                "cells": [
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 177.0,
+                            "y1": 1595.0,
+                            "x2": 428.0,
+                            "y2": 1686.0
+                        },
+                        "text": "PRD-1008",
+                        "confidence": 0.9995843768119812,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 425.0,
+                            "y1": 1593.0,
+                            "x2": 994.0,
+                            "y2": 1683.0
+                        },
+                        "text": "Desk Mat",
+                        "confidence": 0.9948313236236572,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1079.0,
+                            "y1": 1596.0,
+                            "x2": 1440.0,
+                            "y2": 1686.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9987556338310242,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1541.0,
+                            "y1": 1599.0,
+                            "x2": 1752.0,
+                            "y2": 1685.0
+                        },
+                        "text": "74",
+                        "confidence": 0.9997279644012451,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1779.0,
+                            "y1": 1599.0,
+                            "x2": 2021.0,
+                            "y2": 1684.0
+                        },
+                        "text": "$262.56",
+                        "confidence": 0.9997197985649109,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2021.0,
+                            "y1": 1597.0,
+                            "x2": 2294.0,
+                            "y2": 1687.0
+                        },
+                        "text": "$19,429.44",
+                        "confidence": 0.9992738962173462,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9986488322416941
+            },
+            {
+                "index": 8,
+                "cells": [
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 176.0,
+                            "y1": 1707.0,
+                            "x2": 438.0,
+                            "y2": 1794.0
+                        },
+                        "text": "PRD-1009",
+                        "confidence": 0.9992527365684509,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 428.0,
+                            "y1": 1705.0,
+                            "x2": 955.0,
+                            "y2": 1794.0
+                        },
+                        "text": "Laptop Stand",
+                        "confidence": 0.9821227192878723,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1082.0,
+                            "y1": 1708.0,
+                            "x2": 1430.0,
+                            "y2": 1797.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.998370885848999,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1544.0,
+                            "y1": 1712.0,
+                            "x2": 1748.0,
+                            "y2": 1798.0
+                        },
+                        "text": "21",
+                        "confidence": 0.9991036653518677,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1775.0,
+                            "y1": 1712.0,
+                            "x2": 2022.0,
+                            "y2": 1797.0
+                        },
+                        "text": "$289.39",
+                        "confidence": 0.9994300007820129,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2027.0,
+                            "y1": 1712.0,
+                            "x2": 2293.0,
+                            "y2": 1800.0
+                        },
+                        "text": "$6,077.19",
+                        "confidence": 0.998977780342102,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9962096313635508
+            },
+            {
+                "index": 9,
+                "cells": [
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 175.0,
+                            "y1": 1824.0,
+                            "x2": 446.0,
+                            "y2": 1904.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 414.0,
+                            "y1": 1826.0,
+                            "x2": 969.0,
+                            "y2": 1906.0
+                        },
+                        "text": "Portable SSD 1TB",
+                        "confidence": 0.9708775281906128,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1078.0,
+                            "y1": 1828.0,
+                            "x2": 1424.0,
+                            "y2": 1905.0
+                        },
+                        "text": "Storage",
+                        "confidence": 0.9997037649154663,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1546.0,
+                            "y1": 1827.0,
+                            "x2": 1770.0,
+                            "y2": 1904.0
+                        },
+                        "text": "198",
+                        "confidence": 0.9999035000801086,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1765.0,
+                            "y1": 1828.0,
+                            "x2": 2027.0,
+                            "y2": 1902.0
+                        },
+                        "text": "$331.93",
+                        "confidence": 0.9997020363807678,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2026.0,
+                            "y1": 1827.0,
+                            "x2": 2294.0,
+                            "y2": 1902.0
+                        },
+                        "text": "$65,722.14",
+                        "confidence": 0.9987306594848633,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9937834978103638
+            }
+        ],
+        "columns": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 175.0,
+                            "y1": 667.0,
+                            "x2": 430.0,
+                            "y2": 787.0
+                        },
+                        "text": "PRD-1001",
+                        "confidence": 0.9985613822937012,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 789.0,
+                            "x2": 501.0,
+                            "y2": 886.0
+                        },
+                        "text": "PRD-1002",
+                        "confidence": 0.9995730519294739,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 179.0,
+                            "y1": 898.0,
+                            "x2": 451.0,
+                            "y2": 1001.0
+                        },
+                        "text": "PRD-1003",
+                        "confidence": 0.9989364147186279,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1015.0,
+                            "x2": 437.0,
+                            "y2": 1118.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1130.0,
+                            "x2": 435.0,
+                            "y2": 1234.0
+                        },
+                        "text": "PRD-1004",
+                        "confidence": 0.9994845390319824,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 177.0,
+                            "y1": 1249.0,
+                            "x2": 436.0,
+                            "y2": 1353.0
+                        },
+                        "text": "PRD-1005",
+                        "confidence": 0.9986594915390015,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1369.0,
+                            "x2": 441.0,
+                            "y2": 1472.0
+                        },
+                        "text": "PRD-1006",
+                        "confidence": 0.9994760751724243,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 178.0,
+                            "y1": 1483.0,
+                            "x2": 434.0,
+                            "y2": 1581.0
+                        },
+                        "text": "PRD-1007",
+                        "confidence": 0.9988435506820679,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 177.0,
+                            "y1": 1595.0,
+                            "x2": 428.0,
+                            "y2": 1686.0
+                        },
+                        "text": "PRD-1008",
+                        "confidence": 0.9995843768119812,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 176.0,
+                            "y1": 1707.0,
+                            "x2": 438.0,
+                            "y2": 1794.0
+                        },
+                        "text": "PRD-1009",
+                        "confidence": 0.9992527365684509,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 175.0,
+                            "y1": 1824.0,
+                            "x2": 446.0,
+                            "y2": 1904.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.999152402083079
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 427.0,
+                            "y1": 669.0,
+                            "x2": 926.0,
+                            "y2": 772.0
+                        },
+                        "text": "Wireless Mouse",
+                        "confidence": 0.9985976219177246,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 453.0,
+                            "y1": 788.0,
+                            "x2": 970.0,
+                            "y2": 875.0
+                        },
+                        "text": "Mechanical Keyboard",
+                        "confidence": 0.9824845194816589,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 441.0,
+                            "y1": 897.0,
+                            "x2": 1020.0,
+                            "y2": 990.0
+                        },
+                        "text": "USB-C Hub",
+                        "confidence": 0.9954659938812256,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 432.0,
+                            "y1": 1012.0,
+                            "x2": 982.0,
+                            "y2": 1108.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 432.0,
+                            "y1": 1125.0,
+                            "x2": 983.0,
+                            "y2": 1226.0
+                        },
+                        "text": "27-inch Monitor",
+                        "confidence": 0.9982703924179077,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 431.0,
+                            "y1": 1244.0,
+                            "x2": 983.0,
+                            "y2": 1345.0
+                        },
+                        "text": "Ergonomic Chair",
+                        "confidence": 0.9969537258148193,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 438.0,
+                            "y1": 1366.0,
+                            "x2": 1052.0,
+                            "y2": 1470.0
+                        },
+                        "text": "Noise-Canceling Headphones",
+                        "confidence": 0.9796037673950195,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 431.0,
+                            "y1": 1477.0,
+                            "x2": 1018.0,
+                            "y2": 1575.0
+                        },
+                        "text": "Webcam 4K",
+                        "confidence": 0.996342658996582,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 425.0,
+                            "y1": 1593.0,
+                            "x2": 994.0,
+                            "y2": 1683.0
+                        },
+                        "text": "Desk Mat",
+                        "confidence": 0.9948313236236572,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 428.0,
+                            "y1": 1705.0,
+                            "x2": 955.0,
+                            "y2": 1794.0
+                        },
+                        "text": "Laptop Stand",
+                        "confidence": 0.9821227192878723,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 414.0,
+                            "y1": 1826.0,
+                            "x2": 969.0,
+                            "y2": 1906.0
+                        },
+                        "text": "Portable SSD 1TB",
+                        "confidence": 0.9708775281906128,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.989555025100708
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1056.0,
+                            "y1": 669.0,
+                            "x2": 1373.0,
+                            "y2": 782.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.999513566493988,
+                        "ocr_item_count": 1,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1078.0,
+                            "y1": 790.0,
+                            "x2": 1404.0,
+                            "y2": 884.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.9996904730796814,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1071.0,
+                            "y1": 900.0,
+                            "x2": 1416.0,
+                            "y2": 993.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9984920024871826,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1077.0,
+                            "y1": 1017.0,
+                            "x2": 1408.0,
+                            "y2": 1111.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1082.0,
+                            "y1": 1129.0,
+                            "x2": 1408.0,
+                            "y2": 1226.0
+                        },
+                        "text": "Displays",
+                        "confidence": 0.9997761249542236,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1082.0,
+                            "y1": 1247.0,
+                            "x2": 1418.0,
+                            "y2": 1344.0
+                        },
+                        "text": "Furniture",
+                        "confidence": 0.9995655417442322,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1080.0,
+                            "y1": 1369.0,
+                            "x2": 1424.0,
+                            "y2": 1465.0
+                        },
+                        "text": "Audio",
+                        "confidence": 0.9993953704833984,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1078.0,
+                            "y1": 1480.0,
+                            "x2": 1423.0,
+                            "y2": 1575.0
+                        },
+                        "text": "Video",
+                        "confidence": 0.9990156888961792,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1079.0,
+                            "y1": 1596.0,
+                            "x2": 1440.0,
+                            "y2": 1686.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9987556338310242,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1082.0,
+                            "y1": 1708.0,
+                            "x2": 1430.0,
+                            "y2": 1797.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.998370885848999,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 1078.0,
+                            "y1": 1828.0,
+                            "x2": 1424.0,
+                            "y2": 1905.0
+                        },
+                        "text": "Storage",
+                        "confidence": 0.9997037649154663,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9992279052734375
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1413.0,
+                            "y1": 670.0,
+                            "x2": 1763.0,
+                            "y2": 782.0
+                        },
+                        "text": "Qty in Stock 178",
+                        "confidence": 0.998047798871994,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1510.0,
+                            "y1": 793.0,
+                            "x2": 1740.0,
+                            "y2": 886.0
+                        },
+                        "text": "204",
+                        "confidence": 0.9998175501823425,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1514.0,
+                            "y1": 902.0,
+                            "x2": 1746.0,
+                            "y2": 998.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1522.0,
+                            "y1": 1020.0,
+                            "x2": 1744.0,
+                            "y2": 1119.0
+                        },
+                        "text": "72",
+                        "confidence": 0.9981443285942078,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1528.0,
+                            "y1": 1133.0,
+                            "x2": 1747.0,
+                            "y2": 1232.0
+                        },
+                        "text": "41",
+                        "confidence": 0.9998068809509277,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1532.0,
+                            "y1": 1251.0,
+                            "x2": 1748.0,
+                            "y2": 1349.0
+                        },
+                        "text": "243",
+                        "confidence": 0.9995462894439697,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1534.0,
+                            "y1": 1372.0,
+                            "x2": 1751.0,
+                            "y2": 1468.0
+                        },
+                        "text": "166",
+                        "confidence": 0.9999322295188904,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1535.0,
+                            "y1": 1484.0,
+                            "x2": 1752.0,
+                            "y2": 1578.0
+                        },
+                        "text": "22",
+                        "confidence": 0.9976809024810791,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1541.0,
+                            "y1": 1599.0,
+                            "x2": 1752.0,
+                            "y2": 1685.0
+                        },
+                        "text": "74",
+                        "confidence": 0.9997279644012451,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1544.0,
+                            "y1": 1712.0,
+                            "x2": 1748.0,
+                            "y2": 1798.0
+                        },
+                        "text": "21",
+                        "confidence": 0.9991036653518677,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 1546.0,
+                            "y1": 1827.0,
+                            "x2": 1770.0,
+                            "y2": 1904.0
+                        },
+                        "text": "198",
+                        "confidence": 0.9999035000801086,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9991711109876633
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1714.0,
+                            "y1": 670.0,
+                            "x2": 2017.0,
+                            "y2": 777.0
+                        },
+                        "text": "Unit Price $73.43",
+                        "confidence": 0.9954586625099182,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1765.0,
+                            "y1": 795.0,
+                            "x2": 2017.0,
+                            "y2": 889.0
+                        },
+                        "text": "$152.00",
+                        "confidence": 0.998916745185852,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1767.0,
+                            "y1": 905.0,
+                            "x2": 2015.0,
+                            "y2": 999.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1769.0,
+                            "y1": 1022.0,
+                            "x2": 2013.0,
+                            "y2": 1118.0
+                        },
+                        "text": "$86.97",
+                        "confidence": 0.999538242816925,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1775.0,
+                            "y1": 1134.0,
+                            "x2": 2021.0,
+                            "y2": 1232.0
+                        },
+                        "text": "$344.81",
+                        "confidence": 0.9997557401657104,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1775.0,
+                            "y1": 1251.0,
+                            "x2": 2020.0,
+                            "y2": 1348.0
+                        },
+                        "text": "$281.77",
+                        "confidence": 0.9991748929023743,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1777.0,
+                            "y1": 1371.0,
+                            "x2": 2021.0,
+                            "y2": 1466.0
+                        },
+                        "text": "$222.51",
+                        "confidence": 0.9996868968009949,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1778.0,
+                            "y1": 1483.0,
+                            "x2": 2020.0,
+                            "y2": 1575.0
+                        },
+                        "text": "$64.96",
+                        "confidence": 0.9996750950813293,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1779.0,
+                            "y1": 1599.0,
+                            "x2": 2021.0,
+                            "y2": 1684.0
+                        },
+                        "text": "$262.56",
+                        "confidence": 0.9997197985649109,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1775.0,
+                            "y1": 1712.0,
+                            "x2": 2022.0,
+                            "y2": 1797.0
+                        },
+                        "text": "$289.39",
+                        "confidence": 0.9994300007820129,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 1765.0,
+                            "y1": 1828.0,
+                            "x2": 2027.0,
+                            "y2": 1902.0
+                        },
+                        "text": "$331.93",
+                        "confidence": 0.9997020363807678,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9991058111190796
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1980.0,
+                            "y1": 670.0,
+                            "x2": 2295.0,
+                            "y2": 783.0
+                        },
+                        "text": "Total Value $13,070.54",
+                        "confidence": 0.9960974156856537,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2007.0,
+                            "y1": 790.0,
+                            "x2": 2295.0,
+                            "y2": 888.0
+                        },
+                        "text": "$31,008.00",
+                        "confidence": 0.998824417591095,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2012.0,
+                            "y1": 901.0,
+                            "x2": 2294.0,
+                            "y2": 1000.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2014.0,
+                            "y1": 1019.0,
+                            "x2": 2292.0,
+                            "y2": 1119.0
+                        },
+                        "text": "$6,261.84",
+                        "confidence": 0.9977054595947266,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2015.0,
+                            "y1": 1130.0,
+                            "x2": 2294.0,
+                            "y2": 1234.0
+                        },
+                        "text": "$14,137.21",
+                        "confidence": 0.9995864629745483,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2017.0,
+                            "y1": 1248.0,
+                            "x2": 2294.0,
+                            "y2": 1352.0
+                        },
+                        "text": "$68,470.11",
+                        "confidence": 0.9995988607406616,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2017.0,
+                            "y1": 1367.0,
+                            "x2": 2294.0,
+                            "y2": 1469.0
+                        },
+                        "text": "$36,936.66",
+                        "confidence": 0.9981751441955566,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2018.0,
+                            "y1": 1481.0,
+                            "x2": 2294.0,
+                            "y2": 1579.0
+                        },
+                        "text": "$1,429.12",
+                        "confidence": 0.9978792667388916,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2021.0,
+                            "y1": 1597.0,
+                            "x2": 2294.0,
+                            "y2": 1687.0
+                        },
+                        "text": "$19,429.44",
+                        "confidence": 0.9992738962173462,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2027.0,
+                            "y1": 1712.0,
+                            "x2": 2293.0,
+                            "y2": 1800.0
+                        },
+                        "text": "$6,077.19",
+                        "confidence": 0.998977780342102,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 2026.0,
+                            "y1": 1827.0,
+                            "x2": 2294.0,
+                            "y2": 1902.0
+                        },
+                        "text": "$65,722.14",
+                        "confidence": 0.9987306594848633,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9984849363565445
+            }
+        ],
+        "headers": [
+            "PRD-1001",
+            "Wireless Mouse",
+            "Peripherals",
+            "Qty in Stock 178",
+            "Unit Price $73.43",
+            "Total Value $13,070.54"
+        ],
+        "bbox": {
+            "x1": 175.0,
+            "y1": 667.0,
+            "x2": 2295.0,
+            "y2": 1906.0
+        },
+        "confidence": 0.9973600500822067,
+        "metadata": {
+            "merged_cell_count": 0,
+            "synthetic_cell_count": 0,
+            "total_ocr_items": 128,
+            "matched_ocr_items": 62,
+            "unmatched_ocr_items": 66,
+            "header_row_count": 1,
+            "row_count": 10,
+            "col_count": 6,
+            "parser_version": "2.0"
+        }
+    },
+    {
+        "page": 1,
+        "table_index": 3,
+        "rows": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 216.0,
+                            "y1": 2003.0,
+                            "x2": 1391.0,
+                            "y2": 2070.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.0
+            }
+        ],
+        "columns": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 216.0,
+                            "y1": 2003.0,
+                            "x2": 1391.0,
+                            "y2": 2070.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.0
+            }
+        ],
+        "headers": [],
+        "bbox": {
+            "x1": 216.0,
+            "y1": 2003.0,
+            "x2": 1391.0,
+            "y2": 2070.0
+        },
+        "confidence": 0.0,
+        "metadata": {
+            "merged_cell_count": 0,
+            "synthetic_cell_count": 0,
+            "total_ocr_items": 128,
+            "matched_ocr_items": 0,
+            "unmatched_ocr_items": 128,
+            "header_row_count": 0,
+            "row_count": 1,
+            "col_count": 1,
+            "parser_version": "2.0"
+        }
+    },
+    {
+        "page": 1,
+        "table_index": 4,
+        "rows": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 208.0,
+                            "y1": 556.0,
+                            "x2": 1265.0,
+                            "y2": 623.0
+                        },
+                        "text": "Product Name Category",
+                        "confidence": 0.9835065603256226,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9835065603256226
+            }
+        ],
+        "columns": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 208.0,
+                            "y1": 556.0,
+                            "x2": 1265.0,
+                            "y2": 623.0
+                        },
+                        "text": "Product Name Category",
+                        "confidence": 0.9835065603256226,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9835065603256226
+            }
+        ],
+        "headers": [],
+        "bbox": {
+            "x1": 208.0,
+            "y1": 556.0,
+            "x2": 1265.0,
+            "y2": 623.0
+        },
+        "confidence": 0.9835065603256226,
+        "metadata": {
+            "merged_cell_count": 0,
+            "synthetic_cell_count": 0,
+            "total_ocr_items": 128,
+            "matched_ocr_items": 2,
+            "unmatched_ocr_items": 126,
+            "header_row_count": 0,
+            "row_count": 1,
+            "col_count": 1,
+            "parser_version": "2.0"
+        }
+    }
+]

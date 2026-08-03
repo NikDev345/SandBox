@@ -1,0 +1,2430 @@
+[
+    {
+        "page": 1,
+        "table_index": 1,
+        "rows": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": true,
+                "confidence": 0.9556933045387268
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 72.0,
+                            "y1": 99.0,
+                            "x2": 229.0,
+                            "y2": 151.0
+                        },
+                        "text": "SKU",
+                        "confidence": 0.9959659576416016,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 240.0,
+                            "y1": 103.0,
+                            "x2": 493.0,
+                            "y2": 154.0
+                        },
+                        "text": "Product Name",
+                        "confidence": 0.9863035678863525,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 560.0,
+                            "y1": 103.0,
+                            "x2": 731.0,
+                            "y2": 155.0
+                        },
+                        "text": "Category",
+                        "confidence": 0.9941633939743042,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 725.0,
+                            "y1": 105.0,
+                            "x2": 928.0,
+                            "y2": 160.0
+                        },
+                        "text": "Qty in Stock",
+                        "confidence": 0.975159227848053,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 875.0,
+                            "y1": 105.0,
+                            "x2": 1043.0,
+                            "y2": 161.0
+                        },
+                        "text": "Unit Price",
+                        "confidence": 0.9983502626419067,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1020.0,
+                            "y1": 100.0,
+                            "x2": 1202.0,
+                            "y2": 158.0
+                        },
+                        "text": "Total Value",
+                        "confidence": 0.9972628951072693,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9912008841832479
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 73.0,
+                            "y1": 162.0,
+                            "x2": 250.0,
+                            "y2": 213.0
+                        },
+                        "text": "PRD-1001",
+                        "confidence": 0.9964241981506348,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 244.0,
+                            "y1": 163.0,
+                            "x2": 549.0,
+                            "y2": 212.0
+                        },
+                        "text": "Wireless Mouse",
+                        "confidence": 0.9985641241073608,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 555.0,
+                            "y1": 166.0,
+                            "x2": 739.0,
+                            "y2": 215.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.9991782903671265,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 758.0,
+                            "y1": 168.0,
+                            "x2": 887.0,
+                            "y2": 217.0
+                        },
+                        "text": "178",
+                        "confidence": 0.9993636608123779,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 887.0,
+                            "y1": 167.0,
+                            "x2": 1038.0,
+                            "y2": 217.0
+                        },
+                        "text": "$73.43",
+                        "confidence": 0.9993485808372498,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1022.0,
+                            "y1": 163.0,
+                            "x2": 1197.0,
+                            "y2": 214.0
+                        },
+                        "text": "$13,070.54",
+                        "confidence": 0.9892204403877258,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9970165491104126
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 72.0,
+                            "y1": 221.0,
+                            "x2": 247.0,
+                            "y2": 276.0
+                        },
+                        "text": "PRD-1002",
+                        "confidence": 0.9988651275634766,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 228.0,
+                            "y1": 220.0,
+                            "x2": 530.0,
+                            "y2": 276.0
+                        },
+                        "text": "Mechanical Keyboard",
+                        "confidence": 0.9967423677444458,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 550.0,
+                            "y1": 222.0,
+                            "x2": 736.0,
+                            "y2": 274.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.9995973706245422,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 762.0,
+                            "y1": 224.0,
+                            "x2": 888.0,
+                            "y2": 276.0
+                        },
+                        "text": "204",
+                        "confidence": 0.999584972858429,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 887.0,
+                            "y1": 223.0,
+                            "x2": 1034.0,
+                            "y2": 275.0
+                        },
+                        "text": "$152.00",
+                        "confidence": 0.9990912079811096,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 220.0,
+                            "x2": 1196.0,
+                            "y2": 273.0
+                        },
+                        "text": "$31,008.00",
+                        "confidence": 0.9951428174972534,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9981706440448761
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 75.0,
+                            "y1": 284.0,
+                            "x2": 243.0,
+                            "y2": 334.0
+                        },
+                        "text": "PRD-1003",
+                        "confidence": 0.9983121752738953,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 241.0,
+                            "y1": 280.0,
+                            "x2": 509.0,
+                            "y2": 333.0
+                        },
+                        "text": "USB-C Hub",
+                        "confidence": 0.9533565044403076,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 555.0,
+                            "y1": 283.0,
+                            "x2": 736.0,
+                            "y2": 333.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9981486797332764,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 768.0,
+                            "y1": 285.0,
+                            "x2": 885.0,
+                            "y2": 334.0
+                        },
+                        "text": "72",
+                        "confidence": 0.9971201419830322,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 888.0,
+                            "y1": 285.0,
+                            "x2": 1033.0,
+                            "y2": 335.0
+                        },
+                        "text": "$86.97",
+                        "confidence": 0.9990262985229492,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 282.0,
+                            "x2": 1193.0,
+                            "y2": 333.0
+                        },
+                        "text": "$6,261.84",
+                        "confidence": 0.9912129640579224,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9895294606685638
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 75.0,
+                            "y1": 341.0,
+                            "x2": 261.0,
+                            "y2": 391.0
+                        },
+                        "text": "PRD-1004",
+                        "confidence": 0.9983945488929749,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 237.0,
+                            "y1": 340.0,
+                            "x2": 527.0,
+                            "y2": 392.0
+                        },
+                        "text": "27-inch Monitor",
+                        "confidence": 0.9754960536956787,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 556.0,
+                            "y1": 342.0,
+                            "x2": 734.0,
+                            "y2": 390.0
+                        },
+                        "text": "Displays",
+                        "confidence": 0.9995883703231812,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 777.0,
+                            "y1": 344.0,
+                            "x2": 886.0,
+                            "y2": 393.0
+                        },
+                        "text": "41",
+                        "confidence": 0.999468207359314,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 888.0,
+                            "y1": 343.0,
+                            "x2": 1032.0,
+                            "y2": 393.0
+                        },
+                        "text": "$344.81",
+                        "confidence": 0.9996020197868347,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 340.0,
+                            "x2": 1192.0,
+                            "y2": 391.0
+                        },
+                        "text": "$14,137.21",
+                        "confidence": 0.9982770085334778,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9951377014319102
+            },
+            {
+                "index": 6,
+                "cells": [
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 74.0,
+                            "y1": 401.0,
+                            "x2": 261.0,
+                            "y2": 453.0
+                        },
+                        "text": "PRD-1005",
+                        "confidence": 0.9988332986831665,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 236.0,
+                            "y1": 400.0,
+                            "x2": 534.0,
+                            "y2": 453.0
+                        },
+                        "text": "Ergonomic Chair",
+                        "confidence": 0.9916583299636841,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 554.0,
+                            "y1": 402.0,
+                            "x2": 736.0,
+                            "y2": 450.0
+                        },
+                        "text": "Furniture",
+                        "confidence": 0.9995278120040894,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 778.0,
+                            "y1": 403.0,
+                            "x2": 887.0,
+                            "y2": 451.0
+                        },
+                        "text": "243",
+                        "confidence": 0.9991369247436523,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 888.0,
+                            "y1": 402.0,
+                            "x2": 1029.0,
+                            "y2": 453.0
+                        },
+                        "text": "$281.77",
+                        "confidence": 0.9990390539169312,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 400.0,
+                            "x2": 1192.0,
+                            "y2": 451.0
+                        },
+                        "text": "$68,470.11",
+                        "confidence": 0.995883584022522,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9973465005556742
+            },
+            {
+                "index": 7,
+                "cells": [
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 74.0,
+                            "y1": 458.0,
+                            "x2": 259.0,
+                            "y2": 513.0
+                        },
+                        "text": "PRD-1006",
+                        "confidence": 0.9988049268722534,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 237.0,
+                            "y1": 456.0,
+                            "x2": 555.0,
+                            "y2": 512.0
+                        },
+                        "text": "Noise-Canceling Headphones",
+                        "confidence": 0.9988871812820435,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 556.0,
+                            "y1": 458.0,
+                            "x2": 737.0,
+                            "y2": 509.0
+                        },
+                        "text": "Audio",
+                        "confidence": 0.9991329312324524,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 782.0,
+                            "y1": 459.0,
+                            "x2": 887.0,
+                            "y2": 509.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 890.0,
+                            "y1": 459.0,
+                            "x2": 1030.0,
+                            "y2": 511.0
+                        },
+                        "text": "166 $222.51",
+                        "confidence": 0.9993254542350769,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1023.0,
+                            "y1": 458.0,
+                            "x2": 1190.0,
+                            "y2": 510.0
+                        },
+                        "text": "$36,936.66",
+                        "confidence": 0.9971430897712708,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9986587166786194
+            },
+            {
+                "index": 8,
+                "cells": [
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 67.0,
+                            "y1": 515.0,
+                            "x2": 257.0,
+                            "y2": 572.0
+                        },
+                        "text": "PRD-1007",
+                        "confidence": 0.998424768447876,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 235.0,
+                            "y1": 515.0,
+                            "x2": 515.0,
+                            "y2": 567.0
+                        },
+                        "text": "Webcam 4K",
+                        "confidence": 0.9907932281494141,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 556.0,
+                            "y1": 515.0,
+                            "x2": 734.0,
+                            "y2": 564.0
+                        },
+                        "text": "Video",
+                        "confidence": 0.9949822425842285,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 786.0,
+                            "y1": 515.0,
+                            "x2": 887.0,
+                            "y2": 565.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 896.0,
+                            "y1": 516.0,
+                            "x2": 1032.0,
+                            "y2": 566.0
+                        },
+                        "text": "22",
+                        "confidence": 0.9924526214599609,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1026.0,
+                            "y1": 515.0,
+                            "x2": 1192.0,
+                            "y2": 566.0
+                        },
+                        "text": "$64.96 $1,429.12",
+                        "confidence": 0.9983178973197937,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9949941515922547
+            },
+            {
+                "index": 9,
+                "cells": [
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 62.0,
+                            "y1": 575.0,
+                            "x2": 263.0,
+                            "y2": 631.0
+                        },
+                        "text": "PRD-1008",
+                        "confidence": 0.9989728927612305,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 236.0,
+                            "y1": 575.0,
+                            "x2": 508.0,
+                            "y2": 624.0
+                        },
+                        "text": "Desk Mat",
+                        "confidence": 0.9965440034866333,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 554.0,
+                            "y1": 576.0,
+                            "x2": 753.0,
+                            "y2": 624.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9989282488822937,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 787.0,
+                            "y1": 575.0,
+                            "x2": 887.0,
+                            "y2": 622.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 896.0,
+                            "y1": 576.0,
+                            "x2": 1032.0,
+                            "y2": 624.0
+                        },
+                        "text": "74",
+                        "confidence": 0.9994750618934631,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1026.0,
+                            "y1": 574.0,
+                            "x2": 1190.0,
+                            "y2": 625.0
+                        },
+                        "text": "$262.56 $19,429.44",
+                        "confidence": 0.9988245964050293,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.99854896068573
+            },
+            {
+                "index": 10,
+                "cells": [
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 59.0,
+                            "y1": 624.0,
+                            "x2": 269.0,
+                            "y2": 670.0
+                        },
+                        "text": "PRD-1009",
+                        "confidence": 0.9979022145271301,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 236.0,
+                            "y1": 626.0,
+                            "x2": 505.0,
+                            "y2": 670.0
+                        },
+                        "text": "Laptop Stand",
+                        "confidence": 0.9723812937736511,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 551.0,
+                            "y1": 627.0,
+                            "x2": 759.0,
+                            "y2": 669.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9985852837562561,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 781.0,
+                            "y1": 626.0,
+                            "x2": 893.0,
+                            "y2": 668.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 894.0,
+                            "y1": 627.0,
+                            "x2": 1042.0,
+                            "y2": 669.0
+                        },
+                        "text": "21 $289.39",
+                        "confidence": 0.9989629089832306,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1029.0,
+                            "y1": 625.0,
+                            "x2": 1192.0,
+                            "y2": 668.0
+                        },
+                        "text": "$6,077.19",
+                        "confidence": 0.9969297051429749,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "is_header": false,
+                "confidence": 0.9929522812366486
+            }
+        ],
+        "columns": [
+            {
+                "index": 0,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 72.0,
+                            "y1": 99.0,
+                            "x2": 229.0,
+                            "y2": 151.0
+                        },
+                        "text": "SKU",
+                        "confidence": 0.9959659576416016,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 73.0,
+                            "y1": 162.0,
+                            "x2": 250.0,
+                            "y2": 213.0
+                        },
+                        "text": "PRD-1001",
+                        "confidence": 0.9964241981506348,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 72.0,
+                            "y1": 221.0,
+                            "x2": 247.0,
+                            "y2": 276.0
+                        },
+                        "text": "PRD-1002",
+                        "confidence": 0.9988651275634766,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 75.0,
+                            "y1": 284.0,
+                            "x2": 243.0,
+                            "y2": 334.0
+                        },
+                        "text": "PRD-1003",
+                        "confidence": 0.9983121752738953,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 75.0,
+                            "y1": 341.0,
+                            "x2": 261.0,
+                            "y2": 391.0
+                        },
+                        "text": "PRD-1004",
+                        "confidence": 0.9983945488929749,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 74.0,
+                            "y1": 401.0,
+                            "x2": 261.0,
+                            "y2": 453.0
+                        },
+                        "text": "PRD-1005",
+                        "confidence": 0.9988332986831665,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 74.0,
+                            "y1": 458.0,
+                            "x2": 259.0,
+                            "y2": 513.0
+                        },
+                        "text": "PRD-1006",
+                        "confidence": 0.9988049268722534,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 67.0,
+                            "y1": 515.0,
+                            "x2": 257.0,
+                            "y2": 572.0
+                        },
+                        "text": "PRD-1007",
+                        "confidence": 0.998424768447876,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 62.0,
+                            "y1": 575.0,
+                            "x2": 263.0,
+                            "y2": 631.0
+                        },
+                        "text": "PRD-1008",
+                        "confidence": 0.9989728927612305,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 0,
+                        "col_end": 0,
+                        "bbox": {
+                            "x1": 59.0,
+                            "y1": 624.0,
+                            "x2": 269.0,
+                            "y2": 670.0
+                        },
+                        "text": "PRD-1009",
+                        "confidence": 0.9979022145271301,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9942357648502697
+            },
+            {
+                "index": 1,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 240.0,
+                            "y1": 103.0,
+                            "x2": 493.0,
+                            "y2": 154.0
+                        },
+                        "text": "Product Name",
+                        "confidence": 0.9863035678863525,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 244.0,
+                            "y1": 163.0,
+                            "x2": 549.0,
+                            "y2": 212.0
+                        },
+                        "text": "Wireless Mouse",
+                        "confidence": 0.9985641241073608,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 228.0,
+                            "y1": 220.0,
+                            "x2": 530.0,
+                            "y2": 276.0
+                        },
+                        "text": "Mechanical Keyboard",
+                        "confidence": 0.9967423677444458,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 241.0,
+                            "y1": 280.0,
+                            "x2": 509.0,
+                            "y2": 333.0
+                        },
+                        "text": "USB-C Hub",
+                        "confidence": 0.9533565044403076,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 237.0,
+                            "y1": 340.0,
+                            "x2": 527.0,
+                            "y2": 392.0
+                        },
+                        "text": "27-inch Monitor",
+                        "confidence": 0.9754960536956787,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 236.0,
+                            "y1": 400.0,
+                            "x2": 534.0,
+                            "y2": 453.0
+                        },
+                        "text": "Ergonomic Chair",
+                        "confidence": 0.9916583299636841,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 237.0,
+                            "y1": 456.0,
+                            "x2": 555.0,
+                            "y2": 512.0
+                        },
+                        "text": "Noise-Canceling Headphones",
+                        "confidence": 0.9988871812820435,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 235.0,
+                            "y1": 515.0,
+                            "x2": 515.0,
+                            "y2": 567.0
+                        },
+                        "text": "Webcam 4K",
+                        "confidence": 0.9907932281494141,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 236.0,
+                            "y1": 575.0,
+                            "x2": 508.0,
+                            "y2": 624.0
+                        },
+                        "text": "Desk Mat",
+                        "confidence": 0.9965440034866333,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 1,
+                        "col_end": 1,
+                        "bbox": {
+                            "x1": 236.0,
+                            "y1": 626.0,
+                            "x2": 505.0,
+                            "y2": 670.0
+                        },
+                        "text": "Laptop Stand",
+                        "confidence": 0.9723812937736511,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9833109053698453
+            },
+            {
+                "index": 2,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 560.0,
+                            "y1": 103.0,
+                            "x2": 731.0,
+                            "y2": 155.0
+                        },
+                        "text": "Category",
+                        "confidence": 0.9941633939743042,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 555.0,
+                            "y1": 166.0,
+                            "x2": 739.0,
+                            "y2": 215.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.9991782903671265,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 550.0,
+                            "y1": 222.0,
+                            "x2": 736.0,
+                            "y2": 274.0
+                        },
+                        "text": "Peripherals",
+                        "confidence": 0.9995973706245422,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 555.0,
+                            "y1": 283.0,
+                            "x2": 736.0,
+                            "y2": 333.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9981486797332764,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 556.0,
+                            "y1": 342.0,
+                            "x2": 734.0,
+                            "y2": 390.0
+                        },
+                        "text": "Displays",
+                        "confidence": 0.9995883703231812,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 554.0,
+                            "y1": 402.0,
+                            "x2": 736.0,
+                            "y2": 450.0
+                        },
+                        "text": "Furniture",
+                        "confidence": 0.9995278120040894,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 556.0,
+                            "y1": 458.0,
+                            "x2": 737.0,
+                            "y2": 509.0
+                        },
+                        "text": "Audio",
+                        "confidence": 0.9991329312324524,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 556.0,
+                            "y1": 515.0,
+                            "x2": 734.0,
+                            "y2": 564.0
+                        },
+                        "text": "Video",
+                        "confidence": 0.9949822425842285,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 554.0,
+                            "y1": 576.0,
+                            "x2": 753.0,
+                            "y2": 624.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9989282488822937,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 2,
+                        "col_end": 2,
+                        "bbox": {
+                            "x1": 551.0,
+                            "y1": 627.0,
+                            "x2": 759.0,
+                            "y2": 669.0
+                        },
+                        "text": "Accessories",
+                        "confidence": 0.9985852837562561,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9943205389109525
+            },
+            {
+                "index": 3,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 725.0,
+                            "y1": 105.0,
+                            "x2": 928.0,
+                            "y2": 160.0
+                        },
+                        "text": "Qty in Stock",
+                        "confidence": 0.975159227848053,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 758.0,
+                            "y1": 168.0,
+                            "x2": 887.0,
+                            "y2": 217.0
+                        },
+                        "text": "178",
+                        "confidence": 0.9993636608123779,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 762.0,
+                            "y1": 224.0,
+                            "x2": 888.0,
+                            "y2": 276.0
+                        },
+                        "text": "204",
+                        "confidence": 0.999584972858429,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 768.0,
+                            "y1": 285.0,
+                            "x2": 885.0,
+                            "y2": 334.0
+                        },
+                        "text": "72",
+                        "confidence": 0.9971201419830322,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 777.0,
+                            "y1": 344.0,
+                            "x2": 886.0,
+                            "y2": 393.0
+                        },
+                        "text": "41",
+                        "confidence": 0.999468207359314,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 778.0,
+                            "y1": 403.0,
+                            "x2": 887.0,
+                            "y2": 451.0
+                        },
+                        "text": "243",
+                        "confidence": 0.9991369247436523,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 782.0,
+                            "y1": 459.0,
+                            "x2": 887.0,
+                            "y2": 509.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 786.0,
+                            "y1": 515.0,
+                            "x2": 887.0,
+                            "y2": 565.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 787.0,
+                            "y1": 575.0,
+                            "x2": 887.0,
+                            "y2": 622.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 3,
+                        "col_end": 3,
+                        "bbox": {
+                            "x1": 781.0,
+                            "y1": 626.0,
+                            "x2": 893.0,
+                            "y2": 668.0
+                        },
+                        "text": "",
+                        "confidence": 0.0,
+                        "ocr_item_count": 0,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9893609200205121
+            },
+            {
+                "index": 4,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 875.0,
+                            "y1": 105.0,
+                            "x2": 1043.0,
+                            "y2": 161.0
+                        },
+                        "text": "Unit Price",
+                        "confidence": 0.9983502626419067,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 887.0,
+                            "y1": 167.0,
+                            "x2": 1038.0,
+                            "y2": 217.0
+                        },
+                        "text": "$73.43",
+                        "confidence": 0.9993485808372498,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 887.0,
+                            "y1": 223.0,
+                            "x2": 1034.0,
+                            "y2": 275.0
+                        },
+                        "text": "$152.00",
+                        "confidence": 0.9990912079811096,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 888.0,
+                            "y1": 285.0,
+                            "x2": 1033.0,
+                            "y2": 335.0
+                        },
+                        "text": "$86.97",
+                        "confidence": 0.9990262985229492,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 888.0,
+                            "y1": 343.0,
+                            "x2": 1032.0,
+                            "y2": 393.0
+                        },
+                        "text": "$344.81",
+                        "confidence": 0.9996020197868347,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 888.0,
+                            "y1": 402.0,
+                            "x2": 1029.0,
+                            "y2": 453.0
+                        },
+                        "text": "$281.77",
+                        "confidence": 0.9990390539169312,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 890.0,
+                            "y1": 459.0,
+                            "x2": 1030.0,
+                            "y2": 511.0
+                        },
+                        "text": "166 $222.51",
+                        "confidence": 0.9993254542350769,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 896.0,
+                            "y1": 516.0,
+                            "x2": 1032.0,
+                            "y2": 566.0
+                        },
+                        "text": "22",
+                        "confidence": 0.9924526214599609,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 896.0,
+                            "y1": 576.0,
+                            "x2": 1032.0,
+                            "y2": 624.0
+                        },
+                        "text": "74",
+                        "confidence": 0.9994750618934631,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 4,
+                        "col_end": 4,
+                        "bbox": {
+                            "x1": 894.0,
+                            "y1": 627.0,
+                            "x2": 1042.0,
+                            "y2": 669.0
+                        },
+                        "text": "21 $289.39",
+                        "confidence": 0.9989629089832306,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9945787977088582
+            },
+            {
+                "index": 5,
+                "cells": [
+                    {
+                        "row_start": 0,
+                        "row_end": 0,
+                        "col_start": 0,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 33.0,
+                            "y1": 10.0,
+                            "x2": 1134.0,
+                            "y2": 101.0
+                        },
+                        "text": "Table 1: Product Inventory I / Data (10 Rows)",
+                        "confidence": 0.9556933045387268,
+                        "ocr_item_count": 2,
+                        "is_header": true,
+                        "is_merged": true,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 1,
+                        "row_end": 1,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1020.0,
+                            "y1": 100.0,
+                            "x2": 1202.0,
+                            "y2": 158.0
+                        },
+                        "text": "Total Value",
+                        "confidence": 0.9972628951072693,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 2,
+                        "row_end": 2,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1022.0,
+                            "y1": 163.0,
+                            "x2": 1197.0,
+                            "y2": 214.0
+                        },
+                        "text": "$13,070.54",
+                        "confidence": 0.9892204403877258,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 3,
+                        "row_end": 3,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 220.0,
+                            "x2": 1196.0,
+                            "y2": 273.0
+                        },
+                        "text": "$31,008.00",
+                        "confidence": 0.9951428174972534,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 4,
+                        "row_end": 4,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 282.0,
+                            "x2": 1193.0,
+                            "y2": 333.0
+                        },
+                        "text": "$6,261.84",
+                        "confidence": 0.9912129640579224,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 5,
+                        "row_end": 5,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 340.0,
+                            "x2": 1192.0,
+                            "y2": 391.0
+                        },
+                        "text": "$14,137.21",
+                        "confidence": 0.9982770085334778,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 6,
+                        "row_end": 6,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1021.0,
+                            "y1": 400.0,
+                            "x2": 1192.0,
+                            "y2": 451.0
+                        },
+                        "text": "$68,470.11",
+                        "confidence": 0.995883584022522,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 7,
+                        "row_end": 7,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1023.0,
+                            "y1": 458.0,
+                            "x2": 1190.0,
+                            "y2": 510.0
+                        },
+                        "text": "$36,936.66",
+                        "confidence": 0.9971430897712708,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 8,
+                        "row_end": 8,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1026.0,
+                            "y1": 515.0,
+                            "x2": 1192.0,
+                            "y2": 566.0
+                        },
+                        "text": "$64.96 $1,429.12",
+                        "confidence": 0.9983178973197937,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 9,
+                        "row_end": 9,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1026.0,
+                            "y1": 574.0,
+                            "x2": 1190.0,
+                            "y2": 625.0
+                        },
+                        "text": "$262.56 $19,429.44",
+                        "confidence": 0.9988245964050293,
+                        "ocr_item_count": 2,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    },
+                    {
+                        "row_start": 10,
+                        "row_end": 10,
+                        "col_start": 5,
+                        "col_end": 5,
+                        "bbox": {
+                            "x1": 1029.0,
+                            "y1": 625.0,
+                            "x2": 1192.0,
+                            "y2": 668.0
+                        },
+                        "text": "$6,077.19",
+                        "confidence": 0.9969297051429749,
+                        "ocr_item_count": 1,
+                        "is_header": false,
+                        "is_merged": false,
+                        "is_synthetic": false
+                    }
+                ],
+                "confidence": 0.9921734820712697
+            }
+        ],
+        "headers": [
+            "Table 1: Product Inventory I / Data (10 Rows)"
+        ],
+        "bbox": {
+            "x1": 33.0,
+            "y1": 10.0,
+            "x2": 1202.0,
+            "y2": 670.0
+        },
+        "confidence": 0.9917499231569695,
+        "metadata": {
+            "merged_cell_count": 1,
+            "synthetic_cell_count": 0,
+            "total_ocr_items": 62,
+            "matched_ocr_items": 62,
+            "unmatched_ocr_items": 0,
+            "header_row_count": 1,
+            "row_count": 11,
+            "col_count": 6,
+            "parser_version": "2.0"
+        }
+    }
+]

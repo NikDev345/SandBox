@@ -1,13 +1,14 @@
 """
 app/services/table_extractor/paddle_client.py
 ---------------------------------------------
-Singleton wrapper around PaddleOCR's table structure recognition and
-general-purpose OCR engines.
+Singleton wrapper around PaddleOCR's layout detection, table structure
+recognition, and general-purpose OCR engines.
 
 Responsibilities
 ----------------
 - Own the model lifecycle (lazy init, singleton reuse)
-- Run table structure recognition on a PIL image
+- Detect individual table regions on a page (layout detection)
+- Run table structure recognition on each detected table region
 - Run OCR on a PIL image
 - Normalize all raw Paddle predictions into domain types
   (TableStructure, OCRItem, OcrResult) so that extractor.py and
@@ -41,6 +42,14 @@ logger = logging.getLogger(__name__)
 # Use most of the available cores, leaving headroom for the web server's
 # own request handling threads.
 DEFAULT_CPU_THREADS: int = max(1, (os.cpu_count() or 4) - 1)
+
+# Minimum confidence for a layout-detected region to be treated as a table.
+MIN_LAYOUT_TABLE_SCORE: float = 0.5
+
+# Pixel margin added around each detected table region before cropping,
+# so structure recognition doesn't clip cell borders that sit right at
+# the layout model's predicted edge.
+TABLE_CROP_MARGIN_PX: float = 6.0
 
 
 # ---------------------------------------------------------------------------
@@ -122,7 +131,7 @@ def _bbox_from_points(
 
 def _bbox_from_xyxy(coords: Sequence[float]) -> Optional[BoundingBox]:
     """
-    Build a BoundingBox from PaddleOCR cell coordinates.
+    Build a BoundingBox from PaddleOCR cell/region coordinates.
 
     Supported formats
     -----------------
@@ -136,13 +145,13 @@ def _bbox_from_xyxy(coords: Sequence[float]) -> Optional[BoundingBox]:
         coords = [float(v) for v in coords]
 
         # --------------------------------------------------
-        # PaddleOCR 2.x
+        # PaddleOCR 2.x / plain xyxy
         # --------------------------------------------------
         if len(coords) == 4:
             x1, y1, x2, y2 = coords
 
         # --------------------------------------------------
-        # PaddleOCR 3.x
+        # PaddleOCR 3.x (4-point polygon flattened)
         # --------------------------------------------------
         elif len(coords) == 8:
             xs = coords[0::2]
@@ -197,6 +206,12 @@ def _parse_html_to_structure(
 
     We reconstruct the grid by replaying the HTML row-by-row and tracking
     which (row, col) slots are already occupied by previous rowspan cells.
+
+    NOTE: bboxes here are in the coordinate space of whatever image was
+    passed to SLANet. If that image was a cropped table region (as it now
+    is, see PaddleTableClient.run_table_detection), the caller is
+    responsible for translating these bboxes back into full-page
+    coordinates before OCR matching happens — see _offset_structure.
     """
     cells: List[TableCellGeometry] = []
     occupied: dict[Tuple[int, int], bool] = {}  # tracks rowspan carry-overs
@@ -266,10 +281,12 @@ def _parse_html_to_structure(
 
 class PaddleTableClient:
     """
-    Singleton wrapper around PaddleOCR's table structure and OCR engines.
+    Singleton wrapper around PaddleOCR's layout detection, table structure,
+    and OCR engines.
 
-    Both models are initialized lazily on first use so that import time
-    stays fast and GPU memory is only claimed when actually needed.
+    All three models are initialized lazily on first use so that import
+    time stays fast and GPU/CPU memory is only claimed when actually
+    needed.
 
     Public interface consumed by extractor.py
     -----------------------------------------
@@ -278,8 +295,9 @@ class PaddleTableClient:
     """
 
     _instance: Optional["PaddleTableClient"] = None
-    _table_model = None  # TableStructureRecognition
-    _ocr_model = None    # PaddleOCR (text + layout)
+    _layout_model = None  # LayoutDetection (finds table regions on a page)
+    _table_model = None   # TableStructureRecognition (SLANet)
+    _ocr_model = None     # PaddleOCR (text + layout)
 
     # ------------------------------------------------------------------
     # Singleton
@@ -293,6 +311,31 @@ class PaddleTableClient:
     # ------------------------------------------------------------------
     # Lazy model accessors
     # ------------------------------------------------------------------
+
+    @property
+    def _layout(self):
+        """
+        Lazily initialize the layout/table-region detector.
+
+        This model finds bounding boxes of distinct table regions on a
+        full page. It exists specifically so that a page containing
+        multiple tables (e.g. two separate tables stacked vertically)
+        gets split into per-table crops *before* structure recognition
+        runs — SLANet itself has no notion of "multiple tables on one
+        image" and will otherwise try to fit a single grid across
+        everything it's given.
+        """
+        if self._layout_model is None:
+            from paddleocr import LayoutDetection  # noqa: PLC0415
+
+            logger.info("Initializing LayoutDetection (table region finder)…")
+            self._layout_model = LayoutDetection(
+                model_name="PP-DocLayout-L",
+                enable_mkldnn=False,
+                cpu_threads=DEFAULT_CPU_THREADS,
+            )
+            logger.info("LayoutDetection ready.")
+        return self._layout_model
 
     @property
     def _table(self):
@@ -335,37 +378,50 @@ class PaddleTableClient:
         """
         Detect table structure in a PIL image.
 
-        Runs SLANet table structure recognition and converts the raw
-        HTML + bounding-box output into a list of TableStructure objects.
-        One TableStructure is produced per table detected on the page.
+        First runs layout detection to find each distinct table region on
+        the page. Then, for every detected region, crops the page down to
+        just that region and runs SLANet structure recognition on the
+        crop individually. Cell bounding boxes are translated back into
+        full-page coordinates before being returned, since OCR (run
+        separately, on the full page) produces bboxes in that same
+        coordinate space — TableParser matches OCR items to cells purely
+        by geometric overlap, so both must agree on coordinate space.
+
+        If layout detection finds no table regions (model unavailable,
+        prediction failure, or a page with no clearly boxed table), this
+        falls back to treating the entire page as a single table region,
+        which preserves the previous behavior for single-table pages.
 
         Returns an empty list if no tables are found or an error occurs.
         """
-        img_array = _pil_to_numpy(image)
         start = time.monotonic()
+        regions = self._detect_table_regions(image)
 
-        try:
-            raw = self._table.predict(img_array)
-        except Exception as exc:  # noqa: BLE001
-            logger.error("SLANet prediction failed: %s", exc, exc_info=True)
-            return []
-        finally:
-            logger.info("run_table_detection: predict() took %.3fs", time.monotonic() - start)
+        if not regions:
+            logger.info(
+                "No table regions found by layout detection; "
+                "falling back to treating full page as one table."
+            )
+            regions = [BoundingBox(0.0, 0.0, float(image.width), float(image.height))]
+        else:
+            logger.info("Layout detection found %d table region(s).", len(regions))
 
         structures: List[TableStructure] = []
 
-        # raw is typically a list of result dicts, one per detected table.
-        # Each dict has keys: "html" (str) and "bbox" (list of [x1,y1,x2,y2]).
-        if not isinstance(raw, (list, tuple)):
-            raw = [raw]
+        for region_index, region in enumerate(regions, start=1):
+            crop, offset_x, offset_y = self._crop_region(image, region)
 
-        for item in raw:
-            structure = self._normalize_table_prediction(item)
-            if structure is not None:
-                structures.append(structure)
+            structure = self._run_structure_recognition(crop, region_index)
+            if structure is None:
+                continue
 
-        logger.debug(
-            "run_table_detection: %d table structure(s) extracted.", len(structures)
+            structure = self._offset_structure(structure, offset_x, offset_y)
+            structures.append(structure)
+
+        logger.info(
+            "run_table_detection: %d table structure(s) extracted from %d region(s) "
+            "in %.3fs",
+            len(structures), len(regions), time.monotonic() - start,
         )
         return structures
 
@@ -382,6 +438,11 @@ class PaddleTableClient:
         these are per-call PaddleOCR pipeline flags, not construction-time
         settings, so no model reload happens when this varies request to
         request.
+
+        OCR always runs on the full page image, regardless of how many
+        table regions were detected — this keeps a single coordinate
+        space for all OCR items, which run_table_detection's per-region
+        structures are translated back into.
         """
         img_array = _pil_to_numpy(image)
         start = time.monotonic()
@@ -408,6 +469,227 @@ class PaddleTableClient:
         ocr_items = self._normalize_ocr_result(raw)
         logger.debug("run_ocr: %d OCR item(s) recognized.", len(ocr_items))
         return OcrResult(data=ocr_items, item_count=len(ocr_items))
+
+    # ------------------------------------------------------------------
+    # Layout / table-region detection
+    # ------------------------------------------------------------------
+
+    def _detect_table_regions(self, image: Image.Image) -> List[BoundingBox]:
+        """
+        Run layout detection and return one BoundingBox per detected
+        table region, in full-page pixel coordinates, expanded by a small
+        margin so structure recognition doesn't clip edge cells.
+
+        Never raises — logs and returns an empty list on any failure so
+        run_table_detection can fall back to whole-page behavior.
+        """
+        img_array = _pil_to_numpy(image)
+
+        try:
+            raw = self._layout.predict(img_array)
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Layout detection failed: %s", exc, exc_info=True)
+            return []
+
+        if not isinstance(raw, (list, tuple)):
+            raw = [raw]
+
+        boxes: List[BoundingBox] = []
+
+        for page_result in raw:
+            boxes.extend(self._extract_table_boxes_from_layout_result(page_result))
+
+        # Expand each box by a small margin and clip to page bounds so we
+        # don't lose a cell border that sits exactly on the predicted edge.
+        page_w, page_h = float(image.width), float(image.height)
+        margined: List[BoundingBox] = []
+        for box in boxes:
+            expanded = box.expand(TABLE_CROP_MARGIN_PX)
+            clipped = BoundingBox(
+                x1=max(0.0, expanded.x1),
+                y1=max(0.0, expanded.y1),
+                x2=min(page_w, expanded.x2),
+                y2=min(page_h, expanded.y2),
+            )
+            margined.append(clipped)
+
+        return margined
+
+    def _extract_table_boxes_from_layout_result(self, page_result) -> List[BoundingBox]:
+        """
+        Normalize a single LayoutDetection page result into table
+        BoundingBoxes. Handles both dict-style ("boxes": [...]) and
+        object-style (attribute-based) PaddleOCR result formats, since
+        the exact shape varies across PaddleOCR/PaddleX versions.
+        """
+        boxes: List[BoundingBox] = []
+
+        try:
+            # Dict-style result (most PaddleOCR 3.x pipelines)
+            if isinstance(page_result, dict):
+                detections = page_result.get("boxes") or page_result.get("layout") or []
+            else:
+                # Object-style result — try common attribute names.
+                detections = (
+                    getattr(page_result, "boxes", None)
+                    or getattr(page_result, "layout", None)
+                    or []
+                )
+
+            for det in detections:
+                label = self._get_field(det, "label", "cls_id", "category_name")
+                if label is None:
+                    continue
+                if "table" not in str(label).lower():
+                    continue
+
+                score = self._get_field(det, "score", "confidence")
+                if score is not None and float(score) < MIN_LAYOUT_TABLE_SCORE:
+                    continue
+
+                coords = self._get_field(det, "coordinate", "bbox", "coord")
+                if coords is None:
+                    continue
+
+                bbox = _bbox_from_xyxy(coords)
+                if bbox is not None:
+                    boxes.append(bbox)
+
+        except Exception as exc:  # noqa: BLE001
+            logger.error(
+                "Failed to normalize layout detection result: %s", exc, exc_info=True
+            )
+
+        return boxes
+
+    @staticmethod
+    def _get_field(obj, *names):
+        """Fetch the first present field from a dict or object, by name."""
+        for name in names:
+            if isinstance(obj, dict):
+                if name in obj and obj[name] is not None:
+                    return obj[name]
+            else:
+                value = getattr(obj, name, None)
+                if value is not None:
+                    return value
+        return None
+
+    # ------------------------------------------------------------------
+    # Cropping / coordinate translation
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _crop_region(
+        image: Image.Image, region: BoundingBox
+    ) -> Tuple[Image.Image, float, float]:
+        """
+        Crop the page image down to a single table region.
+
+        Returns the crop plus the (x, y) offset of the crop's origin
+        within the original full-page image, so cell geometry produced
+        from the crop can later be translated back into page coordinates.
+        """
+        left = int(max(0, region.x1))
+        top = int(max(0, region.y1))
+        right = int(min(image.width, region.x2))
+        bottom = int(min(image.height, region.y2))
+
+        # Guard against a degenerate region collapsing to zero area.
+        if right <= left or bottom <= top:
+            logger.warning(
+                "Degenerate table region %s on %dx%d page; using full page instead.",
+                region, image.width, image.height,
+            )
+            return image, 0.0, 0.0
+
+        crop = image.crop((left, top, right, bottom))
+        return crop, float(left), float(top)
+
+    @staticmethod
+    def _offset_structure(
+        structure: TableStructure, offset_x: float, offset_y: float
+    ) -> TableStructure:
+        """
+        Translate every cell bbox in a TableStructure by (offset_x,
+        offset_y), converting crop-local coordinates into full-page
+        coordinates.
+
+        This step is required whenever run_table_detection processes a
+        cropped table region rather than the full page: OCR (run
+        separately, see run_ocr) always produces item bboxes in full-page
+        coordinates, and TableParser matches OCR items to cells purely by
+        geometric overlap. Skipping this offset causes every OCR item in
+        a cropped table to fail matching against its cells, since the
+        two coordinate spaces would no longer agree.
+        """
+        if offset_x == 0.0 and offset_y == 0.0:
+            return structure
+
+        offset_cells = [
+            TableCellGeometry(
+                bbox=BoundingBox(
+                    x1=cell.bbox.x1 + offset_x,
+                    y1=cell.bbox.y1 + offset_y,
+                    x2=cell.bbox.x2 + offset_x,
+                    y2=cell.bbox.y2 + offset_y,
+                ) if cell.bbox.area > 0 else cell.bbox,
+                row_start=cell.row_start,
+                row_end=cell.row_end,
+                col_start=cell.col_start,
+                col_end=cell.col_end,
+                is_header=cell.is_header,
+            )
+            for cell in structure.cells
+        ]
+
+        return TableStructure(
+            cells=offset_cells,
+            row_count=structure.row_count,
+            col_count=structure.col_count,
+            header_row_indices=structure.header_row_indices,
+        )
+
+    # ------------------------------------------------------------------
+    # Structure recognition (per cropped region)
+    # ------------------------------------------------------------------
+
+    def _run_structure_recognition(
+        self, region_image: Image.Image, region_index: int
+    ) -> Optional[TableStructure]:
+        """
+        Run SLANet on a single cropped table-region image and normalize
+        the result into a TableStructure (still in crop-local
+        coordinates — offsetting happens separately in
+        run_table_detection via _offset_structure).
+        """
+        img_array = _pil_to_numpy(region_image)
+        start = time.monotonic()
+
+        try:
+            raw = self._table.predict(img_array)
+        except Exception as exc:  # noqa: BLE001
+            logger.error(
+                "SLANet prediction failed on region %d: %s",
+                region_index, exc, exc_info=True,
+            )
+            return None
+        finally:
+            logger.debug(
+                "_run_structure_recognition: region %d predict() took %.3fs",
+                region_index, time.monotonic() - start,
+            )
+
+        if not isinstance(raw, (list, tuple)):
+            raw = [raw]
+
+        for item in raw:
+            structure = self._normalize_table_prediction(item)
+            if structure is not None:
+                return structure
+
+        logger.debug("Region %d produced no usable table structure.", region_index)
+        return None
 
     # ------------------------------------------------------------------
     # Normalization helpers

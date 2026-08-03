@@ -7,13 +7,44 @@ validating uploads, persisting temporary files, invoking TableExtractor,
 returning its response verbatim, and cleaning up. All OCR, parsing,
 formatting, and extraction logic lives in
 app.services.table_extractor.extractor.
+
+IMPORTANT — process pool, not thread pool
+-------------------------------------------
+TableExtractor's pipeline is CPU-bound and can take tens of seconds
+(PDF->image conversion, layout detection, table structure recognition,
+OCR). It must not run directly on the asyncio event loop, and — for
+this specific workload — a plain `run_in_threadpool` is not sufficient
+either.
+
+The reason: PaddleOCR/PaddlePaddle's C++ inference calls do not
+reliably release Python's GIL for their full duration. A blocking
+Python-level call moved to a worker *thread* still shares the same GIL
+as the event loop thread; if a `predict()` call holds the GIL
+continuously for seconds at a time, nothing else in the process can
+execute Python bytecode meanwhile — including the event loop itself and
+any WebSocket ping/pong traffic riding on it (e.g. NiceGUI's client
+heartbeat). The visible symptom was the whole page silently reloading
+partway through a long extraction, even after moving the call to
+`run_in_threadpool`.
+
+A separate OS process has its own independent GIL, so this problem
+cannot happen across a process boundary. Extraction now runs in a
+ProcessPoolExecutor via `run_extraction_pipeline`
+(app.services.table_extractor.extractor), a module-level function with
+no DB dependency — a SQLAlchemy Session cannot be pickled across
+process boundaries. The DB execution-logging step happens back here in
+the router, in the request's own process, right after the pooled call
+returns.
 """
 
 from __future__ import annotations
 
+import asyncio
+import json
 import logging
 import time
 import uuid
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 from typing import Optional
 from sqlalchemy.orm import Session
@@ -27,7 +58,10 @@ from app.services.table_extractor.extractor import (
     TableExtractor,
     TableExtractorError,
     UnsupportedFileTypeError,
+    run_extraction_pipeline,
 )
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
 
 logger = logging.getLogger(__name__)
 
@@ -50,10 +84,24 @@ SUPPORTED_MIME_TYPES = {
 SUPPORTED_OUTPUT_FORMATS = {"json", "csv", "excel", "markdown", "html"}
 DEFAULT_OUTPUT_FORMAT = "json"
 
-MAX_FILE_SIZE_BYTES = 200 * 1024 * 1024  # 200 MB
+MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024  # 20 MB
 CHUNK_SIZE_BYTES = 1024 * 1024  # 1 MB
 
 TEMP_UPLOAD_DIR = Path("/tmp/table_extractor_uploads")
+
+# Number of worker processes dedicated to table extraction. Each worker
+# lazily loads its own copy of the PaddleOCR layout/structure/OCR models
+# on first use and keeps them resident afterward (the pool is created
+# once at import time and reused across requests, so this is a one-time
+# cost per worker, not per request). Keep this modest — each loaded
+# model set consumes meaningful CPU and RAM; size it to your available
+# cores/memory rather than raising it to increase raw concurrency.
+EXTRACTION_POOL_WORKERS = 2
+
+# Created once at module import time and reused for the lifetime of the
+# server process. Do NOT create a new ProcessPoolExecutor per request —
+# that would reload the PaddleOCR models from scratch every single time.
+_extraction_pool = ProcessPoolExecutor(max_workers=EXTRACTION_POOL_WORKERS)
 
 
 # ------------------------------------------------------------------------------
@@ -77,7 +125,7 @@ def get_table_extractor() -> TableExtractor:
     description=(
         "Uploads a PDF or image file and extracts all detected tables "
         "using OCR and table structure recognition. Supports PDF, PNG, "
-        "JPG, JPEG, BMP, TIFF, and WEBP files up to 200MB. Output can be "
+        "JPG, JPEG, BMP, TIFF, and WEBP files up to 20MB. Output can be "
         "requested as json, csv, excel, markdown, or html."
     ),
     status_code=status.HTTP_200_OK,
@@ -109,7 +157,6 @@ async def extract_tables(
     ),
     current_user: Users = Depends(get_current_user),
     db: Session = Depends(get_db),
-    extractor: TableExtractor = Depends(get_table_extractor),
 ) -> dict:
     """Validate the upload, run table extraction, and return the result."""
     request_start = time.monotonic()
@@ -142,7 +189,36 @@ async def extract_tables(
             normalized_format,
         )
 
-        result = extractor.extract(str(temp_file_path),current_user['sub'], db, normalized_format, fast_mode)
+        # ------------------------------------------------------------
+        # Run the CPU-bound extraction pipeline in a separate process,
+        # not a thread. See the module docstring above for why a thread
+        # (even via run_in_threadpool) is not sufficient for this
+        # specific workload. `run_extraction_pipeline` is a
+        # module-level, DB-free function — the only thing that can
+        # cross a process boundary here is plain, picklable data
+        # (file path, strings, bools) in and a plain dict out.
+        # ------------------------------------------------------------
+        loop = asyncio.get_running_loop()
+        response, file_type = await loop.run_in_executor(
+            _extraction_pool,
+            run_extraction_pipeline,
+            str(temp_file_path),
+            normalized_format,
+            fast_mode,
+        )
+
+        # DB logging happens here, back in the request's own process,
+        # using the `db` session FastAPI already gave us for this
+        # request — never inside the pooled worker.
+        _log_execution(
+            db=db,
+            user_id=current_user['sub'],
+            file_path=temp_file_path,
+            file_type=file_type,
+            output_format=normalized_format,
+            fast_mode=fast_mode,
+            response=response,
+        )
 
         elapsed = time.monotonic() - request_start
         logger.info(
@@ -150,19 +226,19 @@ async def extract_tables(
             "elapsed=%.3fs",
             getattr(current_user, "id", "unknown"),
             temp_file_path.name,
-            result.get("success") if isinstance(result, dict) else None,
+            response.get("success") if isinstance(response, dict) else None,
             elapsed,
         )
 
-        if isinstance(result, dict) and not result.get("success", False):
+        if isinstance(response, dict) and not response.get("success", False):
             logger.warning(
                 "Extraction reported failure for user_id=%s temp_file=%s error=%s",
                 getattr(current_user, "id", "unknown"),
                 temp_file_path.name,
-                result.get("error"),
+                response.get("error"),
             )
 
-        return result
+        return response
 
     except FileValidationError as exc:
         logger.warning("File validation failed during extraction: %s", exc)
@@ -198,6 +274,49 @@ async def extract_tables(
         ) from exc
     finally:
         _cleanup_temp_file(temp_file_path)
+
+
+# ------------------------------------------------------------------------------
+# Execution Logging
+# ------------------------------------------------------------------------------
+
+
+def _log_execution(
+    db: Session,
+    user_id: str,
+    file_path: Path,
+    file_type: Optional[str],
+    output_format: str,
+    fast_mode: bool,
+    response: dict,
+) -> None:
+    """
+    Record an execution log entry for this extraction run. Must run in
+    the request's own process (the one holding `db`) — never inside the
+    ProcessPoolExecutor worker, since a SQLAlchemy Session cannot be
+    pickled across a process boundary. Never raises; logging failures
+    should not fail the user-facing request.
+    """
+    validated_input = {
+        "filename": file_path.name,
+        "file_type": file_type,
+        "output_format": output_format,
+        "fast_mode": fast_mode,
+    }
+
+    try:
+        tool = ToolService.get_tool_by_slug(db=db, slug="TABLE-EXTRACTOR")
+        tool_id = tool.id if tool else "TABLE-EXTRACTOR"
+
+        ExecutionService.create_execution(
+            db=db,
+            user_id=user_id,
+            tool_id=tool_id,
+            user_input=json.dumps(validated_input),
+            output=json.dumps(response),
+        )
+    except Exception:
+        logger.warning("Failed to record execution log for %s", file_path.name, exc_info=True)
 
 
 # ------------------------------------------------------------------------------
