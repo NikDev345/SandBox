@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime
+from sqlalchemy import Column, ForeignKey, String, DateTime, Boolean
 from app.database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
@@ -12,6 +12,7 @@ class Executions(Base):
     user_input = Column(String)
     output = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
+    bookmarked = Column(Boolean, default=False, nullable=False)
     
 class ExecutionCreate(BaseModel):
     tool_id: str    
@@ -25,6 +26,7 @@ class ExecutionResponse(BaseModel):
     user_input: str
     output: str
     created_at: datetime
+    bookmarked: bool = False
     
     class Config:
         orm_mode = True

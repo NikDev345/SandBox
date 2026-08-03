@@ -1,0 +1,303 @@
+<!-- ── Ambient background ── -->
+<div class="app" id="app">
+
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient__orb ambient__orb--1"></div>
+    <div class="ambient__orb ambient__orb--2"></div>
+    <div class="ambient__orb ambient__orb--3"></div>
+    <div class="ambient__grid"></div>
+    <div class="ambient__noise"></div>
+  </div>
+
+  <!-- ── HEADER ── -->
+  <header class="header" role="banner">
+    <div class="header__inner">
+
+      <div class="header__left">
+        <a class="nav-back" href="/" aria-label="Back to Dashboard">
+          <span class="nav-back__icon"><i class="fa-solid fa-arrow-left"></i></span>
+          <span class="nav-back__label">Dashboard</span>
+        </a>
+        <div class="header__sep" aria-hidden="true"></div>
+        <div class="header__brand">
+          <div class="header__brand-icon">
+            <i class="fa-solid fa-bookmark"></i>
+            <div class="header__brand-pulse"></div>
+          </div>
+          <div class="header__brand-text">
+            <h1>Bookmarks</h1>
+            <span class="header__brand-sub">Your saved executions</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header__right">
+        <div class="search-bar" role="search">
+          <i class="fa-solid fa-magnifying-glass search-bar__icon"></i>
+          <input
+            id="bm-search"
+            class="search-bar__input"
+            type="search"
+            placeholder="Search tools, inputs, outputs…"
+            autocomplete="off"
+            aria-label="Search bookmarks"
+          />
+          <kbd class="search-bar__kbd">⌘K</kbd>
+        </div>
+        <button class="icon-btn" id="bm-refresh" aria-label="Refresh" title="Refresh bookmarks">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ── MAIN ── -->
+  <main class="main" id="bm-main" role="main">
+
+    <!-- Stats -->
+    <section class="stats" aria-label="Overview" id="bm-stats">
+      <div class="stat-card stat-card--blue" style="--delay:0.04s">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__icon"><i class="fa-solid fa-bookmark"></i></div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Total Saved</span>
+          <strong class="stat-card__value" id="stat-total">—</strong>
+        </div>
+      </div>
+      <div class="stat-card stat-card--violet" style="--delay:0.10s">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">This Week</span>
+          <strong class="stat-card__value" id="stat-week">—</strong>
+        </div>
+      </div>
+      <div class="stat-card stat-card--emerald" style="--delay:0.16s">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Tool Types</span>
+          <strong class="stat-card__value" id="stat-tools">—</strong>
+        </div>
+      </div>
+      <div class="stat-card stat-card--amber" style="--delay:0.22s">
+        <div class="stat-card__glow"></div>
+        <div class="stat-card__icon"><i class="fa-solid fa-calendar-day"></i></div>
+        <div class="stat-card__body">
+          <span class="stat-card__label">Today</span>
+          <strong class="stat-card__value" id="stat-today">—</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Control Bar -->
+    <section class="controls" aria-label="Filters and view options">
+
+      <div class="controls__filters">
+        <div class="filter-pill" id="fp-tool">
+          <i class="fa-solid fa-wand-magic-sparkles filter-pill__icon"></i>
+          <select class="filter-pill__select" id="bm-tool-filter" aria-label="Filter by tool">
+            <option value="">All Tools</option>
+          </select>
+          <i class="fa-solid fa-chevron-down filter-pill__chevron"></i>
+        </div>
+
+        <div class="filter-pill" id="fp-cat">
+          <i class="fa-solid fa-tag filter-pill__icon"></i>
+          <select class="filter-pill__select" id="bm-cat-filter" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            <option value="code">Code</option>
+            <option value="text">Text &amp; Writing</option>
+            <option value="data">Data</option>
+            <option value="media">Media</option>
+            <option value="productivity">Productivity</option>
+            <option value="other">Other</option>
+          </select>
+          <i class="fa-solid fa-chevron-down filter-pill__chevron"></i>
+        </div>
+
+        <div class="filter-pill" id="fp-time">
+          <i class="fa-solid fa-clock filter-pill__icon"></i>
+          <select class="filter-pill__select" id="bm-time-filter" aria-label="Filter by time">
+            <option value="">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+          <i class="fa-solid fa-chevron-down filter-pill__chevron"></i>
+        </div>
+
+        <div class="filter-pill" id="fp-sort">
+          <i class="fa-solid fa-arrow-up-wide-short filter-pill__icon"></i>
+          <select class="filter-pill__select" id="bm-sort" aria-label="Sort by">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+          </select>
+          <i class="fa-solid fa-chevron-down filter-pill__chevron"></i>
+        </div>
+
+        <button class="clear-btn" id="bm-clear-filters" aria-label="Clear all filters" hidden>
+          <i class="fa-solid fa-xmark"></i> Clear
+        </button>
+      </div>
+
+      <div class="controls__right">
+        <span class="result-badge" id="bm-count">0 bookmarks</span>
+        <div class="view-switch" role="group" aria-label="View mode">
+          <button class="view-switch__btn active" id="view-grid" aria-label="Grid view" title="Grid">
+            <i class="fa-solid fa-grid-2"></i>
+          </button>
+          <button class="view-switch__btn" id="view-list" aria-label="List view" title="List">
+            <i class="fa-solid fa-list"></i>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Active filter chips -->
+    <div class="filter-chips" id="bm-filter-chips" aria-live="polite"></div>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <div class="bm-grid" id="bm-grid" aria-label="Saved bookmarks" aria-live="polite"></div>
+
+      <!-- Empty state -->
+      <div class="state-empty" id="bm-empty" hidden aria-label="No bookmarks">
+        <div class="state-empty__bg" aria-hidden="true"></div>
+        <div class="state-empty__icon">
+          <div class="state-empty__icon-inner">
+            <i class="fa-regular fa-bookmark"></i>
+          </div>
+          <div class="state-empty__rings" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <h2 class="state-empty__title">Nothing saved yet</h2>
+        <p class="state-empty__desc">Bookmark executions from any tool — they'll all appear here for easy access.</p>
+        <a class="state-empty__cta" href="/">
+          <i class="fa-solid fa-rocket"></i>
+          Explore Tools
+        </a>
+      </div>
+
+      <!-- No-results state -->
+      <div class="state-no-results" id="bm-no-results" hidden aria-label="No results">
+        <div class="state-no-results__icon"><i class="fa-solid fa-filter-circle-xmark"></i></div>
+        <h2>No matches found</h2>
+        <p>Try adjusting your filters or search query.</p>
+        <button class="state-no-results__cta" id="bm-reset-btn">Clear all filters</button>
+      </div>
+
+      <!-- Error state -->
+      <div class="state-error" id="bm-error" hidden aria-label="Error">
+        <div class="state-error__icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h2>Failed to load</h2>
+        <p id="bm-error-msg">Unable to load bookmarks.</p>
+        <button class="state-error__cta" id="bm-retry">
+          <i class="fa-solid fa-rotate-right"></i> Try Again
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- ── DETAIL MODAL ── -->
+<div class="modal-backdrop" id="bm-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="bm-modal-title">
+  <div class="modal" id="bm-modal-box">
+
+    <div class="modal__header">
+      <div class="modal__identity">
+        <div class="modal__tool-icon" id="bm-modal-icon"></div>
+        <div>
+          <p class="modal__eyebrow">Bookmark Detail</p>
+          <h2 class="modal__title" id="bm-modal-title">Execution</h2>
+        </div>
+      </div>
+      <div class="modal__header-actions">
+        <button class="icon-btn" id="bm-modal-copy-hdr" aria-label="Copy output" title="Copy output">
+          <i class="fa-regular fa-copy"></i>
+        </button>
+        <button class="icon-btn icon-btn--close" id="bm-modal-close" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal__tabs" role="tablist">
+      <button class="modal__tab active" role="tab" data-tab="both" aria-selected="true">Both</button>
+      <button class="modal__tab" role="tab" data-tab="input" aria-selected="false">Input</button>
+      <button class="modal__tab" role="tab" data-tab="output" aria-selected="false">Output</button>
+    </div>
+
+    <div class="modal__body" id="bm-modal-body">
+      <div class="modal__pane" id="modal-pane-input" data-pane="input">
+        <div class="modal__pane-label">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Input
+        </div>
+        <div class="modal__pane-content code-block" id="bm-modal-input"></div>
+      </div>
+      <div class="modal__pane-divider" aria-hidden="true"></div>
+      <div class="modal__pane" id="modal-pane-output" data-pane="output">
+        <div class="modal__pane-label">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Output
+        </div>
+        <div class="modal__pane-content code-block" id="bm-modal-output"></div>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <div class="modal__meta" id="bm-modal-meta"></div>
+      <div class="modal__footer-actions">
+        <button class="btn btn--ghost" id="bm-modal-delete">
+          <i class="fa-regular fa-trash-can"></i> Remove
+        </button>
+        <button class="btn btn--primary" id="bm-modal-copy">
+          <i class="fa-regular fa-copy"></i> Copy Output
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── CONFIRM MODAL ── -->
+<div class="modal-backdrop" id="bm-confirm" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="bm-confirm-title">
+  <div class="modal modal--sm">
+    <div class="modal__header">
+      <div class="modal__identity">
+        <div class="modal__tool-icon modal__tool-icon--danger"><i class="fa-solid fa-trash-can"></i></div>
+        <div>
+          <p class="modal__eyebrow">Confirm Action</p>
+          <h2 class="modal__title" id="bm-confirm-title">Remove Bookmark?</h2>
+        </div>
+      </div>
+      <button class="icon-btn icon-btn--close" id="bm-confirm-close" aria-label="Cancel">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal__body" style="padding:0 28px 8px;">
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.7;">
+        This bookmark will be permanently removed. You can always re-save it from the tool page.
+      </p>
+    </div>
+    <div class="modal__footer">
+      <div></div>
+      <div class="modal__footer-actions">
+        <button class="btn btn--ghost" id="bm-confirm-cancel">Cancel</button>
+        <button class="btn btn--danger" id="bm-confirm-ok">
+          <i class="fa-regular fa-trash-can"></i> Remove
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast-stack" id="bm-toasts" aria-live="polite" aria-atomic="true"></div>

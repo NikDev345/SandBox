@@ -54,6 +54,7 @@ import app.ui.pages.yaml
 import app.ui.pages.code_reviewer
 import app.ui.pages.docker_generator
 import app.ui.pages.item
+import app.ui.pages.bookmarks
 # ui.run(
 #     title='SandBox',
 #     dark=True,
