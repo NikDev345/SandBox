@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     applyAdminRole();
     updateCategoryBadges();
     loadConnections();
+    loadWorkspace();   
     await loadAppearance();
 
     // =======================================================
@@ -366,7 +367,67 @@ async function loadConnections() {
     }
 
 }
+/* ============================================================
+   WORKSPACE (live)
+   ============================================================ */
+let workspaceLoaded = false;
 
+async function loadWorkspace() {
+    if (workspaceLoaded) return; // only fetch once
+    workspaceLoaded = true;
+
+    const toolsEl     = document.querySelector("[data-workspace-tools]");
+    const creditsEl    = document.querySelector("[data-workspace-credits]");
+    const execEl        = document.querySelector("[data-workspace-executions]");
+    const nameEls       = document.querySelectorAll("[data-workspace-name]");
+    const emailEls      = document.querySelectorAll("[data-workspace-email]");
+    const avatarEls     = document.querySelectorAll("[data-workspace-avatar]");
+
+    const DEFAULT_AVATAR = "/assets/default_avatar.png";
+
+    try {
+        const response = await fetch("/workspace/", {
+            credentials: "include"
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            if (toolsEl) toolsEl.textContent = "--";
+            if (creditsEl) creditsEl.textContent = "--";
+            if (execEl) execEl.textContent = "--";
+            return;
+        }
+
+        if (!response.ok) throw new Error("Workspace request failed");
+
+        const data = await response.json();
+        if (!data.success || !data.workspace) throw new Error("Malformed workspace response");
+
+        const ws = data.workspace;
+
+        nameEls.forEach(el => el.textContent = ws.name || "Workspace");
+        emailEls.forEach(el => el.textContent = ws.email || "Not signed in");
+        avatarEls.forEach(img => {
+            img.src = ws.avatar || DEFAULT_AVATAR;
+            img.onerror = function () { this.src = DEFAULT_AVATAR; };
+        });
+
+        if (toolsEl) toolsEl.textContent = formatMetric(ws.total_tools);
+        if (execEl) execEl.textContent = formatMetric(ws.executions);
+
+        if (creditsEl) {
+            const dc = ws.daily_credits || {};
+            const remaining = dc.remaining ?? "--";
+            const limit = dc.limit ?? "--";
+            creditsEl.textContent = `${remaining} / ${limit}`;
+        }
+
+    } catch (err) {
+        console.error("Failed to load workspace:", err);
+        if (toolsEl) toolsEl.textContent = "Unable to load workspace.";
+        if (creditsEl) creditsEl.textContent = "Unable to load workspace.";
+        if (execEl) execEl.textContent = "Unable to load workspace.";
+    }
+}
 async function fetchFirstAvailable(urls) {
     for (const url of urls) {
         try {

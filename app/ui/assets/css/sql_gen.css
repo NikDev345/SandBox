@@ -1458,7 +1458,95 @@ kbd {
   font-size: 10px;
   color: var(--warning);
 }
+/* ── WHY THIS TOOL ──────────────────────────────────── */
+.sql-why {
+  max-width: 1100px;
+  margin: 0 auto 48px;
+  padding: 0 clamp(16px, 3vw, 40px);
+}
 
+.sql-why__heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-0, #fff);
+  margin-bottom: 8px;
+}
+
+.sql-why__subheading {
+  font-size: 0.9rem;
+  color: var(--text-muted, rgba(255,255,255,0.5));
+  margin-bottom: 24px;
+}
+
+.sql-why__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.sql-why__card {
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.02);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.sql-why__card:hover {
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-2px);
+}
+
+.sql-why__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 18px;
+}
+
+.sql-why__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sql-why__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 12px;
+}
+
+.sql-why__desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.7);
+}
+
+.sql-why__desc code {
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 0.8rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+}
+
+@media (max-width: 900px) {
+  .sql-why__grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .sql-why__grid { grid-template-columns: 1fr; }
+}
 /* ────────────────────────────────────────────────────────────
    COMMAND PALETTE
    ──────────────────────────────────────────────────────────── */

@@ -83,7 +83,176 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
+/* ============================================================
+   AI EMAIL STUDIO - WHY SECTION
+   Prefix: es-why
+   ============================================================ */
 
+.es-why{
+    --why-card-bg: rgba(255,255,255,.03);
+    --why-card-bg-hover: rgba(255,255,255,.05);
+
+    --why-border: rgba(255,255,255,.06);
+    --why-border-hover: rgba(255,255,255,.12);
+
+    --why-heading:#fff;
+    --why-sub:rgba(255,255,255,.52);
+
+    --why-label:#f4f4f5;
+    --why-desc:rgba(255,255,255,.48);
+
+    --why-icon-bg:rgba(255,255,255,.045);
+    --why-icon-border:rgba(255,255,255,.08);
+    --why-icon-color:rgba(255,255,255,.72);
+
+    --why-radius-card:16px;
+    --why-radius-icon:12px;
+}
+
+/* ========================================================= */
+
+.es-why{
+    width:100%;
+    max-width:980px;
+    margin:5rem auto 3rem;
+    padding:0 1.5rem;
+}
+
+.es-why-heading{
+    margin:0;
+    text-align:center;
+    font-size:clamp(2rem,3vw,2.6rem);
+    font-weight:700;
+    color:var(--why-heading);
+    letter-spacing:-.03em;
+}
+
+.es-why-sub{
+    max-width:640px;
+    margin:.85rem auto 2.8rem;
+    text-align:center;
+    font-size:1rem;
+    line-height:1.8;
+    color:var(--why-sub);
+}
+
+/* ========================================================= */
+
+.es-why-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:1.25rem;
+}
+
+/* ========================================================= */
+
+.es-why-card{
+    background:var(--why-card-bg);
+    border:1px solid var(--why-border);
+    border-radius:var(--why-radius-card);
+    padding:1.35rem;
+    display:flex;
+    flex-direction:column;
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.es-why-card:hover{
+    background:var(--why-card-bg-hover);
+    border-color:var(--why-border-hover);
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(0,0,0,.22);
+}
+
+/* ========================================================= */
+
+.es-why-icon{
+    width:42px;
+    height:42px;
+    border-radius:var(--why-radius-icon);
+    background:var(--why-icon-bg);
+    border:1px solid var(--why-icon-border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:1rem;
+    flex-shrink:0;
+}
+
+.es-why-icon svg{
+    width:18px;
+    height:18px;
+    color:var(--why-icon-color);
+}
+
+/* ========================================================= */
+
+.es-why-label{
+    margin:0 0 .8rem;
+    font-size:.82rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--why-label);
+}
+
+.es-why-desc{
+    margin:0;
+    font-size:.96rem;
+    line-height:1.8;
+    color:var(--why-desc);
+}
+
+.es-why-desc code{
+    padding:2px 6px;
+    border-radius:6px;
+    background:rgba(255,255,255,.06);
+    font-size:.88em;
+    font-family:monospace;
+}
+
+.es-why-desc kbd{
+    padding:2px 6px;
+    border-radius:6px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.08);
+    font-size:.82em;
+    font-family:inherit;
+}
+
+/* ========================================================= */
+
+@media (max-width:900px){
+
+    .es-why-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+}
+
+@media (max-width:640px){
+
+    .es-why{
+        margin:4rem auto 2rem;
+        padding:0 1rem;
+    }
+
+    .es-why-heading{
+        font-size:1.85rem;
+    }
+
+    .es-why-sub{
+        font-size:.95rem;
+    }
+
+    .es-why-grid{
+        grid-template-columns:1fr;
+    }
+
+}
 /* ============================================================
    AMBIENT BACKGROUND
 ============================================================ */

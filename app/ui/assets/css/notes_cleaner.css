@@ -823,7 +823,111 @@ a { color: inherit; }
   border: 1px solid var(--border-1);
   color: var(--signature-soft);
 }
+/* ============================================================
+   WHY SECTION — Notes Cleaner
+   Drop this into your existing stylesheet.
+   All classes are prefixed with .nc-why to avoid collisions.
+   ============================================================ */
 
+.nc-why {
+  width: 100%;
+  max-width: 900px;
+  margin: 3rem auto 0;
+  padding: 0 1rem;
+}
+
+.nc-why-heading {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin: 0 0 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.nc-why-subheading {
+  font-size: 0.975rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin: 0 0 2.5rem;
+  max-width: 520px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+/* Grid: 3 cols on desktop, 2 on tablet, 1 on mobile */
+.nc-why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 720px) {
+  .nc-why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .nc-why-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card — matches the glass-card aesthetic in the tool */
+.nc-why-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.4rem 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.nc-why-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Icon container */
+.nc-why-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+  flex-shrink: 0;
+}
+
+.nc-why-icon svg {
+  width: 17px;
+  height: 17px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Label */
+.nc-why-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* Description */
+.nc-why-desc {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.48);
+  line-height: 1.6;
+  margin: 0;
+}
 /* ============================================================
    TOASTS
    ============================================================ */

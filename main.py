@@ -55,6 +55,7 @@ from app.api.yaml_generator.yaml import router as yaml_router
 from app.api.history import router as history_router
 from app.api.decision_maker.decision_maker import router as decision_maker_router
 from app.api.commit_message.commit import router as commit_router
+from app.api.workspace import router as workspace_router
 from nicegui import ui
 # import app.main
 from app.seed.seed_tools import seed_tools
@@ -65,13 +66,6 @@ from app.api.code_reviewer.code_reviewer import router as code_router
 from app.api.docker_generator.docker_generator import router as docker_router
 from app.api.item_extractor.item import router as item_router
 Base.metadata.create_all(bind=engine)   
-
-db = SessionLocal()
-
-try:
-    seed_tools(db)
-finally:
-    db.close()
 
 
 fast_app.include_router(auth_router)
@@ -103,7 +97,7 @@ fast_app.include_router(regex_router)
 fast_app.include_router(yaml_router)
 
 fast_app.include_router(table_extractor_router)
-
+fast_app.include_router(workspace_router)
 fast_app.include_router(commit_router)
 fast_app.include_router(error_router)
 fast_app.include_router(code_router)

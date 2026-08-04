@@ -1404,7 +1404,111 @@ table.data-table { width: 100%; border-collapse: collapse; min-width: 780px; }
   min-width: 0;
 }
 .endpoint-meta { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+/* ============================================================
+   WHY SECTION — Mock API Gen
+   All classes prefixed with .mag-why to avoid collisions.
+   Drop this into your existing stylesheet.
+   ============================================================ */
 
+.mag-why {
+  width: 100%;
+  max-width: 960px;
+  margin: 3.5rem auto 2rem;
+  padding: 0 1.25rem;
+}
+
+.mag-why-heading {
+  font-size: clamp(1.45rem, 2.8vw, 1.9rem);
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  text-align: center;
+  margin: 0 0 0.55rem;
+  letter-spacing: -0.022em;
+}
+
+.mag-why-subheading {
+  font-size: 0.9rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.45));
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto 2.25rem;
+  line-height: 1.65;
+}
+
+/* 3-col grid → 2-col → 1-col */
+.mag-why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 780px) {
+  .mag-why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .mag-why-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card — matches the .glass-card style in Mock API Gen */
+.mag-why-card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 14px;
+  padding: 1.35rem 1.2rem 1.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.mag-why-card:hover {
+  background: rgba(255, 255, 255, 0.065);
+  border-color: rgba(255, 255, 255, 0.13);
+  transform: translateY(-2px);
+}
+
+/* Icon box — matches .form-section-icon sizing */
+.mag-why-icon {
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.3rem;
+  flex-shrink: 0;
+}
+
+.mag-why-icon svg {
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Label — matches .form-section-title / nav-section-label uppercase style */
+.mag-why-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-primary, rgba(255, 255, 255, 0.92));
+  margin: 0;
+}
+
+/* Description */
+.mag-why-desc {
+  font-size: 0.86rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.45));
+  line-height: 1.65;
+  margin: 0;
+}
 /* ============================================================
    13. TOASTS
    ============================================================ */

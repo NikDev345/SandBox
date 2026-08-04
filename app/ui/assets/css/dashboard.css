@@ -885,6 +885,45 @@
     line-height: 1.7;
     max-width: 420px;
   }
+  .workspace-user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-0);
+}
+
+.workspace-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-1);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.workspace-user-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.workspace-user-meta strong {
+  font-size: var(--text-sm);
+  color: var(--ink-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workspace-user-meta span {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
   .workspace-metrics-area {
     padding: 32px;

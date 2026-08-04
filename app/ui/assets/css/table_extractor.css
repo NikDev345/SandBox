@@ -983,6 +983,83 @@ kbd {
   margin: 0;
 }
 
+/* ── WHY THIS TOOL ──────────────────────────────────── */
+.te-why {
+  margin: 40px 0;
+}
+
+.te-why__heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-0);
+  margin-bottom: 8px;
+}
+
+.te-why__subheading {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.te-why__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.te-why__card {
+  padding: 22px;
+  border: 1px solid var(--border-1);
+  border-radius: 14px;
+  background: var(--surface-1);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.te-why__card:hover {
+  border-color: var(--border-2);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+}
+
+.te-why__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.te-why__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.te-why__desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+
+@media (max-width: 900px) {
+  .te-why__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .te-why__grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* ── Toast ── */
 .te-toast-container {
   position: fixed;

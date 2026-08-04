@@ -256,7 +256,7 @@ body{
   content:'';
   position:absolute; inset:0; border-radius: inherit; padding:1px;
   background: linear-gradient(135deg, rgba(124,140,255,0.5), transparent 40%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
   opacity:0; transition: opacity .4s var(--ease-out);
   pointer-events:none;
