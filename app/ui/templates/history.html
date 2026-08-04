@@ -1,0 +1,156 @@
+  <!-- Ambient background layers -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__grid"></div>
+    <div class="bg__glow bg__glow--a"></div>
+    <div class="bg__glow bg__glow--b"></div>
+    <div class="bg__glow bg__glow--c"></div>
+    <div class="bg__noise"></div>
+  </div>
+
+  <div class="page" id="page">
+
+    <!-- ===================== TOP BAR ===================== -->
+    <header class="topbar">
+      <div class="topbar__heading">
+        <h1 class="topbar__title">History</h1>
+        <p class="topbar__subtitle">Everything you've generated in Sandbox, in one timeline.</p>
+      </div>
+
+      <div class="topbar__controls">
+        <div class="search">
+          <svg class="search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <input id="searchInput" class="search__input" type="text" placeholder="Search your history…" autocomplete="off" />
+          <kbd class="search__kbd">⌘K</kbd>
+        </div>
+
+        <div class="control-group">
+          <button class="chip" id="filterBtn" data-open="filterMenu">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span id="filterLabel">All tools</span>
+            <svg class="chip__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <button class="chip" id="sortBtn" data-open="sortMenu">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="sortLabel">Newest</span>
+            <svg class="chip__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <!-- dropdowns -->
+          <div class="dropdown" id="filterMenu">
+            <button class="dropdown__item is-active" data-filter="all">All tools</button>
+            <button class="dropdown__item" data-filter="Quiz Generator">Quiz Generator</button>
+            <button class="dropdown__item" data-filter="SQL Generator">SQL Generator</button>
+            <button class="dropdown__item" data-filter="JSON Fixer">JSON Fixer</button>
+            <button class="dropdown__item" data-filter="Regex Generator">Regex Generator</button>
+            <button class="dropdown__item" data-filter="Blog Generator">Blog Generator</button>
+            <button class="dropdown__item" data-filter="Email Rewriter">Email Rewriter</button>
+            <button class="dropdown__item" data-filter="OCR">OCR</button>
+          </div>
+
+          <div class="dropdown dropdown--right" id="sortMenu">
+            <button class="dropdown__item is-active" data-sort="newest">Newest first</button>
+            <button class="dropdown__item" data-sort="oldest">Oldest first</button>
+            <button class="dropdown__item" data-sort="az">A → Z by tool</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="topbar__count" id="resultCount" hidden></p>
+    </header>
+
+    <!-- ===================== TIMELINE ===================== -->
+    <main class="timeline" id="timeline">
+      <!-- sections injected by JS -->
+    </main>
+
+    <!-- ===================== EMPTY STATE ===================== -->
+    <div class="empty" id="emptyState" hidden>
+      <div class="empty__icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 3M21 12a9 9 0 1 1-9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2>No history yet</h2>
+      <p>Start using Sandbox tools and your generated content will appear here.</p>
+      <button class="btn btn--primary">Explore tools</button>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL ===================== -->
+  <div class="modal-root" id="modalRoot" aria-hidden="true">
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <div class="modal" id="modal" role="dialog" aria-modal="true" tabindex="-1">
+      <div class="modal__grain"></div>
+
+      <header class="modal__header">
+        <div class="modal__title-group">
+          <div class="modal__icon" id="modalIcon"></div>
+          <div>
+            <h2 class="modal__title" id="modalTitle">Tool name</h2>
+            <p class="modal__date" id="modalDate">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <span id="modalDateText">—</span>
+            </p>
+          </div>
+        </div>
+        <button class="modal__close" id="modalClose" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <nav class="modal__tabs" id="modalTabs">
+        <button class="modal__tab is-active" data-tab="input">Input</button>
+        <button class="modal__tab" data-tab="output">Output</button>
+        <button class="modal__tab" data-tab="meta">Metadata</button>
+        <div class="modal__tab-indicator" id="tabIndicator"></div>
+      </nav>
+
+      <div class="modal__body" id="modalBody">
+        <section class="modal__panel is-active" data-panel="input">
+          <pre class="codeblock" id="panelInput"><code></code></pre>
+        </section>
+        <section class="modal__panel" data-panel="output">
+          <pre class="codeblock" id="panelOutput"><code></code></pre>
+        </section>
+        <section class="modal__panel" data-panel="meta">
+          <div class="meta-grid" id="panelMeta"></div>
+        </section>
+      </div>
+
+      <footer class="modal__footer">
+        <button class="action-btn" id="copyBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>Copy</span>
+        </button>
+        <button class="action-btn" id="bookmarkBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 3.5h12a.5.5 0 0 1 .5.5v17l-6.5-4-6.5 4V4a.5.5 0 0 1 .5-.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span>Save</span>
+        </button>
+        <button class="action-btn action-btn--danger" id="deleteBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Delete</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===================== CONFIRM DELETE DIALOG ===================== -->
+  <div class="confirm-root" id="confirmRoot" aria-hidden="true">
+    <div class="confirm-overlay" id="confirmOverlay"></div>
+    <div class="confirm" role="alertdialog" aria-modal="true">
+      <div class="confirm__icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Delete this history permanently?</h3>
+      <p>This entry and its generated output will be removed. This action can't be undone.</p>
+      <div class="confirm__actions">
+        <button class="btn btn--ghost" id="confirmCancel">Cancel</button>
+        <button class="btn btn--danger" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- toast -->

@@ -100,32 +100,68 @@
         <h2 class="yts-settings-group__title">Summary Style</h2>
         <div class="yts-style-grid" role="radiogroup" aria-label="Summary style">
           <button class="yts-style-card yts-style-card--active" role="radio" aria-checked="true" data-style="standard">
-            <span class="yts-style-card__icon">📄</span>
+            <span class="yts-style-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="8" y1="13" x2="16" y2="13"/>
+                <line x1="8" y1="17" x2="16" y2="17"/>
+              </svg>
+            </span>
             <span class="yts-style-card__name">Standard</span>
             <span class="yts-style-card__desc">Clean paragraph summary</span>
           </button>
           <button class="yts-style-card" role="radio" aria-checked="false" data-style="bullets">
-            <span class="yts-style-card__icon">•</span>
+            <span class="yts-style-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <line x1="9" y1="6" x2="20" y2="6"/>
+                <line x1="9" y1="12" x2="20" y2="12"/>
+                <line x1="9" y1="18" x2="20" y2="18"/>
+                <circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/>
+                <circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/>
+                <circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/>
+              </svg>
+            </span>
             <span class="yts-style-card__name">Bullet Points</span>
             <span class="yts-style-card__desc">Quick scannable list</span>
           </button>
           <button class="yts-style-card" role="radio" aria-checked="false" data-style="detailed">
-            <span class="yts-style-card__icon">🔍</span>
+            <span class="yts-style-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </span>
             <span class="yts-style-card__name">Detailed Notes</span>
             <span class="yts-style-card__desc">In-depth breakdown</span>
           </button>
           <button class="yts-style-card" role="radio" aria-checked="false" data-style="timeline">
-            <span class="yts-style-card__icon">⏱</span>
+            <span class="yts-style-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <polyline points="12 7 12 12 15.5 14"/>
+              </svg>
+            </span>
             <span class="yts-style-card__name">Timeline</span>
             <span class="yts-style-card__desc">Timestamped moments</span>
           </button>
           <button class="yts-style-card" role="radio" aria-checked="false" data-style="study">
-            <span class="yts-style-card__icon">📚</span>
+            <span class="yts-style-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </span>
             <span class="yts-style-card__name">Study Notes</span>
-            <span class="yts-style-card__desc">Learn & retain</span>
+            <span class="yts-style-card__desc">Learn &amp; retain</span>
           </button>
           <button class="yts-style-card" role="radio" aria-checked="false" data-style="actions">
-            <span class="yts-style-card__icon">✅</span>
+            <span class="yts-style-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            </span>
             <span class="yts-style-card__name">Action Items</span>
             <span class="yts-style-card__desc">Takeaways to act on</span>
           </button>

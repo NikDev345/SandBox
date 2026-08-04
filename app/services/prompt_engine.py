@@ -1,3 +1,4 @@
+from http.client import responses
 from typing import Dict
 from app.models.chart_explainer import ChartExplainerRequest
 class PromptEngine:
@@ -346,6 +347,26 @@ Requirements:
     - Code fences
     - ```json
     - Any text before or after the JSON
+   
+    ======================================================================
+    EXPLANATION LEVELS
+    ======================================================================
+
+    Beginner
+    - Simple language.
+    - Short explanations.
+    - Avoid technical jargon.
+
+    Intermediate
+    - Moderate technical depth.
+    - Explain trends and relationships.
+    - Business-oriented.
+
+    Advanced
+    - Deep analytical reasoning.
+    - Statistical observations where visible.
+    - Industry terminology allowed.
+    - Keep JSON valid.
 
     ======================================================================
     JSON SCHEMA
@@ -522,4 +543,52 @@ Requirements:
     - Return arrays where arrays are required.
     - confidence_score must always be an integer.
     - Return ONLY the JSON object.
+    
+    ======================================================================
+    OUTPUT SIZE LIMIT
+    ======================================================================
+
+    To ensure valid JSON:
+
+    - Executive Summary: maximum 180 words
+
+    - ELI5 Explanation: maximum 150 words
+
+    - Each array:
+    minimum 1 item
+    maximum 6 items
+
+    - Each item:
+    maximum 40 words
+
+    Never repeat information across different fields.
+
+    Keep responses concise while maintaining quality.
+    
+    ======================================================================
+    FINAL VALIDATION
+    ======================================================================
+
+    Before responding:
+
+    1. Ensure every opening brace has a matching closing brace.
+
+    2. Ensure every array is closed.
+
+    3. Ensure every object is closed.
+
+    4. Ensure every string uses double quotes.
+
+    5. Ensure there are no trailing commas.
+
+    6. Ensure the response is exactly ONE JSON object.
+
+    7. Do not output markdown.
+
+    8. Do not output explanations.
+
+    9. Do not output code fences.
+
+    10. Return only valid JSON.
+    
     """
