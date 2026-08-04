@@ -9,18 +9,15 @@ class Analytics(Base):
     
     id = Column(String, primary_key=True)
     tool_id = Column(String,ForeignKey("tools.id"))
-    event_type = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    counter = Column(Integer, default=0)
     
 class AnalyticCreate(BaseModel):
     tool_id: str
-    event_type: str
     
 class AnalyticResponse(BaseModel):
     id: str
     tool_id: str
-    event_type: str
-    timestamp: datetime
+    counter: int
     
     class Config:
         orm_mode = True

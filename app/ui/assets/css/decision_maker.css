@@ -1148,3 +1148,15 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ── BOOKMARK BUTTON ── */
+#dm-bookmark-btn.dm-bookmarked {
+  color: var(--dm-text);
+  border-color: var(--dm-border-2);
+  background: var(--dm-surface-2);
+}
+
+#dm-bookmark-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

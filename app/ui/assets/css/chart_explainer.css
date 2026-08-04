@@ -1436,3 +1436,25 @@
     transition: none !important;
   }
 }
+
+/* ─── 20. BOOKMARK BUTTON ─────────────────────────────────────────────────── */
+
+#ce-bookmark-btn svg {
+  width: 14px;
+  height: 14px;
+  transition: fill var(--dur-fast) var(--ease), stroke var(--dur-fast) var(--ease);
+}
+
+#ce-bookmark-btn.ce-bookmarked svg path {
+  fill: var(--ink-0);
+  stroke: var(--ink-0);
+}
+
+#ce-bookmark-btn.ce-bookmarked {
+  color: var(--ink-0);
+}
+
+#ce-bookmark-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

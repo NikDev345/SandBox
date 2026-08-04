@@ -63,6 +63,8 @@
   let currentEngine = "python";
   let isGenerating = false;
 
+  const bookmarkBtn = $("bookmarkBtn");
+  let currentExecutionId = null;
   /* ---------------------------------------------------------
      TOASTS
   --------------------------------------------------------- */
@@ -158,6 +160,8 @@
     loadingState.classList.add("hidden");
     emptyState.classList.remove("hidden");
     currentRegex = "";
+    currentExecutionId = null;
+    bookmarkBtn.classList.add("hidden");
   }
 
   /* ---------------------------------------------------------
@@ -302,6 +306,7 @@
   const SOURCE_LABELS = { cache: "Cache", ai: "AI Generated", literal: "Literal Match" };
 
   function renderOutput(data) {
+    console.log("API response:", data);
     stopLoadingLabelCycle();
     currentRegex = data.regex;
     currentEngine = data.engine || engineSelect.value;
@@ -359,6 +364,15 @@
     loadingState.classList.add("hidden");
     emptyState.classList.add("hidden");
     outputState.classList.remove("hidden");
+    // Show bookmark button and reset its state
+    currentExecutionId = data.execution_id || null;
+    if (currentExecutionId) {
+      bookmarkBtn.classList.remove("hidden", "is-bookmarked");
+      bookmarkBtn.querySelector("span").textContent = "Bookmark";
+      bookmarkBtn.disabled = false;
+    } else {
+      bookmarkBtn.classList.add("hidden");
+    }
     panelRight.scrollTop = 0;
   }
 
@@ -459,6 +473,39 @@
     URL.revokeObjectURL(url);
     flashSuccess(downloadBtn, "Saved!");
     showToast("Regex downloaded as .txt", "success", 2000);
+  });
+
+  bookmarkBtn.addEventListener("click", async () => {
+    if (!currentExecutionId || bookmarkBtn.disabled) return;
+
+    bookmarkBtn.disabled = true;
+
+    try {
+      const res = await fetch("/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ execution_id: currentExecutionId }),
+      });
+
+      if (res.status === 401) {
+        showToast("Please sign in to bookmark", "warning");
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to bookmark");
+      }
+
+      bookmarkBtn.classList.add("is-bookmarked");
+      bookmarkBtn.querySelector("span").textContent = "Bookmarked";
+      flashSuccess(bookmarkBtn, "Bookmarked!");
+      showToast("Result bookmarked", "success", 2200);
+
+    } catch (err) {
+      bookmarkBtn.disabled = false;
+      showToast(err.message || "Could not bookmark", "error");
+    }
   });
 
   fullscreenBtn.addEventListener("click", () => {

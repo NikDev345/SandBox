@@ -26,7 +26,8 @@
     diffType: 'auto',
     style: 'conventional',
     suggestions: 3,
-    lastResponse: null
+    lastResponse: null,
+    executionId: null,
   };
 
   /* ────────────────────────────────────────────────────────
@@ -68,7 +69,10 @@
 
     toastContainer: document.getElementById('toastContainer'),
     mouseGlow: document.getElementById('mouseGlow'),
-    particleCanvas: document.getElementById('particleCanvas')
+    particleCanvas: document.getElementById('particleCanvas'),
+    bookmarkBtn: document.getElementById('bookmarkBtn'),
+    bookmarkLabel: document.getElementById('bookmarkLabel'),
+    bookmarkIcon: document.getElementById('bookmarkIcon'),
   };
 
   /* ────────────────────────────────────────────────────────
@@ -257,6 +261,7 @@
 
     try {
       const data = await requestCommitMessages(payload);
+      console.log('response:', data);
       state.lastResponse = data;
       renderResponse(data);
       showState('response');
@@ -345,6 +350,9 @@
     el.loadingState.classList.add('hidden');
     el.errorState.classList.add('hidden');
     el.responseSection.classList.add('hidden');
+    if (el.bookmarkBtn) {
+      el.bookmarkBtn.classList.toggle('hidden', name !== 'response');
+    }
 
     const map = {
       empty: el.emptyState,
@@ -364,6 +372,10 @@
      RENDER RESPONSE
      ──────────────────────────────────────────────────────── */
   function renderResponse(data) {
+    state.executionId = data.execution_id || null;
+    el.bookmarkBtn.classList.remove('bookmarked');
+    el.bookmarkLabel.textContent = 'Bookmark';
+    el.bookmarkIcon.className = 'fa-regular fa-bookmark';
     el.statRepoName.textContent = data.repository_name ?? '—';
     el.statBranch.textContent = data.branch ?? '—';
     el.statDiffType.textContent = capitalize(data.diff_type ?? '—');
@@ -544,4 +556,57 @@
   }
 
   document.addEventListener('DOMContentLoaded', init);
+  /* ────────────────────────────────────────────────────────
+   BOOKMARK
+   ──────────────────────────────────────────────────────── */
+if (el.bookmarkBtn) {
+  el.bookmarkBtn.addEventListener('click', async () => {
+    if (el.bookmarkBtn.classList.contains('bookmarked')) {
+      showToast('Already saved to bookmarks.', 'info');
+      return;
+    }
+
+    if (!state.executionId) {
+      showToast('Nothing to bookmark yet.', 'error');
+      return;
+    }
+
+    el.bookmarkBtn.disabled = true;
+    el.bookmarkLabel.textContent = 'Saving…';
+
+    try {
+      const res = await fetch('/bookmarks', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ execution_id: state.executionId }),
+      });
+
+      if (res.status === 400) {
+        el.bookmarkBtn.classList.add('bookmarked');
+        el.bookmarkLabel.textContent = 'Saved';
+        el.bookmarkIcon.className = 'fa-solid fa-bookmark';
+        showToast('Already bookmarked.', 'info');
+        return;
+      }
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `Error ${res.status}`);
+      }
+
+      el.bookmarkBtn.classList.add('bookmarked');
+      el.bookmarkLabel.textContent = 'Saved';
+      el.bookmarkIcon.className = 'fa-solid fa-bookmark';
+      showToast('Commit messages bookmarked.', 'success');
+
+    } catch (err) {
+      el.bookmarkLabel.textContent = 'Bookmark';
+      el.bookmarkIcon.className = 'fa-regular fa-bookmark';
+      showToast(err.message || 'Could not save bookmark.', 'error');
+    } finally {
+      el.bookmarkBtn.disabled = false;
+    }
+  });
+}
 })();

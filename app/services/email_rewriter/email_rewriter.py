@@ -46,9 +46,9 @@ class EmailStudioService:
                     slug="EMAIL-REWRITER",
                 )
         tool_id = tool.id if tool else "EMAIL-REWRITER"
-        
+        execution_record = None
         try:
-            ExecutionService.create_execution(
+            execution_record=ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
@@ -57,7 +57,9 @@ class EmailStudioService:
             )
         except Exception:
             pass
-        return cls._validate_response(response)
+        validated = cls._validate_response(response)
+        validated.execution_id = execution_record.id if execution_record else None
+        return validated
 
     @classmethod
     def _preprocess_input(

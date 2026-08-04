@@ -90,3 +90,5 @@ class BrainstormResponse(BaseModel):
     common_mistakes: List[str]
 
     final_recommendation: str
+    
+    execution_id: Optional[str] = None

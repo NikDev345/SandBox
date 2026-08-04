@@ -116,3 +116,5 @@ class DecisionMakerResponse(BaseModel):
     final_advice: str
 
     disclaimer: str
+    
+    execution_id: Optional[str] = None

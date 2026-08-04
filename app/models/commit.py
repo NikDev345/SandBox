@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Literal, List
-
+from typing import Literal, List, Optional
 
 class CommitMessageRequest(BaseModel):
     repository_path: str = Field(
@@ -46,6 +45,8 @@ class CommitMessageResponse(BaseModel):
     files_changed: int
 
     suggestions: List[CommitSuggestion]
+    
+    execution_id: Optional[str] = None 
 
 class GitData(BaseModel):
     repository_name: str

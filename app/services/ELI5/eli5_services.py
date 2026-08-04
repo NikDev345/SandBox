@@ -56,9 +56,9 @@ class ELI5Service:
                     slug="ELI5",
                 )
         tool_id = tool.id if tool else "ELI5"
-        
+        execution_record = None
         try:
-            ExecutionService.create_execution(
+            execution_record = ExecutionService.create_execution(
                 db=db,
                 user_id=user["sub"],
                 tool_id=tool_id,
@@ -69,4 +69,6 @@ class ELI5Service:
             pass
 
         # Format response
-        return ELI5Formatter.format(explanation)
+        response = ELI5Formatter.format(explanation)
+        response.execution_id = execution_record.id if execution_record else None
+        return response

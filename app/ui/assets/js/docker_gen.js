@@ -67,7 +67,7 @@
     fullscreenOverlay: document.getElementById("fullscreenOverlay"),
     fullscreenCodeContent: document.getElementById("fullscreenCodeContent"),
     closeFullscreenBtn: document.getElementById("closeFullscreenBtn"),
-
+    bookmarkBtn: document.getElementById("bookmarkBtn"),
     qsList: document.getElementById("qsList"),
     qsProgress: document.getElementById("qsProgress"),
 
@@ -76,6 +76,7 @@
   };
 
   const API_ENDPOINT = "/docker-generator/generate";
+  const BOOKMARK_ENDPOINT = "/bookmarks";
 
   /* ============================================================
      2. AMBIENT BACKGROUND CANVAS
@@ -597,6 +598,8 @@
   }
 
   function renderResults(payload) {
+    setBookmarkState(false);
+    el.bookmarkBtn.disabled = !payload.execution_id;
     renderDockerfile(payload.dockerfile || "");
     renderQuickStart(payload.quick_start || []);
   }
@@ -760,11 +763,75 @@
   /* ============================================================
      13. WIRE UP
      ============================================================ */
+
+  function initBookmark() {
+  el.bookmarkBtn.addEventListener("click", toggleBookmark);
+}
+
+async function toggleBookmark() {
+  const executionId = state.lastResult && state.lastResult.execution_id;
+  if (!executionId) {
+    showToast("No execution to bookmark.", "error");
+    return;
+  }
+
+  const isBookmarked = el.bookmarkBtn.classList.contains("bookmarked");
+
+  if (isBookmarked) {
+    // DELETE /bookmarks/{execution_id}
+    try {
+      el.bookmarkBtn.disabled = true;
+      const res = await fetch(`${BOOKMARK_ENDPOINT}/${executionId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to remove bookmark.");
+      setBookmarkState(false);
+      showToast("Bookmark removed.", "info");
+    } catch (err) {
+      showToast(err.message || "Couldn't remove bookmark.", "error");
+    } finally {
+      el.bookmarkBtn.disabled = false;
+    }
+  } else {
+    // POST /bookmarks
+    try {
+      el.bookmarkBtn.disabled = true;
+      const res = await fetch(BOOKMARK_ENDPOINT, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ execution_id: executionId }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload.detail || "Failed to save bookmark.");
+      }
+      setBookmarkState(true);
+      showToast("Saved to bookmarks.", "success");
+    } catch (err) {
+      showToast(err.message || "Couldn't save bookmark.", "error");
+    } finally {
+      el.bookmarkBtn.disabled = false;
+    }
+  }
+}
+
+function setBookmarkState(bookmarked) {
+  el.bookmarkBtn.classList.toggle("bookmarked", bookmarked);
+  el.bookmarkBtn.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+  el.bookmarkBtn.title = bookmarked ? "Remove bookmark" : "Save to bookmarks";
+  el.bookmarkBtn.innerHTML = bookmarked
+    ? '<i class="fa-solid fa-bookmark"></i>'
+    : '<i class="fa-regular fa-bookmark"></i>';
+}
+
   function init() {
     initContainerField();
     initThemeToggle();
     initFolderSelection();
     initCodeCardActions();
+    initBookmark();  
 
     el.generateBtn.addEventListener("click", generateDockerfile);
     el.retryBtn.addEventListener("click", () => {

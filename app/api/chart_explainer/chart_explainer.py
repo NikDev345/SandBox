@@ -44,6 +44,7 @@ async def analyze_chart(
     include_eli5: bool = Form(True),
     include_confidence: bool = Form(True),
     current_user: Users = Depends(get_current_user),
+    db:Session=Depends(get_db)
 ):
     """
     Analyze an uploaded chart image.
@@ -78,5 +79,5 @@ async def analyze_chart(
         image_bytes=image_bytes,
         mime_type=image.content_type,
         user_id=current_user["sub"],
-        db=Depends(get_db),
+        db=db,
     )

@@ -29,9 +29,9 @@
   --b3: rgba(255,255,255,0.22);
 
   /* Text */
-  --text:       #f1f1f3;
-  --text-soft:  #a0a0b0;
-  --text-muted: #666678;
+  --text:       #ffffff;
+  --text-soft:  #ffffff;
+  --text-muted: #ffffff;
 
   /* Accents */
   --blue:    #6366f1;
@@ -85,6 +85,7 @@ button{cursor:pointer;border:none;background:none;}
 /* ── App shell ───────────────────────────────────────────── */
 .app{
   min-height:100vh;
+  width:100%;
   position:relative;
   isolation:isolate;
 }
@@ -142,6 +143,7 @@ button{cursor:pointer;border:none;background:none;}
 /* ── Header ──────────────────────────────────────────────── */
 .header{
   position:sticky;top:0;z-index:50;
+  width: 100%;
   height:64px;
   background:rgba(7,7,10,0.80);
   backdrop-filter:blur(32px) saturate(180%);
@@ -149,7 +151,7 @@ button{cursor:pointer;border:none;background:none;}
   border-bottom:1px solid var(--b0);
 }
 .header__inner{
-  max-width:1440px;margin:0 auto;
+  width: 100%;;
   height:100%;
   padding:0 clamp(18px,3.5vw,52px);
   display:flex;align-items:center;justify-content:space-between;
@@ -161,8 +163,8 @@ button{cursor:pointer;border:none;background:none;}
 
 /* Back button */
 .nav-back{
-  display:inline-flex;align-items:center;gap:9px;
-  height:36px;padding:0 14px 0 10px;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;padding:0;
   border:1px solid var(--b1);border-radius:var(--r-lg);
   background:var(--s1);
   color:var(--text-soft);
@@ -249,7 +251,7 @@ button{cursor:pointer;border:none;background:none;}
 /* ── Main ────────────────────────────────────────────────── */
 .main{
   position:relative;z-index:1;
-  max-width:1440px;margin:0 auto;
+  width:100%;
   padding:36px clamp(18px,3.5vw,52px) 100px;
   display:flex;flex-direction:column;gap:24px;
 }
@@ -824,12 +826,10 @@ button{cursor:pointer;border:none;background:none;}
 }
 
 /* ── Category colour tokens ──────────────────────────────── */
-.cat--code     {background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:var(--blue-lt);}
-.cat--text     {background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:var(--em-lt);}
-.cat--data     {background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);color:var(--am-lt);}
-.cat--media    {background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);color:var(--vio-lt);}
-.cat--productivity{background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);color:var(--ro-lt);}
-.cat--other    {background:var(--s1);border:1px solid var(--b1);color:var(--text-muted);}
+.cat--developer    { background:rgba(99,102,241,0.1);  border:1px solid rgba(99,102,241,0.2);  color:var(--blue-lt); }
+.cat--content      { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);  color:var(--em-lt); }
+.cat--productivity { background:rgba(244,63,94,0.08);  border:1px solid rgba(244,63,94,0.2);   color:var(--ro-lt); }
+.cat--image        { background:rgba(139,92,246,0.1);  border:1px solid rgba(139,92,246,0.2);  color:var(--vio-lt); }
 
 /* ── Focus & Selection ───────────────────────────────────── */
 :focus-visible{outline:2px solid rgba(99,102,241,0.6);outline-offset:2px;}
@@ -856,6 +856,7 @@ button{cursor:pointer;border:none;background:none;}
   .controls{flex-direction:column;align-items:stretch;}
   .controls__right{justify-content:space-between;}
   .header__inner{padding:0 18px;}
+  html, body, .app { width: 100%; }
   .main{padding:20px 18px 72px;}
   .modal__body{padding:18px 20px;}
   .modal__header{padding:20px 20px 0;}
@@ -871,4 +872,12 @@ button{cursor:pointer;border:none;background:none;}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}
+}
+
+.nicegui-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  display: block !important;   /* was flex+align-items:center — that's what's shrinking .app */
 }

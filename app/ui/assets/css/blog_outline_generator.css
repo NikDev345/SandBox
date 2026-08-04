@@ -838,3 +838,22 @@
     justify-content: flex-end;
   }
 }
+
+/* ── Bookmark button ── */
+.bog-bookmark-btn {
+  color: var(--text-muted, #a1a1aa);
+}
+.bog-bookmark-btn:hover {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #f59e0b;
+}
+.bog-bookmark-btn.is-bookmarked {
+  background: rgba(245, 158, 11, 0.10);
+  border-color: rgba(245, 158, 11, 0.30);
+  color: #f59e0b;
+}
+.bog-bookmark-btn.is-bookmarked svg path {
+  fill: #f59e0b;
+  stroke: #f59e0b;
+}

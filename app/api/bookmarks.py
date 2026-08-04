@@ -29,7 +29,7 @@ def create_bookmark(
     try:
         return BookmarkService.create_bookmark(
             db=db,
-            user_id=current_user.id,
+            user_id=current_user["sub"],
             execution_id=request.execution_id,
         )
     except PermissionError as e:

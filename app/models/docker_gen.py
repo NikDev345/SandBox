@@ -9,3 +9,4 @@ class QuickStartStep(BaseModel):
 class DockerfileGeneratorResponse(BaseModel):
     dockerfile: str
     quick_start: list[QuickStartStep]
+    execution_id: str | None = None 

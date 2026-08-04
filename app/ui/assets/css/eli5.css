@@ -625,6 +625,19 @@
   background: rgba(74,222,128,0.07) !important;
 }
 
+/* ─── BOOKMARK BUTTON STATE ──────────────────────────────────────────────── */
+
+.eli5-action-btn--bookmarked {
+  border-color: rgba(139, 92, 246, 0.4) !important;
+  color: #a78bfa !important;
+  background: rgba(139, 92, 246, 0.1) !important;
+}
+
+.eli5-action-btn--bookmarked .eli5-bookmark-icon {
+  /* swap hollow heart → filled using Unicode */
+  font-style: normal;
+}
+
 /* ─── 15. EXPLORE TOPICS ──────────────────────────────────────────────────── */
 
 .eli5-explore {

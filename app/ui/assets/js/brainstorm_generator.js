@@ -34,6 +34,7 @@
     loadingTimer: null,
     loadingIndex: 0,
     abortCtrl:    null,
+    currentExecutionId: null, 
   };
 
   const LOADING_MESSAGES = [
@@ -128,6 +129,7 @@
       statusIcon:        q('#brnStatusIcon'),
       statusTitle:       q('#brnStatusTitle'),
       statusBody:        q('#brnStatusBody'),
+      bookmarkBtn: q('#brnBookmarkBtn'),
     };
 
     return true;
@@ -198,7 +200,34 @@
 
     updateCounter();
     updateSliderFill();
+    dom.bookmarkBtn.addEventListener('click', async () => {
+    if (!state.currentExecutionId || dom.bookmarkBtn.disabled) return;
+    dom.bookmarkBtn.disabled = true;
+    try {
+      const res = await fetch('/bookmarks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ execution_id: state.currentExecutionId }),
+      });
+      if (res.status === 401) {
+        showError('Auth required', 'Please sign in to bookmark.');
+        dom.bookmarkBtn.disabled = false;
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Failed to bookmark');
+      }
+      dom.bookmarkBtn.classList.add('is-bookmarked');
+      dom.bookmarkBtn.querySelector('span').textContent = 'Bookmarked';
+    } catch (err) {
+      dom.bookmarkBtn.disabled = false;
+      showError('Bookmark failed', err.message || 'Could not bookmark. Please try again.');
+    }
+  });
   }
+  
 
   function focusCreativityCard(index) {
     dom.creativityCards.forEach((c, i) => c.setAttribute('tabindex', i === index ? '0' : '-1'));
@@ -463,6 +492,11 @@
       dom.results.classList.add('brn-reveal');
 
       showSuccess('Ideas generated', `${result.ideas.length} ideas ready for "${data.topic}".`);
+      state.currentExecutionId = result.execution_id || null;
+      dom.bookmarkBtn.hidden = !state.currentExecutionId;
+      dom.bookmarkBtn.classList.remove('is-bookmarked');
+      dom.bookmarkBtn.querySelector('span').textContent = 'Bookmark';
+      dom.bookmarkBtn.disabled = false;
 
     } catch (err) {
       if (err && err.name === 'AbortError') {
@@ -613,6 +647,9 @@
     dom.recommendation.hidden = true;
     dom.results.hidden = true;
     dom.results.classList.remove('brn-reveal');
+    state.currentExecutionId = null;     
+    dom.bookmarkBtn.hidden = true;        
+    dom.bookmarkBtn.classList.remove('is-bookmarked');
   }
 
   function resetForm() {

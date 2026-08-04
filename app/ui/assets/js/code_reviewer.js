@@ -72,6 +72,10 @@
 
     downloadJson: document.getElementById("downloadJson"),
     downloadPdf: document.getElementById("downloadPdf"),
+
+    bookmarkBtn: document.getElementById("bookmarkBtn"),
+    bookmarkLabel: document.getElementById("bookmarkLabel"),
+    bookmarkIcon: document.getElementById("bookmarkIcon"),
   };
 
   /* ============================================================
@@ -82,6 +86,7 @@
     loadingInterval: null,
     progressInterval: null,
     lastResult: null,
+    executionId: null,
   };
 
   /* ============================================================
@@ -245,6 +250,9 @@
     syncReviewButton();
     showResultsPanel("empty");
     showToast("info", "Cleared.");
+    state.executionId = null;
+    el.bookmarkBtn.classList.remove("bookmarked");
+    el.bookmarkLabel.textContent = "Bookmark";
   });
 
   /* ============================================================
@@ -288,6 +296,7 @@
     el.resultBadge.classList.toggle("hidden", mode !== "results");
     el.downloadJson.classList.toggle("hidden", mode !== "results");  
     el.downloadPdf.classList.toggle("hidden", mode !== "results"); 
+    el.bookmarkBtn.classList.toggle("hidden", mode !== "results");
   }
 
   function startLoadingMessages() {
@@ -381,6 +390,11 @@
       }
 
       const data = await response.json();
+      state.executionId = data.execution_id || null;
+// Reset bookmark state for new result
+      el.bookmarkBtn.classList.remove("ce-bookmarked");
+      el.bookmarkLabel.textContent = "Bookmark";
+      if (window.lucide) window.lucide.createIcons();
       finishProgress();
       renderResults(normalizeResponse(data));
       showResultsPanel("results");
@@ -621,4 +635,53 @@
      INIT
      ============================================================ */
   showResultsPanel("empty");
+  /* ============================================================
+   BOOKMARK
+   ============================================================ */
+el.bookmarkBtn.addEventListener("click", async () => {
+  if (el.bookmarkBtn.classList.contains("bookmarked")) {
+    showToast("info", "Already saved to bookmarks.");
+    return;
+  }
+
+  if (!state.executionId) {
+    showToast("error", "Nothing to bookmark yet.");
+    return;
+  }
+
+  el.bookmarkBtn.disabled = true;
+  el.bookmarkLabel.textContent = "Saving…";
+
+  try {
+    const res = await fetch("/bookmarks", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ execution_id: state.executionId }),
+    });
+
+    if (res.status === 400) {
+      el.bookmarkBtn.classList.add("bookmarked");
+      el.bookmarkLabel.textContent = "Saved";
+      showToast("info", "Already bookmarked.");
+      return;
+    }
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `Error ${res.status}`);
+    }
+
+    el.bookmarkBtn.classList.add("bookmarked");
+    el.bookmarkLabel.textContent = "Saved";
+    showToast("success", "Review bookmarked.");
+
+  } catch (err) {
+    el.bookmarkLabel.textContent = "Bookmark";
+    showToast("error", err.message || "Could not save bookmark.");
+  } finally {
+    el.bookmarkBtn.disabled = false;
+    if (window.lucide) window.lucide.createIcons();
+  }
+});
 })();
