@@ -147,6 +147,19 @@
 
   const toastEl = document.getElementById('toast');
 
+  // TRUE PORTAL: physically move both dropdown menus to be direct children
+  // of <body>. This is the actual fix for "renders on top but still not
+  // clickable" — position:fixed only anchors to the real viewport if NO
+  // ancestor has a transform/filter/perspective/contain/will-change. Inside
+  // a NiceGUI/Quasar page shell there is almost always such a wrapper
+  // somewhere up the tree, which silently turns "fixed" back into
+  // "contained/absolute-like" and desyncs the click hit-area from what's
+  // painted. Reparenting to <body> removes every ancestor, so there is
+  // nothing left that can ever trap it again. Event listeners already
+  // bound to these elements survive the move (same DOM node, same object).
+  if (filterMenu.parentElement !== document.body) document.body.appendChild(filterMenu);
+  if (sortMenu.parentElement !== document.body) document.body.appendChild(sortMenu);
+
   let activeExecutionId = null;
   let detailRequestToken = 0; // guards against stale responses from fast clicking
 
