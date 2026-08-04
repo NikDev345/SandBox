@@ -17,7 +17,7 @@
   const codeCounter = document.getElementById('codeCounter');
   const errorFileStatus = document.getElementById('errorFileStatus');
   const codeFileStatus = document.getElementById('codeFileStatus');
-
+  const bookmarkBtn = document.getElementById('bookmarkBtn');
   const explainBtn = document.getElementById('explainBtn');
   const explainBtnMobile = document.getElementById('explainBtnMobile');
 
@@ -167,6 +167,60 @@
     return response.json();
     }
 
+  /* ── Bookmark ── */
+const BOOKMARK_ENDPOINT = '/bookmarks';
+
+function setBookmarkState(saved) {
+  if (!bookmarkBtn) return;
+  bookmarkBtn.classList.toggle('bookmark-btn--saved', saved);
+  bookmarkBtn.setAttribute('aria-pressed', saved ? 'true' : 'false');
+  bookmarkBtn.title = saved ? 'Remove bookmark' : 'Save to bookmarks';
+  bookmarkBtn.setAttribute('aria-label', saved ? 'Remove bookmark' : 'Save to bookmarks');
+
+  const icon  = bookmarkBtn.querySelector('i');
+  const label = bookmarkBtn.querySelector('.bookmark-btn-label');
+  if (icon)  icon.className = saved ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+  if (label) label.textContent = saved ? 'Saved' : 'Save';
+}
+
+async function handleBookmark() {
+  if (!currentExecutionId) return;
+
+  const isSaved = bookmarkBtn.classList.contains('bookmark-btn--saved');
+  bookmarkBtn.disabled = true;
+
+  try {
+    if (isSaved) {
+      const res = await fetch(`${BOOKMARK_ENDPOINT}/${currentExecutionId}`, {
+        method: 'DELETE', credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Failed to remove bookmark.');
+      setBookmarkState(false);
+      showToast('Bookmark removed', 'fa-circle-info');
+    } else {
+      const res = await fetch(BOOKMARK_ENDPOINT, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ execution_id: currentExecutionId }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload.detail || 'Failed to save bookmark.');
+      }
+      setBookmarkState(true);
+      showToast('Saved to bookmarks', 'fa-circle-check');
+    }
+  } catch (err) {
+    showToast(err.message || 'Something went wrong', 'fa-circle-exclamation');
+  } finally {
+    bookmarkBtn.disabled = false;
+  }
+}
+
+if (bookmarkBtn) {
+  bookmarkBtn.addEventListener('click', handleBookmark);
+}
+
   /* ── Basic syntax highlighting for the code block ── */
   function highlight(code) {
     const escaped = code
@@ -186,7 +240,7 @@
 
   /* ── Submit flow ── */
   let isSubmitting = false;
-
+  let currentExecutionId = null;
   async function handleExplain() {
     if (isSubmitting) return;
 
@@ -225,6 +279,13 @@
   }
 
   function renderResult(data) {
+    currentExecutionId = data.execution_id || null;
+    setBookmarkState(false);
+    if (bookmarkBtn) {
+      bookmarkBtn.hidden   = !currentExecutionId;
+      bookmarkBtn.disabled = !currentExecutionId;
+    }
+
     resultTitle.textContent = data.title;
     resultExplanation.textContent = data.explanation;
 

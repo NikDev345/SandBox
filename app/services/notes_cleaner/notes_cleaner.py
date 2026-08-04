@@ -257,16 +257,19 @@ class NotesCleaner:
                 slug="NOTES-CLEANER",
             )
         tool_id = tool.id if tool else "NOTES-CLEANER"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
                 output=final_text,
             )
+            execution_id = execution.id 
         except Exception:
             pass
         
-        return NotesCleaner._parse_response(final_text)
+        response = NotesCleaner._parse_response(final_text)
+        response.execution_id = execution_id   
+        return response

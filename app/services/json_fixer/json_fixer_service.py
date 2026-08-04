@@ -100,14 +100,16 @@ class JSONFixerService:
         # -------------------------
         # Save Execution History
         # -------------------------
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=original_text,
                 output=formatted_json,
             )
+            execution_id = execution.id if execution else None
         except Exception:
             pass
 
@@ -119,4 +121,5 @@ class JSONFixerService:
             "message": "JSON repaired successfully.",
             "fixed_json": formatted_json,
             "repairs": repairs,
+            "execution_id": execution_id,
         }

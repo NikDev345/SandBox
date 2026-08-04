@@ -17,6 +17,7 @@
     editingId: null, // null => create mode, else editing this mock's id
     deleteTargetId: null,
     filters: { search: "", method: "", active: "" },
+    lastExecutionId: null,
   };
 
   /* ---------------------------------------------------------
@@ -61,6 +62,7 @@
       "copySuccessUrlBtn", "successMethodBadge", "successStatusBadge",
       "viewInMyApisBtn", "baseUrlInput", "authTokenInput", "saveSettingsBtn",
       "fabCreate", "statTotal", "statActive", "statDisabled", "statHits",
+      "bookmarkMockBtn", "bookmarkMockLabel", "bookmarkMockIcon",
     ].forEach((id) => (els[id] = $(id)));
   }
 
@@ -310,6 +312,58 @@
      Modal wiring (delete confirm + success)
      --------------------------------------------------------- */
   function bindModalEvents() {
+    els.bookmarkMockBtn.addEventListener('click', async () => {
+    if (els.bookmarkMockBtn.classList.contains('bookmark-saved')) {
+        UI.toast('Already saved to bookmarks.', 'info', 2500);
+        return;
+    }
+
+    if (!state.lastExecutionId) {
+        UI.toast('Nothing to bookmark.', 'error', 2500);
+        return;
+    }
+
+    els.bookmarkMockBtn.disabled = true;
+    els.bookmarkMockLabel.textContent = 'Saving…';
+
+    try {
+        const token = API.getToken();
+        const res = await fetch('/bookmarks', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ execution_id: state.lastExecutionId }),
+        });
+
+        if (res.status === 400) {
+            els.bookmarkMockBtn.classList.add('bookmark-saved');
+            els.bookmarkMockLabel.textContent = 'Saved';
+            els.bookmarkMockIcon.setAttribute('fill', 'currentColor');
+            UI.toast('Already bookmarked.', 'info', 2500);
+            return;
+        }
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `Error ${res.status}`);
+        }
+
+        els.bookmarkMockBtn.classList.add('bookmark-saved');
+        els.bookmarkMockLabel.textContent = 'Saved';
+        els.bookmarkMockIcon.setAttribute('fill', 'currentColor');
+        UI.toast('Mock API bookmarked.', 'success', 2500);
+
+    } catch (err) {
+        els.bookmarkMockLabel.textContent = 'Bookmark';
+        els.bookmarkMockIcon.setAttribute('fill', 'none');
+        UI.toast(err.message || 'Could not save bookmark.', 'error', 4000);
+    } finally {
+        els.bookmarkMockBtn.disabled = false;
+    }
+});
     document.querySelectorAll("[data-close-modal]").forEach((btn) => {
       btn.addEventListener("click", () => UI.closeModal(btn.dataset.closeModal));
     });
@@ -765,6 +819,15 @@
     // MockAPIResponse.endpoint_url is already a fully-qualified URL
     // (built server-side from the service's own BASE_URL), so it is
     // used as-is rather than prefixed again with the dashboard's base URL.
+    state.lastExecutionId = created.execution_id || null;
+
+    // Reset bookmark button
+    els.bookmarkMockBtn.style.display = '';
+    els.bookmarkMockBtn.classList.remove('bookmark-saved');
+    els.bookmarkMockLabel.textContent = 'Bookmark';
+    els.bookmarkMockIcon.setAttribute('fill', 'none');
+    els.bookmarkMockBtn.disabled = false;
+      
     const rawUrl = created.endpoint_url || "";
     const fullUrl = rawUrl.startsWith("http")
       ? rawUrl

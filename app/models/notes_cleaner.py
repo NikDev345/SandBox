@@ -46,3 +46,5 @@ class NotesCleanerResponse(BaseModel):
         ...,
         description="The cleaned, formatted, and readable version of the user's notes."
     )
+    
+    execution_id: Optional[str] = None

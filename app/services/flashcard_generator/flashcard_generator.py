@@ -78,9 +78,9 @@ class FlashcardGeneratorService:
                     slug="FLASHCARD-GENERATOR",
                 )
         tool_id = tool.id if tool else "FLASHCARD-GENERATOR"
-                
+        execution_record = None
         try:
-            ExecutionService.create_execution(
+            execution_record = ExecutionService.create_execution(
                 db=db,
                 user_id=user["sub"],
                 tool_id=tool_id,
@@ -90,6 +90,7 @@ class FlashcardGeneratorService:
         except Exception:
             pass
 
+        response.execution_id = execution_record.id if execution_record else None
         return response
 
     @staticmethod

@@ -585,6 +585,38 @@ kbd {
 .copy-btn:hover { background: var(--surface-1); border-color: var(--border-2); color: var(--text); }
 .copy-btn.copied { background: rgba(34,197,94,0.14); border-color: rgba(34,197,94,0.4); color: var(--success); }
 
+/* ── Bookmark button (result title card) ── */
+.bookmark-btn {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 14px;
+  border: 1px solid var(--border-1); border-radius: var(--radius-md);
+  background: var(--surface-0); color: var(--text-muted);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease-spring);
+}
+.bookmark-btn:hover:not(:disabled) {
+  background: var(--surface-1); border-color: var(--border-2); color: var(--text);
+  transform: translateY(-1px);
+}
+.bookmark-btn:active:not(:disabled) { transform: translateY(0) scale(0.96); }
+.bookmark-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+.bookmark-btn--saved {
+  background: rgba(139,92,246,0.12) !important;
+  border-color: rgba(139,92,246,0.4) !important;
+  color: #a78bfa !important;
+}
+.bookmark-btn--saved:hover:not(:disabled) {
+  background: rgba(139,92,246,0.2) !important;
+  border-color: rgba(139,92,246,0.55) !important;
+  color: #c4b5fd !important;
+}
+
 .code-block {
   margin: 0;
   padding: 18px 20px;

@@ -119,3 +119,5 @@ class SQLGeneratorResponse(BaseModel):
     execution_cost: ExecutionCost
 
     formatted_sql: Optional[str] = None
+    
+    execution_id: Optional[str] = None

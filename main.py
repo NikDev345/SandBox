@@ -66,13 +66,6 @@ from app.api.item_extractor.item import router as item_router
 from app.api.bookmarks import router as bookmark_router
 Base.metadata.create_all(bind=engine)   
 
-db = SessionLocal()
-
-try:
-    seed_tools(db)
-finally:
-    db.close()
-
 
 fast_app.include_router(auth_router)
 fast_app.include_router(tool_router)

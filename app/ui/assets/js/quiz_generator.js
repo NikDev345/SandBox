@@ -58,6 +58,7 @@
     loadingStepTimer: null,
     rotatorTimer: null,
     rotatorIndex: 0,
+    executionId: null,
   };
 
   // ─────────────────────────────────────────────────────────────
@@ -136,6 +137,10 @@
       reviewList:  document.getElementById('qg-review-list'),
       retakeBtn:   document.getElementById('qg-retake-btn'),
       newQuizBtn:  document.getElementById('qg-new-quiz-btn'),
+
+      bookmarkBtn:   document.getElementById('qg-bookmark-btn'),
+      bookmarkLabel: document.getElementById('qg-bookmark-label'),
+      bookmarkIcon:  document.getElementById('qg-bookmark-icon'),
     };
   };
 
@@ -322,6 +327,12 @@
       }
 
       state.quiz = data;
+      state.executionId = data.execution_id || null;
+      if (dom.bookmarkBtn) {
+          dom.bookmarkBtn.classList.remove('qg-bookmarked');
+          dom.bookmarkLabel.textContent = 'Bookmark';
+          dom.bookmarkIcon.setAttribute('fill', 'none');
+      }
       state.currentIndex = 0;
       state.answers = {};
       state.startTime = Date.now();
@@ -715,6 +726,12 @@
   // ─────────────────────────────────────────────────────────────
 
   const resetQuiz = () => {
+    state.executionId = null;
+    if (dom.bookmarkBtn) {
+        dom.bookmarkBtn.classList.remove('qg-bookmarked');
+        dom.bookmarkLabel.textContent = 'Bookmark';
+        dom.bookmarkIcon.setAttribute('fill', 'none');
+    }
     state.quiz = null;
     state.currentIndex = 0;
     state.answers = {};
@@ -917,6 +934,55 @@
   // ─────────────────────────────────────────────────────────────
 
   const bindEvents = () => {
+
+    dom.bookmarkBtn.addEventListener('click', async () => {
+    if (dom.bookmarkBtn.classList.contains('qg-bookmarked')) {
+        toast('Already saved to bookmarks.', 'info');
+        return;
+    }
+
+    if (!state.executionId) {
+        toast('Complete a quiz first to bookmark it.', 'error');
+        return;
+    }
+
+    dom.bookmarkBtn.disabled = true;
+    dom.bookmarkLabel.textContent = 'Saving…';
+
+    try {
+        const res = await fetch('/bookmarks', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ execution_id: state.executionId }),
+        });
+
+        if (res.status === 400) {
+            dom.bookmarkBtn.classList.add('qg-bookmarked');
+            dom.bookmarkLabel.textContent = 'Saved';
+            dom.bookmarkIcon.setAttribute('fill', 'currentColor');
+            toast('Already bookmarked.', 'info');
+            return;
+        }
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `Error ${res.status}`);
+        }
+
+        dom.bookmarkBtn.classList.add('qg-bookmarked');
+        dom.bookmarkLabel.textContent = 'Saved';
+        dom.bookmarkIcon.setAttribute('fill', 'currentColor');
+        toast('Quiz bookmarked.', 'success');
+
+    } catch (err) {
+        dom.bookmarkLabel.textContent = 'Bookmark';
+        dom.bookmarkIcon.setAttribute('fill', 'none');
+        toast(err.message || 'Could not save bookmark.', 'error');
+    } finally {
+        dom.bookmarkBtn.disabled = false;
+    }
+});
 
     // Mode buttons
     dom.modeDoc.addEventListener('click',    () => setMode('document'));

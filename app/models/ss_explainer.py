@@ -30,6 +30,7 @@ class ScreenshotExplainerRequest(BaseModel):
 class ScreenshotExplainerResponse(BaseModel):
     title: str
     explanation: str
+    execution_id: Optional[str] = None
     
 class ScreenshotMetadata(BaseModel):
     filename: str

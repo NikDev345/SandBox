@@ -70,3 +70,4 @@ class ImageTextExtractorResponse(BaseModel):
     success: bool
     message: str
     result: OCRResult
+    execution_id: Optional[str] = None

@@ -188,13 +188,14 @@ class TableExtractor:
             tool_id = tool.id if tool else "TABLE-EXTRACTOR"
             
             try:
-                ExecutionService.create_execution(
+                execution = ExecutionService.create_execution(
                     db=db,
                     user_id=user_id,
                     tool_id=tool_id,
                     user_input=json.dumps(validated_input),
                     output=json.dumps(response),
                 )
+                response["execution_id"] = execution.id
             except Exception:
                 pass
 

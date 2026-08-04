@@ -1565,3 +1565,15 @@ table.data-table { width: 100%; border-collapse: collapse; min-width: 780px; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── BOOKMARK BUTTON ── */
+#bookmarkMockBtn.bookmark-saved {
+    color: var(--text);
+    border-color: var(--border-2);
+    background: var(--surface-2);
+}
+
+#bookmarkMockBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

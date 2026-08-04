@@ -46,6 +46,8 @@
     loadingMessageTimer: null,
     loadingProgressTimer: null,
     lastExplanation: { title: "", explanation: "" },
+    lastExecutionId: null,
+    isBookmarked: false,
   };
 
   /* ============================================================
@@ -586,7 +588,55 @@ function closeMenu() {
   function restoreMath(str, tokens) {
     return str.replace(/%%MATH(\d+)%%/g, (_, i) => tokens[parseInt(i)]);
     }
+
+  function resetBookmarkBtn() {
+    const btn = document.getElementById("bookmarkBtn");
+    if (!btn) return;
+    btn.classList.remove("is-bookmarked", "is-success");
+    btn.setAttribute("aria-label", "Bookmark result");
+    btn.innerHTML = bookmarkIcon(false);
+    btn.disabled = !state.lastExecutionId;
+  }
+  function bookmarkIcon(filled) {
+  return filled
+    ? `<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M5 3h14a1 1 0 0 1 1 1v17l-7-3.5L6 21V4a1 1 0 0 1 1-1Z"/></svg>`
+    : `<svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M5 3h14a1 1 0 0 1 1 1v17l-7-3.5L6 21V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+}
+
+document.getElementById("bookmarkBtn").addEventListener("click", async () => {
+  if (!state.lastExecutionId || state.isBookmarked) return;
+
+  const btn = document.getElementById("bookmarkBtn");
+  btn.disabled = true;
+
+  try {
+    const res = await fetch("/bookmarks", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ execution_id: state.lastExecutionId }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Failed to bookmark.");
+    }
+
+    state.isBookmarked = true;
+    btn.classList.add("is-bookmarked");
+    btn.innerHTML = bookmarkIcon(true);
+    btn.setAttribute("aria-label", "Bookmarked");
+    showToast("success", "Bookmarked", "Result saved to your bookmarks.");
+  } catch (e) {
+    showToast("error", "Bookmark failed", e.message);
+    btn.disabled = false;
+  }
+});
+
   function renderResult(data) {
+    state.lastExecutionId = data.execution_id ?? null;
+    state.isBookmarked = false;
+    resetBookmarkBtn();
     state.lastExplanation = {
         title: data.title || "Screenshot Explanation",
         explanation: data.explanation || "",

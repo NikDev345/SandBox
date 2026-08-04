@@ -113,6 +113,7 @@ class MockAPIService:
             endpoint_url=f"{MockAPIService.BASE_URL}/mock/{mock.endpoint_token}",
             method=HTTPMethod(mock.method),
             status_code=mock.status_code,
+            execution_id=None,
         )
 # ----------------------------------------------------------------------------------------------------------------------------------- 
     @staticmethod
@@ -137,19 +138,22 @@ class MockAPIService:
                 slug="MOCK-API",
             )
         tool_id = tool.id if tool else "MOCK-API"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
                 output=endpoint_token,
             )
+            execution_id = execution.id
         except Exception:
             pass
 
-        return MockAPIService._build_response(saved_mock)
+        response = MockAPIService._build_response(saved_mock)
+        response.execution_id = execution_id   
+        return response
 # -------------------------------------------------------------------------------------------------------------------------------------
     
     @staticmethod

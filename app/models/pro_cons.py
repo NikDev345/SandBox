@@ -61,3 +61,4 @@ class ProConsResponse(BaseModel):
     cons: List[ComparisonItem]
     recommendation: Recommendation
     generated_at: datetime
+    execution_id: Optional[str] = None

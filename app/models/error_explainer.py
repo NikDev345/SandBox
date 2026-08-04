@@ -29,3 +29,4 @@ class ErrorExplainerResponse(BaseModel):
         default=None,
         description="Corrected code, command, or configuration snippet if applicable."
     )
+    execution_id: Optional[str] = Field(default=None, description="Execution record ID for bookmarking.")

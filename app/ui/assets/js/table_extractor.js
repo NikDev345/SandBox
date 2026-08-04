@@ -21,6 +21,8 @@ const state = {
   filteredRows: [],
   elapsedTimer: null,
   stepTimer: null,
+  executionId: null,
+  isBookmarked: false,
 };
 
 /* ============================================================
@@ -341,6 +343,9 @@ async function extractTables() {
     await sleep(400);
 
     state.result = data;
+    state.executionId = data.execution_id ?? null;
+    state.isBookmarked = false;
+    resetBookmarkBtn();
     renderResults(data);
     showScreen('screen-results');
     showToast('Tables extracted successfully', 'success');
@@ -359,6 +364,47 @@ function sleep(ms) {
 /* ============================================================
    RESULTS RENDERING
    ============================================================ */
+
+function resetBookmarkBtn() {
+  const btn = document.getElementById('te-bookmark-btn');
+  if (!btn) return;
+  btn.disabled = !state.executionId;
+  btn.classList.remove('te-bookmark--saved');
+  btn.querySelector('span') && (btn.querySelector('span').textContent = 'Bookmark');
+}
+
+document.getElementById('te-bookmark-btn').addEventListener('click', async () => {
+  if (!state.executionId || state.isBookmarked) return;
+
+  const btn = document.getElementById('te-bookmark-btn');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/bookmarks', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ execution_id: state.executionId }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to bookmark.');
+    }
+
+    state.isBookmarked = true;
+    btn.classList.add('te-bookmark--saved');
+    btn.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-2.5L3 14V3a1 1 0 0 1 1-1Z"/>
+      </svg>
+      Bookmarked`;
+    showToast('Saved to bookmarks', 'success');
+  } catch (e) {
+    showToast(e.message || 'Bookmark failed', 'error');
+    btn.disabled = false;
+  }
+});
 
 function renderResults(data) {
   renderStatCards(data);

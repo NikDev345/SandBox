@@ -27,6 +27,7 @@
     extractedText: '',
     isExtracting: false,
     startTime:   0,
+    currentExecutionId: null,
   };
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -84,6 +85,7 @@
 
       // Output controls
       btnCopy:          q('#iteCopy'),
+      bookmarkBtn: q('#iteBookmarkBtn'),
       btnDownloadTxt:   q('#iteDownloadTxt'),
       btnDownloadJson:  q('#iteDownloadJson'),
       btnDownloadPdf:   q('#iteDownloadPdf'),
@@ -185,6 +187,33 @@
 
     // Extract
     dom.extractBtn.addEventListener('click', extractText);
+    // ADD THIS after dom.extractBtn.addEventListener('click', extractText);
+dom.bookmarkBtn.addEventListener('click', async () => {
+  if (!state.currentExecutionId || dom.bookmarkBtn.disabled) return;
+  dom.bookmarkBtn.disabled = true;
+  try {
+    const res = await fetch('/bookmarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ execution_id: state.currentExecutionId }),
+    });
+    if (res.status === 401) {
+      showError('Auth required', 'Please sign in to bookmark.');
+      dom.bookmarkBtn.disabled = false;
+      return;
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to bookmark');
+    }
+    dom.bookmarkBtn.classList.add('is-bookmarked');
+    dom.bookmarkBtn.lastChild.textContent = ' Bookmarked';
+  } catch (err) {
+    dom.bookmarkBtn.disabled = false;
+    showError('Bookmark failed', err.message || 'Could not bookmark. Please try again.');
+  }
+});
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -410,6 +439,17 @@
         'Extraction complete',
         `${formatNumber(state.extractedText.length)} characters extracted in ${elapsed}s.`
       );
+      // ADD AFTER showSuccess(...)
+      state.currentExecutionId = result.execution_id || null;
+      if (state.currentExecutionId) {
+        dom.bookmarkBtn.hidden = false;
+        dom.bookmarkBtn.classList.remove('is-bookmarked');
+        dom.bookmarkBtn.disabled = false;
+        // reset label in case it was previously bookmarked
+        dom.bookmarkBtn.lastChild.textContent = ' Bookmark';
+      } else {
+        dom.bookmarkBtn.hidden = true;
+      }
 
     } catch (err) {
       hideLoader();
@@ -625,9 +665,12 @@
 
   function clearOutput(resetStatus = true) {
     state.extractedText   = '';
+    state.currentExecutionId = null; 
     dom.outputTextarea.value = '';
     dom.outputEmpty.style.display = '';
     dom.statsGrid.hidden  = true;
+    dom.bookmarkBtn.hidden = true;
+    dom.bookmarkBtn.classList.remove('is-bookmarked'); 
     if (resetStatus) hideStatus();
     resetStats();
   }

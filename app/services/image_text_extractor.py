@@ -173,18 +173,19 @@ class ImageTextExtractorService:
                     slug="IMAGE-TEXT-EXTRACTOR",
                 )
             tool_id = tool.id if tool else "IMAGE-TEXT-EXTRACTOR"
-            
+            execution_id = None
             try:
-                ExecutionService.create_execution(
+                execution = ExecutionService.create_execution(
                     db=db,
                     user_id=user_id,
                     tool_id=tool_id,
                     user_input=user_input,
                     output=response.message,
                 )
+                execution_id = execution.id if execution else None
             except Exception:
                 pass
-            
+            response.execution_id = execution_id
             return response
 
         except ValueError as exc:

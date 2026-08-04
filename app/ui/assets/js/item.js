@@ -28,6 +28,7 @@ const state = {
   allCollapsed: false,
   isSubmitting: false,
   progressTimer: null,
+  currentExecutionId: null,
 };
 
 /* ------------------------------------------------------------
@@ -78,6 +79,7 @@ function cacheDom() {
   el.copyAllBtn = document.getElementById("copyAllBtn");
   el.downloadJsonBtn = document.getElementById("downloadJsonBtn");
   el.clearResultsBtn = document.getElementById("clearResultsBtn");
+  el.bookmarkBtn = document.getElementById("bookmarkBtn");
 
   el.toastContainer = document.getElementById("toastContainer");
 }
@@ -361,6 +363,15 @@ async function submitRequest() {
     setSubmitButtonState("success");
     state.actionItems = Array.isArray(data.action_items) ? data.action_items : [];
     renderResults(state.actionItems);
+    state.currentExecutionId = data.execution_id || null;
+    if (state.currentExecutionId) {
+      el.bookmarkBtn.hidden = false;
+      el.bookmarkBtn.classList.remove('is-bookmarked');
+      el.bookmarkBtn.title = 'Bookmark results';
+      el.bookmarkBtn.disabled = false;
+    } else {
+      el.bookmarkBtn.hidden = true;
+    }
   } catch (err) {
     hideLoader();
     setSubmitButtonState("error");
@@ -559,6 +570,33 @@ function bindResultsToolbar() {
   el.copyAllBtn.addEventListener("click", copyResults);
   el.downloadJsonBtn.addEventListener("click", downloadJSON);
   el.clearResultsBtn.addEventListener("click", clearResults);
+  el.bookmarkBtn.addEventListener("click", async () => {
+    if (!state.currentExecutionId || el.bookmarkBtn.disabled) return;
+    el.bookmarkBtn.disabled = true;
+    try {
+      const res = await fetch("/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ execution_id: state.currentExecutionId }),
+      });
+      if (res.status === 401) {
+        showToast("Please sign in to bookmark.", "error");
+        el.bookmarkBtn.disabled = false;
+        return;
+      }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to bookmark");
+      }
+      el.bookmarkBtn.classList.add("is-bookmarked");
+      el.bookmarkBtn.title = "Bookmarked";
+      showToast("Result bookmarked.", "success");
+    } catch (err) {
+      el.bookmarkBtn.disabled = false;
+      showToast(err.message || "Could not bookmark.", "error");
+    }
+  });
 }
 
 function toggleAllCards() {
@@ -604,6 +642,9 @@ function downloadJSON() {
 function clearResults() {
   state.actionItems = [];
   state.filteredItems = [];
+  state.currentExecutionId = null;        
+  el.bookmarkBtn.hidden = true;           
+  el.bookmarkBtn.classList.remove('is-bookmarked');
   el.resultsList.innerHTML = "";
   el.searchInput.value = "";
   el.sortSelect.value = "default";

@@ -1822,3 +1822,16 @@ kbd {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── BOOKMARK BUTTON ── */
+#bookmarkBtn.sql-bookmarked {
+    background: var(--surface-1);
+    border-color: var(--border-2);
+    color: var(--text-soft);
+}
+
+#bookmarkBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
