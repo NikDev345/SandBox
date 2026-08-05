@@ -52,6 +52,7 @@ from app.api.table_extractor.table_extractor import router as table_extractor_ro
 from app.api.youtube_summarizer.youtube_summarizer import router as youtube_summarizer_router
 from app.api.regex_generator.regex import router as regex_router
 from app.api.yaml_generator.yaml import router as yaml_router
+from app.api.history import router as history_router
 from app.api.decision_maker.decision_maker import router as decision_maker_router
 from app.api.commit_message.commit import router as commit_router
 from nicegui import ui
@@ -71,6 +72,7 @@ fast_app.include_router(auth_router)
 fast_app.include_router(tool_router)
 fast_app.include_router(exe_router)
 fast_app.include_router(analytic_router)
+fast_app.include_router(history_router)
 fast_app.include_router(google_router)
 fast_app.include_router(brainstorm_router)
 fast_app.include_router(user_router)

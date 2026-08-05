@@ -1,8 +1,9 @@
+
 from sqlalchemy import Column, ForeignKey, String, DateTime, Boolean
+from zoneinfo import ZoneInfo
 from app.database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
-
 class Executions(Base):
     __tablename__ = 'executions'
     
@@ -11,7 +12,12 @@ class Executions(Base):
     tool_id = Column(String, ForeignKey("tools.id"))
     user_input = Column(String)
     output = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(
+    DateTime(timezone=True),
+    default=lambda: datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+)
     bookmarked = Column(Boolean, default=False, nullable=False)
     
 class ExecutionCreate(BaseModel):

@@ -17,7 +17,7 @@ import logging
 import mimetypes
 import time, json
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from sqlalchemy.orm import Session
 from PIL import Image
 
@@ -31,7 +31,7 @@ from app.models.table_extractor import (
     PageResult,
 )
 from app.services.table_extractor.paddle_client import PaddleTableClient
-from app.services.table_extractor.parser import TableParser
+from app.services.table_extractor.parser import ParsedTable, TableParser
 from app.services.table_extractor.pdf_processor import PDFProcessor
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
@@ -103,12 +103,49 @@ class TableExtractor:
         fast_mode: bool = False,
     ) -> dict:
         """
-        Run the full extraction pipeline on a single file and return a
-        structured response dictionary. Never raises — all failures are
-        captured and returned as structured error information.
+        Run the full extraction pipeline on a single file, log the
+        execution, and return a structured response dictionary. Never
+        raises — all failures are captured and returned as structured
+        error information.
+
+        This method is kept for callers that run the pipeline in-process
+        (e.g. direct/test usage, or a threadpool). For request paths that
+        run the pipeline in a separate OS process (see
+        `run_extraction_pipeline` below and its use in the API router),
+        call `_run_pipeline` directly instead and perform the DB logging
+        step yourself afterwards — `db` (a SQLAlchemy Session) cannot be
+        passed across a process boundary.
+        """
+        response, file_type = self._run_pipeline(file_path, output_format, fast_mode)
+        self._log_execution(file_path, user_id, db, output_format, fast_mode, file_type, response)
+        return response
+
+    def _run_pipeline(
+        self,
+        file_path: str,
+        output_format: str = "",
+        fast_mode: bool = False,
+    ) -> Tuple[dict, Optional[str]]:
+        """
+        Run the extraction pipeline itself — file validation, page
+        loading, table detection, OCR, parsing, and output formatting —
+        with no dependency on a database session or user context. This
+        is deliberately separated from `extract()` so it can be executed
+        in a subprocess via a ProcessPoolExecutor: PaddleOCR's C++
+        inference calls do not reliably release the GIL, so running the
+        pipeline in a plain thread (even via run_in_threadpool) can still
+        stall the rest of the process — including a co-hosted asyncio
+        event loop and any WebSocket traffic on it — for the full
+        duration of a call. A separate process has its own GIL, so this
+        problem cannot occur across process boundaries.
+
+        Returns (response_dict, file_type_or_None). file_type is
+        returned alongside the response purely so the caller can include
+        it in an execution-log entry without re-detecting it.
         """
         start_time = time.monotonic()
         output_format = (output_format or self._config.default_output_format).lower()
+        file_type: Optional[str] = None
 
         try:
             self._validate_file(file_path)
@@ -117,7 +154,7 @@ class TableExtractor:
 
             if not pages:
                 logger.warning("No pages could be loaded from %s", file_path)
-                return self._create_response(
+                response = self._create_response(
                     success=True,
                     tables=[],
                     statistics=self._collect_statistics(
@@ -126,6 +163,7 @@ class TableExtractor:
                     ),
                     output_format=output_format,
                 ).to_dict()
+                return response, file_type
 
             logger.info("Loaded %d page(s) from %s", len(pages), file_path)
 
@@ -164,14 +202,7 @@ class TableExtractor:
                 ocr_item_count=total_ocr_items,
                 processing_time=time.monotonic() - start_time,
             )
-            
-            validated_input = {
-                "filename": Path(file_path).name,
-                "file_type": file_type,          # "pdf" or "image"
-                "output_format": output_format,
-                "fast_mode": fast_mode,
-            }
-            
+
             response = self._create_response(
                 success=True,
                 tables=all_parsed_tables,
@@ -180,35 +211,57 @@ class TableExtractor:
                 output_path=output_path,
             ).to_dict()
 
-            
-            tool = ToolService.get_tool_by_slug(
-                    db=db,
-                    slug="TABLE-EXTRACTOR",
-                )
-            tool_id = tool.id if tool else "TABLE-EXTRACTOR"
-            
-            try:
-                execution = ExecutionService.create_execution(
-                    db=db,
-                    user_id=user_id,
-                    tool_id=tool_id,
-                    user_input=json.dumps(validated_input),
-                    output=json.dumps(response),
-                )
-                response["execution_id"] = execution.id
-            except Exception:
-                pass
-
-            return response
+            return response, file_type
 
         except TableExtractorError as exc:
             logger.error("Extraction failed for %s: %s", file_path, exc)
-            return self._create_error_response(str(exc), output_format, start_time).to_dict()
+            response = self._create_error_response(str(exc), output_format, start_time).to_dict()
+            return response, file_type
         except Exception as exc:  # noqa: BLE001
             logger.exception("Unexpected error extracting %s", file_path)
-            return self._create_error_response(
+            response = self._create_error_response(
                 f"Unexpected error: {exc}", output_format, start_time
             ).to_dict()
+            return response, file_type
+
+    def _log_execution(
+        self,
+        file_path: str,
+        user_id: str,
+        db: Session,
+        output_format: str,
+        fast_mode: bool,
+        file_type: Optional[str],
+        response: dict,
+    ) -> None:
+        """
+        Record an execution log entry for this extraction run. Requires a
+        live DB session, so it must run in the same process that owns
+        that session — never inside a ProcessPoolExecutor worker.
+        """
+        validated_input = {
+            "filename": Path(file_path).name,
+            "file_type": file_type,
+            "output_format": (output_format or self._config.default_output_format).lower(),
+            "fast_mode": fast_mode,
+        }
+
+        try:
+            tool = ToolService.get_tool_by_slug(db=db, slug="TABLE-EXTRACTOR")
+            tool_id = tool.id if tool else "TABLE-EXTRACTOR"
+
+            execution = ExecutionService.create_execution(
+                db=db,
+                user_id=user_id,
+                tool_id=tool_id,
+                user_input=json.dumps(validated_input),
+                output=json.dumps(response),
+            )
+            response["execution_id"] = execution.id
+        except Exception:
+            logger.warning("Failed to record execution log for %s", file_path, exc_info=True)
+        
+        return response
 
     # --------------------------------------------------------------------------
     # Validation
@@ -402,9 +455,42 @@ class TableExtractor:
                 continue
 
             if parsed:
-                parsed_tables.extend(parsed)
+                parsed_tables.extend(self._filter_degenerate_tables(parsed))
 
         return parsed_tables
+
+    @staticmethod
+    def _filter_degenerate_tables(parsed: List[ParsedTable]) -> List[ParsedTable]:
+        """
+        Drop parsed tables that are structurally degenerate — a 1x1 grid
+        with no matched OCR content, or a single stray text line. These
+        arise when layout detection (see PaddleTableClient) picks up a
+        spurious region (a gap between two real tables, or a caption/
+        text line that drifted outside the caption-stripping logic in
+        TableParser) and SLANet returns a trivial 1-cell structure for
+        it. A real table always has more than one row and more than one
+        column; anything smaller is not a table and should not be
+        surfaced to the user as one.
+        """
+        kept: List[ParsedTable] = []
+        for table in parsed:
+            meta = table.metadata
+            if meta.row_count <= 1 or meta.col_count <= 1:
+                logger.info(
+                    "Dropping degenerate table (page=%d index=%d rows=%d cols=%d "
+                    "matched_ocr=%d) — likely a spurious layout-detection region.",
+                    table.page, table.table_index, meta.row_count, meta.col_count,
+                    meta.matched_ocr_items,
+                )
+                continue
+            if meta.matched_ocr_items == 0:
+                logger.info(
+                    "Dropping empty table (page=%d index=%d) — no OCR content matched.",
+                    table.page, table.table_index,
+                )
+                continue
+            kept.append(table)
+        return kept
 
     # --------------------------------------------------------------------------
     # Formatting
@@ -495,3 +581,39 @@ class TableExtractor:
             output_format=output_format,
             error=error_message,
         )
+
+
+# ------------------------------------------------------------------------------
+# Process-pool entry point
+# ------------------------------------------------------------------------------
+
+
+def run_extraction_pipeline(
+    file_path: str,
+    output_format: str = "",
+    fast_mode: bool = False,
+) -> Tuple[dict, Optional[str]]:
+    """
+    Module-level function safe to submit to a ProcessPoolExecutor.
+
+    Why this exists: PaddleOCR's underlying C++ inference calls do not
+    reliably release Python's GIL for their full duration. Running the
+    pipeline via `run_in_threadpool` moves it off the *calling* thread,
+    but if the GIL stays held throughout a long `predict()` call, no
+    other Python thread in the process — including the asyncio event
+    loop thread handling WebSocket heartbeats — can make progress
+    either. Only a separate OS process has its own independent GIL, so
+    only a process pool actually guarantees the web server stays
+    responsive while extraction runs.
+
+    Builds its own TableExtractor instance inside the worker process
+    (so PaddleOCR's lazily-initialized singleton models live and load
+    once per worker process, not per call) and returns only the
+    pipeline result — no DB session is created or touched here, since a
+    SQLAlchemy Session cannot be pickled across the process boundary.
+    Callers are responsible for the execution-logging step (see
+    TableExtractor._log_execution) back in the main process, using the
+    file_type returned alongside the response.
+    """
+    extractor = TableExtractor()
+    return extractor._run_pipeline(file_path, output_format, fast_mode)

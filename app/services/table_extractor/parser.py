@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import logging
 import math
+import re
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Dict, List, Optional, Sequence, Tuple
@@ -38,8 +39,17 @@ WEIGHT_VERTICAL_OVERLAP: float = 0.15
 WEIGHT_CONFIDENCE: float = 0.10
 WEIGHT_DISTANCE_PENALTY: float = 0.05
 
-# Minimum weighted score required to assign an OCR item to a cell.
+# Minimum weighted score required to assign an OCR item to a cell during
+# the primary matching pass.
 MIN_MATCH_SCORE: float = 0.20
+
+# Minimum score required during the second-chance recovery pass (see
+# TableParser._second_chance_match). This pass only ever runs against
+# cells that are still completely empty after the primary pass and
+# after column rebalancing, so a much lower bar is acceptable here: the
+# alternative to a low-confidence match is not "a better match elsewhere"
+# but "silently losing the text entirely" (e.g. a missing SKU value).
+SECOND_CHANCE_MIN_SCORE: float = 0.05
 
 # Minimum OCR confidence to be considered for matching at all.
 MIN_OCR_CONFIDENCE: float = 0.0
@@ -48,7 +58,26 @@ MIN_OCR_CONFIDENCE: float = 0.0
 # fraction of the cell's diagonal length. Larger values soften the penalty.
 DISTANCE_PENALTY_DIAGONAL_FACTOR: float = 1.5
 
-PARSER_VERSION: str = "2.0"
+PARSER_VERSION: str = "2.2"
+
+# A row whose only non-empty cell reads like "Table 1: ..." / "Table 2: ..."
+# is a caption/title banner, not a header or data row. SLANet sometimes
+# allocates it its own grid row (spanning all columns), which would
+# otherwise get mistaken for the header row by naive "row 0 is the
+# header" inference. This pattern is intentionally narrow (requires the
+# literal "Table <number>:" prefix used by this document family) rather
+# than a broad heuristic, to avoid accidentally stripping a legitimate
+# data row that happens to be alone in its row.
+_CAPTION_PATTERN = re.compile(r"^\s*Table\s+\d+\s*:", re.IGNORECASE)
+
+# Matches a cell whose text is a run-on of a text label followed by a
+# numeric/currency value with no separating cell boundary, e.g.
+# "Qty in Stock 178" or "Unit Price $73.43" or "Total Value $13,070.54".
+# This happens when SLANet's structure model never allocated a distinct
+# header row, so the header label and the first data row's value for
+# that column both land inside the same cell and get concatenated by
+# the OCR-to-cell text join.
+_LABEL_VALUE_PATTERN = re.compile(r"^([A-Za-z][A-Za-z\s]*?)\s+(\$?-?[\d,]+\.?\d*)$")
 
 
 class HeaderMode(str, Enum):
@@ -71,9 +100,17 @@ class ParserConfig:
     weight_confidence: float = WEIGHT_CONFIDENCE
     weight_distance_penalty: float = WEIGHT_DISTANCE_PENALTY
     min_match_score: float = MIN_MATCH_SCORE
+    second_chance_min_score: float = SECOND_CHANCE_MIN_SCORE
     min_ocr_confidence: float = MIN_OCR_CONFIDENCE
     distance_penalty_diagonal_factor: float = DISTANCE_PENALTY_DIAGONAL_FACTOR
     header_mode: HeaderMode = HeaderMode.AUTO
+    strip_caption_rows: bool = True
+    split_glued_header_rows: bool = True
+    split_stacked_rows: bool = True
+    rebalance_empty_neighbor_columns: bool = True
+    second_chance_matching: bool = True
+    drop_empty_rows: bool = True
+    min_stacked_row_gap_factor: float = 0.5
 
 
 DEFAULT_PARSER_CONFIG = ParserConfig()
@@ -323,6 +360,12 @@ class TableMetadata:
     header_row_count: int
     row_count: int
     col_count: int
+    caption_rows_stripped: int = 0
+    glued_header_rows_split: int = 0
+    columns_rebalanced: int = 0
+    second_chance_recovered: int = 0
+    empty_rows_dropped: int = 0
+    stacked_rows_split: int = 0
     parser_version: str = PARSER_VERSION
 
 
@@ -413,11 +456,86 @@ class TableParser:
         working_cells = self._create_working_cells(table_structure.cells)
         working_cells = self._sort_cells(working_cells)
 
-        matched_count, unmatched_count = self._match_ocr_to_cells(
+        matched_count, unmatched_items = self._match_ocr_to_cells(
             eligible_ocr_items, working_cells
         )
 
         grid, row_count, col_count = self._build_grid(working_cells)
+
+        # --------------------------------------------------------------
+        # Strip caption/title banner rows (e.g. "Table 2: Department
+        # Project Allocations (8 Rows)") BEFORE header inference runs.
+        # If left in place, naive "row 0 is the header" logic would
+        # mistake the caption for the real header row, permanently
+        # burying the actual column names one row down.
+        # --------------------------------------------------------------
+        caption_rows_stripped = 0
+        if self._config.strip_caption_rows:
+            working_cells, row_count, caption_rows_stripped = self._strip_caption_rows(
+                working_cells, row_count
+            )
+            if caption_rows_stripped:
+                grid, row_count, col_count = self._build_grid(working_cells)
+
+        # --------------------------------------------------------------
+        # Rebalance text that landed entirely in one cell when it really
+        # belongs split across that cell and a genuinely empty neighbor
+        # (e.g. "Project ID Department" glued into column 0's header
+        # while column 1's header cell sits empty; or "Sales" glued onto
+        # "PROJ-2026-03" while the Department column for that row sits
+        # empty). This happens when SLANet's column boundary for that
+        # row/column pair is drawn slightly off from where the OCR text
+        # actually sits, so OCR items that belong in the neighbor get
+        # matched to the crowded cell instead purely on geometric
+        # overlap. Uses the actual midpoint between the two cells' real
+        # bounding boxes to decide what should move, so it only touches
+        # cases with real, empty neighbor geometry to redistribute into.
+        # --------------------------------------------------------------
+        columns_rebalanced = 0
+        if self._config.rebalance_empty_neighbor_columns:
+            columns_rebalanced = self._rebalance_empty_neighbor_columns(
+                grid, row_count, col_count
+            )
+
+        # --------------------------------------------------------------
+        # Second-chance matching: some OCR items score just under the
+        # primary matching threshold for every candidate cell (e.g. a
+        # SKU value that OCR did detect, but whose bounding box didn't
+        # align cleanly enough with any cell to clear MIN_MATCH_SCORE)
+        # and are otherwise silently discarded, leaving a real cell
+        # blank. This pass retries only the leftover, still-unmatched
+        # OCR items against cells that are still completely empty after
+        # the primary pass and rebalancing, using a much lower
+        # threshold — safe here because the alternative to a
+        # lower-confidence match is not "a better match exists
+        # elsewhere" but "this data is lost entirely".
+        # --------------------------------------------------------------
+        second_chance_recovered = 0
+        if self._config.second_chance_matching and unmatched_items:
+            second_chance_recovered = self._second_chance_match(
+                unmatched_items, grid, row_count, col_count
+            )
+            matched_count += second_chance_recovered
+
+        unmatched_count = len(unmatched_items) - second_chance_recovered
+
+        # --------------------------------------------------------------
+        # Split a grid row whose cells each hold two vertically stacked
+        # OCR items into two real rows. This happens whenever the table
+        # structure model collapses two physically distinct rows (two
+        # people, or a header row fused with the first data row) into a
+        # single grid row, so every column's cell is tall enough to
+        # contain both lines and the OCR matcher correctly (by geometry)
+        # assigns both items to the one cell it was given.
+        # --------------------------------------------------------------
+        stacked_rows_split = 0
+        if self._config.split_stacked_rows:
+            working_cells, row_count, col_count, stacked_rows_split = (
+                self._split_stacked_grid_rows(working_cells, row_count, col_count)
+            )
+            if stacked_rows_split:
+                grid, row_count, col_count = self._build_grid(working_cells)
+
         working_cells = self._fill_missing_cells(grid, working_cells, row_count, col_count)
 
         header_row_indices = self._detect_headers(
@@ -429,7 +547,28 @@ class TableParser:
 
         rows = self._build_rows(finalized_grid, header_row_indices)
         rows = self._merge_fragmented_rows(rows)
-        columns = self._build_columns(finalized_grid)
+
+        # --------------------------------------------------------------
+        # Drop rows SLANet allocated grid space for but that carry no
+        # data at all — a blank gap row between two real data rows,
+        # rather than a real (if sparse) row of the table.
+        # --------------------------------------------------------------
+        empty_rows_dropped = 0
+        if self._config.drop_empty_rows:
+            rows, empty_rows_dropped = self._drop_empty_rows(rows)
+
+        # --------------------------------------------------------------
+        # Recover a header row that got fused with the first data row's
+        # values (e.g. "Qty in Stock 178" as one cell, because SLANet
+        # never allocated a distinct header row at all). Splits the
+        # glued text into a synthesized header row plus a proper first
+        # data row wherever a "<label> <value>" pattern is detected.
+        # --------------------------------------------------------------
+        glued_header_rows_split = 0
+        if self._config.split_glued_header_rows:
+            rows, glued_header_rows_split = self._split_glued_header_row(rows)
+
+        columns = self._build_columns_from_rows(rows)
 
         if not rows or not columns:
             logger.warning(
@@ -448,16 +587,26 @@ class TableParser:
             total_ocr_items=len(ocr_items),
             matched_ocr_items=matched_count,
             unmatched_ocr_items=unmatched_count,
-            header_row_count=len(header_row_indices),
+            header_row_count=sum(1 for r in rows if r.is_header),
             row_count=len(rows),
             col_count=col_count,
+            caption_rows_stripped=caption_rows_stripped,
+            glued_header_rows_split=glued_header_rows_split,
+            columns_rebalanced=columns_rebalanced,
+            second_chance_recovered=second_chance_recovered,
+            empty_rows_dropped=empty_rows_dropped,
+            stacked_rows_split=stacked_rows_split,
         )
 
         logger.info(
             "Parsed table page=%d index=%d rows=%d cols=%d cells=%d "
-            "matched_ocr=%d/%d confidence=%.3f",
+            "matched_ocr=%d/%d confidence=%.3f caption_rows_stripped=%d "
+            "glued_header_rows_split=%d columns_rebalanced=%d "
+            "second_chance_recovered=%d empty_rows_dropped=%d",
             page_number, table_index, row_count, col_count, len(finalized_cells),
             matched_count, len(ocr_items), table_confidence,
+            caption_rows_stripped, glued_header_rows_split, columns_rebalanced,
+            second_chance_recovered, empty_rows_dropped,
         )
 
         return [ParsedTable(
@@ -553,9 +702,17 @@ class TableParser:
 
     def _match_ocr_to_cells(
         self, ocr_items: Sequence[OCRItem], cells: Sequence[_WorkingCell]
-    ) -> Tuple[int, int]:
-        """Assign each OCR item to its single best-scoring cell."""
+    ) -> Tuple[int, List[OCRItem]]:
+        """
+        Assign each OCR item to its single best-scoring cell.
+
+        Returns (matched_count, unmatched_items) — the leftover items are
+        returned (not just counted) so a later second-chance pass can
+        retry them against cells that remain empty, rather than losing
+        them the moment they miss the primary threshold.
+        """
         matched_count = 0
+        unmatched_items: List[OCRItem] = []
 
         for item in ocr_items:
             best_cell: Optional[_WorkingCell] = None
@@ -569,7 +726,7 @@ class TableParser:
 
             if best_cell is not None and best_score >= self._config.min_match_score:
 
-                logger.info(
+                logger.debug(
                     "OCR '%s' -> row=%d col=%d score=%.3f OCR=%s CELL=%s",
                     item.text,
                     best_cell.geometry.row_start,
@@ -581,13 +738,14 @@ class TableParser:
 
                 best_cell.add(item)
                 matched_count += 1
+            else:
+                unmatched_items.append(item)
 
-        unmatched_count = len(ocr_items) - matched_count
         logger.debug(
             "OCR matching complete: %d matched, %d unmatched, %d cells.",
-            matched_count, unmatched_count, len(cells),
+            matched_count, len(unmatched_items), len(cells),
         )
-        return matched_count, unmatched_count
+        return matched_count, unmatched_items
 
     def _compute_match_score(self, item: OCRItem, geometry: TableCellGeometry) -> float:
         cfg = self._config
@@ -633,6 +791,70 @@ class TableParser:
         )
         return score
 
+    def _second_chance_match(
+        self,
+        unmatched_items: Sequence[OCRItem],
+        grid: Dict[Tuple[int, int], _WorkingCell],
+        row_count: int,
+        col_count: int,
+    ) -> int:
+        """
+        Retry previously-unmatched OCR items against cells that are still
+        completely empty, using a much lower score threshold than the
+        primary pass. Only ever considers cells with real (non-synthetic,
+        non-zero-area) geometry and zero matched items, so this can only
+        fill in genuinely missing data — it can never overwrite or
+        compete with a cell that already matched something in the
+        primary pass.
+        """
+        if not unmatched_items:
+            return 0
+
+        empty_cells: List[_WorkingCell] = []
+        seen_ids: set[int] = set()
+        for r in range(row_count):
+            for c in range(col_count):
+                cell = grid.get((r, c))
+                if cell is None or id(cell) in seen_ids:
+                    continue
+                seen_ids.add(id(cell))
+                if not cell.matched_items and cell.geometry.bbox.area > 0:
+                    empty_cells.append(cell)
+
+        if not empty_cells:
+            return 0
+
+        recovered = 0
+        for item in unmatched_items:
+            best_cell: Optional[_WorkingCell] = None
+            best_score = 0.0
+
+            for cell in empty_cells:
+                if cell.matched_items:
+                    # Filled by an earlier item in this same pass.
+                    continue
+                score = self._compute_match_score(item, cell.geometry)
+                if score > best_score:
+                    best_score = score
+                    best_cell = cell
+
+            if best_cell is not None and best_score >= self._config.second_chance_min_score:
+                logger.info(
+                    "Second-chance match: OCR '%s' -> row=%d col=%d score=%.3f "
+                    "(below primary threshold, recovered into empty cell).",
+                    item.text, best_cell.geometry.row_start,
+                    best_cell.geometry.col_start, best_score,
+                )
+                best_cell.add(item)
+                recovered += 1
+
+        if recovered:
+            logger.info(
+                "Second-chance matching recovered %d previously-unmatched OCR item(s).",
+                recovered,
+            )
+        return recovered
+
     # --------------------------------------------------------------------------
     # Grid Construction
     # --------------------------------------------------------------------------
@@ -654,6 +876,269 @@ class TableParser:
                     grid[(r, c)] = cell
 
         return grid, row_count, col_count
+
+    # --------------------------------------------------------------------------
+    # Column Rebalancing
+    # --------------------------------------------------------------------------
+
+    def _rebalance_empty_neighbor_columns(
+        self,
+        grid: Dict[Tuple[int, int], _WorkingCell],
+        row_count: int,
+        col_count: int,
+    ) -> int:
+        """
+        For each row, check every pair of horizontally adjacent cells. If
+        the left cell has multiple matched OCR items and the right cell
+        is real (non-synthetic) geometry with zero matched items, some of
+        those items likely belong in the right cell instead — SLANet's
+        column boundary for that particular row was drawn slightly off
+        from where the text actually sits, so items that visually belong
+        in the empty neighbor still scored higher against the crowded
+        cell purely on overlap.
+
+        Uses the midpoint between the two cells' real bounding boxes as
+        the split line: any matched item in the left cell whose
+        horizontal center falls past that midpoint moves to the right
+        cell. Always leaves at least one item behind in the left cell,
+        so this can only redistribute, never fully empty out a cell that
+        had real content.
+        """
+        rebalanced = 0
+
+        for r in range(row_count):
+            for c in range(col_count - 1):
+                left = grid.get((r, c))
+                right = grid.get((r, c + 1))
+
+                if left is None or right is None or left is right:
+                    continue
+                if right.matched_items:
+                    continue
+                if right.geometry.bbox.area <= 0 or left.geometry.bbox.area <= 0:
+                    # No reliable real geometry on one side to split against.
+                    continue
+                if len(left.matched_items) < 2:
+                    continue
+
+                boundary_x = (left.geometry.bbox.x2 + right.geometry.bbox.x1) / 2.0
+                movable = [
+                    item for item in left.matched_items
+                    if item.bbox.center[0] > boundary_x
+                ]
+
+                if not movable or len(movable) >= len(left.matched_items):
+                    # Either nothing crosses the boundary, or everything
+                    # does (which would just empty the left cell instead
+                    # of genuinely splitting it) — skip either way.
+                    continue
+
+                for item in movable:
+                    left.matched_items.remove(item)
+                    right.add(item)
+
+                logger.info(
+                    "Rebalanced %d OCR item(s) from row=%d col=%d into empty "
+                    "neighbor col=%d.",
+                    len(movable), r, c, c + 1,
+                )
+                rebalanced += 1
+
+        return rebalanced
+
+    # --------------------------------------------------------------------------
+    # Stacked Row Splitting
+    # --------------------------------------------------------------------------
+
+    def _split_stacked_grid_rows(
+        self,
+        cells: List[_WorkingCell],
+        row_count: int,
+        col_count: int,
+    ) -> Tuple[List[_WorkingCell], int, int, int]:
+        """
+        Detect and split a grid row whose cells each contain two
+        vertically stacked OCR items into two real rows.
+
+        This targets a specific, generalizable failure mode of the
+        upstream table structure model: when it fails to allocate a
+        row boundary between two physically distinct rows (e.g. two
+        people, or a header row fused with the first data row), every
+        column's cell in that grid row ends up tall enough to contain
+        both lines of text. OCR-to-cell matching is purely geometric,
+        so it correctly assigns both items to the one oversized cell it
+        was given — the loss happens entirely upstream of matching, in
+        the structure grid itself.
+
+        A row qualifies for splitting when at least half of its
+        non-empty, single-row-span cells contain 2+ matched OCR items
+        whose vertical centers separate into exactly two bands with a
+        gap at least ``min_stacked_row_gap_factor`` times the table's
+        typical single-line cell height. This is intentionally strict:
+        a normal multi-word cell (e.g. "Product Management") still
+        produces closely-spaced items on one line, not two widely
+        separated bands, so it is left untouched. Cells with only one
+        item are assigned to whichever band their center sits closer
+        to, so no data is dropped either way.
+
+        Returns (possibly-unchanged cells, possibly-unchanged
+        row_count, possibly-unchanged col_count, rows_split_count).
+        """
+        if row_count <= 0 or col_count <= 0 or not cells:
+            return cells, row_count, col_count, 0
+
+        single_item_heights = [
+            c.geometry.bbox.height
+            for c in cells
+            if len(c.matched_items) == 1 and c.geometry.bbox.area > 0
+        ]
+        if not single_item_heights:
+            return cells, row_count, col_count, 0
+        single_item_heights.sort()
+        typical_height = single_item_heights[len(single_item_heights) // 2]
+        if typical_height <= 0:
+            return cells, row_count, col_count, 0
+
+        min_gap = typical_height * self._config.min_stacked_row_gap_factor
+
+        grid: Dict[Tuple[int, int], _WorkingCell] = {}
+        for cell in cells:
+            for r in range(cell.geometry.row_start, cell.geometry.row_end + 1):
+                for c in range(cell.geometry.col_start, cell.geometry.col_end + 1):
+                    grid[(r, c)] = cell
+
+        # row -> {col -> (top_items, bottom_items)} for cells that split.
+        rows_to_split: Dict[int, Dict[int, Tuple[List[OCRItem], List[OCRItem]]]] = {}
+
+        for r in range(row_count):
+            row_cells: Dict[int, _WorkingCell] = {}
+            seen_ids: set = set()
+            skip_row = False
+            for c in range(col_count):
+                cell = grid.get((r, c))
+                if cell is None or id(cell) in seen_ids:
+                    continue
+                seen_ids.add(id(cell))
+                if cell.geometry.row_start != cell.geometry.row_end:
+                    # Already a genuine multi-row span; don't touch this row.
+                    skip_row = True
+                    break
+                row_cells[c] = cell
+            if skip_row or not row_cells:
+                continue
+
+            splits: Dict[int, Tuple[List[OCRItem], List[OCRItem]]] = {}
+            for c, cell in row_cells.items():
+                items = sorted(cell.matched_items, key=lambda i: i.bbox.center[1])
+                if len(items) < 2:
+                    continue
+                best_gap, best_idx = -1.0, 0
+                for i in range(1, len(items)):
+                    gap = items[i].bbox.center[1] - items[i - 1].bbox.center[1]
+                    if gap > best_gap:
+                        best_gap, best_idx = gap, i
+                if best_gap < min_gap:
+                    continue
+                top, bottom = items[:best_idx], items[best_idx:]
+                if top and bottom:
+                    splits[c] = (top, bottom)
+
+            non_empty_cells = [c for c, cell in row_cells.items() if cell.matched_items]
+            if not non_empty_cells:
+                continue
+            if len(splits) >= max(1, len(non_empty_cells) // 2):
+                rows_to_split[r] = splits
+
+        if not rows_to_split:
+            return cells, row_count, col_count, 0
+
+        new_cells: List[_WorkingCell] = []
+        next_row = 0
+
+        for r in range(row_count):
+            seen_ids: set = set()
+            col_positions = sorted(c for c in range(col_count) if (r, c) in grid)
+            if not col_positions:
+                continue
+
+            if r not in rows_to_split:
+                for c in col_positions:
+                    cell = grid[(r, c)]
+                    if id(cell) in seen_ids:
+                        continue
+                    seen_ids.add(id(cell))
+                    row_span = cell.geometry.row_end - cell.geometry.row_start
+                    new_geom = replace(
+                        cell.geometry,
+                        row_start=next_row,
+                        row_end=next_row + row_span,
+                    )
+                    new_cells.append(
+                        _WorkingCell(
+                            geometry=new_geom,
+                            matched_items=list(cell.matched_items),
+                            is_synthetic=cell.is_synthetic,
+                        )
+                    )
+                next_row += 1
+                continue
+
+            splits = rows_to_split[r]
+            band_centers = [
+                (
+                    sum(i.bbox.center[1] for i in top) / len(top),
+                    sum(i.bbox.center[1] for i in bottom) / len(bottom),
+                )
+                for top, bottom in splits.values()
+            ]
+            avg_top = sum(t for t, _ in band_centers) / len(band_centers)
+            avg_bottom = sum(b for _, b in band_centers) / len(band_centers)
+
+            for c in col_positions:
+                cell = grid[(r, c)]
+                if id(cell) in seen_ids:
+                    continue
+                seen_ids.add(id(cell))
+
+                top_geom = replace(cell.geometry, row_start=next_row, row_end=next_row)
+                # The bottom band is always the second physical row, never
+                # the header, regardless of what the (now-split) original
+                # cell was explicitly flagged as.
+                bottom_geom = replace(
+                    cell.geometry,
+                    row_start=next_row + 1,
+                    row_end=next_row + 1,
+                    is_header=False if cell.geometry.is_header else cell.geometry.is_header,
+                )
+
+                if c in splits:
+                    top_items, bottom_items = splits[c]
+                    new_cells.append(_WorkingCell(geometry=top_geom, matched_items=list(top_items)))
+                    new_cells.append(_WorkingCell(geometry=bottom_geom, matched_items=list(bottom_items)))
+                    continue
+
+                items = cell.matched_items
+                if not items:
+                    new_cells.append(_WorkingCell(geometry=top_geom, is_synthetic=cell.is_synthetic))
+                    new_cells.append(_WorkingCell(geometry=bottom_geom, is_synthetic=cell.is_synthetic))
+                    continue
+
+                item_y = sum(i.bbox.center[1] for i in items) / len(items)
+                if abs(item_y - avg_top) <= abs(item_y - avg_bottom):
+                    new_cells.append(_WorkingCell(geometry=top_geom, matched_items=list(items)))
+                    new_cells.append(_WorkingCell(geometry=bottom_geom))
+                else:
+                    new_cells.append(_WorkingCell(geometry=top_geom))
+                    new_cells.append(_WorkingCell(geometry=bottom_geom, matched_items=list(items)))
+
+            next_row += 2
+
+        new_row_count = next_row
+        logger.info(
+            "Split %d stacked grid row(s); row_count %d -> %d",
+            len(rows_to_split), row_count, new_row_count,
+        )
+        return new_cells, new_row_count, col_count, len(rows_to_split)
 
     def _fill_missing_cells(
         self,
@@ -694,6 +1179,84 @@ class TableParser:
                 for c in range(cell.col_start, cell.col_end + 1):
                     grid[(r, c)] = cell
         return grid
+
+    # --------------------------------------------------------------------------
+    # Caption Row Stripping
+    # --------------------------------------------------------------------------
+
+    def _strip_caption_rows(
+        self,
+        cells: List[_WorkingCell],
+        row_count: int,
+    ) -> Tuple[List[_WorkingCell], int, int]:
+        """
+        Detect and remove caption/title banner rows (e.g. "Table 2:
+        Department Project Allocations (8 Rows)") from the working cell
+        set, renumbering all remaining row indices so downstream header
+        inference sees the real header as row 0.
+
+        A row qualifies as a caption row when it has exactly one
+        non-row-spanning cell with non-empty text, and that text matches
+        the "Table <number>:" prefix pattern. This is intentionally
+        narrow: it only strips rows that are unambiguously title banners
+        for this document family, never a legitimately sparse data row.
+
+        Returns (possibly-unchanged cells, possibly-unchanged row_count,
+        number of caption rows stripped).
+        """
+        if row_count <= 1:
+            return cells, row_count, 0
+
+        # Only consider single-row cells (row_start == row_end) when
+        # deciding whether a row is a caption row; multi-row-spanning
+        # cells crossing a caption row would be unusual and are left
+        # alone rather than guessed at.
+        texts_by_row: Dict[int, List[str]] = {}
+        for cell in cells:
+            if cell.geometry.row_start != cell.geometry.row_end:
+                continue
+            text, _ = cell.finalize_text()
+            texts_by_row.setdefault(cell.geometry.row_start, []).append(text.strip())
+
+        caption_rows = {
+            r
+            for r, texts in texts_by_row.items()
+            if len([t for t in texts if t]) == 1
+            and _CAPTION_PATTERN.match(next(t for t in texts if t))
+        }
+
+        if not caption_rows:
+            return cells, row_count, 0
+
+        kept_rows = sorted(r for r in range(row_count) if r not in caption_rows)
+        remap = {old: new for new, old in enumerate(kept_rows)}
+
+        new_cells: List[_WorkingCell] = []
+        for cell in cells:
+            rs, re_ = cell.geometry.row_start, cell.geometry.row_end
+            # Drop any cell that starts or ends inside a stripped caption
+            # row (this includes the caption cell itself).
+            if rs in caption_rows or re_ in caption_rows:
+                continue
+            if rs not in remap or re_ not in remap:
+                # Should not normally happen, but skip defensively rather
+                # than raise on an unexpected multi-row span.
+                continue
+            new_geometry = replace(cell.geometry, row_start=remap[rs], row_end=remap[re_])
+            new_cells.append(
+                _WorkingCell(
+                    geometry=new_geometry,
+                    matched_items=list(cell.matched_items),
+                    is_synthetic=cell.is_synthetic,
+                )
+            )
+
+        new_row_count = len(kept_rows)
+        logger.info(
+            "Stripped %d caption row(s); row_count %d -> %d",
+            len(caption_rows), row_count, new_row_count,
+        )
+        return new_cells, new_row_count, len(caption_rows)
 
     # --------------------------------------------------------------------------
     # Header Detection
@@ -848,7 +1411,31 @@ class TableParser:
         filled_b = {c.col_start for c in row_b.cells if c.text.strip()}
         if not filled_a or not filled_b:
             return False
-        return filled_a.isdisjoint(filled_b)
+        if filled_a.isdisjoint(filled_b):
+            return True
+
+        # Narrow second case: a value that wraps onto its own visual line
+        # (e.g. "North America" or "Cloud Subscriptions") can end up as an
+        # entire extra grid row containing only that wrapped word, sharing
+        # just the one or two columns it wrapped in with its real row —
+        # while every other column in that extra row is empty. This is a
+        # continuation of those columns, not a competing value for them,
+        # so it's still safe to merge (with text concatenated, see
+        # _merge_two_rows) even though the filled columns overlap.
+        #
+        # Deliberately strict to avoid merging two genuinely separate data
+        # rows that happen to share one filled column (e.g. two rows both
+        # showing "Active" status): one side must be sparse (at most 2
+        # filled columns, and no more than half of the other row's filled
+        # columns), and every column it shares with the other row must be
+        # a true overlap rather than most of the row's own content.
+        smaller, larger = (
+            (filled_a, filled_b) if len(filled_a) <= len(filled_b) else (filled_b, filled_a)
+        )
+        if len(smaller) > 2 or len(smaller) > len(larger) // 2:
+            return False
+        shared = smaller & larger
+        return len(shared) == len(smaller) and len(shared) < len(larger)
 
     def _merge_two_rows(self, row_a: TableRow, row_b: TableRow, new_index: int) -> TableRow:
         cells_by_col: Dict[int, TableCell] = {}
@@ -856,8 +1443,17 @@ class TableParser:
             cells_by_col[cell.col_start] = cell
         for cell in row_b.cells:
             existing = cells_by_col.get(cell.col_start)
-            if existing is None or (not existing.text.strip() and cell.text.strip()):
+            if existing is None or not existing.text.strip():
                 cells_by_col[cell.col_start] = cell
+            elif cell.text.strip() and cell.text.strip() != existing.text.strip():
+                # Both cells have real, different text for the same
+                # column — most likely a wrapped value split across two
+                # grid rows (e.g. "North" + "America"). Concatenate
+                # rather than silently discarding one side's data.
+                order = [existing, cell] if row_a.index <= row_b.index else [cell, existing]
+                cells_by_col[cell.col_start] = replace(
+                    existing, text=" ".join(c.text.strip() for c in order)
+                )
 
         merged_cells = [cells_by_col[col] for col in sorted(cells_by_col)]
         confidence = self._average_confidence(merged_cells)
@@ -868,32 +1464,139 @@ class TableParser:
             confidence=confidence,
         )
 
-    def _build_columns(
-        self, grid: Dict[Tuple[int, int], TableCell]
-    ) -> List[TableColumn]:
-        if not grid:
-            return []
+    def _drop_empty_rows(self, rows: List[TableRow]) -> Tuple[List[TableRow], int]:
+        """
+        Remove non-header rows where every cell's text is empty. SLANet
+        occasionally allocates a full blank row of grid space between
+        two real data rows (visible as a stray gap in the rendered
+        table) rather than the structure model simply under-counting
+        rows. Header rows are never dropped, even if empty, since an
+        empty header is still meaningful structurally (see
+        _split_glued_header_row, which can legitimately produce blank
+        header cells for columns with no recoverable label).
+        """
+        kept: List[TableRow] = []
+        dropped = 0
 
-        col_count = max(pos[1] for pos in grid) + 1
-        row_count = max(pos[0] for pos in grid) + 1
+        for row in rows:
+            if not row.is_header and not any(c.text.strip() for c in row.cells):
+                dropped += 1
+                continue
+            kept.append(row)
+
+        if dropped:
+            kept = [replace(row, index=i) for i, row in enumerate(kept)]
+            logger.info("Dropped %d fully empty row(s).", dropped)
+
+        return kept, dropped
+
+    # --------------------------------------------------------------------------
+    # Glued Header/Data Row Splitting
+    # --------------------------------------------------------------------------
+
+    def _split_glued_header_row(
+        self, rows: List[TableRow]
+    ) -> Tuple[List[TableRow], int]:
+        """
+        Detect and repair a header row whose cells are actually a fusion
+        of the true column label and the first data row's value for that
+        column (e.g. "Qty in Stock 178", "Unit Price $73.43"). This
+        happens when the table structure model never allocated a
+        distinct header row at all — the row tagged as the header is
+        really the first data row, and only *some* of its cells happen
+        to carry a leftover label fragment glued to the front.
+
+        For each cell in the row currently marked as header:
+          - if its text matches "<label> <numeric/currency value>",
+            split it: the label becomes the new header cell's text, and
+            the value becomes the new first data row's cell text.
+          - otherwise, we have no genuine label for that column at all
+            (it was never captured by OCR), so the header cell is left
+            blank rather than guessing, and the original text is kept
+            as-is in the new data row — this preserves real data (e.g.
+            a SKU value) instead of misclassifying it as a header label.
+
+        Only triggers when at least half of the header row's non-empty
+        cells match the glued label/value pattern, to avoid ever
+        rewriting a row that is genuinely just a header with no glued
+        data (which should be left untouched).
+        """
+        if not rows:
+            return rows, 0
+
+        header_rows = [r for r in rows if r.is_header]
+        if not header_rows:
+            return rows, 0
+
+        target = header_rows[0]
+        non_empty_cells = [c for c in target.cells if c.text.strip()]
+        if not non_empty_cells:
+            return rows, 0
+
+        matched_cells = [
+            c for c in non_empty_cells if _LABEL_VALUE_PATTERN.match(c.text.strip())
+        ]
+        if len(matched_cells) < max(1, len(non_empty_cells) // 2):
+            # Not a glued row — likely a genuine, clean header. Leave as is.
+            return rows, 0
+
+        label_cells: List[TableCell] = []
+        value_cells: List[TableCell] = []
+
+        for cell in target.cells:
+            stripped = cell.text.strip()
+            match = _LABEL_VALUE_PATTERN.match(stripped) if stripped else None
+            if match:
+                label_text, value_text = match.group(1).strip(), match.group(2).strip()
+                label_cells.append(replace(cell, text=label_text, is_header=True))
+                value_cells.append(replace(cell, text=value_text, is_header=False))
+            else:
+                # No recoverable label for this column — don't invent one.
+                # Keep the original text as real data instead of losing it
+                # or mislabeling it as a header.
+                label_cells.append(replace(cell, text="", is_header=True))
+                value_cells.append(replace(cell, text=cell.text, is_header=False))
+
+        new_header_row = TableRow(
+            index=0, cells=label_cells, is_header=True, confidence=target.confidence
+        )
+        new_data_row = TableRow(
+            index=1, cells=value_cells, is_header=False, confidence=target.confidence
+        )
+
+        result: List[TableRow] = [new_header_row, new_data_row]
+        next_index = 2
+        for row in rows:
+            if row is target:
+                continue
+            result.append(replace(row, index=next_index))
+            next_index += 1
+
+        logger.info(
+            "Split glued header/data row: %d of %d header cells had a "
+            "recoverable label.",
+            len(matched_cells), len(non_empty_cells),
+        )
+        return result, 1
+
+    def _build_columns_from_rows(self, rows: Sequence[TableRow]) -> List[TableColumn]:
+        """
+        Build columns from the final row list rather than the pre-split
+        cell grid, so that any text changes made by row-level
+        post-processing (rebalancing, second-chance matching, glued
+        header splitting) are reflected consistently in both rows and
+        columns.
+        """
+        col_map: Dict[int, List[TableCell]] = {}
+        for row in rows:
+            for cell in row.cells:
+                col_map.setdefault(cell.col_start, []).append(cell)
+
         columns: List[TableColumn] = []
-
-        for c in range(col_count):
-            seen_ids: set[int] = set()
-            col_cells: List[TableCell] = []
-            for r in range(row_count):
-                cell = grid.get((r, c))
-                if cell is None:
-                    continue
-                if id(cell) in seen_ids:
-                    continue
-                seen_ids.add(id(cell))
-                col_cells.append(cell)
-
-            confidence = self._average_confidence(col_cells)
-            columns.append(
-                TableColumn(index=c, cells=col_cells, confidence=confidence)
-            )
+        for col_idx in sorted(col_map):
+            cells = col_map[col_idx]
+            confidence = self._average_confidence(cells)
+            columns.append(TableColumn(index=col_idx, cells=cells, confidence=confidence))
 
         return columns
 
