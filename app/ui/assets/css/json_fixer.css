@@ -835,3 +835,20 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+/* ── Bookmark button ── */
+.jf-bookmark-btn {
+  color: var(--text-muted);
+}
+.jf-bookmark-btn:hover {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.28);
+  color: #f59e0b;
+}
+.jf-bookmark-btn.is-bookmarked {
+  background: rgba(245, 158, 11, 0.10);
+  border-color: rgba(245, 158, 11, 0.32);
+  color: #f59e0b;
+}
+.jf-bookmark-btn[hidden] {
+  display: none;
+}

@@ -1217,6 +1217,28 @@
   flex-shrink: 0;
 }
 
+/* ── Bookmark button state ── */
+.fc-bookmark-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.fc-bookmark-btn--saved {
+  background: rgba(139, 92, 246, 0.12) !important;
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  color: #a78bfa !important;
+}
+
+.fc-bookmark-btn--saved svg path {
+  fill: currentColor;
+}
+
+.fc-bookmark-btn--saved:hover {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: #c4b5fd !important;
+}
+
 /* ─── 20. VIEWER — PROGRESS ───────────────────────────────────────────────── */
 
 .fc-viewer-meta {

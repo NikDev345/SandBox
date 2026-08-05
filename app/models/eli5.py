@@ -52,3 +52,4 @@ class ELI5Response(BaseModel):
         default_factory=list,
         description="Key concepts extracted from the explanation.",
     )
+    execution_id: str | None = Field(default=None, description="Execution record ID for bookmarking.")

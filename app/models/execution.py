@@ -1,6 +1,6 @@
-from zoneinfo import ZoneInfo
 
-from sqlalchemy import Column, ForeignKey, String, DateTime
+from sqlalchemy import Column, ForeignKey, String, DateTime, Boolean
+from zoneinfo import ZoneInfo
 from app.database.engine import Base
 from pydantic import BaseModel
 from datetime import datetime
@@ -18,6 +18,7 @@ class Executions(Base):
         ZoneInfo("Asia/Kolkata")
     )
 )
+    bookmarked = Column(Boolean, default=False, nullable=False)
     
 class ExecutionCreate(BaseModel):
     tool_id: str    
@@ -31,6 +32,7 @@ class ExecutionResponse(BaseModel):
     user_input: str
     output: str
     created_at: datetime
+    bookmarked: bool = False
     
     class Config:
         orm_mode = True

@@ -57,6 +57,7 @@ const state = {
   sortMode: "original",
   allExpanded: false,
   exampleIndex: 0,
+  executionId: null,
 };
 
 /* ════════════════════════════════════════════════════════════
@@ -114,6 +115,10 @@ const el = {
   sortSelect: $("pc-sort"),
   // Toast container
   toastContainer: $("pc-toast-container"),
+
+  bookmarkBtn:   $("tb-bookmark"),
+  bookmarkLabel: $("tb-bookmark-label"),
+  bookmarkIcon:  $("tb-bookmark-icon"),
 };
 
 /* ════════════════════════════════════════════════════════════
@@ -324,6 +329,12 @@ async function animateLoading() {
 
 function renderResults(data) {
   // Summary card
+  state.executionId = data.execution_id || null;
+    if (el.bookmarkBtn) {
+        el.bookmarkBtn.classList.remove('pc-bookmarked');
+        el.bookmarkLabel.textContent = 'Bookmark';
+        el.bookmarkIcon.setAttribute('fill', 'none');
+    }
   el.summaryTopic.textContent = data.topic;
   el.summaryText.textContent = data.summary;
 
@@ -579,6 +590,54 @@ function bindSearchEvents() {
 ════════════════════════════════════════════════════════════ */
 
 function bindToolbarEvents() {
+  $("tb-bookmark").addEventListener("click", async () => {
+    if (el.bookmarkBtn.classList.contains('pc-bookmarked')) {
+        showToast("Already saved to bookmarks.", "info");
+        return;
+    }
+
+    if (!state.executionId) {
+        showToast("Run an analysis first.", "error");
+        return;
+    }
+
+    el.bookmarkBtn.disabled = true;
+    el.bookmarkLabel.textContent = "Saving…";
+
+    try {
+        const res = await fetch("/bookmarks", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ execution_id: state.executionId }),
+        });
+
+        if (res.status === 400) {
+            el.bookmarkBtn.classList.add("pc-bookmarked");
+            el.bookmarkLabel.textContent = "Saved";
+            el.bookmarkIcon.setAttribute("fill", "currentColor");
+            showToast("Already bookmarked.", "info");
+            return;
+        }
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `Error ${res.status}`);
+        }
+
+        el.bookmarkBtn.classList.add("pc-bookmarked");
+        el.bookmarkLabel.textContent = "Saved";
+        el.bookmarkIcon.setAttribute("fill", "currentColor");
+        showToast("Analysis bookmarked.", "success");
+
+    } catch (err) {
+        el.bookmarkLabel.textContent = "Bookmark";
+        el.bookmarkIcon.setAttribute("fill", "none");
+        showToast(err.message || "Could not save bookmark.", "error");
+    } finally {
+        el.bookmarkBtn.disabled = false;
+    }
+});
   // Copy entire report
   $("tb-copy-all").addEventListener("click", () => {
     const text = buildReportText();

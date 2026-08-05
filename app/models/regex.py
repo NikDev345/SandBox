@@ -55,3 +55,5 @@ class RegexGeneratorResponse(BaseModel):
     engine: RegexEngine
 
     matches: Optional[List[RegexMatchResult]] = None
+    
+    execution_id: Optional[str] = None

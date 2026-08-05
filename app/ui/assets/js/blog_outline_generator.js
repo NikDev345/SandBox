@@ -38,6 +38,7 @@
     loadingTimer: null,
     loadingIndex: 0,
     lastOutline: '',
+    currentExecutionId: null,
   };
 
   // ─────────────────────────────────────────────────────────────
@@ -62,6 +63,7 @@
       outputCard: document.getElementById('bog-output-card'),
       outputBody: document.getElementById('bog-output-body'),
       copyBtn: document.getElementById('bog-copy-btn'),
+      bookmarkBtn: document.getElementById('bog-bookmark-btn'),
       clearBtn: document.getElementById('bog-clear-btn'),
 
       examplesGrid: document.getElementById('bog-examples-grid'),
@@ -432,9 +434,7 @@
     try {
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic }),
       });
 
@@ -443,6 +443,14 @@
       }
 
       const data = await response.json();
+
+      // ADD THESE 4 LINES
+      state.currentExecutionId = data.execution_id || null;
+      dom.bookmarkBtn.hidden = !state.currentExecutionId;
+      dom.bookmarkBtn.classList.remove('is-bookmarked');
+      dom.bookmarkBtn.querySelector('span').textContent = 'Bookmark';
+      dom.bookmarkBtn.disabled = false;
+
       renderOutline(data && data.outline);
     } catch (err) {
       renderErrorOutput(
@@ -498,6 +506,8 @@
     dom.outputBody.innerHTML = '';
     dom.outputBody.classList.remove('bog-output-empty');
     state.lastOutline = '';
+    state.currentExecutionId = null;
+    dom.bookmarkBtn.hidden = true; 
     dom.topicInput.value = '';
     updateCharCount();
     dom.topicInput.focus();
@@ -554,6 +564,33 @@
     dom.generateBtn.addEventListener('click', generateOutline);
     dom.copyBtn.addEventListener('click', copyOutline);
     dom.clearBtn.addEventListener('click', clearOutline);
+
+    dom.bookmarkBtn.addEventListener('click', async () => {
+      if (!state.currentExecutionId || dom.bookmarkBtn.disabled) return;
+      dom.bookmarkBtn.disabled = true;
+      try {
+        const res = await fetch('/bookmarks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ execution_id: state.currentExecutionId }),
+        });
+        if (res.status === 401) {
+          alert('Please sign in to bookmark.');
+          dom.bookmarkBtn.disabled = false;
+          return;
+        }
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'Failed to bookmark');
+        }
+        dom.bookmarkBtn.classList.add('is-bookmarked');
+        dom.bookmarkBtn.querySelector('span').textContent = 'Bookmarked';
+      } catch (err) {
+        dom.bookmarkBtn.disabled = false;
+        alert(err.message || 'Could not bookmark. Please try again.');
+      }
+    });
   };
 
   // ─────────────────────────────────────────────────────────────

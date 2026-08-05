@@ -553,15 +553,16 @@ class CodeReview:
                 slug="CODE-REVIEWER",
             )
         tool_id = tool.id if tool else "CODE-REVIEWER"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=json.dumps(validated_input, default=str),
                 output=user_output,
             )
+            execution_id = execution.id 
         except Exception:
             pass
 
@@ -576,4 +577,5 @@ class CodeReview:
             summary=ai_review.summary,
             errors=ai_review.errors,
             suggestions=ai_review.suggestions,
+            execution_id = execution.id 
         )

@@ -76,6 +76,7 @@ class ExtractionResponse:
     metadata: ExtractionMetadata
     output_path: Optional[str] = None
     error: Optional[str] = None
+    execution_id: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         response: Dict[str, Any] = {

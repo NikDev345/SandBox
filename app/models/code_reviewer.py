@@ -52,8 +52,9 @@ class CodeReviewResponse(BaseModel):
     time_complexity: str
     space_complexity: str
     summary: str
-    errors: List[ReviewIssue]       # matches what generate_review() passes
+    errors: List[ReviewIssue]
     suggestions: List[ReviewSuggestion]
+    execution_id: Optional[str] = None
     
 class AIReviewResult(BaseModel):
     """Represents only the fields the AI returns — used internally by _parse_ai_review."""

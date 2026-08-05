@@ -1294,6 +1294,17 @@ body {
   border-color: rgba(228,228,231,0.2);
   color: var(--er-accent);
 }
+.er-bar-btn--bookmarked {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #a78bfa;
+}
+
+.er-bar-btn--bookmarked:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.45);
+  color: #c4b5fd;
+}
 
 .er-bar-btn--primary:hover {
   background: rgba(228,228,231,0.16);

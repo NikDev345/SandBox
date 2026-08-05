@@ -1007,3 +1007,15 @@ a { color: inherit; }
 @media (max-width: 400px) {
   .output-header { flex-direction: column; align-items: stretch; }
 }
+
+/* ── BOOKMARK BUTTON ── */
+#bookmarkBtn.bookmarked {
+    color: var(--text);
+    border-color: var(--border-2);
+    background: var(--surface-2);
+}
+
+#bookmarkBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

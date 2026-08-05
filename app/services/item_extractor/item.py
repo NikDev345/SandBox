@@ -283,10 +283,13 @@ class ActionItemService:
     @staticmethod
     def _build_response(
         action_items: list[ActionItem],
+        execution_id: Optional[str] = None,
     ) -> ActionItemExtractorResponse:
         
         return ActionItemExtractorResponse(
             action_items=action_items,
+            total_action_items=len(action_items),
+            execution_id=execution_id,
         )
     
     @staticmethod
@@ -306,7 +309,7 @@ class ActionItemService:
 
         candidate_sentences = ActionItemService._extract_candidate_sentences(sentences)
         if not candidate_sentences:
-            return ActionItemService._build_response([])
+            return ActionItemService._build_response([], execution_id=None)
 
         prompt = ActionItemService._build_prompt(candidate_sentences)
 
@@ -321,16 +324,19 @@ class ActionItemService:
                 slug="ITEM-EXTRACTOR",
             )
         tool_id = tool.id if tool else "ITEM-EXTRACTOR"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
                 output=str(ai_response),
             )
+            execution_id = execution.id if execution else None
         except Exception:
             pass
 
-        return ActionItemService._build_response(action_items)
+        response = ActionItemService._build_response(action_items)
+        response.execution_id = execution_id
+        return response

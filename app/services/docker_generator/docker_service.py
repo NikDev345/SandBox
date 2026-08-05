@@ -1584,9 +1584,9 @@ class DockerService:
                     slug="DOCKER-GENERATOR",
                 )
         tool_id = tool.id if tool else "DOCKER-GENERATOR"
-        
+        execution_record = None
         try:
-            ExecutionService.create_execution(
+            execution_record = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
@@ -1599,4 +1599,5 @@ class DockerService:
         return DockerfileGeneratorResponse(
             dockerfile=dockerfile,
             quick_start=quick_start,
+            execution_id=execution_record.id if execution_record else None,
         )

@@ -76,21 +76,23 @@ class BrainstormGeneratorService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="JSON-FIXER",
+                slug="BRAINSTROM-GENERATOR",
             )
-        tool_id = tool.id if tool else "JSON-FIXER"
-        
+        tool_id = tool.id if tool else "BRAINSTROM-GENERATOR"
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=user_input,
-            output=response,
-        )
+                output=json.dumps(response.model_dump()) if hasattr(response, 'model_dump') else str(response),
+            )
+            execution_id = execution.id if execution else None
         except Exception:
                 pass
         
 
         # Step 5: Return structured response
+        response.execution_id = execution_id
         return response

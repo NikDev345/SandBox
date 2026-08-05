@@ -65,6 +65,7 @@ from app.api.error_explainer.error_explainer import router as error_router
 from app.api.code_reviewer.code_reviewer import router as code_router
 from app.api.docker_generator.docker_generator import router as docker_router
 from app.api.item_extractor.item import router as item_router
+from app.api.bookmarks import router as bookmark_router
 Base.metadata.create_all(bind=engine)   
 
 
@@ -103,6 +104,7 @@ fast_app.include_router(error_router)
 fast_app.include_router(code_router)
 fast_app.include_router(docker_router)
 fast_app.include_router(item_router)
+fast_app.include_router(bookmark_router)
 import app.main
 ui.run_with(
     fast_app,

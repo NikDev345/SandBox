@@ -15,6 +15,7 @@ const state = {
   having: [],
   joins: [],
   sorts: [],
+  executionId: null,
 };
 
 /* ═══════════════════════════════════════════════════════════
@@ -766,6 +767,15 @@ function costToScore(label) {
    ═══════════════════════════════════════════════════════════ */
 function displayResult(resp) {
   state.currentSQL = resp.formatted_sql || resp.sql || '';
+  state.executionId = resp.execution_id || null;
+
+    // Reset bookmark button
+    const bBtn = el('bookmarkBtn');
+    if (bBtn) {
+        bBtn.classList.remove('sql-bookmarked');
+        el('bookmarkLabel').textContent = 'Bookmark';
+        el('bookmarkIcon').setAttribute('fill', 'none');
+    }
 
   // SQL code
   el('sqlCodeContent').innerHTML = syntaxHighlight(state.currentSQL);
@@ -858,6 +868,59 @@ function initToolbarActions() {
   el('downloadBtn').addEventListener('click', downloadSQL);
   el('fullscreenBtn').addEventListener('click', openFullscreen);
   el('closeFullscreenBtn').addEventListener('click', closeFullscreen);
+  el('bookmarkBtn').addEventListener('click', async () => {
+        const btn = el('bookmarkBtn');
+        const label = el('bookmarkLabel');
+        const icon = el('bookmarkIcon');
+
+        if (btn.classList.contains('sql-bookmarked')) {
+            showToast('Already saved to bookmarks.', 'info');
+            return;
+        }
+
+        if (!state.executionId) {
+            showToast('Generate a query first to bookmark it.', 'warning');
+            return;
+        }
+
+        btn.disabled = true;
+        label.textContent = 'Saving…';
+
+        try {
+            const res = await fetch('/bookmarks', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ execution_id: state.executionId }),
+            });
+
+            if (res.status === 400) {
+                btn.classList.add('sql-bookmarked');
+                label.textContent = 'Saved';
+                icon.setAttribute('fill', 'currentColor');
+                showToast('Already bookmarked.', 'info');
+                return;
+            }
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || `Error ${res.status}`);
+            }
+
+            btn.classList.add('sql-bookmarked');
+            label.textContent = 'Saved';
+            icon.setAttribute('fill', 'currentColor');
+            showToast('Query bookmarked.', 'success');
+
+        } catch (err) {
+            label.textContent = 'Bookmark';
+            icon.setAttribute('fill', 'none');
+            showToast(err.message || 'Could not save bookmark.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
 }
 
 function copySQL() {

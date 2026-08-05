@@ -385,13 +385,14 @@ class SSExplainer:
         })
         
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=user_input,
                 output=response.explanation,
             )
+            response.execution_id = execution.id
         except Exception:
             pass
 

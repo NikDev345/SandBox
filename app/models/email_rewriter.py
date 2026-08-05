@@ -170,6 +170,8 @@ class EmailStudioResponse(BaseModel):
     suggestions: List[str] = Field(
         default_factory=list
     )
+    
+    execution_id: str | None = None
 
     model_config = ConfigDict(
         from_attributes=True

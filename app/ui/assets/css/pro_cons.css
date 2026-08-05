@@ -1845,3 +1845,17 @@
     transition: none !important;
   }
 }
+
+/* ─── 26. BOOKMARK BUTTON ──────────────────────────────────────────────────── */
+
+#tb-bookmark.pc-bookmarked {
+    background: var(--surface-1);
+    border-color: var(--border-2);
+    color: var(--ink-0);
+}
+
+#tb-bookmark:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}

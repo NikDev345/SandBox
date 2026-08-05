@@ -168,9 +168,9 @@ Rules:
                     slug="ERROR-EXPLAINER",
                 )
         tool_id = tool.id if tool else "ERROR-EXPLAINER"
-                
+        execution_record = None      
         try:
-            ExecutionService.create_execution(
+            execution_record = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
@@ -180,4 +180,6 @@ Rules:
         except Exception:
             pass
         
-        return ErrorExplainer._parse_response(raw_response)
+        result = ErrorExplainer._parse_response(raw_response)
+        result.execution_id = execution_record.id if execution_record else None
+        return result

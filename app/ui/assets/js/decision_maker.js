@@ -82,6 +82,10 @@
 
   const toastRegion = document.getElementById("dm-toast-region");
 
+  const bookmarkBtn = document.getElementById('dm-bookmark-btn');
+  const bookmarkLabel = document.getElementById('dm-bookmark-label');
+  const bookmarkIcon = document.getElementById('dm-bookmark-icon');
+
   // Stepper / panels
   const panels = {
     1: document.getElementById("dm-panel-1"),
@@ -106,6 +110,7 @@
   let loadingInterval = null;
   let isSubmitting = false;
   let currentStep = 1;
+  let executionId = null;
 
   /* ============================================================
      INIT
@@ -158,6 +163,53 @@
     document.addEventListener("click", (e) => {
       const btn = e.target.closest(".dm-btn");
       if (btn) createRipple(btn, e);
+
+    });
+    bookmarkBtn.addEventListener('click', async () => {
+      if (bookmarkBtn.classList.contains('dm-bookmarked')) {
+        showError('Already saved', 'This analysis is already in your bookmarks.');
+        return;
+      }
+
+      if (!executionId) {
+        showError('Nothing to bookmark', 'Run an analysis first.');
+        return;
+      }
+
+      bookmarkBtn.disabled = true;
+      bookmarkLabel.textContent = 'Saving…';
+
+      try {
+        const res = await fetch('/bookmarks', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ execution_id: executionId }),
+        });
+
+        if (res.status === 400) {
+          bookmarkBtn.classList.add('dm-bookmarked');
+          bookmarkLabel.textContent = 'Saved';
+          bookmarkIcon.setAttribute('fill', 'currentColor');
+          return;
+        }
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `Error ${res.status}`);
+        }
+
+        bookmarkBtn.classList.add('dm-bookmarked');
+        bookmarkLabel.textContent = 'Saved';
+        bookmarkIcon.setAttribute('fill', 'currentColor');
+
+      } catch (err) {
+        bookmarkLabel.textContent = 'Bookmark';
+        bookmarkIcon.setAttribute('fill', 'none');
+        showError('Bookmark failed', err.message || 'Could not save bookmark.');
+      } finally {
+        bookmarkBtn.disabled = false;
+      }
     });
   }
 
@@ -565,6 +617,12 @@
      ============================================================ */
 
   function renderResults(data) {
+    executionId = data.execution_id || null;
+    bookmarkBtn.style.display = '';
+    bookmarkBtn.classList.remove('dm-bookmarked');
+    bookmarkLabel.textContent = 'Bookmark';
+    bookmarkIcon.setAttribute('fill', 'none');
+
     renderSummary(data.summary);
     renderRecommendation(data.recommendation);
     renderAnalysis(data.analysis);
@@ -726,6 +784,11 @@
 
   function resetForm() {
     form.reset();
+    executionId = null;
+    bookmarkBtn.style.display = 'none';
+    bookmarkBtn.classList.remove('dm-bookmarked');
+    bookmarkLabel.textContent = 'Bookmark';
+    bookmarkIcon.setAttribute('fill', 'none');
 
     optionsListEl.innerHTML = "";
     optionCounter = 0;
@@ -774,6 +837,7 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
+    
     init();
   }
 })();

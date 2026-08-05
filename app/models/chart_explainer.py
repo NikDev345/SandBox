@@ -54,4 +54,5 @@ class ChartExplainerResponse(BaseModel):
     eli5_explanation: str
     confidence_score: int
 
+    execution_id: Optional[str] = None
     usage: Optional[dict] = None

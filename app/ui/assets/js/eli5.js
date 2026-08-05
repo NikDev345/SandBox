@@ -6,6 +6,7 @@
     loading: false,
     lastTopic: "",
     abortController: null,
+    executionId: null,
   };
 
   // ─── Element refs ─────────────────────────────────────────────────────────────
@@ -24,6 +25,7 @@
   const copyBtn       = root.querySelector("#eli5-copy-btn");
   const againBtn      = root.querySelector("#eli5-again-btn");
   const clearBtn      = root.querySelector("#eli5-clear-btn");
+  const bookmarkBtn = root.querySelector("#eli5-bookmark-btn");
 
   // ─── Toast ────────────────────────────────────────────────────────────────────
   function toast(message) {
@@ -104,6 +106,14 @@
 
   // ─── Render full output ───────────────────────────────────────────────────────
   function renderOutput(topic, data) {
+    // Store execution id for bookmarking
+    state.executionId = data.execution_id || null;
+
+    // Reset bookmark button
+    setBookmarkState(false);
+    if (bookmarkBtn) {
+      bookmarkBtn.disabled = !state.executionId;
+    }
     if (outputTitle)   outputTitle.textContent = topic;
     if (summaryText)   summaryText.innerHTML   = parseMarkdown(data.summary || "");
     if (explanationEl) renderParagraphs(explanationEl, data.explanation || "");
@@ -208,6 +218,59 @@
     });
   }
 
+  // ─── Bookmark ─────────────────────────────────────────────────────────────
+const BOOKMARK_ENDPOINT = "/bookmarks";
+
+function setBookmarkState(bookmarked) {
+  if (!bookmarkBtn) return;
+  bookmarkBtn.classList.toggle("eli5-action-btn--bookmarked", bookmarked);
+  bookmarkBtn.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+  bookmarkBtn.setAttribute("aria-label", bookmarked ? "Remove bookmark" : "Save to bookmarks");
+
+  const icon  = bookmarkBtn.querySelector(".eli5-bookmark-icon");
+  const label = bookmarkBtn.querySelector(".eli5-bookmark-label");
+  if (icon)  icon.textContent  = bookmarked ? "♥" : "♡";
+  if (label) label.textContent = bookmarked ? "Saved" : "Save";
+}
+
+async function toggleBookmark() {
+  if (!state.executionId) { toast("Nothing to bookmark yet."); return; }
+
+  const isBookmarked = bookmarkBtn.classList.contains("eli5-action-btn--bookmarked");
+  bookmarkBtn.disabled = true;
+
+  try {
+    if (isBookmarked) {
+      const res = await fetch(`${BOOKMARK_ENDPOINT}/${state.executionId}`, {
+        method: "DELETE", credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to remove bookmark.");
+      setBookmarkState(false);
+      toast("Bookmark removed.");
+    } else {
+      const res = await fetch(BOOKMARK_ENDPOINT, {
+        method: "POST", credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ execution_id: state.executionId }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload.detail || "Failed to save bookmark.");
+      }
+      setBookmarkState(true);
+      toast("Saved to bookmarks.");
+    }
+  } catch (err) {
+    toast(err.message || "Something went wrong.");
+  } finally {
+    bookmarkBtn.disabled = false;
+  }
+}
+
+if (bookmarkBtn) {
+  bookmarkBtn.addEventListener("click", toggleBookmark);
+}
+
   // ─── Example chips ────────────────────────────────────────────────────────────
   root.querySelectorAll(".eli5-chip[data-topic]").forEach((chip) => {
     chip.addEventListener("click", () => {
@@ -266,6 +329,9 @@
       if (explanationEl) explanationEl.innerHTML = "";
       if (outputTitle)   outputTitle.textContent = "";
       state.lastTopic = "";
+      state.executionId = null;           
+      setBookmarkState(false);            
+    if (bookmarkBtn) bookmarkBtn.disabled = true;
       updateCharCount();
       showEmpty();
     });

@@ -36,7 +36,7 @@ def generate_summary(
     """
 
     try:
-        summary = SummarizerService.summarize(
+        summary, exe_id = SummarizerService.summarize(
             db=db,
             user_id='anonymous',
             text=request.text,
@@ -45,7 +45,8 @@ def generate_summary(
         )
 
         return SummarizeResponse(
-            summary=summary
+            summary=summary,
+            execution_id=exe_id,
         )
 
     except Exception as e:

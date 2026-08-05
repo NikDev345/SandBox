@@ -91,17 +91,21 @@ class DecisionMakerService:
                     slug="DECISION-MAKER",
                 )
             tool_id = tool.id if tool else "DECISION-MAKER"
-            ExecutionService.create_execution(
+            execution_id = None
+            execution = ExecutionService.create_execution(
                     db=db,
                     user_id=user_id,
                     tool_id=tool_id,
                     user_input=request.model_dump_json(),
                     output=json.dumps(ai_response),
                 )
+            execution_id = execution.id
         except Exception as exc:
             traceback.print_exc()
             raise HTTPException(
                 status_code=500,
                 detail=str(exc),
             ) from exc
-        return DecisionMakerFormatter.format(ai_response)
+        response = DecisionMakerFormatter.format(ai_response)
+        response.execution_id = execution_id
+        return response

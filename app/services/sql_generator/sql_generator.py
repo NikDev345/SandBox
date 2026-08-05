@@ -47,15 +47,16 @@ class SQLGeneratorService:
                 slug="SQL-GENERATOR",
             )
         tool_id = tool.id if tool else "SQL-GENERATOR"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
                 output=formatted_sql,
             )
+            execution_id = execution.id 
         except Exception:
             pass
 
@@ -67,6 +68,7 @@ class SQLGeneratorService:
             tables=SQLGeneratorService._extract_tables(sql),
             complexity=SQLGeneratorService._estimate_complexity(sql),
             execution_cost=SQLGeneratorService._estimate_execution_cost(sql),
+            execution_id=execution_id,
         )
         
     @staticmethod

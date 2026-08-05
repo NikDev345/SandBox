@@ -8,7 +8,9 @@ class Analytics(Base):
     __tablename__ = 'analytics'
     
     id = Column(String, primary_key=True)
+
     tool_id = Column(String,ForeignKey("tools.id"),unique=True)
+
     counter = Column(Integer, default=0)
     
 class AnalyticCreate(BaseModel):

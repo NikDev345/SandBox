@@ -64,3 +64,4 @@ class ActionItemExtractorResponse(BaseModel):
         default=0,
         description="Total number of extracted tasks."
     )
+    execution_id: Optional[str] = None

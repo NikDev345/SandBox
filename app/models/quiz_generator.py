@@ -169,3 +169,5 @@ class QuizResponse(BaseModel):
     warning: Optional[str] = None
 
     error: Optional[str] = None
+    
+    execution_id: Optional[str] = None

@@ -1444,3 +1444,9 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+.icon-btn.is-bookmarked {
+  color: var(--accent-bright);
+  border-color: rgba(124, 140, 255, 0.35);
+  background: var(--accent-glow);
+}

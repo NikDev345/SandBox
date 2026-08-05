@@ -51,18 +51,19 @@ class ProConsService:
                 slug="PRO-CONS",
             )
         tool_id = tool.id if tool else "PRO-CONS"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user["sub"],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
                 output=user_output,
             )
+            execution_id = execution.id
         except Exception:
             pass
-        
+        final.execution_id = execution_id
         return final
         
     

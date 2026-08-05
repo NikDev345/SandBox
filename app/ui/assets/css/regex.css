@@ -699,3 +699,22 @@ kbd {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Bookmark button ── */
+.toolbar-btn--bookmark {
+  color: var(--text-muted);
+}
+.toolbar-btn--bookmark:hover {
+  background: rgba(245,158,11,0.1);
+  border-color: rgba(245,158,11,0.3);
+  color: #f59e0b;
+}
+.toolbar-btn--bookmark.is-bookmarked {
+  background: rgba(245,158,11,0.12);
+  border-color: rgba(245,158,11,0.35);
+  color: #f59e0b;
+}
+.toolbar-btn--bookmark.is-bookmarked svg path {
+  fill: #f59e0b;
+  stroke: #f59e0b;
+}

@@ -107,6 +107,7 @@ class BlogOutlineResponse(BaseModel):
     outline: str
 
     usage: Optional[dict] = None
+    execution_id: Optional[str] = None 
 
     model_config = {
         "from_attributes": True

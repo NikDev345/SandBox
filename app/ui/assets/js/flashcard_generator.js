@@ -64,7 +64,8 @@
     loadingStepTimer: null,
     rotatorTimer: null,
     rotatorIndex: 0,
-    lastRequestPayload: null,  // saved for regenerate
+    lastRequestPayload: null,
+    executionId: null,  
   };
 
   // ─────────────────────────────────────────────────────────────
@@ -138,6 +139,7 @@
       downloadMdBtn: document.getElementById('fc-download-md-btn'),
       printBtn:      document.getElementById('fc-print-btn'),
       regenerateBtn: document.getElementById('fc-regenerate-btn'),
+      bookmarkBtn: document.getElementById('fc-bookmark-btn'),
 
       // Summary
       statTotal:      document.getElementById('fc-stat-total'),
@@ -365,6 +367,12 @@
       hideLoader();
       renderViewer();
       showPhase(dom.phaseViewer);
+
+      state.executionId = data.execution_id || null;
+      setBookmarkState(false);
+      if (dom.bookmarkBtn) {
+        dom.bookmarkBtn.disabled = !state.executionId;
+      }
 
       if (data.warning) {
         toast(data.warning, 'info');
@@ -1001,6 +1009,67 @@
   };
 
   // ─────────────────────────────────────────────────────────────
+// BOOKMARK
+// ─────────────────────────────────────────────────────────────
+
+const BOOKMARK_ENDPOINT = '/bookmarks';
+
+const setBookmarkState = (saved) => {
+  const btn = dom.bookmarkBtn;
+  if (!btn) return;
+  btn.classList.toggle('fc-bookmark-btn--saved', saved);
+  btn.setAttribute('aria-pressed', saved ? 'true' : 'false');
+  btn.setAttribute('aria-label', saved ? 'Remove bookmark' : 'Save to bookmarks');
+  btn.title = saved ? 'Remove bookmark' : 'Save to bookmarks';
+  // Label text stays "Bookmark" always — only icon fill changes
+  const path = btn.querySelector('svg path');
+  if (path) path.setAttribute('fill', saved ? 'currentColor' : 'none');
+};
+
+const resetBookmark = () => {
+  state.executionId = null;
+  setBookmarkState(false);
+  if (dom.bookmarkBtn) dom.bookmarkBtn.disabled = true;
+};
+
+const handleBookmark = async () => {
+  if (!state.executionId) return;
+
+  const btn = dom.bookmarkBtn;
+  const isSaved = btn.classList.contains('fc-bookmark-btn--saved');
+  btn.disabled = true;
+
+  try {
+    if (isSaved) {
+      const res = await fetch(`${BOOKMARK_ENDPOINT}/${state.executionId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error('Failed to remove bookmark.');
+      setBookmarkState(false);
+      toast('Bookmark removed.', 'info');
+    } else {
+      const res = await fetch(BOOKMARK_ENDPOINT, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ execution_id: state.executionId }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload.detail || 'Failed to save bookmark.');
+      }
+      setBookmarkState(true);
+      toast('Saved to bookmarks.', 'success');
+    }
+  } catch (err) {
+    toast(err.message || 'Something went wrong.', 'error');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+  // ─────────────────────────────────────────────────────────────
   // BIND EVENTS
   // ─────────────────────────────────────────────────────────────
 
@@ -1008,6 +1077,10 @@
     // Mode tabs
     dom.modePaste.addEventListener('click',  () => setMode('paste'));
     dom.modeUpload.addEventListener('click', () => setMode('upload'));
+
+    if (dom.bookmarkBtn) {
+      dom.bookmarkBtn.addEventListener('click', handleBookmark);
+    }
 
     // Paste textarea
     dom.contentInput.addEventListener('input', () => {
@@ -1161,6 +1234,7 @@
     state.isFlipped   = false;
     state.flipAngle   = {};
     dom.deck.innerHTML = '';
+    resetBookmark();
     showPhase(dom.phaseInput);
   };
 

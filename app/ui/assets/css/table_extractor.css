@@ -1132,3 +1132,42 @@ kbd {
   .te-export__btns { gap: var(--space-2); }
   .te-toast-container { right: var(--space-4); bottom: var(--space-4); }
 }
+
+.te-reset-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);   /* ← update from no gap */
+  margin-top: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.te-btn-bookmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--border-1);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), color var(--dur-fast), background var(--dur-fast);
+}
+
+.te-btn-bookmark:hover:not(:disabled) {
+  border-color: var(--border-2);
+  color: var(--text-soft);
+}
+
+.te-btn-bookmark:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.te-btn-bookmark.te-bookmark--saved {
+  color: var(--accent-bright);
+  border-color: rgba(124, 140, 255, 0.35);
+  background: var(--accent-glow);
+}

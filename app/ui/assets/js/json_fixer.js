@@ -24,6 +24,7 @@ const JsonFixer = (() => {
       repairBtn:    document.querySelector('.repair-action-btn'),
       copyBtn:      document.querySelector('[data-action="copy"]'),
       downloadBtn:  document.querySelector('[data-action="download"]'),
+      bookmarkBtn:  document.querySelector('[data-action="bookmark"]'),
       clearBtn:     document.querySelector('[data-action="clear"]'),
       exampleChips: document.querySelectorAll('.chip[data-example]'),
       statusCard:   document.getElementById('repair-status-card'),
@@ -92,6 +93,7 @@ const JsonFixer = (() => {
   const state = {
     isRepairing:   false,
     lastFixedJson: '',
+    currentExecutionId: null,
   };
 
   /* ─── Notifications ─────────────────────────────────────────────────────
@@ -273,6 +275,15 @@ const JsonFixer = (() => {
 
       showStatusCard(repairs);
       showSuccess(data.message || 'JSON repaired successfully.');
+      state.currentExecutionId = data.execution_id || null;
+      if (state.currentExecutionId && el.bookmarkBtn) {
+        el.bookmarkBtn.hidden = false;
+        el.bookmarkBtn.classList.remove('is-bookmarked');
+        el.bookmarkBtn.textContent = '⊹ Bookmark';
+        el.bookmarkBtn.disabled = false;
+      } else if (el.bookmarkBtn) {
+        el.bookmarkBtn.hidden = true;
+      }
 
     } catch (err) {
       console.error('[JsonFixer] Repair failed:', err);
@@ -349,6 +360,12 @@ const JsonFixer = (() => {
     if (el.fileInput)  el.fileInput.value   = '';
 
     state.lastFixedJson = '';
+    state.currentExecutionId = null;           
+
+    if (el.bookmarkBtn) {                      
+      el.bookmarkBtn.hidden = true;
+      el.bookmarkBtn.classList.remove('is-bookmarked');
+    }
 
     hideStatusCard();
     if (el.statusList) el.statusList.innerHTML = '';
@@ -471,9 +488,37 @@ const JsonFixer = (() => {
 
     el.copyBtn?.addEventListener('click',     copyOutput);
     el.downloadBtn?.addEventListener('click', downloadOutput);
-    el.clearBtn?.addEventListener('click',    clearAll);
+    el.clearBtn?.addEventListener('click', clearAll);
 
-    el.fileInput?.addEventListener('change', (e) => {
+el.bookmarkBtn?.addEventListener('click', async () => {
+  if (!state.currentExecutionId || el.bookmarkBtn.disabled) return;
+  el.bookmarkBtn.disabled = true;
+  try {
+    const res = await fetch('/bookmarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ execution_id: state.currentExecutionId }),
+    });
+    if (res.status === 401) {
+      showError('Please sign in to bookmark.');
+      el.bookmarkBtn.disabled = false;
+      return;
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to bookmark');
+    }
+    el.bookmarkBtn.classList.add('is-bookmarked');
+    el.bookmarkBtn.textContent = '✓ Bookmarked';
+    showSuccess('Result bookmarked.');
+  } catch (err) {
+    el.bookmarkBtn.disabled = false;
+    showError(err.message || 'Could not bookmark. Please try again.');
+  }
+});
+
+el.fileInput?.addEventListener('change', (e) => {
       handleFileUpload(e.target.files?.[0]);
     });
 

@@ -116,6 +116,8 @@
     btnDownload:      $("er-btn-download"),
     btnMailto:        $("er-btn-mailto"),
     btnRegenerate:    $("er-btn-regenerate"),
+    btnBookmark:      $("er-btn-bookmark"),
+    btnBookmarkLabel: $("er-btn-bookmark-label"),
 
     // Toast
     toast:            $("er-toast"),
@@ -129,7 +131,8 @@
     mode: "rewrite",          // "rewrite" | "generate"
     isLoading: false,
     lastPayload: null,        // for regenerate
-    lastResponse: null,       // for download / mailto
+    lastResponse: null,   
+    executionId: null,     
     wordRotateIndex: 0,
     wordRotateTimer: null,
     loadingStatusIndex: 0,
@@ -243,6 +246,7 @@
     DOM.errorState.classList.remove("er-error--visible");
     DOM.outputArea.classList.remove("er-output--visible");
     DOM.actionBar.classList.remove("er-action-bar--visible");
+    resetBookmark();
   }
 
   function showLoading() {
@@ -286,6 +290,13 @@
     DOM.emptyState.style.display = "none";
     DOM.loadingState.classList.remove("er-loading--visible");
     DOM.errorState.classList.remove("er-error--visible");
+
+    state.executionId = data.execution_id || null;
+    setBookmarkState(false);
+    if (DOM.btnBookmark) {
+      DOM.btnBookmark.disabled = !state.executionId;
+    }
+
 
     // Populate card content
     DOM.outSubject.textContent   = data.subject   || "—";
@@ -649,6 +660,71 @@
     }, 3000);
   }
 
+  /* ═══════════════════════════════════════════════════
+   BOOKMARK
+═══════════════════════════════════════════════════ */
+
+const BOOKMARK_ENDPOINT = "/bookmarks";
+
+function setBookmarkState(bookmarked) {
+  if (!DOM.btnBookmark) return;
+  DOM.btnBookmark.classList.toggle("er-bar-btn--bookmarked", bookmarked);
+  DOM.btnBookmark.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+  DOM.btnBookmark.title = bookmarked ? "Remove bookmark" : "Save to bookmarks";
+  DOM.btnBookmark.setAttribute("aria-label", bookmarked ? "Remove bookmark" : "Save to bookmarks");
+
+  // Swap bookmark icon fill via inline SVG swap
+  DOM.btnBookmark.querySelector("svg path").setAttribute(
+    "fill",
+    bookmarked ? "currentColor" : "none"
+  );
+  if (DOM.btnBookmarkLabel) {
+    DOM.btnBookmarkLabel.textContent = bookmarked ? "Saved" : "Save";
+  }
+}
+
+function resetBookmark() {
+  state.executionId = null;
+  setBookmarkState(false);
+  if (DOM.btnBookmark) DOM.btnBookmark.disabled = true;
+}
+
+async function handleBookmark() {
+  if (!state.executionId) { showToast("Nothing to bookmark yet.", "error"); return; }
+
+  const isBookmarked = DOM.btnBookmark.classList.contains("er-bar-btn--bookmarked");
+  DOM.btnBookmark.disabled = true;
+
+  try {
+    if (isBookmarked) {
+      const res = await fetch(`${BOOKMARK_ENDPOINT}/${state.executionId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to remove bookmark.");
+      setBookmarkState(false);
+      showToast("Bookmark removed.");
+    } else {
+      const res = await fetch(BOOKMARK_ENDPOINT, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ execution_id: state.executionId }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload.detail || "Failed to save bookmark.");
+      }
+      setBookmarkState(true);
+      showToast("Saved to bookmarks.");
+    }
+  } catch (err) {
+    showToast(err.message || "Something went wrong.", "error");
+  } finally {
+    DOM.btnBookmark.disabled = false;
+  }
+}
+
   /* ═══════════════════════════════════════════════════════
      EVENT BINDING
   ═══════════════════════════════════════════════════════ */
@@ -694,6 +770,10 @@
         handleSubmit();
       }
     });
+
+    if (DOM.btnBookmark) {
+      DOM.btnBookmark.addEventListener("click", handleBookmark);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════

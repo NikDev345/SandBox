@@ -1294,3 +1294,15 @@
     transform: none;
   }
 }
+.yts-pill-btn--bookmarked {
+  color: var(--accent);
+  border-color: var(--border-focus);
+  background: var(--accent-dim);
+  cursor: default;
+}
+
+.yts-pill-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}

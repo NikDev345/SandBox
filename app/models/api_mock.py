@@ -167,6 +167,7 @@ class MockAPIResponse(BaseModel):
 
     method: HTTPMethod
     status_code: int
+    execution_id: Optional[str] = None
     
 class MockAPISummary(BaseModel):
     id: str

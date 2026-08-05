@@ -52,15 +52,16 @@ class ChartExplainerService:
                 slug="CHART-EXPLAINER",
             )
         tool_id = tool.id if tool else "CHART-EXPLAINER"
-        
+        execution_id = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=user_input,
                 output=str(result),
             )
+            execution_id = execution.id
         except Exception:
             pass
 
@@ -77,5 +78,6 @@ class ChartExplainerService:
             limitations=result.get("limitations", []),
             eli5_explanation=result.get("eli5_explanation", ""),
             confidence_score=result.get("confidence_score", 0),
+            execution_id=execution_id,
             usage=result.get("usage"),
         )

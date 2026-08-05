@@ -85,7 +85,8 @@
     },
     result: null,       // raw backend response
     loadingTimer: null,
-    lastErrorRetry: null, // fn to retry the last failed action
+    lastErrorRetry: null,
+    executionId: null, // fn to retry the last failed action
   };
 
   // ─────────────────────────────────────────────────────────────
@@ -406,6 +407,7 @@
       const data = await response.json();
 
       state.result = data;
+      state.executionId = data.execution_id || null;
       state.phase = 'results';
 
       AnimationManager.stopLoading();
@@ -742,6 +744,13 @@
     state.phase = 'upload';
     dom.resultsBody.innerHTML = '';
     showPhase(dom.phaseUpload);
+    state.executionId = null;
+    const bBtn = document.getElementById('ce-bookmark-btn');
+    if (bBtn) {
+      bBtn.classList.remove('ce-bookmarked');
+      bBtn.disabled = false;
+      document.getElementById('ce-bookmark-label').textContent = 'Bookmark';
+    }
   };
 
   // ─────────────────────────────────────────────────────────────
@@ -758,6 +767,57 @@
       if ((e.key === 'Enter' || e.key === ' ') && !dom.uploadZone.classList.contains('ce-upload-zone--has-file')) {
         e.preventDefault();
         dom.fileInput.click();
+      }
+    });
+    document.getElementById('ce-bookmark-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('ce-bookmark-btn');
+      const label = document.getElementById('ce-bookmark-label');
+
+      if (btn.classList.contains('ce-bookmarked')) {
+        Toast.show('Already saved to bookmarks.', 'info');
+        return;
+      }
+
+      if (!state.executionId) {
+        Toast.show('Nothing to bookmark yet.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      label.textContent = 'Saving…';
+
+      try {
+        const token = AuthHelper.getToken();
+        const res = await fetch('/bookmarks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ execution_id: state.executionId }),
+        });
+
+        if (res.status === 400) {
+          btn.classList.add('ce-bookmarked');
+          label.textContent = 'Saved';
+          Toast.show('Already bookmarked.', 'info');
+          return;
+        }
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `Error ${res.status}`);
+        }
+
+        btn.classList.add('ce-bookmarked');
+        label.textContent = 'Saved';
+        Toast.show('Analysis bookmarked.', 'success');
+
+      } catch (err) {
+        label.textContent = 'Bookmark';
+        Toast.show(err.message || 'Could not save bookmark.', 'error');
+      } finally {
+        btn.disabled = false;
       }
     });
     dom.fileInput.addEventListener('change', () => {

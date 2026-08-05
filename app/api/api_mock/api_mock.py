@@ -46,7 +46,7 @@ async def create_mock_api(
         db=db,
         request=request,
         user_id=current_user['sub'],
-        user=current_user
+        
     )
     
 @router.get(

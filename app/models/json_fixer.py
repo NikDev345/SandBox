@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -38,3 +38,4 @@ class JSONFixResponse(BaseModel):
         default_factory=list,
         description="List of repairs applied while fixing the JSON."
     )
+    execution_id: Optional[str] = Field(default=None)

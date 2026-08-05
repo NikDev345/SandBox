@@ -53,6 +53,9 @@
   const copyBtn           = $('copyBtn');
   const downloadBtn       = $('downloadBtn');
   const clearBtn          = $('clearBtn');
+  const bookmarkBtn   = $('bookmarkBtn');
+  const bookmarkLabel = $('bookmarkLabel');
+  const bookmarkIcon  = $('bookmarkIcon');
 
   const toastStack        = $('toastStack');
 
@@ -60,6 +63,7 @@
   let selectedFile = null;
   let loadingInterval = null;
   let progressInterval = null;
+  let executionId = null;
 
   /* ============================================================
      TOASTS
@@ -473,6 +477,11 @@
      OUTPUT
      ============================================================ */
   function showResult(payload) {
+    executionId = payload.execution_id || null;
+    bookmarkBtn.classList.remove('bookmarked');
+    bookmarkLabel.textContent = 'Bookmark';
+    bookmarkIcon.setAttribute('fill', 'none');
+    bookmarkIcon.setAttribute('stroke', 'currentColor');
     stopLoading();
     rawCleanedText = payload.cleaned_notes;
     outputTitle.textContent = payload.title || 'Cleaned Notes';
@@ -505,6 +514,10 @@
   });
 
   clearBtn.addEventListener('click', () => {
+    executionId = null;
+    bookmarkBtn.classList.remove('bookmarked');
+    bookmarkLabel.textContent = 'Bookmark';
+    bookmarkIcon.setAttribute('fill', 'none');
     outputCard.classList.add('hidden');
     outputBody.innerHTML = '';
     rawCleanedText = '';
@@ -515,6 +528,58 @@
     inputCard.classList.remove('hidden');
     inputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  bookmarkBtn.addEventListener('click', async () => {
+    if (bookmarkBtn.classList.contains('bookmarked')) {
+        showToast('Already saved to bookmarks.', 'info');
+        return;
+    }
+
+    if (!executionId) {
+        showToast('Nothing to bookmark yet.', 'error');
+        return;
+    }
+
+    bookmarkBtn.disabled = true;
+    bookmarkLabel.textContent = 'Saving…';
+
+    try {
+        const res = await fetch('/bookmarks', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ execution_id: executionId }),
+        });
+
+        if (res.status === 400) {
+            bookmarkBtn.classList.add('bookmarked');
+            bookmarkLabel.textContent = 'Saved';
+            bookmarkIcon.setAttribute('fill', 'currentColor');
+            bookmarkIcon.setAttribute('stroke', 'none');
+            showToast('Already bookmarked.', 'info');
+            return;
+        }
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.detail || `Error ${res.status}`);
+        }
+
+        bookmarkBtn.classList.add('bookmarked');
+        bookmarkLabel.textContent = 'Saved';
+        bookmarkIcon.setAttribute('fill', 'currentColor');
+        bookmarkIcon.setAttribute('stroke', 'none');
+        showToast('Notes bookmarked.', 'success');
+
+    } catch (err) {
+        bookmarkLabel.textContent = 'Bookmark';
+        bookmarkIcon.setAttribute('fill', 'none');
+        bookmarkIcon.setAttribute('stroke', 'currentColor');
+        showToast(err.message || 'Could not save bookmark.', 'error');
+    } finally {
+        bookmarkBtn.disabled = false;
+    }
+});
 
   /* ============================================================
      INIT

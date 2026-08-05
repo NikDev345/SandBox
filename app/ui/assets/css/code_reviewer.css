@@ -877,3 +877,15 @@ button { cursor: pointer; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── BOOKMARK BUTTON ── */
+#bookmarkBtn.bookmarked {
+  color: var(--ink-0);
+  border-color: var(--border-2);
+  background: var(--surface-1);
+}
+
+#bookmarkBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

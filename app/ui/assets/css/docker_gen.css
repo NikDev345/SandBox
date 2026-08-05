@@ -1026,6 +1026,15 @@ img, svg { display: block; max-width: 100%; }
 .rc-btn.copied { background: rgba(45,212,167,0.15); border-color: rgba(45,212,167,0.4); color: var(--success); }
 .rc-btn.active { background: var(--docker-blue-dim); border-color: rgba(36,150,237,0.4); color: var(--docker-blue-light); }
 
+.rc-btn.bookmarked {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.45);
+  color: var(--ai-violet-light);
+}
+.rc-btn.bookmarked i::before {
+  font-weight: 900; /* switches fa-regular → fa-solid glyph */
+}
+
 .code-scroll { max-height: 440px; overflow: auto; background: rgba(0,0,0,0.35); }
 .code-block {
   margin: 0;

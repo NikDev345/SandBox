@@ -888,3 +888,19 @@ ul { list-style: none; }
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Bookmark button ── */
+#bookmarkBtn:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+#bookmarkBtn.is-bookmarked {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+#bookmarkBtn.is-bookmarked svg path {
+  fill: #f59e0b;
+  stroke: #f59e0b;
+}
