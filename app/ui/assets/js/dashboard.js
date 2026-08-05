@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     emptyState  = document.querySelector("[data-empty-state]");
     resultCount = document.querySelector("[data-result-count]");
 
-    initializeMetricCards();
     initializeSearch();
     initializeNavigation();
     initializeSectionNavigation();
@@ -51,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateCategoryBadges();
     loadConnections();
     loadWorkspace();   
+    initializeScrollSpy();
     await loadAppearance();
 
     // =======================================================
@@ -299,21 +299,7 @@ function isAdmin() {
     return document.body.classList.contains("is-admin");
 }
 
-/* ============================================================
-   METRICS
-   ============================================================ */
 
-function initializeMetricCards() {
-    document.querySelectorAll(".metric-card").forEach(card => card.classList.add("loading"));
-}
-
-function setMetric(key, value, note) {
-    document.querySelectorAll(`[data-metric="${key}"]`).forEach(el => {
-        el.textContent = value;
-        el.closest(".metric-card")?.classList.remove("loading");
-    });
-    document.querySelectorAll(`[data-metric-note="${key}"]`).forEach(el => el.textContent = note);
-}
 
 /* ============================================================
    AUTH / SESSION
@@ -456,7 +442,7 @@ async function loadWorkspace() {
 async function fetchFirstAvailable(urls) {
     for (const url of urls) {
         try {
-            const response = await fetch(url, { headers: authHeaders(), credentials: "include" });
+            const response = await fetch(url, { headers: authHeaders(), credentials: "include", mode: "cors" });
             if (response.ok) return await response.json();
         } catch (_) { continue; }
     }
@@ -487,17 +473,7 @@ async function loadDashboardData() {
         renderSignedOut();
     }
 
-    /* Load tool metrics */
-    const metrics = await fetchFirstAvailable(apiCandidates.metrics);
-    if (metrics) {
-        setMetric("totalTools", formatMetric(metrics.total_tools ?? metrics.totalTools), "in workspace");
-        setMetric("executions", formatMetric(metrics.executions ?? metrics.total_executions), "all time");
-        setMetric("users", formatMetric(metrics.active_users ?? metrics.users), "active");
-        setMetric("uptime", metrics.uptime ?? "99.9%", "");
-    } else {
-        ["totalTools", "executions", "users", "uptime"].forEach(k => setMetric(k, "--", "Unavailable"));
-    }
-
+    
     /* Load tools from API (if available — otherwise static cards remain) */
     const toolsData = await fetchFirstAvailable(apiCandidates.tools);
     if (toolsData) {
@@ -1140,7 +1116,29 @@ function initializeSectionNavigation() {
 
     if (!navItems.length || !sections.length) return;
 
+    const anchorTargets = ["tools", "workspace"];
+
     function showSection(sectionId) {
+        if (anchorTargets.includes(sectionId)) {
+            // Show dashboard section and scroll to anchor
+            sections.forEach(section => {
+                const active = section.dataset.sectionId === "dashboard";
+                section.style.display = active ? "" : "none";
+                section.classList.toggle("active", active);
+            });
+
+            navItems.forEach(item => {
+                item.classList.toggle("active", item.dataset.section === sectionId);
+            });
+
+            setTimeout(() => {
+                document.getElementById(sectionId)
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 50);
+            return;
+        }
+
+        // Normal section switch (dashboard, account, etc.)
         sections.forEach(section => {
             const active = section.dataset.sectionId === sectionId;
             section.style.display = active ? "" : "none";
@@ -1168,12 +1166,56 @@ function initializeSectionNavigation() {
         });
     });
 
-    /* Initial route */
+    // Initial route
     let initial = window.location.hash.replace("#", "");
     if (!initial) initial = "dashboard";
 
     const exists = [...sections].some(s => s.dataset.sectionId === initial);
     showSection(exists ? initial : "dashboard");
+}
+
+function initializeScrollSpy() {
+    const sections = [
+        { id: "hero-panel",  section: "dashboard" },
+        { id: "workspace",   section: "workspace"  },
+        { id: "tools",       section: "tools"      },
+    ];
+
+    // Get the actual elements
+    const observables = sections
+        .map(s => ({
+            el: s.id === "hero-panel"
+                ? document.querySelector(".hero-panel")
+                : document.getElementById(s.id),
+            section: s.section,
+        }))
+        .filter(s => s.el);
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+
+                const matched = observables.find(s => s.el === entry.target);
+                if (!matched) return;
+
+                // Update active nav item
+                document.querySelectorAll(".nav-item[data-section]").forEach(item => {
+                    item.classList.toggle(
+                        "active",
+                        item.dataset.section === matched.section
+                    );
+                });
+            });
+        },
+        {
+            root: null,
+            rootMargin: "-40% 0px -50% 0px", // triggers when element is near center
+            threshold: 0,
+        }
+    );
+
+    observables.forEach(s => observer.observe(s.el));
 }
 
 /* ============================================================
@@ -1258,7 +1300,7 @@ function renderProfile(user) {
     document.querySelectorAll("[data-user-bio]").forEach(t => t.textContent = bio);
     document.querySelectorAll("[data-user-email]").forEach(t => t.textContent = email);
 
-    const profileName = document.getElementById("profileName");
+    const profileName = document.getElementById("profileFullName");
     if (profileName) profileName.value = user.name || "";
 
     const profileEmail = document.getElementById("profileEmail");

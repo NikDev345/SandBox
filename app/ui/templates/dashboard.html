@@ -23,7 +23,7 @@
     <!-- Workspace switcher -->
     <div class="workspace-switch">
       <img class="avatar" data-user-avatar src="/assets/default_avatar.png" alt="Profile">
-      <div>
+      <div class="ws-info">
         <strong data-user-name>Workspace</strong>
         <small data-user-bio>Hello there!</small>
       </div>
@@ -76,31 +76,7 @@
         </span>
         <span>History</span>
       </a>
-
-      <span class="nav-section-label" style="margin-top:8px">Tools</span>
-
-      <a class="nav-item" href="/sql-generator">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
-        </span>
-        <span>SQL Generator</span>
-      </a>
-
-      <a class="nav-item" href="/regex-generator">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        </span>
-        <span>Regex Builder</span>
-      </a>
-
-      <a class="nav-item" href="/json-fixer">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-        </span>
-        <span>JSON Fixer</span>
-      </a>
     </nav>
-
     <!-- Sidebar bottom -->
     <div class="sidebar-bottom">
       <a class="nav-item" href="/login" data-auth-link>
@@ -184,25 +160,6 @@
           Open Tools
         </button>
       </section>
-
-      <!-- Metrics -->
-      <div class="metrics-row" aria-label="Workspace metrics">
-        <div class="metric-card anim-fade-up delay-1">
-          <div class="metric-label">Total Tools</div>
-          <div class="metric-value" data-metric="totalTools">--</div>
-          <div class="metric-note" data-metric-note="totalTools">Loading…</div>
-        </div>
-        <div class="metric-card anim-fade-up delay-2">
-          <div class="metric-label">Executions</div>
-          <div class="metric-value" data-metric="executions">--</div>
-          <div class="metric-note" data-metric-note="executions">Loading…</div>
-        </div>
-        <div class="metric-card anim-fade-up delay-3">
-          <div class="metric-label">Active Users</div>
-          <div class="metric-value" data-metric="users">--</div>
-          <div class="metric-note" data-metric-note="users">Loading…</div>
-        </div>
-      </div>
 
       <!-- Workspace panel -->
       <section class="workspace-panel anim-fade-up delay-2" id="workspace">
