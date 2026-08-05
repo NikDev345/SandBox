@@ -349,6 +349,7 @@ async function extractTables() {
     renderResults(data);
     showScreen('screen-results');
     showToast('Tables extracted successfully', 'success');
+    if (window.refreshWorkspace) window.refreshWorkspace();
 
   } catch (err) {
     finalizeSteps(false);

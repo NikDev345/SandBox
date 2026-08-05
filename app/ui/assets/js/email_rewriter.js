@@ -320,6 +320,7 @@
 
     DOM.outputArea.classList.add("er-output--visible");
     DOM.actionBar.classList.add("er-action-bar--visible");
+    if (window.refreshWorkspace) window.refreshWorkspace();
   }
 
   /* ═══════════════════════════════════════════════════════

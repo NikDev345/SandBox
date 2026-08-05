@@ -380,6 +380,7 @@
       hideOverlay();
       setGenerateLoading(false);
       showResults();
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       hideOverlay();
       setGenerateLoading(false);

@@ -258,6 +258,7 @@
 
       renderOutput(data);
       showToast("Regex generated successfully", "success");
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       showError(err.message || "Something went wrong while generating the regex.");
     } finally {

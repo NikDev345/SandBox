@@ -583,6 +583,7 @@ async function generateFromBuilder() {
     hideLoading(interval);
     displayResult(data);
     showToast('Query built successfully', 'success');
+    if (window.refreshWorkspace) window.refreshWorkspace();
 
   } catch (err) {
     hideLoading(interval);

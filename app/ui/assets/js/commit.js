@@ -266,6 +266,7 @@
       renderResponse(data);
       showState('response');
       showToast('Commit messages generated successfully.', 'success');
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       showError(err.message || 'Something went wrong while generating commit messages.');
       showState('error');

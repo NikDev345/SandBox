@@ -309,6 +309,7 @@ if (bookmarkBtn) {
 
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     showToast('Diagnosis ready', 'fa-circle-check');
+    if (window.refreshWorkspace) window.refreshWorkspace();
   }
 
   /* ── Copy code ── */

@@ -355,6 +355,7 @@
 
       showResult(payload);
       showToast('Your notes have been cleaned.', 'success');
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       const message =
         err instanceof TypeError

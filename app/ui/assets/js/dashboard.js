@@ -186,6 +186,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* ============================================================
    ADMIN CONTROLS — event delegation, no inline handlers
    ============================================================ */
+async function refreshWorkspace() {
+    const toolsEl   = document.querySelector("[data-workspace-tools]");
+    const creditsEl = document.querySelector("[data-workspace-credits]");
+    const execEl    = document.querySelector("[data-workspace-executions]");
+
+    try {
+        const response = await fetch("/workspace/", { credentials: "include" });
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (!data.success || !data.workspace) return;
+
+        const ws = data.workspace;
+
+        if (toolsEl)   toolsEl.textContent   = formatMetric(ws.total_tools);
+        if (execEl)    execEl.textContent     = formatMetric(ws.executions);
+        if (creditsEl) {
+            const dc = ws.daily_credits || {};
+            const remaining = dc.remaining ?? "--";
+            const limit     = dc.limit     ?? "--";
+            creditsEl.textContent = `${remaining} / ${limit}`;
+        }
+    } catch (err) {
+        console.error("refreshWorkspace failed:", err);
+    }
+}
 
 function initializeAdminControls() {
     /* Add Tool button */
@@ -373,7 +399,6 @@ async function loadConnections() {
 let workspaceLoaded = false;
 
 async function loadWorkspace() {
-    if (workspaceLoaded) return; // only fetch once
     workspaceLoaded = true;
 
     const toolsEl     = document.querySelector("[data-workspace-tools]");
@@ -1378,3 +1403,4 @@ function escapeHtml(value) {
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 }
+window.refreshWorkspace = refreshWorkspace;

@@ -637,6 +637,7 @@
     requestAnimationFrame(() => {
       confidenceFillEl.style.width = `${confidence}%`;
     });
+    if (window.refreshWorkspace) window.refreshWorkspace();
   }
 
   function renderSummary(summary) {

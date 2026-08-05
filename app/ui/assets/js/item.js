@@ -372,6 +372,7 @@ async function submitRequest() {
     } else {
       el.bookmarkBtn.hidden = true;
     }
+    if (window.refreshWorkspace) window.refreshWorkspace();
   } catch (err) {
     hideLoader();
     setSubmitButtonState("error");

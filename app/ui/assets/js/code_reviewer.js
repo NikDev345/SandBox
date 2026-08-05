@@ -399,6 +399,7 @@
       renderResults(normalizeResponse(data));
       showResultsPanel("results");
       showToast("success", "Review completed.");
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       finishProgress();
       showResultsPanel("empty");

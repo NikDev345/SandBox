@@ -284,6 +284,7 @@ const JsonFixer = (() => {
       } else if (el.bookmarkBtn) {
         el.bookmarkBtn.hidden = true;
       }
+      if (window.refreshWorkspace) window.refreshWorkspace();
 
     } catch (err) {
       console.error('[JsonFixer] Repair failed:', err);

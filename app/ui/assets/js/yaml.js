@@ -719,6 +719,7 @@ if (bBtn) {
   bBtn.classList.remove('bookmarked');
 }
     showToast('Manifests generated', 'success');
+    if (window.refreshWorkspace) window.refreshWorkspace();
   }
 
   function selectFile(idx) {

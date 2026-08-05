@@ -200,7 +200,8 @@
         }
         if (lastSaved)   lastSaved.textContent = new Date().toISOString().slice(0, 19).replace("T", " ");
         if (emptyState)  emptyState.style.display = generated ? "none" : "flex";
-        toast("Summary generated");
+        toast("Summary generated"); 
+        if (window.refreshWorkspace) window.refreshWorkspace();
 
       } catch (err) {
         toast("Failed to generate summary");

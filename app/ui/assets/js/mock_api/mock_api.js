@@ -839,6 +839,7 @@
     els.successStatusBadge.textContent = created.status_code;
     els.successStatusBadge.className = `badge badge-status ${UI.statusClass(created.status_code)}`;
     UI.openModal("modalSuccess");
+    if (window.refreshWorkspace) window.refreshWorkspace();
   }
 
   async function openDetailModal(id) {

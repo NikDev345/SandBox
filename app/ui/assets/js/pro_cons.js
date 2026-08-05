@@ -291,6 +291,7 @@ async function runAnalysis() {
     renderResults(data);
     showPhase("results");
     showToast("Analysis complete!", "success");
+    if (window.refreshWorkspace) window.refreshWorkspace();
   } catch (err) {
     el.errorMsg.textContent = err.message || "Unable to generate analysis. Please try again.";
     showPhase("error");

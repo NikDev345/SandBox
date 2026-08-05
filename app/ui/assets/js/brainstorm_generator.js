@@ -497,7 +497,7 @@
       dom.bookmarkBtn.classList.remove('is-bookmarked');
       dom.bookmarkBtn.querySelector('span').textContent = 'Bookmark';
       dom.bookmarkBtn.disabled = false;
-
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       if (err && err.name === 'AbortError') {
         // Superseded by a newer request; don't show an error toast.

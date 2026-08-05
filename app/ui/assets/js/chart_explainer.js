@@ -413,7 +413,7 @@
       AnimationManager.stopLoading();
       Renderer.renderResults(data);
       showPhase(dom.phaseResults);
-
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       clearTimeout(timeoutId);
       AnimationManager.stopLoading();

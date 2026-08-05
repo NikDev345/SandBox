@@ -452,6 +452,7 @@
       dom.bookmarkBtn.disabled = false;
 
       renderOutline(data && data.outline);
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       renderErrorOutput(
         'Something went wrong while generating your outline. Please try again in a moment.'

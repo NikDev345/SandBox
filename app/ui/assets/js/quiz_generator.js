@@ -341,6 +341,7 @@
       hideLoading();
       showPhase(dom.phaseQuiz);
       renderQuestion(0);
+      if (window.refreshWorkspace) window.refreshWorkspace();
 
     } catch (err) {
       hideLoading();

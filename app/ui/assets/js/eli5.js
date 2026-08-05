@@ -119,6 +119,7 @@
     if (explanationEl) renderParagraphs(explanationEl, data.explanation || "");
     showOutput();
     outputCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (window.refreshWorkspace) window.refreshWorkspace();
   }
 
   // ─── Error message helper ─────────────────────────────────────────────────────

@@ -548,6 +548,7 @@
         showView("results");
         showToast("Dockerfile generated successfully.", "success");
       }, 500);
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       stopLoadingSequence();
       console.error(err);

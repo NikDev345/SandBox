@@ -557,6 +557,7 @@ function closeMenu() {
 
       stopLoadingState(true);
       setTimeout(() => renderResult(data), 380);
+      if (window.refreshWorkspace) window.refreshWorkspace();
     } catch (err) {
       stopLoadingState(false);
 

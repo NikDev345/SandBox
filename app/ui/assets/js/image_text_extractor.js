@@ -504,6 +504,7 @@ dom.bookmarkBtn.addEventListener('click', async () => {
 
     const data = await response.json();
     setProgress(100);
+    if (window.refreshWorkspace) window.refreshWorkspace();
     return data;
   }
 

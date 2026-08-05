@@ -377,6 +377,7 @@
       if (data.warning) {
         toast(data.warning, 'info');
       }
+      if (window.refreshWorkspace) window.refreshWorkspace();
 
     } catch (err) {
       hideLoader();
