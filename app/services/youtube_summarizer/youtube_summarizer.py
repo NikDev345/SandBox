@@ -1,5 +1,5 @@
 import time, json
-
+from typing import Optional
 from app.models.youtube_summarizer import (
     YouTubeSummaryRequest,
     YouTubeSummaryResponse,
@@ -90,19 +90,21 @@ class YouTubeSummarizerService:
                     slug="YOUTUBE-SUMMARIZER",
                 )
             tool_id = tool.id if tool else "YOUTUBE-SUMMARIZER"
-            
+            execution_id: Optional[str] = None
             try:
-                ExecutionService.create_execution(
+                execution = ExecutionService.create_execution(
                     db=db,
                     user_id=user_id,
                     tool_id=tool_id,
                     user_input=request.model_dump_json(),
                     output=user_output,
                 )
+                execution_id = execution.id
             except Exception:
                 pass
 
             # Step 7 — Format response
+            output.execution_id = execution_id
             return output
 
         except ValueError:

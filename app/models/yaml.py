@@ -154,6 +154,7 @@ class KubernetesGeneratorResponse(BaseModel):
     summary: GenerationSummary
     resources: List[GeneratedResource]
     files: List[GeneratedFile]
+    execution_id: Optional[str] = None
     
 class ValidationIssue(BaseModel):
     field: str

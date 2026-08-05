@@ -7,7 +7,7 @@
       <section class="tool-section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">AI Text Summarizer</p>
+            <p class="eyebrow">SandBox AI Text Summarizer</p>
             <h2>Turn documents into crisp, readable summaries.</h2>
             <p>Upload your PDF or paste text to instantly generate a clear, dashboard-style summary with our premium tool.</p>
             <div class="header-pill-row">
@@ -115,7 +115,7 @@
             <button class="btn btn-ghost" type="button" data-copy>Copy</button>
             <button class="btn btn-ghost" type="button" data-download>Download</button>
           </div>
-          <textarea id="summaryText" placeholder="✨ Your summary will appear here. Paste text or upload a PDF." class="form-input bg-transparent"></textarea>
+          <textarea id="summaryText" placeholder="Your summary will appear here. Paste text or upload a PDF." class="form-input bg-transparent"></textarea>
           <div class="empty-state" id="emptyState">
             <div>
               <strong>Ready to Summarize</strong>
@@ -128,7 +128,7 @@
           <div class="text-muted">Last saved: <span id="lastSaved">{{TIMESTAMP}}</span> UTC</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;">
             <button class="btn btn-ghost" type="button" data-clear>Clear All</button>
-            <button class="btn btn-primary" type="button" data-download>Download PDF</button>
+            <button class="ts-btn-ghost" type="button" id="bookmarkBtn" data-bookmark disabled>Bookmark</button>            <button class="btn btn-primary" type="button" data-download>Download PDF</button>
           </div>
         </div>
       </section>

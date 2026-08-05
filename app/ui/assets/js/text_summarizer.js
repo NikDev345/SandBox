@@ -4,6 +4,8 @@
   // ─── Hidden state ─────────────────────────────────────────────────────────────
   let extractedPdfText = "";
   let pdfMeta = { filename: "", words: 0, chars: 0, uploadedAt: "" };
+  let lastExecutionId = null;
+  let isBookmarked = false;
 
   // ─── Toast ────────────────────────────────────────────────────────────────────
   function toast(message, opts) {
@@ -188,6 +190,14 @@
         const generated = data.summary || "";
 
         if (summaryText) summaryText.value = generated;
+        lastExecutionId = data.execution_id ?? null;
+        isBookmarked = false;
+        const bBtn = root.querySelector("[data-bookmark]");
+        if (bBtn) {
+          bBtn.disabled = !lastExecutionId;
+          bBtn.textContent = "Bookmark";
+          bBtn.classList.remove("bookmarked");
+        }
         if (lastSaved)   lastSaved.textContent = new Date().toISOString().slice(0, 19).replace("T", " ");
         if (emptyState)  emptyState.style.display = generated ? "none" : "flex";
         toast("Summary generated");
@@ -200,6 +210,37 @@
       }
     });
   }
+
+  const bookmarkBtn = root.querySelector("[data-bookmark]");
+if (bookmarkBtn) {
+  bookmarkBtn.addEventListener("click", async () => {
+    if (!lastExecutionId || isBookmarked) return;
+
+    bookmarkBtn.disabled = true;
+
+    try {
+      const res = await fetch("/bookmarks", {
+        method: "POST",
+        headers: authHeaders({ "Content-Type": "application/json" }),
+        credentials: "include",
+        body: JSON.stringify({ execution_id: lastExecutionId }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to bookmark.");
+      }
+
+      isBookmarked = true;
+      bookmarkBtn.textContent = "Bookmarked ✓";
+      bookmarkBtn.classList.add("bookmarked");
+      toast("Saved to bookmarks");
+    } catch (e) {
+      toast(e.message || "Bookmark failed");
+      bookmarkBtn.disabled = false;
+    }
+  });
+}
 
   // ─── Copy ─────────────────────────────────────────────────────────────────────
   const copyBtn = root.querySelector("[data-copy]");
@@ -246,6 +287,10 @@
   const clearBtn = root.querySelector("[data-clear]");
   if (clearBtn) {
     clearBtn.addEventListener("click", () => {
+      lastExecutionId = null;
+      isBookmarked = false;
+      const bBtn = root.querySelector("[data-bookmark]");
+      if (bBtn) { bBtn.disabled = true; bBtn.textContent = "Bookmark"; bBtn.classList.remove("bookmarked"); }
       extractedPdfText = "";
       pdfMeta = { filename: "", words: 0, chars: 0, uploadedAt: "" };
       if (fileInput)       fileInput.value       = "";

@@ -593,17 +593,24 @@ class YAMLGen:
                 slug="YAML-GENERATOR",
             )
         tool_id = tool.id if tool else "YAML-GENERATOR"
-        
+        execution_id: Optional[str] = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
                 output=res,
             )
+            execution_id = execution.id
         except Exception:
             pass
 
         # Step 7: Return response
-        return res
+        response = KubernetesGeneratorResponse(
+            summary=summary,
+            resources=resources,
+            files=files,
+            execution_id=execution_id,
+        )
+        return response

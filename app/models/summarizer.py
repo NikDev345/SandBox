@@ -34,6 +34,7 @@ class SummarizeResponse(BaseModel):
         ...,
         description="Generated summary."
     )   
+    execution_id: str | None = Field(default=None, description="Execution ID for bookmarking.")
 
 
 class ExtractResponse(BaseModel):

@@ -8,6 +8,8 @@
   const themeToggle = document.getElementById('themeToggle');
   const iconMoon = document.getElementById('themeIconMoon');
   const iconSun = document.getElementById('themeIconSun');
+  let lastExecutionId = null;
+  let isBookmarked = false;
 
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
@@ -708,6 +710,14 @@
 
     selectFile(0);
     showPanel(resultsState);
+    lastExecutionId = data.execution_id ?? null;
+isBookmarked = false;
+const bBtn = document.getElementById('bookmarkBtn');
+if (bBtn) {
+  bBtn.disabled = !lastExecutionId;
+  bBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>Bookmark</span>`;
+  bBtn.classList.remove('bookmarked');
+}
     showToast('Manifests generated', 'success');
   }
 
@@ -718,6 +728,35 @@
     Array.from(resourcePillsEl.children).forEach((p) => p.classList.remove('active'));
     yamlCodeEl.innerHTML = highlightYaml(currentFiles[idx].content);
   }
+
+  document.getElementById('bookmarkBtn').addEventListener('click', async () => {
+  if (!lastExecutionId || isBookmarked) return;
+
+  const btn = document.getElementById('bookmarkBtn');
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/bookmarks', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ execution_id: lastExecutionId }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Failed to bookmark.');
+    }
+
+    isBookmarked = true;
+    btn.classList.add('bookmarked');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>Bookmarked</span>`;
+    showToast('Saved to bookmarks', 'success');
+  } catch (e) {
+    showToast(e.message || 'Bookmark failed', 'error');
+    btn.disabled = false;
+  }
+});
 
   /* Copy / Download */
   document.getElementById('copyBtn').addEventListener('click', async () => {

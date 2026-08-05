@@ -64,6 +64,7 @@
     cardsGrid: document.getElementById('ytsCardsGrid'),
     copyAllBtn: document.getElementById('ytsCopyAllBtn'),
     newBtn: document.getElementById('ytsNewBtn'),
+    bookmarkBtn: document.getElementById('ytsBookmarkBtn'),
   };
 
   const styleCards = Array.from(document.querySelectorAll('.yts-style-card'));
@@ -82,6 +83,8 @@
     isGenerating: false,
     lastResult: null,
     previewDebounce: null,
+    executionId: null,
+    isBookmarked: false,
   };
 
   let overlayHintTimer = null;
@@ -395,6 +398,17 @@
   }
 
   function renderResults(data) {
+    state.executionId = data.execution_id ?? null;
+state.isBookmarked = false;
+if (els.bookmarkBtn) {
+  els.bookmarkBtn.disabled = !state.executionId;
+  els.bookmarkBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+    </svg>
+    Bookmark`;
+  els.bookmarkBtn.classList.remove('yts-pill-btn--bookmarked');
+}
     els.cardsGrid.innerHTML = '';
 
     SECTION_DEFS.forEach((def) => {
@@ -668,6 +682,17 @@
   }
 
   function resetForNewSummary() {
+    state.executionId = null;
+state.isBookmarked = false;
+if (els.bookmarkBtn) {
+  els.bookmarkBtn.disabled = true;
+  els.bookmarkBtn.classList.remove('yts-pill-btn--bookmarked');
+  els.bookmarkBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+    </svg>
+    Bookmark`;
+}
     els.results.classList.remove('yts-results--visible');
     els.cardsGrid.innerHTML = '';
     state.lastResult = null;
@@ -683,6 +708,38 @@
      EVENT BINDING + INIT
   ============================================================ */
   function bindEvents() {
+    if (els.bookmarkBtn) {
+  els.bookmarkBtn.addEventListener('click', async () => {
+    if (!state.executionId || state.isBookmarked) return;
+
+    els.bookmarkBtn.disabled = true;
+
+    try {
+      const res = await fetch('/bookmarks', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ execution_id: state.executionId }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Failed to bookmark.');
+      }
+
+      state.isBookmarked = true;
+      els.bookmarkBtn.classList.add('yts-pill-btn--bookmarked');
+      els.bookmarkBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+        Bookmarked`;
+    } catch (e) {
+      // re-enable on failure
+      els.bookmarkBtn.disabled = false;
+    }
+  });
+}
     els.urlInput.addEventListener('input', handleUrlInputChange);
     els.urlInput.addEventListener('focus', () => setInputFocused(true));
     els.urlInput.addEventListener('blur', () => setInputFocused(false));

@@ -67,14 +67,16 @@ class SummarizerService:
 # -------------------------
 
         # Save execution history where possible. Use fallback tool_id when needed.
+        execution_id: str | None = None
         try:
-            ExecutionService.create_execution(
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=json.dumps({"text": text, "length": length, "instructions": instructions,}),
                 output=summary,
             )
+            execution_id = execution.id 
         except Exception:
             # don't block returning the summary if history save fails in dev
             pass
@@ -82,4 +84,4 @@ class SummarizerService:
         # Return Summary
         # -------------------------
 
-        return summary
+        return summary, execution_id

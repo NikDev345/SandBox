@@ -1,6 +1,5 @@
 from enum import Enum
-from typing import List
-
+from typing import List, Optional
 from pydantic import BaseModel, Field, HttpUrl
 
 
@@ -61,3 +60,5 @@ class YouTubeSummaryResponse(BaseModel):
     keywords: List[str]
 
     processing_time: float
+    
+    execution_id: Optional[str] = None
