@@ -343,7 +343,6 @@ class SSExplainer:
         )
 
         # Metadata can be logged if required
-        # logger.info(metadata.model_dump())
 
         # 5. Process image
         processed_image = SSExplainer._process_image(validated_image)

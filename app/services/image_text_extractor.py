@@ -98,7 +98,6 @@ class ImageTextExtractorService:
             if self._initialized:
                 return
             self._initialized = True
-            logger.info("ImageTextExtractorService initialised.")
 
     # ------------------------------------------------------------------
     # Public API
@@ -127,7 +126,6 @@ class ImageTextExtractorService:
             RuntimeError: If OCR extraction fails for any reason.
         """
         filename: str = file.filename or "unknown"
-        logger.info("OCR started | file=%s", filename)
         start_time: float = time.perf_counter()
 
         try:
@@ -153,13 +151,6 @@ class ImageTextExtractorService:
             result: OCRResult = self._build_result(ocr_raw, statistics, warnings, filename,request)
             response: ImageTextExtractorResponse = self._build_response(result, request)
 
-            logger.info(
-                "OCR completed | file=%s | chars=%d | confidence=%.2f | elapsed=%.3fs",
-                filename,
-                statistics.characters,
-                statistics.confidence,
-                elapsed,
-            )
             
             user_input = json.dumps({
                 "filename": filename,

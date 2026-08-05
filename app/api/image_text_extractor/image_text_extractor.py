@@ -14,7 +14,6 @@ Responsibilities
 
 from __future__ import annotations
 from sqlalchemy.orm import Session
-import logging
 from typing import Annotated
 
 from fastapi import (
@@ -37,7 +36,6 @@ from app.services.image_text_extractor import (
 )
 from app.utils.auth import get_current_user
 
-logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/image-text-extractor",
@@ -85,11 +83,6 @@ async def extract_text(
     - TIFF
     """
 
-    logger.info(
-        "Image OCR request | user=%s | file=%s",
-        current_user.get("sub"),
-        image.filename,
-    )
 
     if image.content_type not in SUPPORTED_CONTENT_TYPES:
         raise HTTPException(
@@ -113,21 +106,11 @@ async def extract_text(
             db=db,
         )
 
-        logger.info(
-            "OCR completed | user=%s | success=%s",
-            current_user.get("sub"),
-            response.success,
-        )
 
         return response
 
     except ValueError as exc:
 
-        logger.warning(
-            "Validation failed | user=%s | %s",
-            current_user.get("sub"),
-            exc,
-        )
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -136,10 +119,6 @@ async def extract_text(
 
     except RuntimeError as exc:
 
-        logger.exception(
-            "OCR runtime error | user=%s",
-            current_user.get("sub"),
-        )
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -148,10 +127,6 @@ async def extract_text(
 
     except Exception as exc:
 
-        logger.exception(
-            "Unexpected OCR exception | user=%s",
-            current_user.email,
-        )
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

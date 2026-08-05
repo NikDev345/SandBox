@@ -19,7 +19,6 @@ No business logic, no formatting, no file I/O.
 
 from __future__ import annotations
 
-import logging
 import os
 import re
 import time
@@ -37,7 +36,6 @@ from app.services.table_extractor.parser import (
     TableStructure,
 )
 
-logger = logging.getLogger(__name__)
 
 # Use most of the available cores, leaving headroom for the web server's
 # own request handling threads.
@@ -268,7 +266,6 @@ def _parse_html_to_structure(
         row_idx += 1
 
     if not cells:
-        logger.debug("HTML parser produced no cells from table HTML.")
         return None
 
     return TableStructure(cells=cells)
@@ -328,13 +325,11 @@ class PaddleTableClient:
         if self._layout_model is None:
             from paddleocr import LayoutDetection  # noqa: PLC0415
 
-            logger.info("Initializing LayoutDetection (table region finder)…")
             self._layout_model = LayoutDetection(
                 model_name="PP-DocLayout-L",
                 enable_mkldnn=False,
                 cpu_threads=DEFAULT_CPU_THREADS,
             )
-            logger.info("LayoutDetection ready.")
         return self._layout_model
 
     @property
@@ -343,13 +338,11 @@ class PaddleTableClient:
         if self._table_model is None:
             from paddleocr import TableStructureRecognition  # noqa: PLC0415
 
-            logger.info("Initializing PaddleOCR TableStructureRecognition (SLANet)…")
             self._table_model = TableStructureRecognition(
                 model_name="SLANet",
                 enable_mkldnn=False,
                 cpu_threads=DEFAULT_CPU_THREADS,
             )
-            logger.info("TableStructureRecognition ready.")
         return self._table_model
 
     @property
@@ -358,7 +351,6 @@ class PaddleTableClient:
         if self._ocr_model is None:
             from paddleocr import PaddleOCR  # noqa: PLC0415
 
-            logger.info("Initializing PaddleOCR text engine…")
             self._ocr_model = PaddleOCR(
                 use_angle_cls=True,
                 lang="en",
@@ -367,7 +359,6 @@ class PaddleTableClient:
                 text_detection_model_name="PP-OCRv5_mobile_det",
                 text_recognition_model_name="PP-OCRv5_mobile_rec",
             )
-            logger.info("PaddleOCR text engine ready.")
         return self._ocr_model
 
     # ------------------------------------------------------------------
@@ -398,13 +389,9 @@ class PaddleTableClient:
         regions = self._detect_table_regions(image)
 
         if not regions:
-            logger.info(
-                "No table regions found by layout detection; "
-                "falling back to treating full page as one table."
-            )
             regions = [BoundingBox(0.0, 0.0, float(image.width), float(image.height))]
         else:
-            logger.info("Layout detection found %d table region(s).", len(regions))
+            print("Layout detection found %d table region(s).", len(regions))
 
         structures: List[TableStructure] = []
 
@@ -418,11 +405,6 @@ class PaddleTableClient:
             structure = self._offset_structure(structure, offset_x, offset_y)
             structures.append(structure)
 
-        logger.info(
-            "run_table_detection: %d table structure(s) extracted from %d region(s) "
-            "in %.3fs",
-            len(structures), len(regions), time.monotonic() - start,
-        )
         return structures
 
     def run_ocr(self, image: Image.Image, skip_preprocessing: bool = False) -> OcrResult:
@@ -458,16 +440,10 @@ class PaddleTableClient:
             else:
                 raw = self._ocr.predict(img_array)
         except Exception as exc:  # noqa: BLE001
-            logger.error("PaddleOCR.ocr() failed: %s", exc, exc_info=True)
             return OcrResult(data=[], item_count=0)
-        finally:
-            logger.info(
-                "run_ocr: predict() took %.3fs (skip_preprocessing=%s)",
-                time.monotonic() - start, skip_preprocessing,
-            )
+        
 
         ocr_items = self._normalize_ocr_result(raw)
-        logger.debug("run_ocr: %d OCR item(s) recognized.", len(ocr_items))
         return OcrResult(data=ocr_items, item_count=len(ocr_items))
 
     # ------------------------------------------------------------------
@@ -488,7 +464,6 @@ class PaddleTableClient:
         try:
             raw = self._layout.predict(img_array)
         except Exception as exc:  # noqa: BLE001
-            logger.error("Layout detection failed: %s", exc, exc_info=True)
             return []
 
         if not isinstance(raw, (list, tuple)):
@@ -556,7 +531,7 @@ class PaddleTableClient:
                     boxes.append(bbox)
 
         except Exception as exc:  # noqa: BLE001
-            logger.error(
+            raise ValueError(
                 "Failed to normalize layout detection result: %s", exc, exc_info=True
             )
 
@@ -597,10 +572,6 @@ class PaddleTableClient:
 
         # Guard against a degenerate region collapsing to zero area.
         if right <= left or bottom <= top:
-            logger.warning(
-                "Degenerate table region %s on %dx%d page; using full page instead.",
-                region, image.width, image.height,
-            )
             return image, 0.0, 0.0
 
         crop = image.crop((left, top, right, bottom))
@@ -669,16 +640,7 @@ class PaddleTableClient:
         try:
             raw = self._table.predict(img_array)
         except Exception as exc:  # noqa: BLE001
-            logger.error(
-                "SLANet prediction failed on region %d: %s",
-                region_index, exc, exc_info=True,
-            )
             return None
-        finally:
-            logger.debug(
-                "_run_structure_recognition: region %d predict() took %.3fs",
-                region_index, time.monotonic() - start,
-            )
 
         if not isinstance(raw, (list, tuple)):
             raw = [raw]
@@ -688,7 +650,6 @@ class PaddleTableClient:
             if structure is not None:
                 return structure
 
-        logger.debug("Region %d produced no usable table structure.", region_index)
         return None
 
     # ------------------------------------------------------------------
@@ -750,30 +711,15 @@ class PaddleTableClient:
                 bboxes = list(raw_item[1]) if raw_item[1] else []
 
             else:
-                logger.warning(
-                    "Unexpected SLANet result type: %s",
-                    type(raw_item).__name__,
-                )
                 return None
 
             if not html.strip():
-                logger.debug("SLANet returned empty HTML.")
                 return None
 
-            logger.debug(
-                "Normalized table prediction | html_length=%d | cells=%d",
-                len(html),
-                len(bboxes),
-            )
 
             return _parse_html_to_structure(html, bboxes)
 
         except Exception as exc:  # noqa: BLE001
-            logger.error(
-                "Failed to normalize table prediction: %s",
-                exc,
-                exc_info=True,
-            )
             return None
 
     def _normalize_ocr_result(self, raw) -> List[OCRItem]:
@@ -857,17 +803,16 @@ class PaddleTableClient:
                     )
 
                 except Exception as exc:
-                    logger.debug(
+                    raise ValueError(
                         "Skipping malformed OCR detection: %s",
                         exc,
                     )
 
         except Exception as exc:
-            logger.error(
+            raise ValueError(
                 "Failed to normalize OCR results: %s",
                 exc,
                 exc_info=True,
             )
 
-        logger.debug("Normalized %d OCR items.", len(items))
         return items

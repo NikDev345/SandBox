@@ -19,13 +19,11 @@ Supported Engines
 
 from __future__ import annotations
 
-import logging
 import os
 
 from app.services.ocr.base import BaseOCRClient
 from app.services.ocr.rapidocr_client import RapidOCRClient
 
-logger = logging.getLogger(__name__)
 
 # ==========================================================
 # Configuration
@@ -43,7 +41,6 @@ def create_ocr_client() -> BaseOCRClient:
     """
 
     if OCR_ENGINE == "rapid":
-        logger.info("Using RapidOCR engine.")
         return RapidOCRClient()
 
     raise ValueError(

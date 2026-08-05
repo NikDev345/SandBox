@@ -13,9 +13,7 @@ Formatting decisions belong to TableFormatter.
 
 from __future__ import annotations
 
-import logging
-import mimetypes
-import time, json
+import time, json, mimetypes
 from pathlib import Path
 from typing import List, Optional, Tuple
 from sqlalchemy.orm import Session
@@ -35,7 +33,6 @@ from app.services.table_extractor.parser import ParsedTable, TableParser
 from app.services.table_extractor.pdf_processor import PDFProcessor
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
-logger = logging.getLogger(__name__)
 
 
 # ------------------------------------------------------------------------------
@@ -153,7 +150,6 @@ class TableExtractor:
             pages = self._load_pages(file_path, file_type)
 
             if not pages:
-                logger.warning("No pages could be loaded from %s", file_path)
                 response = self._create_response(
                     success=True,
                     tables=[],
@@ -165,7 +161,6 @@ class TableExtractor:
                 ).to_dict()
                 return response, file_type
 
-            logger.info("Loaded %d page(s) from %s", len(pages), file_path)
 
             all_parsed_tables: List[dict] = []
             total_ocr_items = 0
@@ -175,24 +170,15 @@ class TableExtractor:
                 try:
                     page_result = self._process_page(image, page_number, fast_mode)
                 except Exception as exc:  # noqa: BLE001
-                    logger.error(
-                        "Failed to process page %d of %s: %s",
-                        page_number, file_path, exc, exc_info=True,
-                    )
                     continue
 
                 parsed_tables = self._parse_tables(page_result)
                 all_parsed_tables.extend(parsed_tables)
                 total_ocr_items += page_result.ocr_result.item_count
 
-                logger.info(
-                    "Processed page %d/%d in %.3fs (%d table(s) found)",
-                    page_number, len(pages), time.monotonic() - page_start,
-                    len(parsed_tables),
-                )
 
             if not all_parsed_tables:
-                logger.warning("No tables detected in %s", file_path)
+                raise ValueError("No tables detected in %s", file_path)
 
             output_path = self._format_output(all_parsed_tables, output_format)
 
@@ -214,11 +200,9 @@ class TableExtractor:
             return response, file_type
 
         except TableExtractorError as exc:
-            logger.error("Extraction failed for %s: %s", file_path, exc)
             response = self._create_error_response(str(exc), output_format, start_time).to_dict()
             return response, file_type
         except Exception as exc:  # noqa: BLE001
-            logger.exception("Unexpected error extracting %s", file_path)
             response = self._create_error_response(
                 f"Unexpected error: {exc}", output_format, start_time
             ).to_dict()
@@ -259,7 +243,7 @@ class TableExtractor:
             )
             response["execution_id"] = execution.id
         except Exception:
-            logger.warning("Failed to record execution log for %s", file_path, exc_info=True)
+            pass
         
         return response
 
@@ -308,7 +292,6 @@ class TableExtractor:
                 f"Unsupported MIME type '{mime_type}' for file: {file_path}"
             )
 
-        logger.info("File validated: %s (%.2f KB)", file_path, size / 1024)
 
     # --------------------------------------------------------------------------
     # File Type Detection
@@ -342,7 +325,6 @@ class TableExtractor:
                 ) from exc
 
             if not pages:
-                logger.warning("PDF %s contains no pages.", file_path)
                 return []
 
             return pages
@@ -389,16 +371,8 @@ class TableExtractor:
         try:
             predictions = self._table_client.run_table_detection(image)
         except Exception as exc:  # noqa: BLE001
-            logger.error(
-                "Table detection failed on page %d: %s",
-                page_number, exc, exc_info=True,
-            )
             return []
 
-        logger.debug(
-            "Table detection found %d candidate table(s) on page %d",
-            len(predictions), page_number,
-        )
         return predictions
 
     def _run_ocr(
@@ -408,15 +382,8 @@ class TableExtractor:
         try:
             ocr_result = self._table_client.run_ocr(image, skip_preprocessing=fast_mode)
         except Exception as exc:  # noqa: BLE001
-            logger.error(
-                "OCR failed on page %d: %s", page_number, exc, exc_info=True
-            )
             return OcrResult()
 
-        logger.debug(
-            "OCR completed on page %d with %d recognized item(s)",
-            page_number, ocr_result.item_count,
-        )
         return ocr_result
 
     # --------------------------------------------------------------------------
@@ -430,11 +397,9 @@ class TableExtractor:
         ocr_data = page_result.ocr_result.data
 
         if not table_predictions:
-            logger.debug("No table structure predictions on page %d, skipping parse.", page_number)
             return []
 
         if not ocr_data:
-            logger.warning("No OCR predictions available for page %d.", page_number)
             return []
 
         parsed_tables: List[dict] = []
@@ -448,10 +413,6 @@ class TableExtractor:
                     table_index,
                 )
             except Exception as exc:  # noqa: BLE001
-                logger.error(
-                    "Parser failed on page %d, table %d: %s",
-                    page_number, table_index, exc, exc_info=True,
-                )
                 continue
 
             if parsed:
@@ -476,18 +437,8 @@ class TableExtractor:
         for table in parsed:
             meta = table.metadata
             if meta.row_count <= 1 or meta.col_count <= 1:
-                logger.info(
-                    "Dropping degenerate table (page=%d index=%d rows=%d cols=%d "
-                    "matched_ocr=%d) — likely a spurious layout-detection region.",
-                    table.page, table.table_index, meta.row_count, meta.col_count,
-                    meta.matched_ocr_items,
-                )
                 continue
             if meta.matched_ocr_items == 0:
-                logger.info(
-                    "Dropping empty table (page=%d index=%d) — no OCR content matched.",
-                    table.page, table.table_index,
-                )
                 continue
             kept.append(table)
         return kept
@@ -499,21 +450,15 @@ class TableExtractor:
     def _format_output(self, tables: List[dict], output_format: str) -> Optional[str]:
         """Request formatting from TableFormatter; exporting is its concern."""
         if output_format not in self._config.supported_output_formats:
-            logger.warning(
-                "Unsupported output format '%s', falling back to '%s'.",
-                output_format, self._config.default_output_format,
-            )
             output_format = self._config.default_output_format
 
         if not tables:
-            logger.info("Skipping formatting step: no tables to format.")
             return None
 
         try:
             filename = f"extraction_{int(time.time())}"
             return self._formatter.export(tables, filename, output_format)
         except Exception as exc:  # noqa: BLE001
-            logger.error("Formatting failed: %s", exc, exc_info=True)
             return None
 
     # --------------------------------------------------------------------------
@@ -534,7 +479,6 @@ class TableExtractor:
             processing_time=round(processing_time, 3),
             ocr_items=ocr_item_count,
         )
-        logger.info("Processing statistics: %s", statistics.to_dict())
         return statistics
 
     # --------------------------------------------------------------------------

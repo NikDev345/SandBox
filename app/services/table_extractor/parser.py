@@ -449,7 +449,7 @@ class TableParser:
 
         eligible_ocr_items = self._filter_ocr_items(ocr_items)
         if not eligible_ocr_items:
-            logger.warning(
+            print(
                 "No eligible OCR items for page %d, table %d.", page_number, table_index
             )
 
@@ -571,10 +571,6 @@ class TableParser:
         columns = self._build_columns_from_rows(rows)
 
         if not rows or not columns:
-            logger.warning(
-                "Table reconstruction produced no rows/columns for page %d, table %d.",
-                page_number, table_index,
-            )
             return []
 
         headers = self._extract_header_texts(rows)
@@ -598,16 +594,6 @@ class TableParser:
             stacked_rows_split=stacked_rows_split,
         )
 
-        logger.info(
-            "Parsed table page=%d index=%d rows=%d cols=%d cells=%d "
-            "matched_ocr=%d/%d confidence=%.3f caption_rows_stripped=%d "
-            "glued_header_rows_split=%d columns_rebalanced=%d "
-            "second_chance_recovered=%d empty_rows_dropped=%d",
-            page_number, table_index, row_count, col_count, len(finalized_cells),
-            matched_count, len(ocr_items), table_confidence,
-            caption_rows_stripped, glued_header_rows_split, columns_rebalanced,
-            second_chance_recovered, empty_rows_dropped,
-        )
 
         return [ParsedTable(
             page=page_number,
@@ -839,17 +825,11 @@ class TableParser:
                     best_cell = cell
 
             if best_cell is not None and best_score >= self._config.second_chance_min_score:
-                logger.info(
-                    "Second-chance match: OCR '%s' -> row=%d col=%d score=%.3f "
-                    "(below primary threshold, recovered into empty cell).",
-                    item.text, best_cell.geometry.row_start,
-                    best_cell.geometry.col_start, best_score,
-                )
                 best_cell.add(item)
                 recovered += 1
 
         if recovered:
-            logger.info(
+            print(
                 "Second-chance matching recovered %d previously-unmatched OCR item(s).",
                 recovered,
             )
@@ -937,11 +917,6 @@ class TableParser:
                     left.matched_items.remove(item)
                     right.add(item)
 
-                logger.info(
-                    "Rebalanced %d OCR item(s) from row=%d col=%d into empty "
-                    "neighbor col=%d.",
-                    len(movable), r, c, c + 1,
-                )
                 rebalanced += 1
 
         return rebalanced
@@ -1134,10 +1109,6 @@ class TableParser:
             next_row += 2
 
         new_row_count = next_row
-        logger.info(
-            "Split %d stacked grid row(s); row_count %d -> %d",
-            len(rows_to_split), row_count, new_row_count,
-        )
         return new_cells, new_row_count, col_count, len(rows_to_split)
 
     def _fill_missing_cells(
@@ -1252,10 +1223,6 @@ class TableParser:
             )
 
         new_row_count = len(kept_rows)
-        logger.info(
-            "Stripped %d caption row(s); row_count %d -> %d",
-            len(caption_rows), row_count, new_row_count,
-        )
         return new_cells, new_row_count, len(caption_rows)
 
     # --------------------------------------------------------------------------
@@ -1398,7 +1365,7 @@ class TableParser:
                 i += 1
 
         if len(merged) != len(rows):
-            logger.info(
+            print(
                 "Merged fragmented rows: %d row(s) collapsed into %d row(s).",
                 len(rows), len(merged),
             )
@@ -1486,7 +1453,6 @@ class TableParser:
 
         if dropped:
             kept = [replace(row, index=i) for i, row in enumerate(kept)]
-            logger.info("Dropped %d fully empty row(s).", dropped)
 
         return kept, dropped
 
@@ -1572,11 +1538,6 @@ class TableParser:
             result.append(replace(row, index=next_index))
             next_index += 1
 
-        logger.info(
-            "Split glued header/data row: %d of %d header cells had a "
-            "recoverable label.",
-            len(matched_cells), len(non_empty_cells),
-        )
         return result, 1
 
     def _build_columns_from_rows(self, rows: Sequence[TableRow]) -> List[TableColumn]:

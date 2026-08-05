@@ -16,7 +16,6 @@ Responsibilities
 from __future__ import annotations
 
 import asyncio
-import logging
 import threading
 
 from nicegui.html import output
@@ -28,9 +27,6 @@ from app.services.ocr.base import (
     OCRBlock,
     OCRResult,
 )
-
-logger = logging.getLogger(__name__)
-
 
 class RapidOCRClient(BaseOCRClient):
 
@@ -53,13 +49,11 @@ class RapidOCRClient(BaseOCRClient):
         if getattr(self, "_initialized", False):
             return
 
-        logger.info("Initializing RapidOCR...")
 
         self._ocr = RapidOCR()
 
         self._initialized = True
 
-        logger.info("RapidOCR initialized successfully.")
 
     # ---------------------------------------------------------
     # Public API
@@ -90,11 +84,6 @@ class RapidOCRClient(BaseOCRClient):
             return self._normalize(output)
 
         except Exception as exc:
-
-            logger.exception(
-                "RapidOCR execution failed."
-            )
-
             raise RuntimeError(
                 "RapidOCR extraction failed."
             ) from exc

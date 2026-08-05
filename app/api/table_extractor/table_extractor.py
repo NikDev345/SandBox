@@ -41,7 +41,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import logging
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor
@@ -63,7 +62,6 @@ from app.services.table_extractor.extractor import (
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 
-logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/table-extractor", tags=["Table Extractor"])
 
@@ -161,11 +159,6 @@ async def extract_tables(
     """Validate the upload, run table extraction, and return the result."""
     request_start = time.monotonic()
 
-    logger.info(
-        "Table extraction request received from user_id=%s filename=%s",
-        getattr(current_user, "id", "unknown"),
-        file.filename,
-    )
 
     normalized_format = _validate_output_format(output_format)
     _validate_upload_metadata(file)
@@ -174,20 +167,6 @@ async def extract_tables(
 
     try:
         temp_file_path = await _save_upload_to_temp(file)
-
-        logger.info(
-            "Saved upload for user_id=%s as temp_file=%s size=%d bytes",
-            getattr(current_user, "id", "unknown"),
-            temp_file_path.name,
-            temp_file_path.stat().st_size,
-        )
-
-        logger.info(
-            "Starting extraction for user_id=%s temp_file=%s format=%s",
-            getattr(current_user, "id", "unknown"),
-            temp_file_path.name,
-            normalized_format,
-        )
 
         # ------------------------------------------------------------
         # Run the CPU-bound extraction pipeline in a separate process,
@@ -221,17 +200,9 @@ async def extract_tables(
         )
 
         elapsed = time.monotonic() - request_start
-        logger.info(
-            "Extraction finished for user_id=%s temp_file=%s success=%s "
-            "elapsed=%.3fs",
-            getattr(current_user, "id", "unknown"),
-            temp_file_path.name,
-            response.get("success") if isinstance(response, dict) else None,
-            elapsed,
-        )
 
         if isinstance(response, dict) and not response.get("success", False):
-            logger.warning(
+            print(
                 "Extraction reported failure for user_id=%s temp_file=%s error=%s",
                 getattr(current_user, "id", "unknown"),
                 temp_file_path.name,
@@ -241,29 +212,25 @@ async def extract_tables(
         return response
 
     except FileValidationError as exc:
-        logger.warning("File validation failed during extraction: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)
         ) from exc
     except UnsupportedFileTypeError as exc:
-        logger.warning("Unsupported file type during extraction: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail=str(exc)
         ) from exc
     except DocumentLoadError as exc:
-        logger.error("Document load failure during extraction: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
         ) from exc
     except TableExtractorError as exc:
-        logger.error("Extractor error during extraction: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
         ) from exc
     except HTTPException:
         raise
     except Exception as exc:  # noqa: BLE001
-        logger.exception(
+        print(
             "Unexpected error during table extraction for user_id=%s filename=%s",
             getattr(current_user, "id", "unknown"),
             file.filename,
@@ -316,8 +283,7 @@ def _log_execution(
             output=json.dumps(response),
         )
     except Exception:
-        logger.warning("Failed to record execution log for %s", file_path.name, exc_info=True)
-
+        pass
 
 # ------------------------------------------------------------------------------
 # Validation Helpers
@@ -427,7 +393,6 @@ async def _save_upload_to_temp(file: UploadFile) -> Path:
         raise
     except OSError as exc:
         _delete_file_quietly(temp_path)
-        logger.error("Failed to write temporary upload file: %s", exc)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to save uploaded file.",
@@ -452,9 +417,8 @@ def _cleanup_temp_file(temp_file_path: Optional[Path]) -> None:
     try:
         if temp_file_path.exists():
             temp_file_path.unlink()
-            logger.info("Cleaned up temporary file: %s", temp_file_path.name)
     except OSError as exc:
-        logger.error(
+        raise OSError(
             "Failed to clean up temporary file %s: %s", temp_file_path.name, exc
         )
 
@@ -465,4 +429,4 @@ def _delete_file_quietly(path: Path) -> None:
         if path.exists():
             path.unlink()
     except OSError:
-        logger.warning("Could not remove partially written temp file: %s", path.name)
+        raise OSError("Could not remove partially written temp file: %s", path.name)
