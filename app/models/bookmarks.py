@@ -1,7 +1,16 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, String, DateTime, UniqueConstraint, func
 from app.database.engine import Base
-from pydantic import BaseModel
-from datetime import datetime
+from pydantic import BaseModel, field_validator
+from datetime import datetime, timezone, timedelta
+
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def to_ist(dt):
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(IST)
 
 class Bookmarks(Base):
     __tablename__ = "bookmarks"
@@ -29,8 +38,10 @@ class Bookmarks(Base):
     )
 
     created_at = Column(
-        DateTime,
-        default=datetime.utcnow
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
     )
     
 # request model
@@ -42,6 +53,14 @@ class BookmarkResponse(BaseModel):
     id: str
     execution_id: str
     created_at: datetime
+    
+    @field_validator("created_at", mode="before")
+    @classmethod
+    def convert_to_ist(cls, v):
+        if isinstance(v, datetime):
+            return to_ist(v)
+        return v
+
 
     class Config:
         orm_mode = True
@@ -55,6 +74,13 @@ class BookmarkItem(BaseModel):
     user_input: str
     output: str
     created_at: datetime
+    
+    @field_validator("created_at", mode="before")
+    @classmethod
+    def convert_to_ist(cls, v):
+        if isinstance(v, datetime):
+            return to_ist(v)
+        return v
     
 # List response model
 class BookmarkListResponse(BaseModel):

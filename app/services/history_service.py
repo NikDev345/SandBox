@@ -1,11 +1,19 @@
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
 from app.models.execution import Executions
 from app.models.tool import Tools
 
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def to_ist(dt):
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(IST).isoformat()
 
 class HistoryService:
 
@@ -34,15 +42,17 @@ class HistoryService:
             .all()
         )
 
-        today = datetime.utcnow().date()
+        today = datetime.now(IST).date() 
         yesterday = today - timedelta(days=1)
         last_week = today - timedelta(days=7)
 
         grouped = defaultdict(list)
 
         for execution, tool in executions:
-
-            execution_date = execution.created_at.date()
+            execution_date = (
+                execution.created_at.astimezone(IST).date()
+                if execution.created_at else None
+            )
 
             if execution_date == today:
                 section = "Today"
@@ -64,7 +74,7 @@ class HistoryService:
                 "tool_icon": tool.icon_url,
                 "user_input": execution.user_input,
                 "output": execution.output,
-                "created_at": execution.created_at.isoformat()
+                "created_at": to_ist(execution.created_at),
             })
 
         history = []
@@ -124,7 +134,7 @@ class HistoryService:
             },
             "user_input": execution.user_input,
             "output": execution.output,
-            "created_at": execution.created_at.isoformat(),
+            "created_at": to_ist(execution.created_at), 
         }
     @staticmethod
     def delete_history(

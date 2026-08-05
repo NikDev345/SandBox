@@ -38,7 +38,7 @@ class BookmarkService:
             id=str(uuid.uuid4()),
             user_id=user_id,
             execution_id=execution_id,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
         )
         try:
             db.add(bookmark)

@@ -236,26 +236,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Filter & Sort ─────────────────────────────────────── */
   function applyFilters() {
-    const q    = S.search.toLowerCase().trim();
-    const slug = S.toolFilter;
-    const cat  = S.catFilter;
-    const now  = Date.now();
-    const timeMap = { today: now - 86400000, week: now - 7*86400000, month: now - 30*86400000 };
-    const since = timeMap[S.timeFilter] || 0;
+      const q   = S.search.toLowerCase().trim();
+      const slug = S.toolFilter;
+      const cat  = S.catFilter;
+      const now  = new Date();
 
-    S.filtered = S.all.filter(bm => {
-      if (slug && bm.toolSlug !== slug) return false;
-      if (cat  && bm.toolCat  !== cat)  return false;
-      if (since && new Date(bm.bookmarkedAt).getTime() < since) return false;
-      if (q) {
-        const hay = [bm.toolName, bm.toolSlug, String(bm.input), String(bm.output)].join(' ').toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
-    applySort(); updateChips(); updateClearBtn();
+      // Midnight-based boundaries
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const timeMap = {
+          today: todayStart,
+          week:  new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7).getTime(),
+          month: new Date(now.getFullYear(), now.getMonth() - 1, now.getDate()).getTime(),
+      };
+      const since = timeMap[S.timeFilter] || 0;
+
+      S.filtered = S.all.filter(bm => {
+          if (slug && bm.toolSlug !== slug) return false;
+          if (cat  && bm.toolCat  !== cat)  return false;
+          if (since && new Date(bm.bookmarkedAt).getTime() < since) return false;
+          if (q) {
+              const hay = [bm.toolName, bm.toolSlug, String(bm.input), String(bm.output)].join(' ').toLowerCase();
+              if (!hay.includes(q)) return false;
+          }
+          return true;
+      });
+      applySort(); updateChips(); updateClearBtn();
   }
-
+  
   function applySort() {
     const dir = S.sort;
     S.sorted = [...S.filtered].sort((a, b) => {
@@ -321,17 +328,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ── Stats ─────────────────────────────────────────────── */
+  /* ── Stats ─────────────────────────────────────────────── */
   function updateStats() {
-    const now  = Date.now();
-    const day  = now - 86400000;
-    const week = now - 7 * 86400000;
-    const tools    = new Set(S.all.map(b => b.toolSlug).filter(Boolean)).size;
-    const thisWeek = S.all.filter(b => new Date(b.bookmarkedAt).getTime() >= week).length;
-    const today    = S.all.filter(b => new Date(b.bookmarkedAt).getTime() >= day).length;
-    animCount(E.statTotal, S.all.length);
-    animCount(E.statWeek,  thisWeek);
-    animCount(E.statTools, tools);
-    animCount(E.statToday, today);
+      const now     = new Date();
+      const todayStart  = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const weekStart   = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7).getTime();
+
+      const tools    = new Set(S.all.map(b => b.toolSlug).filter(Boolean)).size;
+      const thisWeek = S.all.filter(b => new Date(b.bookmarkedAt).getTime() >= weekStart).length;
+      const today    = S.all.filter(b => new Date(b.bookmarkedAt).getTime() >= todayStart).length;
+
+      animCount(E.statTotal, S.all.length);
+      animCount(E.statWeek,  thisWeek);
+      animCount(E.statTools, tools);
+      animCount(E.statToday, today);
   }
 
   function animCount(el, target) {
