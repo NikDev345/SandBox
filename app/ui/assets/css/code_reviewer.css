@@ -77,6 +77,121 @@
 
   --header-h: 64px;
 }
+.aie-why, .brn-why, .cmg-why, .cl-why, .yts-why {
+  --why-card-bg:           rgba(255,255,255,0.035);
+  --why-card-bg-hover:     rgba(255,255,255,0.065);
+  --why-card-border:       rgba(255,255,255,0.075);
+  --why-card-border-hover: rgba(255,255,255,0.14);
+  --why-icon-bg:           rgba(255,255,255,0.07);
+  --why-icon-border:       rgba(255,255,255,0.10);
+  --why-icon-color:        rgba(255,255,255,0.72);
+  --why-heading-color:     #ffffff;
+  --why-label-color:       rgba(255,255,255,0.92);
+  --why-desc-color:        rgba(255,255,255,0.45);
+  --why-sub-color:         rgba(255,255,255,0.45);
+  --why-radius-card:       14px;
+  --why-radius-icon:       9px;
+}
+ 
+/* ── Shared card / grid structure (applied via each prefix) ── */
+.aie-why-card, .brn-why-card, .cmg-why-card, .cl-why-card, .yts-why-card {
+  background: var(--why-card-bg);
+  border: 1px solid var(--why-card-border);
+  border-radius: var(--why-radius-card);
+  padding: 1.3rem 1.15rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+ 
+.aie-why-card:hover, .brn-why-card:hover, .cmg-why-card:hover,
+.cl-why-card:hover, .yts-why-card:hover {
+  background: var(--why-card-bg-hover);
+  border-color: var(--why-card-border-hover);
+  transform: translateY(-2px);
+}
+ 
+.aie-why-icon, .brn-why-icon, .cmg-why-icon, .cl-why-icon, .yts-why-icon {
+  width: 34px;
+  height: 34px;
+  background: var(--why-icon-bg);
+  border: 1px solid var(--why-icon-border);
+  border-radius: var(--why-radius-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.3rem;
+  flex-shrink: 0;
+}
+ 
+.aie-why-icon svg, .brn-why-icon svg, .cmg-why-icon svg,
+.cl-why-icon svg, .yts-why-icon svg {
+  width: 16px;
+  height: 16px;
+  color: var(--why-icon-color);
+}
+ 
+.aie-why-label, .brn-why-label, .cmg-why-label,
+.cl-why-label, .yts-why-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--why-label-color);
+  margin: 0;
+}
+ 
+.aie-why-desc, .brn-why-desc, .cmg-why-desc,
+.cl-why-desc, .yts-why-desc {
+  font-size: 0.855rem;
+  color: var(--why-desc-color);
+  line-height: 1.65;
+  margin: 0;
+}
+ 
+.cmg-why-desc code {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.07);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+ .cl-why {
+  width: 100%;
+  max-width: 960px;
+  margin: 4rem auto 2rem;
+  padding: 0 1.5rem;
+}
+ 
+.cl-why-heading {
+  font-size: clamp(1.4rem, 2.8vw, 1.85rem);
+  font-weight: 700;
+  color: var(--why-heading-color);
+  text-align: center;
+  margin: 0 0 0.55rem;
+  letter-spacing: -0.022em;
+}
+ 
+.cl-why-sub {
+  font-size: 0.9rem;
+  color: var(--why-sub-color);
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto 2.25rem;
+  line-height: 1.65;
+}
+ 
+.cl-why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+ 
+@media (max-width: 780px) { .cl-why-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .cl-why-grid { grid-template-columns: 1fr; } }
+ 
+
 
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

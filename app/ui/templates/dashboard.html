@@ -70,6 +70,15 @@
         <span>Settings</span>
       </a>
 
+      <a class="nav-item" href="/history" data-section="history">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>
+        </span>
+        <span>History</span>
+      </a>
+
+      <span class="nav-section-label" style="margin-top:8px">Tools</span>
+
       <span class="nav-section-label" style="margin-top:8px">Tools</span>
 
       <a class="nav-item" href="/sql-generator">
@@ -203,19 +212,27 @@
           <p class="eyebrow">Workspace</p>
           <h2 data-workspace-title>Your active workspace</h2>
           <p data-workspace-subtitle>Sign in to sync your tools, history, and saved workflows.</p>
+
+          <div class="workspace-user-row">
+            <img class="workspace-user-avatar" data-workspace-avatar src="/assets/default_avatar.png" alt="User avatar">
+            <div class="workspace-user-meta">
+              <strong data-workspace-name>Workspace</strong>
+              <span data-workspace-email>Not signed in</span>
+            </div>
+          </div>
         </div>
         <div class="workspace-metrics-area" aria-label="Workspace detail metrics">
           <div class="workspace-metric-row">
             <span>Tools</span>
-            <strong data-metric="totalTools">--</strong>
+            <strong data-workspace-tools>--</strong>
           </div>
           <div class="workspace-metric-row">
-            <span>Uptime</span>
-            <strong data-metric="uptime">--</strong>
+            <span>Daily Credits</span>
+            <strong data-workspace-credits>--</strong>
           </div>
           <div class="workspace-metric-row">
-            <span>Executions</span>
-            <strong data-metric="executions">--</strong>
+            <span>Total Executions</span>
+            <strong data-workspace-executions>--</strong>
           </div>
         </div>
       </section>
