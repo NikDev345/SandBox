@@ -2174,3 +2174,10 @@
     /* already has these, just add: */
     height: 100vh;
 }
+.settings-avatar {
+    cursor: pointer;
+    position: relative;
+}
+.settings-avatar-edit:hover .avatar-overlay {
+  opacity: 1 !important;
+}

@@ -185,9 +185,15 @@ class SettingsManager {
       this.passwordInput.addEventListener('input', (e) => this.updatePasswordStrength(e));
     }
 
-    document.querySelectorAll('.settings-avatar-edit input').forEach(input => {
-      input.addEventListener('change', (e) => this.handleAvatarUpload(e));
-    });
+    const avatarInput = document.getElementById("avatarUpload");
+
+if (avatarInput) {
+    avatarInput.addEventListener("change", (e) => this.handleAvatarUpload(e));
+}
+
+document.querySelector(".settings-avatar")?.addEventListener("click", () => {
+    avatarInput?.click();
+});
 
     document.querySelectorAll('[data-settings-section]').forEach(link => {
       link.addEventListener('click', (e) => {
@@ -674,17 +680,34 @@ class SettingsManager {
   }
 
   handleAvatarUpload(e) {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = e.target.closest('.settings-avatar').querySelector('img');
-      img.src = event.target.result;
-      this.showToast('Avatar updated', 'success');
-    };
-    reader.readAsDataURL(file);
-  }
+    // Preview immediately
+    const previewUrl = URL.createObjectURL(file);
+    document.querySelectorAll(".settings-avatar-img, [data-user-avatar], [data-workspace-avatar]")
+        .forEach(img => img.src = previewUrl);
+
+    // Upload to server
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    fetch("/user/avatar", {
+        method: "POST",
+        credentials: "include",
+        body: formData
+    })
+    .then(res => {
+        if (res.ok) {
+            this.showToast("Avatar updated successfully.", "success");
+        } else {
+            this.showToast("Failed to upload avatar.", "error");
+        }
+    })
+    .catch(() => {
+        this.showToast("Network error uploading avatar.", "error");
+    });
+}
 
   showLoadingState(form) {
     const submitBtn = form.querySelector('button[type="submit"]');

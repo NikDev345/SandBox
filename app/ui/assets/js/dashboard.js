@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initializeScrollSpy();
     await loadAppearance();
 
+
     // =======================================================
     // Theme
     // =======================================================
