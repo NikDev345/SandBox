@@ -42,8 +42,8 @@ class ProConsService:
         final = ProConsService._validate_response(parsed_res)
         
         user_output = json.dumps({
-            "pros": final.pros,
-            "cons": final.cons,
+            "pros": [p.model_dump() for p in final.pros],
+            "cons": [c.model_dump() for c in final.cons],
         })
         
         tool = ToolService.get_tool_by_slug(

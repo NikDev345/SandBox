@@ -380,7 +380,7 @@ class SSExplainer:
         user_input = json.dumps({
             "filename": image.filename,
             "content_type": image.content_type,
-            "size": len(image),
+            "size": file_size,
             "actions": request.model_dump_json(),
         })
         

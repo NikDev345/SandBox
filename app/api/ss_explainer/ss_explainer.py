@@ -51,8 +51,8 @@ async def explain_screenshot(
             detail=str(e),
         )
 
-    except Exception:
+    except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred while explaining the screenshot.",
+            detail=f"An unexpected error occurred while explaining the screenshot: {str(e)}",
         )
