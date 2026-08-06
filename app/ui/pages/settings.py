@@ -9,6 +9,8 @@ def settings():
     <link rel="stylesheet" href="/assets/css/animations.css">
     <link rel="stylesheet" href="/assets/css/dashboard.css">
     <link rel="stylesheet" href="/assets/css/settings.css">
+    <link rel="stylesheet" href="/assets/css/appearance.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
     """))
 
     ui.add_body_html("""

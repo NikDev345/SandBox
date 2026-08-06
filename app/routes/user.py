@@ -1,9 +1,10 @@
 # it contains all the apis of user panel related to apperance and user settings
 
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException
+import os
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
-
+import uuid
 from app.database.engine import get_db
 from app.utils.auth import get_current_user
 from app.services.user_service import UserService
@@ -101,19 +102,37 @@ def update_appearance(
             "animations": user.animations
         }
     }
+AVATAR_DIR = "static/avatars"
+os.makedirs(AVATAR_DIR, exist_ok=True)
     
-    
-@router.put("/avatar")
-def update_avatar(
-    data: dict,
+@router.post("/avatar")
+async def upload_avatar(
+    avatar: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
+    # Validate type
+    if avatar.content_type not in ("image/jpeg", "image/png", "image/webp", "image/gif"):
+        raise HTTPException(status_code=400, detail="Invalid image type.")
+
+    # Validate size (2MB max)
+    contents = await avatar.read()
+    if len(contents) > 2 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image too large. Max 2MB.")
+
+    ext = avatar.filename.rsplit(".", 1)[-1].lower()
+    filename = f"{current_user['sub']}_{uuid.uuid4().hex[:8]}.{ext}"
+    filepath = os.path.join(AVATAR_DIR, filename)
+
+    with open(filepath, "wb") as f:
+        f.write(contents)
+
+    avatar_url = f"/static/avatars/{filename}"
 
     user = UserService.update_avatar(
         db=db,
         current_user=current_user,
-        avatar_url=data.get("avatar_url")
+        avatar_url=avatar_url
     )
 
     return {

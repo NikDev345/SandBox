@@ -45,9 +45,12 @@ class CommitMessageGenerator:
                     "rev-parse",
                     "--is-inside-work-tree",
                 ],
+                cwd=repo,
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
+                encoding = "utf-8",
+                errors = "replace"
             )
             
             if result.stdout.strip().lower() != "true":
@@ -74,7 +77,9 @@ class CommitMessageGenerator:
             cwd=repo,
             capture_output=True,
             text=True,
-            check=False
+            encoding="utf-8",
+            errors="replace",
+            check=False,
         )
         
         if result.returncode == 1:
@@ -99,6 +104,8 @@ class CommitMessageGenerator:
                 cwd=repo,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             
             if result.returncode != 0:

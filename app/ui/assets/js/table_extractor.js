@@ -1,11 +1,3 @@
-/**
- * Table Extractor — Frontend Logic
- * Vanilla JS, no external dependencies.
- * Scoped under the "te" namespace.
- */
-
-'use strict';
-
 /* ============================================================
    STATE
    ============================================================ */
@@ -343,6 +335,7 @@ async function extractTables() {
     await sleep(400);
 
     state.result = data;
+    console.log('execution_id:', data.execution_id);
     state.executionId = data.execution_id ?? null;
     state.isBookmarked = false;
     resetBookmarkBtn();
@@ -373,40 +366,43 @@ function resetBookmarkBtn() {
   btn.classList.remove('te-bookmark--saved');
   btn.querySelector('span') && (btn.querySelector('span').textContent = 'Bookmark');
 }
-
-document.getElementById('te-bookmark-btn').addEventListener('click', async () => {
-  if (!state.executionId || state.isBookmarked) return;
-
+function initBookmark() {
   const btn = document.getElementById('te-bookmark-btn');
-  btn.disabled = true;
+  if (!btn) return;
 
-  try {
-    const res = await fetch('/bookmarks', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ execution_id: state.executionId }),
-    });
+  btn.addEventListener('click', async () => {
+    if (!state.executionId || state.isBookmarked) return;
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || 'Failed to bookmark.');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/bookmarks', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ execution_id: state.executionId }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || 'Failed to bookmark.');
+      }
+
+      state.isBookmarked = true;
+      btn.classList.add('te-bookmark--saved');
+      btn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-2.5L3 14V3a1 1 0 0 1 1-1Z"/>
+        </svg>
+        Bookmarked`;
+      showToast('Saved to bookmarks', 'success');
+
+    } catch (e) {
+      showToast(e.message || 'Bookmark failed', 'error');
+      btn.disabled = false;
     }
-
-    state.isBookmarked = true;
-    btn.classList.add('te-bookmark--saved');
-    btn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-        <path d="M4 2h8a1 1 0 0 1 1 1v11l-5-2.5L3 14V3a1 1 0 0 1 1-1Z"/>
-      </svg>
-      Bookmarked`;
-    showToast('Saved to bookmarks', 'success');
-  } catch (e) {
-    showToast(e.message || 'Bookmark failed', 'error');
-    btn.disabled = false;
-  }
-});
-
+  });
+}
 function renderResults(data) {
   renderStatCards(data);
   renderTable(data);
@@ -864,6 +860,7 @@ function boot() {
   initExport();
   initGenerateButton();
   initErrorButtons();
+  initBookmark(); 
   showScreen('screen-upload');
 }
 

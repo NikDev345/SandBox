@@ -16,6 +16,7 @@ from __future__ import annotations
 import time, json, mimetypes
 from pathlib import Path
 from typing import List, Optional, Tuple
+from numpy import record
 from sqlalchemy.orm import Session
 from PIL import Image
 
@@ -217,7 +218,7 @@ class TableExtractor:
         fast_mode: bool,
         file_type: Optional[str],
         response: dict,
-    ) -> None:
+    ) ->  Optional[str]:
         """
         Record an execution log entry for this extraction run. Requires a
         live DB session, so it must run in the same process that owns
@@ -241,11 +242,9 @@ class TableExtractor:
                 user_input=json.dumps(validated_input),
                 output=json.dumps(response),
             )
-            response["execution_id"] = execution.id
+            return execution.id if execution else None
         except Exception:
-            pass
-        
-        return response
+            return None
 
     # --------------------------------------------------------------------------
     # Validation

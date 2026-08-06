@@ -3,7 +3,8 @@ from fastapi import (
     Depends,
     HTTPException,
 )
-
+from sqlalchemy.orm import Session
+from app.database.engine import get_db
 from app.utils.auth import get_current_user
 from app.models.youtube_summarizer import (
     YouTubeSummaryRequest,
@@ -28,6 +29,7 @@ youtube_summarizer_service = YouTubeSummarizerService()
 async def generate_summary(
     request: YouTubeSummaryRequest,
     current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Generate a structured summary for a YouTube video.
@@ -36,7 +38,9 @@ async def generate_summary(
     try:
 
         return await youtube_summarizer_service.generate(
-            request
+            request=request,
+            user_id=current_user['sub'],
+            db=db,
         )
 
     except ValueError as e:

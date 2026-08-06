@@ -104,10 +104,6 @@
     actionBar:        $("er-action-bar"),
 
     // Output card content
-    outSubject:       $("er-out-subject"),
-    outGreeting:      $("er-out-greeting"),
-    outBody:          $("er-out-body"),
-    outClosing:       $("er-out-closing"),
     outFull:          $("er-out-full"),
     outSuggestions:   $("er-out-suggestions"),
 
@@ -299,10 +295,6 @@
 
 
     // Populate card content
-    DOM.outSubject.textContent   = data.subject   || "—";
-    DOM.outGreeting.textContent  = data.greeting  || "—";
-    DOM.outBody.textContent      = data.body       || "—";
-    DOM.outClosing.textContent   = data.closing    || "—";
     DOM.outFull.textContent      = data.full_email || "—";
 
     // Suggestions

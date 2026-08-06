@@ -154,7 +154,7 @@ class GeminiService:
         uploaded_image,
         prompt: str,
         temperature: float = 0.3,
-        max_output_tokens: int = 10000,
+        max_output_tokens: int = 20000,
     ):
         """
         Generate a structured JSON response from Gemini Vision.

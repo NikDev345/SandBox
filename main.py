@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
+from fastapi.staticfiles import StaticFiles
 warnings.filterwarnings("ignore", category=UserWarning)
 load_dotenv()
 fast_app = FastAPI()
@@ -68,6 +69,8 @@ from app.api.item_extractor.item import router as item_router
 from app.api.bookmarks import router as bookmark_router
 Base.metadata.create_all(bind=engine)   
 
+
+fast_app.mount("/static", StaticFiles(directory="static"), name="static")
 
 fast_app.include_router(auth_router)
 fast_app.include_router(tool_router)
