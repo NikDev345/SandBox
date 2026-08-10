@@ -109,10 +109,11 @@ fast_app.include_router(docker_router)
 fast_app.include_router(item_router)
 fast_app.include_router(bookmark_router)
 import app.main
-ui.run_with(
-    fast_app,
-    title="SandBox",
-    mount_path="/",
-    favicon='app/ui/assets/logo.png'
 
-)
+if __name__ == "__main__":
+    ui.run_with(
+        fast_app,
+        title="SandBox",
+        mount_path="/",
+        favicon="app/ui/assets/logo.png"
+    )
