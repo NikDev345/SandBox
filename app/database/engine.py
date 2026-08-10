@@ -3,17 +3,31 @@ from config import DATABASE_URL
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.pool import NullPool
 import os
 
-# If DATABASE_URL is not set (development/local), fallback to a local SQLite file
-db_url = DATABASE_URL or os.getenv('DATABASE_URL') or f"sqlite:///./sandbox.db"
+db_url = DATABASE_URL or os.getenv("DATABASE_URL") or "sqlite:///./sandbox.db"
 
-engine = create_engine(db_url, connect_args={"check_same_thread": False} if db_url.startswith('sqlite') else {}, pool_pre_ping=True, pool_recycle=300)
+if db_url.startswith("sqlite"):
+    engine = create_engine(
+        db_url,
+        connect_args={"check_same_thread": False},
+        pool_pre_ping=True,
+        pool_recycle=300,
+    )
+else:
+    engine = create_engine(
+        db_url,
+        poolclass=NullPool,
+    )
 
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+SessionLocal = sessionmaker(
+    bind=engine,
+    autoflush=False,
+    autocommit=False
+)
 
 Base = declarative_base()
-
 
 def get_db():
     db = SessionLocal()
