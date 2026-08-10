@@ -27,7 +27,7 @@ fast_app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-@fast_app.get("/api")
+@fast_app.get("/")
 def root():
     return {"message": "SandBox API is running"}
 # tools
