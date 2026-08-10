@@ -102,7 +102,11 @@ def update_appearance(
             "animations": user.animations
         }
     }
-AVATAR_DIR = "static/avatars"
+if os.getenv("VERCEL"):
+    AVATAR_DIR = "/tmp/avatars"
+else:
+    AVATAR_DIR = "app/ui/assets/avatars"
+        
 os.makedirs(AVATAR_DIR, exist_ok=True)
     
 @router.post("/avatar")
