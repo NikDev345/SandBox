@@ -27,9 +27,7 @@ fast_app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-@fast_app.get("/")
-def root():
-    return {"message": "SandBox API is running"}
+
 # tools
 from app.models import *
 from app.database.engine import *
@@ -113,10 +111,9 @@ fast_app.include_router(item_router)
 fast_app.include_router(bookmark_router)
 import app.main
 
-if __name__ == "__main__":
-    ui.run_with(
-        fast_app,
-        title="SandBox",
-        mount_path="/",
-        favicon="app/ui/assets/logo.png"
-    )
+ui.run_with(
+    fast_app,
+    title="SandBox",
+    mount_path="/",
+    favicon="app/ui/assets/logo.png"
+)

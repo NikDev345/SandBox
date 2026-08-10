@@ -8,9 +8,7 @@ app.add_static_files(
 )
 app.include_router(auth_router)
 
-@ui.page('/')
-def home():
-    ui.label('Hello SandBox')
+
 
 ui.add_head_html("""
 <link rel="stylesheet" href="/assets/css/auth.css">
@@ -38,7 +36,6 @@ import app.ui.pages.history
 import app.ui.pages.table_extractor
 import app.ui.pages.notes_cleaner
 import app.ui.pages.mock_api
-import app.ui.pages.chart_explainer
 import app.ui.pages.chart_explainer
 import app.ui.pages.email_rewriter
 import app.ui.pages.blog_outline_generator
