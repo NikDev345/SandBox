@@ -231,8 +231,8 @@ class TableExtractor:
         }
 
         try:
-            tool = ToolService.get_tool_by_slug(db=db, slug="TABLE-EXTRACTOR")
-            tool_id = tool.id if tool else "TABLE-EXTRACTOR"
+            tool = ToolService.get_tool_by_slug(db=db, slug="table_extractor")
+            tool_id = tool.id if tool else "table_extractor"
 
             execution = ExecutionService.create_execution(
                 db=db,

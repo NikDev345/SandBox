@@ -48,9 +48,9 @@ class ProConsService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="PRO-CONS",
+                slug="pro_cons",
             )
-        tool_id = tool.id if tool else "PRO-CONS"
+        tool_id = tool.id if tool else "pro_cons"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

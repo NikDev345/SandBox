@@ -165,9 +165,9 @@ Rules:
         
         tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="ERROR-EXPLAINER",
+                    slug="error_explainer",
                 )
-        tool_id = tool.id if tool else "ERROR-EXPLAINER"
+        tool_id = tool.id if tool else "error_explainer"
         execution_record = None      
         try:
             execution_record = ExecutionService.create_execution(

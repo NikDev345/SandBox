@@ -87,9 +87,9 @@ class YouTubeSummarizerService:
             
             tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="YOUTUBE-SUMMARIZER",
+                    slug="youtube_summarizer",
                 )
-            tool_id = tool.id if tool else "YOUTUBE-SUMMARIZER"
+            tool_id = tool.id if tool else "youtube_summarizer"
             execution_id: Optional[str] = None
             try:
                 execution = ExecutionService.create_execution(

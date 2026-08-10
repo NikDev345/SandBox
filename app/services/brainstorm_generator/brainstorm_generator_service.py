@@ -76,9 +76,9 @@ class BrainstormGeneratorService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="BRAINSTROM-GENERATOR",
+                slug="brainstorm_generator",
             )
-        tool_id = tool.id if tool else "BRAINSTROM-GENERATOR"
+        tool_id = tool.id if tool else "brainstorm_generator"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

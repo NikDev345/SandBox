@@ -5,6 +5,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+class NoAvailableKeyError(Exception):
+    pass
 
 class GatewayConfig(BaseModel):
     """Global configuration for the LLM Gateway."""
@@ -19,7 +21,7 @@ class GatewayConfig(BaseModel):
     requests_per_minute: int = 60
 
     max_failures: int = 5
-    cooldown_seconds: int = 60
+    cooldown_seconds: int = 120
 
 
 class ProviderConfig(BaseModel):
@@ -83,7 +85,7 @@ class LLMRequest(BaseModel):
 
     # Gateway
     cache: bool = True
-    tool_name: str = "unknown"
+    tool_slug: str = "unknown"
 
     metadata: dict[str, Any] = Field(default_factory=dict)
 

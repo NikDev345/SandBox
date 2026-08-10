@@ -550,9 +550,9 @@ class CodeReview:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="CODE-REVIEWER",
+                slug="code_reviewer",
             )
-        tool_id = tool.id if tool else "CODE-REVIEWER"
+        tool_id = tool.id if tool else "code_reviewer"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

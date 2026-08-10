@@ -75,9 +75,9 @@ class FlashcardGeneratorService:
         
         tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="FLASHCARD-GENERATOR",
+                    slug="flashcard_generator",
                 )
-        tool_id = tool.id if tool else "FLASHCARD-GENERATOR"
+        tool_id = tool.id if tool else "flashcard_generator"
         execution_record = None
         try:
             execution_record = ExecutionService.create_execution(

@@ -43,9 +43,9 @@ class EmailStudioService:
         response = EmailStudioFormatter.format(parsed_response)
         tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="EMAIL-REWRITER",
+                    slug="email_rewriter",
                 )
-        tool_id = tool.id if tool else "EMAIL-REWRITER"
+        tool_id = tool.id if tool else "email_rewriter"
         execution_record = None
         try:
             execution_record=ExecutionService.create_execution(

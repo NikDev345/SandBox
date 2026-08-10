@@ -48,9 +48,9 @@ class BlogOutlineGeneratorService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="BLOG-OUTLINE-GENERATOR",
+                slug="blog_generator",
             )
-        tool_id = tool.id if tool else "BLOG-OUTLINE-GENERATOR"
+        tool_id = tool.id if tool else "blog_generator"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

@@ -372,9 +372,9 @@ class SSExplainer:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="SS-EXPLAINER",
+                slug="ss_explainer",
             )
-        tool_id = tool.id if tool else "SS-EXPLAINER"
+        tool_id = tool.id if tool else "ss_explainer"
         
         user_input = json.dumps({
             "filename": image.filename,

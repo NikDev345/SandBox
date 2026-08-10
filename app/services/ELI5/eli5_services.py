@@ -53,9 +53,9 @@ class ELI5Service:
         
         tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="ELI5",
+                    slug="eli5",
                 )
-        tool_id = tool.id if tool else "ELI5"
+        tool_id = tool.id if tool else "eli5"
         execution_record = None
         try:
             execution_record = ExecutionService.create_execution(

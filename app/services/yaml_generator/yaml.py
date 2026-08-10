@@ -590,9 +590,9 @@ class YAMLGen:
                 
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="YAML-GENERATOR",
+                slug="yaml_generator",
             )
-        tool_id = tool.id if tool else "YAML-GENERATOR"
+        tool_id = tool.id if tool else "yaml_generator"
         execution_id: Optional[str] = None
         try:
             execution = ExecutionService.create_execution(

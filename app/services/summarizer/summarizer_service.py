@@ -44,13 +44,13 @@ class SummarizerService:
 
         tool = ToolService.get_tool_by_slug(
         db=db,
-        slug="TEXT-SUMMARIZER",
+        slug="text_summarizer",
         )
         if tool is None:
             # In local/dev environments the tool registry may not be populated.
             # Fall back to a placeholder tool id so summaries can still be generated
             # and execution history saved under a generic id.
-            tool_id = "TEXT-SUMMARIZER"
+            tool_id = "text_summarizer"
         else:
             tool_id = tool.id
 

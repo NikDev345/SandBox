@@ -392,9 +392,9 @@ class Regex:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="REGEX-GENERATOR",
+                slug="regex_generator",
             )
-        tool_id = tool.id if tool else "REGEX-GENERATOR"
+        tool_id = tool.id if tool else "regex_generator"
         
         try:
             execution = ExecutionService.create_execution(

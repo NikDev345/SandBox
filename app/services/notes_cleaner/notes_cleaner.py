@@ -254,9 +254,9 @@ class NotesCleaner:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="NOTES-CLEANER",
+                slug="notes_cleaner",
             )
-        tool_id = tool.id if tool else "NOTES-CLEANER"
+        tool_id = tool.id if tool else "notes_cleaner"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

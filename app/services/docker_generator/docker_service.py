@@ -1581,9 +1581,9 @@ class DockerService:
         
         tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="DOCKER-GENERATOR",
+                    slug="docker_generator",
                 )
-        tool_id = tool.id if tool else "DOCKER-GENERATOR"
+        tool_id = tool.id if tool else "docker_generator"
         execution_record = None
         try:
             execution_record = ExecutionService.create_execution(

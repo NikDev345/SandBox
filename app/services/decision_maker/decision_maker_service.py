@@ -88,9 +88,9 @@ class DecisionMakerService:
             ai_response = client.generate(prompt)
             tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="DECISION-MAKER",
+                    slug="decision_maker",
                 )
-            tool_id = tool.id if tool else "DECISION-MAKER"
+            tool_id = tool.id if tool else "decision_maker"
             execution_id = None
             execution = ExecutionService.create_execution(
                     db=db,

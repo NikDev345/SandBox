@@ -161,9 +161,9 @@ class ImageTextExtractorService:
             
             tool = ToolService.get_tool_by_slug(
                     db=db,
-                    slug="IMAGE-TEXT-EXTRACTOR",
+                    slug="image_text_extractor",
                 )
-            tool_id = tool.id if tool else "IMAGE-TEXT-EXTRACTOR"
+            tool_id = tool.id if tool else "image_text_extractor"
             execution_id = None
             try:
                 execution = ExecutionService.create_execution(

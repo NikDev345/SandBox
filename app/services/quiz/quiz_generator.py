@@ -94,9 +94,9 @@ class QuizGeneratorService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="QUIZ-GENERATOR",
+                slug="quiz_generator",
             )
-        tool_id = tool.id if tool else "QUIZ-GENERATOR"
+        tool_id = tool.id if tool else "quiz_generator"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

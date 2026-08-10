@@ -152,3 +152,4 @@ xlsxwriter==3.2.9
 yarl==1.24.5
 youtube-transcript-api==1.2.4
 spacy>=3.8.0
+openai>=1.0.0

@@ -49,9 +49,9 @@ class ChartExplainerService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="CHART-EXPLAINER",
+                slug="chart_explainer",
             )
-        tool_id = tool.id if tool else "CHART-EXPLAINER"
+        tool_id = tool.id if tool else "chart_explainer"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

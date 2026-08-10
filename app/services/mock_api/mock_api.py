@@ -135,9 +135,9 @@ class MockAPIService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="MOCK-API",
+                slug="mock_api",
             )
-        tool_id = tool.id if tool else "MOCK-API"
+        tool_id = tool.id if tool else "mock_api"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

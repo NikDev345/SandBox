@@ -93,9 +93,9 @@ class JSONFixerService:
         # -------------------------
         tool = ToolService.get_tool_by_slug(
             db=db,
-            slug="JSON-FIXER",
+            slug="json_fixer",
         )
-        tool_id = tool.id if tool else "JSON-FIXER"
+        tool_id = tool.id if tool else "json_fixer"
 
         # -------------------------
         # Save Execution History

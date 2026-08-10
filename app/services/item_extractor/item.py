@@ -321,9 +321,9 @@ class ActionItemService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="ITEM-EXTRACTOR",
+                slug="item_extractor",
             )
-        tool_id = tool.id if tool else "ITEM-EXTRACTOR"
+        tool_id = tool.id if tool else "item_extractor"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

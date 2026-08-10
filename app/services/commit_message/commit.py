@@ -243,9 +243,9 @@ class CommitMessageGenerator:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="COMMIT-MSG",
+                slug="commit_msg",
             )
-        tool_id = tool.id if tool else "COMMIT-MSG"
+        tool_id = tool.id if tool else "commit_msg"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(

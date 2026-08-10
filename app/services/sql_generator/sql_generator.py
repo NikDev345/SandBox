@@ -44,9 +44,9 @@ class SQLGeneratorService:
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
-                slug="SQL-GENERATOR",
+                slug="sql_generator",
             )
-        tool_id = tool.id if tool else "SQL-GENERATOR"
+        tool_id = tool.id if tool else "sql_generator"
         execution_id = None
         try:
             execution = ExecutionService.create_execution(
