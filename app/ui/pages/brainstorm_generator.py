@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/brainstorm-generator")
+@ui.page("/brainstorm-generator", title=PUBLIC_PAGES["/brainstorm-generator"]["title"])
 def brainstorm_generator_page():
+    add_page_seo("/brainstorm-generator")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

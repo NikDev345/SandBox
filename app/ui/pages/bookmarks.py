@@ -1,7 +1,9 @@
 from nicegui import ui
+from app.ui.seo import PRIVATE_PAGES, add_private_seo
 
-@ui.page("/bookmarks_page")
+@ui.page("/bookmarks_page", title=f"{PRIVATE_PAGES['/bookmarks_page']} - SandBox")
 def bookmarks():
+    add_private_seo("/bookmarks_page")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

@@ -1,6 +1,6 @@
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-
+from app.models.bookmarks import Bookmarks
 from sqlalchemy.orm import Session
 
 from app.models.execution import Executions
@@ -154,9 +154,15 @@ class HistoryService:
 
         if not execution:
             return False
-        existing_in_bookmarks = db.query(Bookmarks).filter(
-            Bookmarks.execution_id == execution_id,
-            Bookmarks.user_id == user_id).first()
+        existing_in_bookmarks = (
+            db.query(Bookmarks)
+            .filter(
+                Bookmarks.execution_id == execution_id,
+                Bookmarks.user_id == user_id
+            )
+            .first()
+        )
+
         if existing_in_bookmarks:
             db.delete(existing_in_bookmarks)
 

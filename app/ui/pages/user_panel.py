@@ -1,4 +1,5 @@
 from nicegui import ui
+from app.ui.seo import PRIVATE_PAGES, add_private_seo
 
 from app.ui.components.navbar import navbar
 from app.ui.components.footer import footer
@@ -11,8 +12,9 @@ from app.services.auth_service import AuthService
 from app.database.engine import SessionLocal
 
 
-@ui.page("/user")
+@ui.page("/user", title=f"{PRIVATE_PAGES['/user']} - SandBox")
 def user_page():
+    add_private_seo("/user")
 
     db = SessionLocal()
 

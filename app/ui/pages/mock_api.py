@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/mock_api")
+@ui.page("/mock_api", title=PUBLIC_PAGES["/mock_api"]["title"])
 def mock_api():
+    add_page_seo("/mock_api")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

@@ -4,14 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-EMAIL = os.getenv("EMAIL_FROM")
-PASSWORD = os.getenv("EMAIL_PASSWORD")
-
+from config import *
 
 def send_otp_email(receiver_email: str, otp: str):
 
@@ -36,7 +29,7 @@ Sandbox Team
 
         message = MIMEMultipart()
 
-        message["From"] = EMAIL
+        message["From"] = email_from
         message["To"] = receiver_email
         message["Subject"] = subject
 
@@ -52,8 +45,8 @@ Sandbox Team
             server.starttls()
 
             server.login(
-                EMAIL,
-                PASSWORD
+                email_from,
+                email_api_key
             )
 
             server.send_message(message)
@@ -74,13 +67,13 @@ def send_reset_password_email(
     try:
 
         reset_link = (
-            f"http://127.0.0.1:8000/reset-password"
+            f"{APP_BASE_URL}/reset-password"
             f"?token={token}"
         )
 
         message = MIMEMultipart()
 
-        message["From"] = EMAIL
+        message["From"] = email_from
         message["To"] = email
         message["Subject"] = "Reset your Sandbox password"
 
@@ -113,8 +106,8 @@ Sandbox Team
             smtp.starttls()
 
             smtp.login(
-                EMAIL,
-                PASSWORD
+                email_from,
+                email_api_key 
             )
 
             smtp.send_message(message)

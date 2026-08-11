@@ -89,10 +89,7 @@ class UserService:
         current_user: dict,
         avatar_url: str
     ):
-
-        user = db.query(
-            Users
-        ).filter(
+        user = db.query(Users).filter(
             Users.id == current_user["sub"]
         ).first()
 
@@ -100,25 +97,12 @@ class UserService:
             return None
 
         user.avatar_url = avatar_url
+        user.local_avatar = avatar_url
+        user.avatar_customized = True
 
         db.commit()
-
         db.refresh(user)
 
-        return user
-    
-    @staticmethod
-    def last_update(db: Session, current_user: Session):
-        user = db.query(Users).filter(Users.id == current_user["sub"]).first()
-        
-        if not user:
-            return None
-        
-        user.last_updated = datetime.utcnow()
-        
-        db.commit()
-        db.refresh(user)
-        
         return user
     
     @staticmethod

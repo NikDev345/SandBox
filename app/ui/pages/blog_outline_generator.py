@@ -2,10 +2,12 @@ from datetime import datetime
 from pathlib import Path
 
 from nicegui import ui
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/blog-outline-generator")
+@ui.page("/blog-outline-generator", title=PUBLIC_PAGES["/blog-outline-generator"]["title"])
 def blog_outline_generator_page():
+    add_page_seo("/blog-outline-generator")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

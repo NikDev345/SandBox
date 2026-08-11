@@ -1,14 +1,18 @@
 from nicegui import ui
+from app.ui.seo import PRIVATE_PAGES, add_private_seo
 
 
-@ui.page("/settings")
+@ui.page("/settings", title=f"{PRIVATE_PAGES['/settings']} - SandBox")
 def settings():
+    add_private_seo("/settings")
 
     ui.add_head_html(ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">
     <link rel="stylesheet" href="/assets/css/animations.css">
     <link rel="stylesheet" href="/assets/css/dashboard.css">
     <link rel="stylesheet" href="/assets/css/settings.css">
+    <link rel="stylesheet" href="/assets/css/appearance.css">
+    <link rel="stylesheet" href="/assets/css/layout.css">
     """))
 
     ui.add_body_html("""

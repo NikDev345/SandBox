@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PRIVATE_PAGES, add_private_seo
 
 
-@ui.page("/history")
+@ui.page("/history", title=f"{PRIVATE_PAGES['/history']} - SandBox")
 def history_page():
+    add_private_seo("/history")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

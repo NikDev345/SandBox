@@ -12,7 +12,7 @@ let selectedAccent =
 
 const apiCandidates = {
     metrics: ["/analytics/summary", "/api/analytics/summary", "/admin/metrics"],
-    tools:   ["/tools", "/api/tools"],
+    tools:   [],
     files:   ["/api/tools/files"],
     me:      ["/auth/me"]
 };
@@ -333,7 +333,7 @@ async function loadConnections() {
         }
 
         const data = await response.json();
-        console.log(data);
+       
 
         const googleStatus = document.getElementById("google-status");
         const githubStatus = document.getElementById("github-status");
@@ -476,7 +476,6 @@ async function loadDashboardData() {
 
     
     /* Load tools from API (if available — otherwise static cards remain) */
-    const toolsData = await fetchFirstAvailable(apiCandidates.tools);
     if (toolsData) {
         const tools = normalizeTools(toolsData);
         if (tools.length) renderTools(tools);

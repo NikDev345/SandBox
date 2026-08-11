@@ -2,10 +2,12 @@ from datetime import datetime
 from pathlib import Path
 
 from nicegui import ui
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/flashcard-generator")
+@ui.page("/flashcard-generator", title=PUBLIC_PAGES["/flashcard-generator"]["title"])
 def flashcard_generator_page():
+    add_page_seo("/flashcard-generator")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

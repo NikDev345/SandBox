@@ -1,8 +1,10 @@
 from nicegui import ui
+from app.ui.seo import PRIVATE_PAGES, add_private_seo
 
 
-@ui.page('/signup')
+@ui.page('/signup', title=f"{PRIVATE_PAGES['/signup']} - SandBox")
 def signup_page():
+    add_private_seo("/signup")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

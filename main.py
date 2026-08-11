@@ -1,11 +1,13 @@
 # main.py--------------------------------------------------
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
 from starlette.middleware.sessions import SessionMiddleware
 import os
 from dotenv import load_dotenv
 from app.routes.user import router as user_router
+from fastapi.staticfiles import StaticFiles
+from app.ui.seo import robots_txt, sitemap_xml
 warnings.filterwarnings("ignore", category=UserWarning)
 load_dotenv()
 fast_app = FastAPI()
@@ -20,12 +22,15 @@ fast_app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:5500",
         "http://127.0.0.1:5501",
-        "http://127.0.0.1:8000"
+        "http://127.0.0.1:8000",
+        "https://sandboxhome.online",
+        "https://www.sandboxhome.online",        
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # tools
 from app.models import *
 from app.database.engine import *
@@ -69,6 +74,24 @@ from app.api.bookmarks import router as bookmark_router
 Base.metadata.create_all(bind=engine)   
 
 
+fast_app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+@fast_app.get("/robots.txt", include_in_schema=False)
+def get_robots_txt():
+    return Response(
+        content=robots_txt(),
+        media_type="text/plain; charset=utf-8",
+    )
+
+
+@fast_app.get("/sitemap.xml", include_in_schema=False)
+def get_sitemap_xml():
+    return Response(
+        content=sitemap_xml(),
+        media_type="application/xml; charset=utf-8",
+    )
+
 fast_app.include_router(auth_router)
 fast_app.include_router(tool_router)
 fast_app.include_router(exe_router)
@@ -106,10 +129,10 @@ fast_app.include_router(docker_router)
 fast_app.include_router(item_router)
 fast_app.include_router(bookmark_router)
 import app.main
+
 ui.run_with(
     fast_app,
-    title="SandBox",
+    title="",
     mount_path="/",
-    favicon='app/ui/assets/logo.png'
-
+    favicon="app/ui/assets/logo.png"
 )

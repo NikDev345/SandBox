@@ -189,7 +189,7 @@ async def extract_tables(
         # DB logging happens here, back in the request's own process,
         # using the `db` session FastAPI already gave us for this
         # request — never inside the pooled worker.
-        _log_execution(
+        execution_id = _log_execution(
             db=db,
             user_id=current_user['sub'],
             file_path=temp_file_path,
@@ -198,6 +198,8 @@ async def extract_tables(
             fast_mode=fast_mode,
             response=response,
         )
+        if isinstance(response, dict):
+            response["execution_id"] = execution_id
 
         elapsed = time.monotonic() - request_start
 

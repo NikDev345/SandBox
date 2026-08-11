@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/item")
+@ui.page("/item", title=PUBLIC_PAGES["/item"]["title"])
 def item_extract():
+    add_page_seo("/item")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">
