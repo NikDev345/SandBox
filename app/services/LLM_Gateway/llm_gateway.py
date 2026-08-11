@@ -10,6 +10,7 @@ from openai import OpenAI
 class LLMGateway:
     
     def __init__(self, config: GatewayConfig, providers: list[ProviderConfig]):
+        """Initialise provider clients, API-key state, cache, and request metrics."""
         self.config=config
         self.providers={provider.name: provider for provider in providers}
         self.key_states = {}
@@ -53,6 +54,7 @@ class LLMGateway:
         
         
     async def generate(self, request: LLMRequest) -> LLMResponse:
+        """Serve a request from cache when possible, otherwise try eligible providers."""
         self.metrics["request_total"] += 1
 
         # tool usage
@@ -144,6 +146,7 @@ class LLMGateway:
         raise last_error
     
     def _select_provider(self, request: LLMRequest)->ProviderConfig:
+        """Return the requested provider or the highest-priority enabled provider."""
         if request.provider:
             provider = self.providers.get(request.provider)
             
@@ -170,6 +173,7 @@ class LLMGateway:
         return providers[0]
             
     async def _call_provider(self, provider: ProviderConfig, request: LLMRequest) -> LLMResponse:
+        """Route a request to the implementation for the selected provider."""
         client, key_state = self._get_client(provider)
         if provider.name.lower() == 'gemini':
             return await self._call_gemini(
@@ -191,6 +195,7 @@ class LLMGateway:
         )
         
     def _build_contents(self, request: LLMRequest) -> list[Any]:
+        """Assemble Gemini content parts from the system prompt, attachments, and prompt."""
         contents = []
         if request.system_prompt:
             contents.append(
@@ -202,6 +207,7 @@ class LLMGateway:
         return contents
     
     async def _call_gemini(self, client, key_state: APIKeyState, provider: ProviderConfig, request: LLMRequest) -> LLMResponse:
+        """Call Gemini and update the selected key's usage and health information."""
         try:
             start = time.perf_counter()
             
@@ -274,6 +280,7 @@ class LLMGateway:
         provider: ProviderConfig,
         request: LLMRequest,
     ) -> LLMResponse:
+        """Call OpenAI without blocking the event loop and record key usage statistics."""
         try:
             start = time.perf_counter()
             model = request.model or provider.default_model
@@ -340,6 +347,7 @@ class LLMGateway:
             raise    
     
     def _get_api_key_state(self, provider: ProviderConfig) -> APIKeyState:
+        """Choose the next API key using round-robin rotation for this provider."""
         states = self.key_states[provider.name]
         index = self._rotation_index[provider.name]
         
@@ -349,6 +357,7 @@ class LLMGateway:
         return state
     
     def _get_client(self, provider: ProviderConfig):
+        """Return an available client/key pair after health and rate-limit checks."""
         states = self.key_states[provider.name] #key_states["gemini"] = 2 api keys until now.
         total = len(states)
         now = datetime.utcnow()
@@ -379,6 +388,7 @@ class LLMGateway:
         raise NoAvailableKeyError(f"No healthy keys for provider {provider.name}")
     
     def _is_retryable_exception(self, error: Exception) -> bool:
+        """Identify transient provider errors that are safe to retry or fail over from."""
         
         message = str(error).lower()
         retryable = (
@@ -392,10 +402,12 @@ class LLMGateway:
             or "temporarily unavailable" in message
             or "resource exhausted" in message
             or "rate limit" in message
+            or "quota" in message
         )   
         return retryable
     
     async def _execute_request(self, provider: ProviderConfig, request: LLMRequest)->LLMResponse:
+        """Execute a provider call with exponential-backoff retries for transient errors."""
         
         last_error = None
         
@@ -420,6 +432,7 @@ class LLMGateway:
         raise last_error
     
     def _build_cache_key(self, request: LLMRequest) -> str:
+        """Create a stable hash from request fields that affect generated output."""
         key_data = {
             "prompt": request.prompt,
             "system_prompt": request.system_prompt,
@@ -435,6 +448,7 @@ class LLMGateway:
         return hashlib.sha256(raw.encode()).hexdigest()
 
     def get_metrics(self) -> dict:
+        """Return a compact summary of request, cache, retry, and latency metrics."""
         total_requests = self.metrics["request_total"]
         total_latency = self.metrics["total_latency_ms"]
 
@@ -468,6 +482,7 @@ class LLMGateway:
         }
         
     def _should_cache(self, request: LLMRequest) -> bool:
+        """Allow caching only for small, static, text-only requests from safe tools."""
         if not request.cache: return False
         # skip if content exists(files/images)
         if request.contents: return False
