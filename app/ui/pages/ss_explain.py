@@ -11,6 +11,7 @@ def ss_explainer():
     add_shared_assets(
         extra_css=["/assets/css/ss_explain.css"],
         extra_js=["/assets/js/ss_explain.js"],
+        tool_page=True,
     )
 
     template_path = (

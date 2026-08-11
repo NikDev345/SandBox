@@ -11,6 +11,7 @@ def decision_maker_page():
     add_shared_assets(
         extra_css=["/assets/css/decision_maker.css"],
         extra_js=["/assets/js/decision_maker.js"],
+        tool_page=True,
     )
 
     template_path = (

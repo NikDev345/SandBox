@@ -11,6 +11,7 @@ def item_extract():
     add_shared_assets(
         extra_css=["/assets/css/item.css"],
         extra_js=["/assets/js/item.js"],
+        tool_page=True,
     )
 
     template_path = (

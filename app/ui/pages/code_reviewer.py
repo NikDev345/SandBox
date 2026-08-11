@@ -11,6 +11,7 @@ def code_reviewer():
     add_shared_assets(
         extra_css=["/assets/css/code_reviewer.css"],
         extra_js=["/assets/js/code_reviewer.js"],
+        tool_page=True,
     )
 
     template_path = (

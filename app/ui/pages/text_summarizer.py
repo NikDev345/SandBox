@@ -11,6 +11,7 @@ def text_summarizer_page():
     add_shared_assets(
             extra_css=["/assets/css/text_summarizer.css"],
             extra_js=["/assets/js/text_summarizer.js"],
+            tool_page=True,
         )
 
     template_path = (

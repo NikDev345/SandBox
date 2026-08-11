@@ -11,6 +11,7 @@ def commit_gen():
     add_shared_assets(
         extra_css=["/assets/css/error.css"],
         extra_js=["/assets/js/error.js"],
+        tool_page=True,
     )
 
     template_path = (

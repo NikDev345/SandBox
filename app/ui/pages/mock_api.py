@@ -13,6 +13,7 @@ def mock_api():
             extra_js=["/assets/js/api.js",
                       "/assets/js/mock_api.js",
                       "/assets/js/ui.js"],
+            tool_page=True,
         )
 
     template_path = (

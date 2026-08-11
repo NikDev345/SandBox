@@ -11,6 +11,7 @@ def youtube_summarizer_page():
     add_shared_assets(
                 extra_css=["/assets/css/youtube_summarizer.css"],
                 extra_js=["/assets/js/youtube_summarizer.js"],
+                tool_page=True,
             )
 
     template_path = (

@@ -11,6 +11,7 @@ def table_extractor_page():
     add_shared_assets(
         extra_css=["/assets/css/table_extractor.css"],
         extra_js=["/assets/js/table_extractor.js"],
+        tool_page=True,
     )
 
     template_path = (

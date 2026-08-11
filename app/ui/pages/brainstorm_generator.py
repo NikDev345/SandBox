@@ -12,6 +12,7 @@ def brainstorm_generator_page():
     add_shared_assets(
         extra_css=["/assets/css/brainstorm_generator.css"],
         extra_js=["/assets/js/brainstorm_generator.js"],
+        tool_page=True,
     )
 
     template_path = (

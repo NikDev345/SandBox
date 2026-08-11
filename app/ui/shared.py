@@ -2,14 +2,20 @@
 
 from nicegui import ui
 
-def add_shared_assets(extra_css: list[str] = [], extra_js: list[str] = [], auth_page: bool = False):
-
+def add_shared_assets(
+    extra_css: list[str] = [],
+    extra_js: list[str] = [],
+    auth_page: bool = False,
+    tool_page: bool = False,
+):
+    # Only tokens and animations load everywhere
     base_css = [
         "/assets/css/tokens.css",
         "/assets/css/animations.css",
     ]
 
-    if not auth_page:
+    # Dashboard and settings only on dashboard/settings pages
+    if not auth_page and not tool_page:
         base_css += [
             "/assets/css/dashboard.css",
             "/assets/css/settings.css",

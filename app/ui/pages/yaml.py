@@ -12,6 +12,7 @@ def yaml_gen():
     add_shared_assets(
             extra_css=["/assets/css/yaml.css"],
             extra_js=["/assets/js/yaml.js"],
+            tool_page=True,
         )
 
     template_path = (

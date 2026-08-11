@@ -12,6 +12,7 @@ def flashcard_generator_page():
     add_shared_assets(
         extra_css=["/assets/css/flashcard_generator.css"],
         extra_js=["/assets/js/flashcard_generator.js"],
+        tool_page=True,
     )
 
     template_path = (

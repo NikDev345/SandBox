@@ -11,6 +11,7 @@ def docker_gen():
     add_shared_assets(
         extra_css=["/assets/css/docker_gen.css"],
         extra_js=["/assets/js/docker_gen.js"],
+        tool_page=True,
     )
 
     template_path = (

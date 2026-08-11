@@ -11,6 +11,7 @@ def quiz_generator_page():
     add_shared_assets(
             extra_css=["/assets/css/quiz_generator.css"],
             extra_js=["/assets/js/quiz_generator.js"],
+            tool_page=True,
         )
 
     template_path = (

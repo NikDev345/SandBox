@@ -11,6 +11,7 @@ def regex_gen():
     add_shared_assets(
                 extra_css=["/assets/css/regex.css"],
                 extra_js=["/assets/js/regex.js"],
+                tool_page=True,
             )
 
     template_path = (

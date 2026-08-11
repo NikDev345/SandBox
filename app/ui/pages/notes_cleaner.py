@@ -11,6 +11,7 @@ def ss_explainer():
     add_shared_assets(
         extra_css=["/assets/css/notes_cleaner.css"],
         extra_js=["/assets/js/notes_cleaner.js"],
+        tool_page=True,
     )
 
     template_path = (

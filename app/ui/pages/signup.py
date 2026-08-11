@@ -12,6 +12,7 @@ def signup_page():
             "/assets/js/appearance.js",
             "/assets/js/signup.js",
         ],
+        auth_page=True
     )
 
     with open(

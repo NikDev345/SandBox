@@ -11,6 +11,7 @@ def json_fixer_page():
     add_shared_assets(
             extra_css=["/assets/css/pro_cons.css"],
             extra_js=["/assets/js/pro_cons.js"],
+            tool_page=True,
         )
 
     template_path = (

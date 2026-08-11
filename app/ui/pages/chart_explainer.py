@@ -12,6 +12,7 @@ def chart_explainer_page():
     add_shared_assets(
         extra_css=["/assets/css/chart_explainer.css"],
         extra_js=["/assets/js/chart_explainer.js"],
+        tool_page=True,
     )
 
     template_path = (

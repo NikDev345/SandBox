@@ -11,6 +11,7 @@ def email_rewriter_page():
     add_shared_assets(
         extra_css=["/assets/css/email_rewriter.css"],
         extra_js=["/assets/js/email_rewriter.js"],
+        tool_page=True,
     )
 
     template_path = (
