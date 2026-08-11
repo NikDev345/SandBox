@@ -2,20 +2,16 @@ from nicegui import ui
 from datetime import datetime
 from pathlib import Path
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page("/pro_cons_gen", title=PUBLIC_PAGES["/pro_cons_gen"]["title"])
 def json_fixer_page():
     add_page_seo("/pro_cons_gen")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/pro_cons.css">
-    <script src="/assets/js/pro_cons.js" defer></script>
-    """)
+    add_shared_assets(
+            extra_css=["/assets/css/pro_cons.css"],
+            extra_js=["/assets/js/pro_cons.js"],
+        )
 
     template_path = (
         Path(__file__).parent.parent

@@ -25,6 +25,19 @@
 /* ============================================================
    1. FADE ANIMATIONS
    ============================================================ */
+html {
+    opacity: 0;
+    animation: page-in 0.18s ease forwards;
+}
+
+@keyframes page-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+html.leaving {
+    opacity: 0;
+    transition: opacity 0.12s ease;
+}
 @keyframes fadeIn {
   from {
     opacity: 0;

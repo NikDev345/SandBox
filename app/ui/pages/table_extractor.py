@@ -2,20 +2,16 @@ from nicegui import ui
 from datetime import datetime
 from pathlib import Path
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page("/table_extractor", title=PUBLIC_PAGES["/table_extractor"]["title"])
 def table_extractor_page():
     add_page_seo("/table_extractor")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/table_extractor.css">
-    <script src="/assets/js/table_extractor.js" defer></script>
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/table_extractor.css"],
+        extra_js=["/assets/js/table_extractor.js"],
+    )
 
     template_path = (
         Path(__file__).parent.parent

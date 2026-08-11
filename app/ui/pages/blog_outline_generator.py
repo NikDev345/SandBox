@@ -3,20 +3,17 @@ from pathlib import Path
 
 from nicegui import ui
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
+from app.ui.shared import add_shared_assets
 
 
 @ui.page("/blog-outline-generator", title=PUBLIC_PAGES["/blog-outline-generator"]["title"])
 def blog_outline_generator_page():
     add_page_seo("/blog-outline-generator")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/blog_outline_generator.css">
-    <script src="/assets/js/blog_outline_generator.js" defer></script>
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/blog_outline_generator.css"],
+        extra_js=["/assets/js/blog_outline_generator.js"],
+    )
 
     template_path = (
         Path(__file__).parent.parent

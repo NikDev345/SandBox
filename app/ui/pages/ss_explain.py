@@ -2,20 +2,16 @@ from nicegui import ui
 from datetime import datetime
 from pathlib import Path
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page("/ss_explain", title=PUBLIC_PAGES["/ss_explain"]["title"])
 def ss_explainer():
     add_page_seo("/ss_explain")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/ss_explain.css">
-    <script src="/assets/js/ss_explain.js" defer></script>
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/ss_explain.css"],
+        extra_js=["/assets/js/ss_explain.js"],
+    )
 
     template_path = (
         Path(__file__).parent.parent

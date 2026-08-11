@@ -2,22 +2,18 @@ from nicegui import ui
 from datetime import datetime
 from pathlib import Path
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page("/mock_api", title=PUBLIC_PAGES["/mock_api"]["title"])
 def mock_api():
     add_page_seo("/mock_api")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/mock_api.css">
-    <script src="/assets/js/mock_api/api.js" defer></script>
-    <script src="/assets/js/mock_api/mock_api.js" defer></script>
-    <script src="/assets/js/mock_api/ui.js" defer></script>
-    """)
+    add_shared_assets(
+            extra_css=["/assets/css/mock_api.css"],
+            extra_js=["/assets/js/api.js",
+                      "/assets/js/mock_api.js",
+                      "/assets/js/ui.js"],
+        )
 
     template_path = (
         Path(__file__).parent.parent

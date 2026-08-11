@@ -2,20 +2,16 @@ from nicegui import ui
 from datetime import datetime
 from pathlib import Path
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page("/docker", title=PUBLIC_PAGES["/docker"]["title"])
 def docker_gen():
     add_page_seo("/docker")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/docker_gen.css">
-    <script src="/assets/js/docker_gen.js" defer></script>
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/docker_gen.css"],
+        extra_js=["/assets/js/docker_gen.js"],
+    )
 
     template_path = (
         Path(__file__).parent.parent

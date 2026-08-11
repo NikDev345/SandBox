@@ -1,7 +1,6 @@
 from nicegui import ui
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
-
 @ui.page("/", title=PUBLIC_PAGES["/"]["title"])
 def dashboard():
     add_page_seo("/")

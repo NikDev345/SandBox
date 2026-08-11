@@ -1,17 +1,15 @@
 from nicegui import ui
 from app.ui.seo import PRIVATE_PAGES, add_private_seo
+from app.ui.shared import add_shared_assets
 
 @ui.page("/bookmarks_page", title=f"{PRIVATE_PAGES['/bookmarks_page']} - SandBox")
 def bookmarks():
     add_private_seo("/bookmarks_page")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/bookmarks.css">
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/bookmarks.css"],
+        extra_js=["/assets/js/bookmarks.js"],
+    )
 
     ui.add_body_html("""
     <script src="/assets/js/appearance.js"></script>
