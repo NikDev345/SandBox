@@ -8,9 +8,9 @@ from app.models.user import Users
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from app.database.engine import get_db
-
+from config import *
 class MockAPIService:
-    BASE_URL='http://127.0.0.1:8000'
+    BASE_URL=APP_BASE_URL
     @staticmethod
     def _validate_request(request: MockAPIRequest):
         if not request.name or not request.name.strip():

@@ -1,13 +1,13 @@
 import requests
-
+from config import *
 
 class AIAPI:
-    BASE_URL = "http://127.0.0.1:8000"
+    
 
     @staticmethod
     def post(endpoint: str, data: dict, token: str):
         response = requests.post(
-            f"{AIAPI.BASE_URL}{endpoint}",
+            f"{APP_BASE_URL}{endpoint}",
             json=data,
             headers={
                 "Authorization": f"Bearer {token}"
