@@ -30,7 +30,6 @@ openai_provider = ProviderConfig(
 
     supported_models=[
         "gpt-4o-mini",
-        "gpt-4o",
     ],
 
     api_keys=OPENAI_KEYS,

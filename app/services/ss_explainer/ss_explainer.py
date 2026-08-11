@@ -261,7 +261,7 @@ class SSExplainer:
     @staticmethod
     def _upload_image(image_bytes: bytes, mime_type: str):
         """
-        Upload the processed image using GeminiService.
+        Upload the processed image using LLM.
         """
         try:
             return types.Part.from_bytes(data=image_bytes, mime_type=mime_type)

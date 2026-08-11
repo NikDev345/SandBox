@@ -22,7 +22,7 @@ class ELI5Formatter:
         Parse the Gemini JSON response into ELI5Response.
 
         Args:
-            explanation: Raw string returned by GeminiService.generate().
+            explanation: Raw string returned by LLM.
 
         Returns:
             ELI5Response
