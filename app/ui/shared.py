@@ -1,17 +1,22 @@
 # app/ui/shared.py
 
-def add_shared_assets(extra_css: list[str] = [], extra_js: list[str] = []):
-    from nicegui import ui
+from nicegui import ui
+
+def add_shared_assets(extra_css: list[str] = [], extra_js: list[str] = [], auth_page: bool = False):
 
     base_css = [
         "/assets/css/tokens.css",
         "/assets/css/animations.css",
-        "/assets/css/dashboard.css",
-        "/assets/css/settings.css",
     ]
 
+    if not auth_page:
+        base_css += [
+            "/assets/css/dashboard.css",
+            "/assets/css/settings.css",
+        ]
+
     base_js = [
-        "/assets/js/transitions.js",  # ← shared transition on every page
+        "/assets/js/transitions.js",
     ]
 
     css_tags = "\n".join(
