@@ -27,7 +27,7 @@ router = APIRouter(
     "/generate",
     response_model=SummarizeResponse,
 )
-def generate_summary(
+async def generate_summary(
     request: SummarizeRequest,
     db: Session = Depends(get_db),
 ):
@@ -36,7 +36,7 @@ def generate_summary(
     """
 
     try:
-        summary, exe_id = SummarizerService.summarize(
+        summary, exe_id = await SummarizerService.summarize(
             db=db,
             user_id='anonymous',
             text=request.text,

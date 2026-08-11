@@ -35,7 +35,7 @@ async def generate_sql(
     """
 
     try:
-        return SQLGeneratorService.generate(request, db, current_user)
+        return await SQLGeneratorService.generate(request, db, current_user)
 
     except ValueError as e:
         raise HTTPException(

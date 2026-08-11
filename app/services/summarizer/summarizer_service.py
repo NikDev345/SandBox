@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from app.services.gemini_service import GeminiService
 from app.services.prompt_engine import PromptEngine
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 import json
@@ -11,7 +12,7 @@ class SummarizerService:
     """
 
     @staticmethod
-    def summarize(
+    async def summarize(
         db: Session,
         user_id: str,
         text: str,
@@ -58,9 +59,14 @@ class SummarizerService:
 # Generate Summary
 # -------------------------
 
-        gemini = GeminiService()
 
-        summary = gemini.generate(prompt)
+        result = await gateway.generate(LLMRequest(
+            prompt=prompt,
+            tool_slug="text_summarizer",
+            temperature=0.5
+        ))
+
+        summary = result.text
 
 # -------------------------
 # Save Execution History

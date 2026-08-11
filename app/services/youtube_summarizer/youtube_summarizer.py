@@ -4,7 +4,8 @@ from app.models.youtube_summarizer import (
     YouTubeSummaryRequest,
     YouTubeSummaryResponse,
 )
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.utils.text_cleaner import TextCleaner
 from app.services.youtube_summarizer.formatter import (
     YouTubeSummaryFormatter,
@@ -29,7 +30,7 @@ class YouTubeSummarizerService:
     """
 
     def __init__(self):
-        self.gemini = GeminiService()
+        self.gateway = gateway
 
     async def generate(
         self,
@@ -64,13 +65,18 @@ class YouTubeSummarizerService:
             )
 
             # Step 5 — Generate AI response
-            response = await self.gemini.generate_json(
-                prompt=prompt
-            )
+            result = await self.gateway.generate(LLMRequest(
+                prompt=prompt,
+                tool_slug="youtube_summarizer",
+                response_mime_type="application/json",
+                temperature=0.1,
+            ))
+
+            response = json.loads(result.text)
 
             if not isinstance(response, dict):
                 raise RuntimeError(
-                    "Gemini returned an invalid response."
+                    "LLM returned an invalid response."
                 )
 
             # Step 6 — Calculate processing time

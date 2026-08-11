@@ -3,7 +3,8 @@ from fastapi import UploadFile, HTTPException, status
 from typing import Optional
 from pathlib import Path
 import re, tempfile, lizard, json, os
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
@@ -17,7 +18,7 @@ class CodeReview:
     chunk_size = 150
     overlap = 20
     AI_MAX_CHARS = 50_000
-    client = GeminiService()
+    client = gateway
     
     EXTENSION_TO_LANGUAGE = {
         "py": "python",
@@ -433,11 +434,14 @@ class CodeReview:
     async def _call_ai(prompt):
         try:
             # Use generate_json instead of generate
-            data = await CodeReview.client.generate_json(
+            request = LLMRequest(
                 prompt=prompt,
                 temperature=0.3,
-                max_output_tokens=10000,
+                max_tokens=10000,
+                response_schema="json" ,
+                tool_slug="code_reviewer", # important for your schema
             )
+            data = await CodeReview.client.generate(request)
             if not data:
                 raise ValueError("AI returned an empty response.")
             return data  # already a dict, no need to json.loads
@@ -542,7 +546,7 @@ class CodeReview:
         
         user_output = json.dumps({
             "summary":ai_review.summary,
-            "errors": ai_review.summary,
+            "errors": ai_review.errors,
             "suggestions": ai_review.suggestions,
             "time complexity": ai_review.time_complexity,
             "space complexity": ai_review.space_complexity,
@@ -577,5 +581,5 @@ class CodeReview:
             summary=ai_review.summary,
             errors=ai_review.errors,
             suggestions=ai_review.suggestions,
-            execution_id = execution.id 
+            execution_id = execution_id
         )

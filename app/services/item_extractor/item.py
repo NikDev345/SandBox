@@ -3,7 +3,8 @@ from pathlib import Path
 from docx import Document
 import fitz, re, json, spacy
 from spacy.language import Language
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
@@ -12,7 +13,6 @@ from app.services.tool_service import ToolService
 class ActionItemService:
     ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt"}
     MAX_FILE_SIZE = 25 * 1024 * 1024
-    client = GeminiService()
     nlp = spacy.load("en_core_web_sm")
     # Action verbs
     _ACTION_VERBS = re.compile(
@@ -248,7 +248,17 @@ class ActionItemService:
     @staticmethod
     async def _call_ai(prompt: str):
         try:
-            response = await ActionItemService.client.generate_json(prompt=prompt, max_output_tokens=8000)
+            llm_response = await gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    temperature=0.4,
+                    max_output_tokens=1500,
+                    response_mime_type = "application/json",
+                    tool_slug="item_extractor",
+                )
+            )
+
+            response = llm_response.text
             if not response:
                 raise ValueError("The AI returned an empty response.")
             return response

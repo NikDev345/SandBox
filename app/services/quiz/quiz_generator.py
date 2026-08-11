@@ -13,8 +13,9 @@ from app.services.quiz.parser import DocumentParser
 from app.services.quiz.prompt_engine import PromptEngine
 from app.services.quiz.validator import QuizValidator
 from app.services.quiz.formatter import QuizFormatter
-from app.services.gemini_service import GeminiService
 from app.utils.text_cleaner import TextCleaner
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 from sqlalchemy.orm import Session
@@ -69,11 +70,15 @@ class QuizGeneratorService:
         # Generate Quiz
         # --------------------------------------------------
 
-        gemini = GeminiService()
 
-        response_json = await gemini.generate_json(
-            prompt=prompt
-        )
+        result = await gateway.generate(LLMRequest(
+            prompt=prompt,
+            tool_slug="quiz_generator",
+            response_mime_type="application/json",
+            temperature=0.6,
+        ))
+
+        response_json = result.text
 
         # --------------------------------------------------
         # Format Response

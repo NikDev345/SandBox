@@ -5,7 +5,8 @@ from pypdf import PdfReader
 from io import BytesIO
 from docx import Document
 import re, asyncio
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
@@ -18,7 +19,6 @@ class NotesCleaner:
         ".docx",
     }
     MAX_SIZE_LIMIT = 50 * 1024 * 1024
-    client = GeminiService()
     
     @staticmethod
     async def _validate_request(request: NotesCleanerRequest, doc: UploadFile | None):
@@ -156,20 +156,23 @@ class NotesCleaner:
         """
             
     @staticmethod
-    def _clean_chunk(chunk, prompt):
+    async def _clean_chunk(chunk, prompt):
         final_prompt = f"{prompt}\n\nNotes:\n{chunk}"
-        
         try:
-            response = NotesCleaner.client.generate(final_prompt)
-            if not response or not response.strip():
-                raise ValueError("Gemini returned an empty response.")
-            return response.strip()
+            result = await gateway.generate(LLMRequest(
+                prompt=final_prompt,
+                tool_slug="notes_cleaner",
+                cache=False,
+            ))
+            if not result.text or not result.text.strip():
+                raise ValueError("LLM returned an empty response.")
+            return result.text.strip()
         except Exception as e:
             raise ValueError(f"API Failed: {e}") from e
         
     @staticmethod
     async def _clean_chunks_parallel(chunks: list[str], prompt: str):
-        tasks = [asyncio.to_thread(NotesCleaner._clean_chunk, chunk, prompt) for chunk in chunks]
+        tasks = [NotesCleaner._clean_chunk(chunk, prompt) for chunk in chunks]
         
         cleaned_chunks = await asyncio.gather(*tasks)
         return cleaned_chunks
@@ -179,7 +182,7 @@ class NotesCleaner:
         return "\n\n".join(chunk.strip() for chunk in cleaned_chunks if chunk.strip())
     
     @staticmethod
-    def _final_clean(response):
+    async def _final_clean(response):
         prompt = f"""
         The following document has already been cleaned.
 
@@ -202,11 +205,14 @@ class NotesCleaner:
         """
         
         try:
-            final_result = NotesCleaner.client.generate(prompt)
-            if not final_result or not final_result.strip():
-                raise ValueError("Gemini returned an empty response.")
-            return final_result.strip()
-        
+            result = await gateway.generate(LLMRequest(
+                prompt=prompt,
+                tool_slug="notes_cleaner",
+                cache=False,
+            ))
+            if not result.text or not result.text.strip():
+                raise ValueError("LLM returned an empty response.")
+            return result.text.strip()
         except Exception as e:
             raise ValueError(f"API Failed: {e}") from e
         
@@ -250,7 +256,7 @@ class NotesCleaner:
         
         merged_text = NotesCleaner._merge_chunks(cleaned_chunks)
         
-        final_text = NotesCleaner._final_clean(merged_text)
+        final_text = await NotesCleaner._final_clean(merged_text)
         
         tool = ToolService.get_tool_by_slug(
                 db=db,

@@ -20,7 +20,8 @@ from app.services.email_rewriter.prompts import (
     REWRITE_USER_PROMPT,
 )
 from app.services.email_rewriter.validator import EmailStudioValidator
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 
@@ -38,7 +39,7 @@ class EmailStudioService:
 
         cleaned_request = cls._preprocess_input(request)
         prompt = cls._build_prompt(cleaned_request)
-        raw_response = cls._generate_email(prompt)
+        raw_response = await cls._generate_email(prompt)
         parsed_response = cls._parse_response(raw_response)
         response = EmailStudioFormatter.format(parsed_response)
         tool = ToolService.get_tool_by_slug(
@@ -53,7 +54,7 @@ class EmailStudioService:
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=response.full_email,
+                output=json.dumps(parsed_response),
             )
         except Exception:
             pass
@@ -178,12 +179,28 @@ class EmailStudioService:
         raise ValueError("Unsupported email mode.")
 
     @staticmethod
-    def _generate_email(prompt: str) -> str:
+    async def _generate_email(prompt: str) -> str:
         """Call Gemini to generate the raw email JSON string."""
 
         try:
-            client = GeminiService()
-            return client.generate(prompt)
+            request = LLMRequest(
+                prompt=prompt,
+                temperature=0.5,
+                max_tokens=2000,
+                response_schema="json",
+                tool_slug="email_rewriter"# IMPORTANT
+            )
+
+            response = await gateway.generate(request)
+
+            if not response or not response.output:
+                raise RuntimeError("Empty response from LLM Gateway")
+
+            # Gateway may already return dict OR string
+            if isinstance(response.output, dict):
+                return json.dumps(response.output)
+
+            return str(response.output).strip()
         except Exception as exc:
             raise RuntimeError("Failed to generate email.") from exc
 

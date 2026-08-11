@@ -1,13 +1,13 @@
 from app.models.regex import RegexGeneratorRequest, RegexEngine, RegexMatchResult, RegexGeneratorResponse
 import re, string, json
 from typing import Optional,List
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
 
 class Regex:
-    client = GeminiService()
     
     LITERAL_PHRASES = [
         "match the word",
@@ -244,7 +244,7 @@ class Regex:
         return best_entry if best_score > 0 else None
     
     @staticmethod
-    def _generate_with_ai(request: RegexGeneratorRequest) -> RegexGeneratorResponse:
+    async def _generate_with_ai(request: RegexGeneratorRequest) -> RegexGeneratorResponse:
         prompt = """
         You are an expert regex engineer.
 
@@ -276,8 +276,12 @@ class Regex:
         final_prompt = f"{prompt}\n{user_prompt}"
         
         try:
-            response = Regex.client.generate(final_prompt)
-            result = json.loads(response.strip())
+            result_obj = await gateway.generate(LLMRequest(
+                prompt=final_prompt,
+                tool_slug="regex_generator",
+                response_mime_type="application/json",
+            ))
+            result = json.loads(result_obj.text.strip())
             if "regex" not in result or "explanation" not in result:
                 raise ValueError("Invalid AI response.")
             
@@ -348,7 +352,7 @@ class Regex:
         
 # main function  
     @staticmethod
-    def generate_regex(request: RegexGeneratorRequest, user_id: str, db: Session) -> RegexGeneratorResponse:
+    async def generate_regex(request: RegexGeneratorRequest, user_id: str, db: Session) -> RegexGeneratorResponse:
         # Validate request
         request = Regex._validate_request(request)
 
@@ -377,7 +381,7 @@ class Regex:
                     engine=request.engine
                 )
             else:
-                response = Regex._generate_with_ai(request)
+                response = await Regex._generate_with_ai(request)
 
         # Step 2: Validate generated regex
         Regex._validate_regex(

@@ -1,6 +1,7 @@
 from app.models.sql_generator import SQLGeneratorRequest, SQLGeneratorResponse, GenerationMode, SQLDialect, ExecutionCost
-from app.services.gemini_service import GeminiService
 import sqlparse, re, json
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from sqlparse.sql import Identifier, IdentifierList
 from sqlparse.tokens import Keyword
 from typing import List
@@ -11,7 +12,7 @@ from sqlalchemy.orm import Session
 class SQLGeneratorService:
 
     @staticmethod
-    def generate(request: SQLGeneratorRequest, db: Session, user=None) -> SQLGeneratorResponse:
+    async def generate(request: SQLGeneratorRequest, db: Session, user=None) -> SQLGeneratorResponse:
         """
         Main entry point for SQL generation.
 
@@ -27,7 +28,7 @@ class SQLGeneratorService:
         SQLGeneratorService._validate_request(request)
 
         if request.mode == GenerationMode.AI:
-            sql = SQLGeneratorService._generate_from_ai_prompt(
+            sql = await SQLGeneratorService._generate_from_ai_prompt(
                 request.prompt
             )
 
@@ -1037,7 +1038,7 @@ class SQLGeneratorService:
         )
     
     @staticmethod
-    def _generate_from_ai_prompt(prompt: str) -> str:
+    async def _generate_from_ai_prompt(prompt: str) -> str:
         """
         Generates SQL from a natural language prompt.
 
@@ -1059,15 +1060,16 @@ class SQLGeneratorService:
         # TODO:
         # Replace with your Gemini/OpenAI implementation.
         try:
-            client = GeminiService()
-            response = client.generate(final_prompt)
-            sql = SQLGeneratorService._extract_sql(response)
+            result = await gateway.generate(LLMRequest(
+                prompt=final_prompt,
+                tool_slug="sql_generator",
+                temperature=0.2,
+            ))
+            sql = SQLGeneratorService._extract_sql(result.text)
             SQLGeneratorService._validate_generated_sql(sql)
             return sql
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to generate SQL: {e}"
-            ) from e
+            raise RuntimeError(f"Failed to generate SQL: {e}") from e
         
     @staticmethod
     def _build_ai_system_prompt() -> str:

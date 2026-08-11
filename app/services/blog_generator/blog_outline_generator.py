@@ -2,7 +2,8 @@ from app.models.blog_outline_generator import (
     BlogOutlineRequest,
     BlogOutlineResponse,
 )
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.prompt_engine import PromptEngine
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
@@ -20,9 +21,11 @@ class BlogOutlineGeneratorService:
 
         prompt = PromptEngine.build_blog_outline_prompt(request)
 
-        gemini = GeminiService()
-
-        result = gemini.generate(prompt)
+        result = await gateway.generate(LLMRequest(
+            prompt=prompt,
+            tool_slug="blog_generator",
+            temperature=0.7,
+        ))
         
         user_input = json.dumps({
             "topic": request.topic,

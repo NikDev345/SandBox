@@ -2,7 +2,8 @@ from app.models.commit import CommitMessageRequest, CommitMessageResponse, Commi
 from pathlib import Path
 import subprocess, re, json
 from typing import Literal, List
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 from sqlalchemy.orm import Session
@@ -13,7 +14,7 @@ class NotGitRepositoryError(Exception):
 
 class CommitMessageGenerator:
     
-    client = GeminiService()
+    client = gateway
     
     STYLE_MAP = {
         "conventional": "Use the Conventional Commits specification (feat:, fix:, docs:, refactor:, test:, chore:, perf:, ci:, build:).",
@@ -156,12 +157,26 @@ class CommitMessageGenerator:
             """
         
     @staticmethod
-    def _generate_commit_message(prompt):
+    async def _generate_commit_message(prompt):
         try:
-            response = CommitMessageGenerator.client.generate(prompt)
-            if isinstance(response, str):
-                return response.strip()
-            return response.text.strip()
+            request = LLMRequest(
+                prompt=prompt,
+                temperature=0.2,
+                max_tokens=800,
+                tool_slug="commit_mgs",
+                # commit message → plain text output
+            )
+
+            response = await CommitMessageGenerator.client.generate(request)
+
+            if not response or not response.output:
+                raise RuntimeError("Empty response from LLM Gateway")
+
+            # Gateway standardizes output
+            if isinstance(response.output, str):
+                return response.output.strip()
+
+            return str(response.output).strip()
         except Exception as e:
             raise RuntimeError(
                 f"Failed to generate commit messages. : str{e}"

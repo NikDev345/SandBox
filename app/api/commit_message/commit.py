@@ -31,7 +31,7 @@ async def generate_commit_message(
     """
 
     try:
-        return CommitMessageGenerator.generate(request, current_user["sub"], db)
+        return await CommitMessageGenerator.generate(request, current_user["sub"], db)
 
     except FileNotFoundError as e:
         raise HTTPException(

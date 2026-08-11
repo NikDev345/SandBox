@@ -24,7 +24,8 @@ from app.services.flashcard_generator.prompt_engine import (
 from app.services.flashcard_generator.validator import (
     FlashcardGeneratorValidator,
 )
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from sqlalchemy.orm import Session
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
@@ -52,7 +53,7 @@ class FlashcardGeneratorService:
             cleaned_request
         )
 
-        raw_response = FlashcardGeneratorService._generate_flashcards(
+        raw_response = await FlashcardGeneratorService._generate_flashcards(
             prompt
         )
 
@@ -156,23 +157,34 @@ class FlashcardGeneratorService:
         return text.strip()
 
     @staticmethod
-    def _generate_flashcards(prompt: str) -> str:
+    async def _generate_flashcards(prompt: str) -> str:
         """
         Generate raw flashcard JSON text with Gemini.
         """
 
         try:
-            gemini = GeminiService()
-            response = gemini.generate(prompt)
+            llm_request = LLMRequest(
+                prompt=prompt,
+
+                # structured output → stable generation
+                temperature=0.3,
+                max_output_tokens=10000,
+                # IMPORTANT → JSON output
+                response_mime_type="application/json",
+                # this tool is cacheable
+                tool_slug="flashcard_generator",
+            )
+
+            response = await gateway.generate(llm_request)
         except Exception as exc:
             raise RuntimeError(
                 "Flashcard generation failed."
             ) from exc
 
         if not response or not response.strip():
-            raise RuntimeError("Gemini returned an empty response.")
+            raise RuntimeError("LLM returned an empty response.")
 
-        return response
+        return response.text.strip()
 
     @staticmethod
     def _parse_json(response: str) -> dict:

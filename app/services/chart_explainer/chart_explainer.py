@@ -4,7 +4,8 @@ from app.models.chart_explainer import (
     ChartExplainerRequest,
     ChartExplainerResponse,
 )
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.prompt_engine import PromptEngine
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
@@ -16,7 +17,7 @@ class ChartExplainerService:
     """
 
     def __init__(self):
-        self.gemini = GeminiService()
+        self.gateway = gateway
 
     async def analyze(
         self,
@@ -37,10 +38,16 @@ class ChartExplainerService:
             mime_type=mime_type,
         )
 
-        result = await self.gemini.generate_image_json(
-            uploaded_image=uploaded_image,
-            prompt=prompt,
+        result = await self.gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                contents=[uploaded_image],
+                tool_slug="chart_explainer",
+                temperature=0.2,
+                response_mime_type="application/json",
+            )
         )
+        
         user_input = json.dumps({
             "mime_type": mime_type,
             "filename": request.filename if hasattr(request, "filename") else None,

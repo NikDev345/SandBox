@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.models.pro_cons import ProConsRequest, AnalysisDepth, ProConsResponse
 import re, json, unicodedata
 from pydantic import ValidationError
@@ -27,7 +28,7 @@ class ProConsService:
             f"{prompt['system_prompt']}\n\n"
             f"{prompt['user_prompt']}"
         )
-        raw_res = ProConsService._generate_points(final_prompt)
+        raw_res = await ProConsService._generate_points(final_prompt)
         parsed_res = ProConsService._parse_response(raw_res)
         parsed_res["pros"] = [
             {**p, "impact": p.get("impact", "medium").lower()} 
@@ -240,12 +241,15 @@ class ProConsService:
         
         
     @staticmethod
-    def _generate_points(prompt: str):
+    async def _generate_points(prompt: str):
         
         try:
-            client = GeminiService()
-            response = client.generate(prompt)
-            return response
+            result = await gateway.generate(LLMRequest(
+                prompt=prompt,
+                tool_slug="pro_cons",
+                cache=False,
+            ))
+            return result.text
         except Exception as e:
             raise RuntimeError(f"Failed to generate Pro Cons: {e}")
         

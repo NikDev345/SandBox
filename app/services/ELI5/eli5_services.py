@@ -8,7 +8,8 @@ from app.models.eli5 import ELI5Request, ELI5Response
 from app.services.ELI5.prompt_engine import PromptEngine
 from app.services.ELI5.validator import ELI5Validator
 from app.services.ELI5.formatter import ELI5Formatter
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.utils.eli5 import normalize_topic
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
@@ -46,10 +47,20 @@ class ELI5Service:
         prompt = PromptEngine.build_prompt(request)
 
         # Generate explanation
-        gemini = GeminiService()
-        explanation = gemini.generate(
-            prompt=prompt
+        llm_request = LLMRequest(
+            prompt=prompt,
+            temperature=0.6,        # slightly higher for ELI5 creativity
+            max_tokens=1500,
+            response_schema="text",
+            tool_slug="eli5",
         )
+
+        response1 = await gateway.generate(llm_request)
+
+        if not response1 or not response1.output:
+            raise RuntimeError("Empty response from LLM Gateway")
+
+        explanation = response1.output
         
         tool = ToolService.get_tool_by_slug(
                     db=db,

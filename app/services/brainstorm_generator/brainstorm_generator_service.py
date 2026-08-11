@@ -26,7 +26,8 @@ from app.services.brainstorm_generator.prompt_engine import (
 from app.services.brainstorm_generator.formatter import (
     BrainstormFormatter,
 )
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
@@ -36,7 +37,7 @@ class BrainstormGeneratorService:
     """Service responsible for generating AI-powered brainstorming ideas."""
 
     @staticmethod
-    def generate(request: BrainstormRequest, user_id: str, db: Session) -> BrainstormResponse:
+    async def generate(request: BrainstormRequest, user_id: str, db: Session) -> BrainstormResponse:
         """
         Generate brainstorming ideas.
 
@@ -55,8 +56,11 @@ class BrainstormGeneratorService:
         prompt = BrainstormPromptEngine.build_prompt(request)
 
         # Step 3: Generate response from Gemini
-        gemini = GeminiService()
-        raw_response = gemini.generate(prompt)
+        raw_response = await gateway.generate(LLMRequest(
+            prompt=prompt,
+            tool_slug="brainstorm_generator",
+            temperature=0.5,
+        ))
 
         if raw_response is None:
             raise ValueError("Gemini returned no response.")

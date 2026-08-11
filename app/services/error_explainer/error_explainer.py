@@ -1,14 +1,15 @@
 from app.models.error_explainer import ErrorExplainerRequest, ErrorExplainerResponse
 import tempfile, textwrap, json, asyncio
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from typing import Optional
 from pydantic import ValidationError
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
+from google.genai import types
 
 class ErrorExplainer:
-    client = GeminiService()
     @staticmethod
     def _validate_input(request: ErrorExplainerRequest):
         thres = 1500
@@ -79,14 +80,27 @@ Rules:
         error_file_path: Optional[str],
         code_file_path: Optional[str],
     ):
-        files = []
+        contents = []
 
+        # ---- FILE MODE ----
         if use_file:
             if error_file_path:
-                files.append(error_file_path)
+                with open(error_file_path, "rb") as f:
+                    contents.append(
+                        types.Part.from_bytes(
+                            data=f.read(),
+                            mime_type="text/plain"
+                        )
+                    )
 
             if code_file_path:
-                files.append(code_file_path)
+                with open(code_file_path, "rb") as f:
+                    contents.append(
+                        types.Part.from_bytes(
+                            data=f.read(),
+                            mime_type="text/plain"
+                        )
+                    )
 
             user_prompt = prompt
 
@@ -96,23 +110,26 @@ Rules:
             if code and not code_file_path:
                 user_prompt += f"\n\nSource Code:\n{code}"
 
-            response = await ErrorExplainer.client.generate_for_text_and_files(
-                prompt=user_prompt,
-                files=files,
-            )
-
+        # ---- TEXT MODE ----
         else:
             user_prompt = f"{prompt}\n\nError:\n{error}"
-
             if code:
                 user_prompt += f"\n\nSource Code:\n{code}"
 
-            response = await ErrorExplainer.client.generate_for_text_and_files(
-                prompt=user_prompt,
-            )
+        # ---- LLM REQUEST ----
+        llm_request = LLMRequest(
+            prompt=user_prompt,
+            contents=contents,              # empty if text mode
+            temperature=0.2,                # structured output
+            max_output_tokens=8000,
 
-        if isinstance(response, str):
-            return response.strip()
+            response_mime_type="application/json",
+
+            cache=False,                    # error explanations shouldn't be cached
+            tool_slug="error_explainer",
+        )
+
+        response = await gateway.generate(llm_request)
 
         return response.text.strip()
     

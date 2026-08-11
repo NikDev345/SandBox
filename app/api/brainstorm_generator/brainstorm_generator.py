@@ -28,7 +28,7 @@ router = APIRouter(
     response_model=BrainstormResponse,
     status_code=status.HTTP_200_OK,
 )
-def generate_brainstorm(
+async def generate_brainstorm(
     request: BrainstormRequest,
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -38,7 +38,7 @@ def generate_brainstorm(
     """
 
     try:
-        return BrainstormGeneratorService.generate(request, current_user["sub"], db)
+        return await BrainstormGeneratorService.generate(request, current_user["sub"], db)
 
     except ValueError as exc:
         raise HTTPException(

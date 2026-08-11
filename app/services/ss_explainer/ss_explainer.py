@@ -2,7 +2,8 @@ from fastapi import UploadFile
 from app.models.ss_explainer import ScreenshotExplainerRequest, ExplanationAction, ScreenshotMetadata, ScreenshotExplainerResponse
 from PIL import Image, UnidentifiedImageError, ImageOps
 from io import BytesIO
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from google.genai import types
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
@@ -258,7 +259,7 @@ class SSExplainer:
             raise ValueError(f"Unsupported action: {action}")
         
     @staticmethod
-    def _upload_image(gemini, image_bytes: bytes, mime_type: str):
+    def _upload_image(image_bytes: bytes, mime_type: str):
         """
         Upload the processed image using GeminiService.
         """
@@ -269,8 +270,7 @@ class SSExplainer:
             raise RuntimeError(f"Failed to upload image: {e}") from e
         
     @staticmethod
-    async def _generate_explanation(
-        gemini,
+    async def _generate_explanation(    
         uploaded_image,
         prompt: str,
         temperature: float = 0.3,
@@ -280,12 +280,14 @@ class SSExplainer:
         Generate an explanation for an uploaded image.
         """
         try:
-            return await gemini.generate_explanation(
-                uploaded_image=uploaded_image,
+            result = await gateway.generate(LLMRequest(
                 prompt=prompt,
+                contents=[uploaded_image],
                 temperature=temperature,
                 max_output_tokens=max_output_tokens,
-            )
+                tool_slug="ss_explainer",
+            ))
+            return result.text
 
         except Exception as e:
             raise RuntimeError(f"Gemini explanation failed: {e}") from e
@@ -327,7 +329,6 @@ class SSExplainer:
         user=None
     ):
         
-        gemini = GeminiService()
         # 1. Validate request
         request = SSExplainer._validate_request(request)
 
@@ -355,14 +356,12 @@ class SSExplainer:
 
         # 7. Upload image
         uploaded_image = SSExplainer._upload_image(
-            gemini,
             image_bytes=processed_image,
             mime_type='image/jpeg',
         )
 
         # 8. Generate explanation
         raw_response = await SSExplainer._generate_explanation(
-            gemini,
             uploaded_image=uploaded_image,
             prompt=prompt,
         )

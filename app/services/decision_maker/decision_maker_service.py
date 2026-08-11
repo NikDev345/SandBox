@@ -30,7 +30,8 @@ from app.models.decision_maker import (
     DecisionMakerRequest,
     DecisionMakerResponse,
 )
-from app.services.gemini_service import GeminiService
+from app.services.LLM_Gateway.llm_config import gateway
+from app.models.gateway import LLMRequest
 from app.services.decision_maker.formatter import (
     DecisionMakerFormatter,
 )
@@ -84,8 +85,15 @@ class DecisionMakerService:
         # ----------------------------------------------------
 
         try:
-            client = GeminiService()
-            ai_response = client.generate(prompt)
+            request_payload = LLMRequest(
+                prompt=prompt,
+                temperature=0.4,
+                max_tokens=2000,
+                response_schema="json",
+                tool_slug='decision_maker',
+            )
+
+            ai_response = await gateway.generate(request_payload)
             tool = ToolService.get_tool_by_slug(
                     db=db,
                     slug="decision_maker",
