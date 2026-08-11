@@ -1,23 +1,19 @@
 from nicegui import ui
 from app.ui.seo import PUBLIC_PAGES, add_page_seo
+from app.ui.shared import add_shared_assets
 
 @ui.page("/", title=PUBLIC_PAGES["/"]["title"])
 def dashboard():
     add_page_seo("/")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/layout.css">
-    """)
-
-    ui.add_body_html("""
-    <script src="/assets/js/appearance.js"></script>
-    <script src="/assets/js/dashboard.js"></script>
-    <script src="/assets/js/settings.js"></script>
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/layout.css"],
+        extra_js=[
+            "/assets/js/appearance.js",
+            "/assets/js/dashboard.js",
+            "/assets/js/settings.js",
+        ],
+    )
 
     with open(
         "app/ui/templates/dashboard.html",

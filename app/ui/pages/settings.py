@@ -1,24 +1,21 @@
 from nicegui import ui
 from app.ui.seo import PRIVATE_PAGES, add_private_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page("/settings", title=f"{PRIVATE_PAGES['/settings']} - SandBox")
 def settings():
     add_private_seo("/settings")
 
-    ui.add_head_html(ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/settings.css">
-    <link rel="stylesheet" href="/assets/css/appearance.css">
-    <link rel="stylesheet" href="/assets/css/layout.css">
-    """))
-
-    ui.add_body_html("""
-    <script src="/assets/js/appearance.js"></script>
-    <script src="/assets/js/settings.js"></script>
-    """)
+    add_shared_assets(
+        extra_css=[
+            "/assets/css/appearance.css",
+            "/assets/css/layout.css",
+        ],
+        extra_js=[
+            "/assets/js/appearance.js",
+            "/assets/js/settings.js",
+        ],
+    )
 
     with open(
         "app/ui/templates/settings.html",

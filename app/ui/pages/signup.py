@@ -1,21 +1,18 @@
 from nicegui import ui
 from app.ui.seo import PRIVATE_PAGES, add_private_seo
-
+from app.ui.shared import add_shared_assets
 
 @ui.page('/signup', title=f"{PRIVATE_PAGES['/signup']} - SandBox")
 def signup_page():
     add_private_seo("/signup")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/auth.css">
-    """)
-
-    ui.add_body_html("""
-        <script src="/assets/js/appearance.js"></script>
-        <script src="/assets/js/signup.js"></script>
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/auth.css"],
+        extra_js=[
+            "/assets/js/appearance.js",
+            "/assets/js/signup.js",
+        ],
+    )
 
     with open(
         "app/ui/templates/signup.html",

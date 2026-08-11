@@ -1,15 +1,19 @@
 from nicegui import ui
 from app.ui.seo import PRIVATE_PAGES, add_private_seo
+from app.ui.shared import add_shared_assets
 
 @ui.page('/login', title=f"{PRIVATE_PAGES['/login']} - SandBox")
 def login_page():
     add_private_seo("/login")
 
-    ui.add_head_html("""
-    <link rel="stylesheet" href="/assets/css/tokens.css">
-    <link rel="stylesheet" href="/assets/css/animations.css">
-    <link rel="stylesheet" href="/assets/css/auth.css">
-    """)
+    add_shared_assets(
+        extra_css=["/assets/css/auth.css"],
+        extra_js=[
+            "/assets/js/appearance.js",
+            "/assets/js/login.js",
+        ],
+        auth_page=True,
+    )
 
     with open(
         "app/ui/templates/login.html",
@@ -18,7 +22,3 @@ def login_page():
 
         ui.html(f.read())
 
-    ui.add_body_html("""
-        <script src="/assets/js/appearance.js"></script>
-        <script src="/assets/js/login.js"></script>
-    """)
