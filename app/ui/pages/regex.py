@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/regex-gen")
+@ui.page("/regex-gen", title=PUBLIC_PAGES["/regex-gen"]["title"])
 def regex_gen():
+    add_page_seo("/regex-gen")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/pro_cons_gen")
+@ui.page("/pro_cons_gen", title=PUBLIC_PAGES["/pro_cons_gen"]["title"])
 def json_fixer_page():
+    add_page_seo("/pro_cons_gen")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/text-summarizer")
+@ui.page("/text-summarizer", title=PUBLIC_PAGES["/text-summarizer"]["title"])
 def text_summarizer_page():
+    add_page_seo("/text-summarizer")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

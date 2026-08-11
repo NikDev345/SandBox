@@ -1,8 +1,10 @@
 from nicegui import ui
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/")
+@ui.page("/", title=PUBLIC_PAGES["/"]["title"])
 def dashboard():
+    add_page_seo("/")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

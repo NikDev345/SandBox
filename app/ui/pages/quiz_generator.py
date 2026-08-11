@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/quiz-generator")
+@ui.page("/quiz-generator", title=PUBLIC_PAGES["/quiz-generator"]["title"])
 def quiz_generator_page():
+    add_page_seo("/quiz-generator")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

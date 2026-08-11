@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/yaml")
+@ui.page("/yaml", title=PUBLIC_PAGES["/yaml"]["title"])
 def yaml_gen():
+    add_page_seo("/yaml")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">

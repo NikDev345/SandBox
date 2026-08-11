@@ -1,10 +1,12 @@
 from nicegui import ui
 from datetime import datetime
 from pathlib import Path
+from app.ui.seo import PUBLIC_PAGES, add_page_seo
 
 
-@ui.page("/error")
+@ui.page("/error", title=PUBLIC_PAGES["/error"]["title"])
 def commit_gen():
+    add_page_seo("/error")
 
     ui.add_head_html("""
     <link rel="stylesheet" href="/assets/css/tokens.css">
