@@ -864,6 +864,7 @@ document.querySelector(".settings-avatar")?.addEventListener("click", () => {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  new SettingsManager();
+document.addEventListener("DOMContentLoaded", () => {
+    if (!document.getElementById("profileForm")) return;
+    window.settingsManager = new SettingsManager();
 });

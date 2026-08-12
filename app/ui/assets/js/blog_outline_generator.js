@@ -452,15 +452,12 @@
       dom.bookmarkBtn.disabled = false;
 
       renderOutline(data && data.outline);
-      if (window.refreshWorkspace) window.refreshWorkspace();
-    } catch (err) {
-      renderErrorOutput(
-        'Something went wrong while generating your outline. Please try again in a moment.'
-      );
+    } catch (error) {
+      console.error('Error generating outline:', error);
+      renderErrorOutput('An error occurred while generating the outline. Please try again.');
     } finally {
       setGeneratingState(false);
-    }
-  };
+    } };
 
   // ─────────────────────────────────────────────────────────────
   // COPY / CLEAR

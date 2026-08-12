@@ -56,13 +56,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     initializeMobileDrawer();
     initializeLogoDropZone();
     initializeAdminControls();
-    loadDashboardData();
+    await loadDashboardData();
     applyAdminRole();
     updateCategoryBadges();
-    loadConnections();
-    loadWorkspace();   
+    await Promise.allSettled([
+        loadConnections(),
+        loadWorkspace(),
+        loadAppearance()
+    ]);
     initializeScrollSpy();
-    await loadAppearance();
 
 
     // =======================================================
@@ -487,10 +489,7 @@ async function loadDashboardData() {
 
     
     /* Load tools from API (if available — otherwise static cards remain) */
-    if (toolsData) {
-        const tools = normalizeTools(toolsData);
-        if (tools.length) renderTools(tools);
-    }
+
 }
 
 /* ============================================================
