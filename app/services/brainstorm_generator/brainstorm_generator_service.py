@@ -65,18 +65,12 @@ class BrainstormGeneratorService:
         if raw_response is None:
             raise ValueError("Gemini returned no response.")
 
-        if isinstance(raw_response, str) and not raw_response.strip():
+        if not raw_response or not raw_response.text or not raw_response.text.strip():
             raise ValueError("Gemini returned an empty response.")
 
         # Step 4: Format & validate response
-        response = BrainstormFormatter.format(raw_response)
-        user_input = json.dumps({
-            "topic": request.topic,
-            "category": request.category,
-            "creativity":request.creativity,
-            "idea_count": request.idea_count,
-            "criteria": request.criteria,
-        })
+        response = BrainstormFormatter.format(raw_response.text)
+        user_input = request.model_dump_json()
         
         tool = ToolService.get_tool_by_slug(
                 db=db,

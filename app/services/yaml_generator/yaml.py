@@ -54,7 +54,12 @@ class YAMLGen:
                 
             applications = []
             
-            services = compose_data.get("services", {})
+            services = {}
+
+            # handle multi-document YAML
+            for doc in compose_data:
+                if isinstance(doc, dict) and "services" in doc:
+                    services.update(doc["services"])
             
             for service_name, service in services.items():
                 

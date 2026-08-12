@@ -436,9 +436,9 @@ class CodeReview:
             # Use generate_json instead of generate
             request = LLMRequest(
                 prompt=prompt,
-                temperature=0.3,
+                temperature=0.2,
                 max_tokens=10000,
-                response_schema="json" ,
+                response_mime_type="application/json",
                 tool_slug="code_reviewer", # important for your schema
             )
             data = await CodeReview.client.generate(request)
@@ -466,7 +466,13 @@ class CodeReview:
             data = raw_response
 
         try:
-            review = AIReviewResult.model_validate(data)  # ← was CodeReviewResponse
+            if hasattr(data, "text"):
+                data = data.text   # extract LLM output
+
+            if isinstance(data, str):
+                data = json.loads(data)  # convert to dict
+
+            review = AIReviewResult.model_validate(data) # ← was CodeReviewResponse
         except ValidationError as e:
             raise ValueError(f"AI response does not match the expected schema: {e}") from e
 
@@ -544,13 +550,7 @@ class CodeReview:
             chunks,
         )
         
-        user_output = json.dumps({
-            "summary":ai_review.summary,
-            "errors": ai_review.errors,
-            "suggestions": ai_review.suggestions,
-            "time complexity": ai_review.time_complexity,
-            "space complexity": ai_review.space_complexity,
-        })
+        user_output = ai_review.model_dump_json()
         
         tool = ToolService.get_tool_by_slug(
                 db=db,

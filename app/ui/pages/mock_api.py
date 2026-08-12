@@ -10,9 +10,9 @@ def mock_api():
 
     add_shared_assets(
             extra_css=["/assets/css/mock_api.css"],
-            extra_js=["/assets/js/api.js",
-                      "/assets/js/mock_api.js",
-                      "/assets/js/ui.js"],
+            extra_js=["/assets/js/mock_api/api.js",
+                      "/assets/js/mock_api/mock_api.js",
+                      "/assets/js/mock_api/ui.js"],
             tool_page=True,
         )
 

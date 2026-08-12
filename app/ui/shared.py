@@ -10,8 +10,11 @@ def add_shared_assets(
 ):
     # Only tokens and animations load everywhere
     base_css = [
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
         "/assets/css/tokens.css",
         "/assets/css/animations.css",
+        "/assets/css/buttons.css",
+        "/assets/css/layout.css",
     ]
 
     # Dashboard and settings only on dashboard/settings pages

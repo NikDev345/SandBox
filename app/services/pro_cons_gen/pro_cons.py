@@ -247,7 +247,7 @@ class ProConsService:
             result = await gateway.generate(LLMRequest(
                 prompt=prompt,
                 tool_slug="pro_cons",
-                cache=False,
+                temperature=0.3,
             ))
             return result.text
         except Exception as e:

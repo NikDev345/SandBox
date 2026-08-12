@@ -46,7 +46,7 @@ async def generate_kubernetes_yaml(
             await compose_file.read()
         ).decode("utf-8")
 
-        compose_dict = yaml.safe_load(compose_content)
+        compose_dict = list(yaml.safe_load_all(compose_content)) 
 
         return YAMLGen.generate(
             request=request,

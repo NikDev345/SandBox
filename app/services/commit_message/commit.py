@@ -169,21 +169,17 @@ class CommitMessageGenerator:
             request = LLMRequest(
                 prompt=prompt,
                 temperature=0.2,
-                max_tokens=800,
+                max_tokens=1000,
                 tool_slug="commit_mgs",
                 # commit message → plain text output
             )
 
             response = await CommitMessageGenerator.client.generate(request)
 
-            if not response or not response.output:
+            if not response or not response.text or not response.text.strip():
                 raise RuntimeError("Empty response from LLM Gateway")
 
-            # Gateway standardizes output
-            if isinstance(response.output, str):
-                return response.output.strip()
-
-            return str(response.output).strip()
+            return response.text.strip()
         except Exception as e:
             raise RuntimeError(
                 f"Failed to generate commit messages. : str{e}"
@@ -222,7 +218,7 @@ class CommitMessageGenerator:
         
     # main function--------------------------------------------------------------------------------
     @staticmethod
-    def generate(request: CommitMessageRequest, user_id: str, db: Session,)->CommitMessageResponse:
+    async def generate(request: CommitMessageRequest, user_id: str, db: Session,)->CommitMessageResponse:
         # Validate repository
         repo = CommitMessageGenerator._validate_git_repo(
             request.repository_path
@@ -253,7 +249,7 @@ class CommitMessageGenerator:
         )
 
         # Generate commit messages
-        raw_response = CommitMessageGenerator._generate_commit_message(
+        raw_response = await CommitMessageGenerator._generate_commit_message(
             prompt,
         )
 

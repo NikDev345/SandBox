@@ -19,7 +19,7 @@ from app.models.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 from sqlalchemy.orm import Session
-
+import json
 class QuizGeneratorService:
     """
     Orchestrates the Quiz Generator workflow.
@@ -83,9 +83,9 @@ class QuizGeneratorService:
         # --------------------------------------------------
         # Format Response
         # --------------------------------------------------
-
+        data = json.loads(response_json)
         response = QuizFormatter.format(
-            response_json
+            data
         )
 
         # --------------------------------------------------

@@ -186,23 +186,20 @@ class EmailStudioService:
             request = LLMRequest(
                 prompt=prompt,
                 temperature=0.5,
-                max_tokens=2000,
-                response_schema="json",
-                tool_slug="email_rewriter"# IMPORTANT
+                max_output_tokens=8000,
+                response_mime_type="application/json",  
+                tool_slug="email_rewriter"
             )
 
             response = await gateway.generate(request)
 
-            if not response or not response.output:
-                raise RuntimeError("Empty response from LLM Gateway")
-
-            # Gateway may already return dict OR string
-            if isinstance(response.output, dict):
-                return json.dumps(response.output)
-
-            return str(response.output).strip()
         except Exception as exc:
             raise RuntimeError("Failed to generate email.") from exc
+
+        if not response or not response.text:
+            raise RuntimeError("Empty response from LLM Gateway")
+
+        return response.text.strip()
 
     @staticmethod
     def _parse_response(response: str) -> dict[str, Any]:

@@ -252,9 +252,10 @@ class ActionItemService:
                 LLMRequest(
                     prompt=prompt,
                     temperature=0.4,
-                    max_output_tokens=1500,
+                    max_output_tokens=8000,
                     response_mime_type = "application/json",
                     tool_slug="item_extractor",
+                    cache=False,
                 )
             )
 
@@ -266,10 +267,36 @@ class ActionItemService:
             raise ValueError(f"Failed to generate response: {e}") from e
         
     @staticmethod
-    def _parse_response(response: dict) -> list[ActionItem]:
+    def _parse_response(response: str) -> list[ActionItem]:
         try:
-            parsed = ActionItemExtractorResponse.model_validate(response)
-            return parsed.action_items  
+            cleaned = response.strip()
+
+            # remove markdown
+            if cleaned.startswith("```"):
+                cleaned = (
+                    cleaned.replace("```json", "")
+                    .replace("```", "")
+                    .strip()
+                )
+
+            # ✅ HANDLE [] CASE FIRST
+            if cleaned.startswith("["):
+                data = {"action_items": json.loads(cleaned)}
+            else:
+                start = cleaned.find("{")
+                end = cleaned.rfind("}") + 1
+                if start == -1 or end == 0:
+                    raise ValueError(f"No valid JSON object found: {cleaned}")
+
+                cleaned = cleaned[start:end]
+                data = json.loads(cleaned)
+
+            parsed = ActionItemExtractorResponse.model_validate(data)
+            return parsed.action_items
+
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON from AI: {cleaned}") from e
+
         except ValidationError as e:
             raise ValueError(f"Invalid AI response schema: {e}") from e
         

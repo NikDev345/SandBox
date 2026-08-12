@@ -27,7 +27,7 @@ async def generate_regex(
     current_user: Users = Depends(get_current_user)
 ):
     try:
-        return Regex.generate_regex(request, current_user["sub"], db)
+        return await Regex.generate_regex(request, current_user["sub"], db)
 
     except ValueError as e:
         raise HTTPException(

@@ -181,7 +181,7 @@ class FlashcardGeneratorService:
                 "Flashcard generation failed."
             ) from exc
 
-        if not response or not response.strip():
+        if not response or not response.text or not response.text.strip():
             raise RuntimeError("LLM returned an empty response.")
 
         return response.text.strip()

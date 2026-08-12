@@ -49,18 +49,17 @@ class ELI5Service:
         # Generate explanation
         llm_request = LLMRequest(
             prompt=prompt,
-            temperature=0.6,        # slightly higher for ELI5 creativity
-            max_tokens=1500,
-            response_schema="text",
+            temperature=0.6,
+            max_output_tokens=8000,
             tool_slug="eli5",
         )
 
         response1 = await gateway.generate(llm_request)
 
-        if not response1 or not response1.output:
+        if not response1 or not response1.text:
             raise RuntimeError("Empty response from LLM Gateway")
 
-        explanation = response1.output
+        explanation = response1.text.strip()
         
         tool = ToolService.get_tool_by_slug(
                     db=db,

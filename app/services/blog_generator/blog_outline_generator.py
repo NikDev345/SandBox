@@ -21,11 +21,15 @@ class BlogOutlineGeneratorService:
 
         prompt = PromptEngine.build_blog_outline_prompt(request)
 
-        result = await gateway.generate(LLMRequest(
+        llm_response = await gateway.generate(LLMRequest(
             prompt=prompt,
             tool_slug="blog_generator",
             temperature=0.7,
         ))
+        if not llm_response or not llm_response.text:
+            raise ValueError("Empty response from LLM")
+
+        result = llm_response.text.strip()
         
         user_input = json.dumps({
             "topic": request.topic,

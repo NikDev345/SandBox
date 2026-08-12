@@ -89,7 +89,6 @@ class DecisionMakerService:
                 prompt=prompt,
                 temperature=0.4,
                 max_tokens=2000,
-                response_schema="json",
                 tool_slug='decision_maker',
             )
 
@@ -105,7 +104,7 @@ class DecisionMakerService:
                     user_id=user_id,
                     tool_id=tool_id,
                     user_input=request.model_dump_json(),
-                    output=json.dumps(ai_response),
+                    output=json.dumps(ai_response.model_dump()),
                 )
             execution_id = execution.id
         except Exception as exc:
@@ -114,6 +113,6 @@ class DecisionMakerService:
                 status_code=500,
                 detail=str(exc),
             ) from exc
-        response = DecisionMakerFormatter.format(ai_response)
+        response = DecisionMakerFormatter.format(ai_response.text)
         response.execution_id = execution_id
         return response
