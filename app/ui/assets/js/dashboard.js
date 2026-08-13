@@ -39,7 +39,7 @@ let resultCount = null;
    BOOT
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded",  () => {
+document.addEventListener("DOMContentLoaded", async () => {
     clearAllIntervals();
     /* Cache DOM references after content is ready */
     toolCards  = Array.from(document.querySelectorAll(".tool-card"));
@@ -56,16 +56,14 @@ document.addEventListener("DOMContentLoaded",  () => {
     initializeMobileDrawer();
     initializeLogoDropZone();
     initializeAdminControls();
-    await 
+    await loadDashboardData();
     applyAdminRole();
     updateCategoryBadges();
     await Promise.allSettled([
-        loadDashboardData(),
         loadConnections(),
         loadWorkspace(),
         loadAppearance()
-    ]).catch(err => console.error("Dashboard load error:", err));
-});
+    ]);
     initializeScrollSpy();
 
 
@@ -183,7 +181,7 @@ document.addEventListener("DOMContentLoaded",  () => {
 
                 if (!response.ok) {
                     const err = await response.json();
-                    alert(err.detail || "Failed to disconnect GitHub.");
+                    alert(err.detail || "Failed to disconnect <Github></Github>.");
                     return;
                 }
 
@@ -203,64 +201,29 @@ document.addEventListener("DOMContentLoaded",  () => {
    ADMIN CONTROLS — event delegation, no inline handlers
    ============================================================ */
 async function refreshWorkspace() {
+    const toolsEl   = document.querySelector("[data-workspace-tools]");
+    const creditsEl = document.querySelector("[data-workspace-credits]");
+    const execEl    = document.querySelector("[data-workspace-executions]");
 
     try {
+        const response = await fetch("/workspace/", { credentials: "include" });
+        if (!response.ok) return;
 
-        const response = await fetch(
-            "/workspace/",
-            {
-                credentials: "include"
-            }
-        );
+        const data = await response.json();
+        if (!data.success || !data.workspace) return;
 
+        const ws = data.workspace;
 
-        if (!response.ok) {
-            return;
+        if (toolsEl)   toolsEl.textContent   = formatMetric(ws.total_tools);
+        if (execEl)    execEl.textContent     = formatMetric(ws.executions);
+        if (creditsEl) {
+            const dc = ws.daily_credits || {};
+            const remaining = dc.remaining ?? "--";
+            const limit     = dc.limit     ?? "--";
+            creditsEl.textContent = `${remaining} / ${limit}`;
         }
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success ||
-            !data.workspace
-        ) {
-            return;
-        }
-
-
-        const workspace =
-            data.workspace;
-
-
-        /* ----------------------------------------------------
-           SAVE FRESH DATA
-           ---------------------------------------------------- */
-
-        setCachedWorkspace(
-            workspace
-        );
-
-
-        /* ----------------------------------------------------
-           UPDATE DASHBOARD
-           ---------------------------------------------------- */
-
-        renderWorkspace(
-            workspace
-        );
-
-    }
-
-    catch (err) {
-
-        console.error(
-            "refreshWorkspace failed:",
-            err
-        );
-
+    } catch (err) {
+        console.error("refreshWorkspace failed:", err);
     }
 }
 
@@ -364,7 +327,6 @@ function authHeaders() {
 function clearAuthSession() {
     localStorage.removeItem("SandBox_user");
     localStorage.removeItem("role");
-    localStorage.removeItem("sandbox-workspace_cache");
 }
 
 
@@ -432,318 +394,63 @@ async function loadConnections() {
 
 }
 /* ============================================================
-   WORKSPACE CACHE
-   ============================================================ */
-
-const WORKSPACE_CACHE_KEY = "sandbox_workspace_cache";
-
-function getCachedWorkspace() {
-    try {
-        const cached = localStorage.getItem(WORKSPACE_CACHE_KEY);
-        return cached ? JSON.parse(cached) : null;
-    } catch (err) {
-        console.error("Failed to read workspace cache:", err);
-        return null;
-    }
-}
-
-function setCachedWorkspace(workspace) {
-    try {
-        localStorage.setItem(
-            WORKSPACE_CACHE_KEY,
-            JSON.stringify(workspace)
-        );
-    } catch (err) {
-        console.error("Failed to save workspace cache:", err);
-    }
-}
-
-/* ============================================================
    WORKSPACE (live)
    ============================================================ */
 let workspaceLoaded = false;
-/* ============================================================
-   WORKSPACE RENDERER
-   ============================================================ */
 
-function renderWorkspace(workspace) {
-
-    if (!workspace) return;
-
-    const toolsEl = document.querySelector(
-        "[data-workspace-tools]"
-    );
-
-    const creditsEl = document.querySelector(
-        "[data-workspace-credits]"
-    );
-
-    const execEl = document.querySelector(
-        "[data-workspace-executions]"
-    );
-
-    const nameEls = document.querySelectorAll(
-        "[data-workspace-name]"
-    );
-
-    const emailEls = document.querySelectorAll(
-        "[data-workspace-email]"
-    );
-
-    const avatarEls = document.querySelectorAll(
-        "[data-workspace-avatar]"
-    );
-
-    const DEFAULT_AVATAR =
-        "/assets/default_avatar.png";
-
-
-    /* --------------------------------------------------------
-       USER NAME
-       -------------------------------------------------------- */
-
-    nameEls.forEach(el => {
-        el.textContent =
-            workspace.name || "Workspace";
-    });
-
-
-    /* --------------------------------------------------------
-       USER EMAIL
-       -------------------------------------------------------- */
-
-    emailEls.forEach(el => {
-        el.textContent =
-            workspace.email || "Not signed in";
-    });
-
-
-    /* --------------------------------------------------------
-       USER AVATAR
-       -------------------------------------------------------- */
-
-    avatarEls.forEach(img => {
-
-        img.src =
-            workspace.avatar || DEFAULT_AVATAR;
-
-        img.onerror = function () {
-            this.src = DEFAULT_AVATAR;
-        };
-
-    });
-
-
-    /* --------------------------------------------------------
-       TOTAL TOOLS
-       -------------------------------------------------------- */
-
-    if (toolsEl) {
-        toolsEl.textContent =
-            formatMetric(workspace.total_tools);
-    }
-
-
-    /* --------------------------------------------------------
-       EXECUTIONS
-       -------------------------------------------------------- */
-
-    if (execEl) {
-        execEl.textContent =
-            formatMetric(workspace.executions);
-    }
-
-
-    /* --------------------------------------------------------
-       DAILY CREDITS
-       -------------------------------------------------------- */
-
-    if (creditsEl) {
-
-        const dc =
-            workspace.daily_credits || {};
-
-        const remaining =
-            dc.remaining ?? "--";
-
-        const limit =
-            dc.limit ?? "--";
-
-        creditsEl.textContent =
-            `${remaining} / ${limit}`;
-    }
-}
-
-
-/* ============================================================
-   LOAD WORKSPACE
-   ============================================================ */
-    
 async function loadWorkspace() {
-
     workspaceLoaded = true;
 
+    const toolsEl     = document.querySelector("[data-workspace-tools]");
+    const creditsEl    = document.querySelector("[data-workspace-credits]");
+    const execEl        = document.querySelector("[data-workspace-executions]");
+    const nameEls       = document.querySelectorAll("[data-workspace-name]");
+    const emailEls      = document.querySelectorAll("[data-workspace-email]");
+    const avatarEls     = document.querySelectorAll("[data-workspace-avatar]");
 
-    /* ========================================================
-       1. LOAD CACHED WORKSPACE IMMEDIATELY
-       ======================================================== */
-
-    const cachedWorkspace =
-        getCachedWorkspace();
-
-    if (cachedWorkspace) {
-
-        renderWorkspace(
-            cachedWorkspace
-        );
-    }
-
-
-    /* ========================================================
-       2. FETCH FRESH WORKSPACE DATA
-       ======================================================== */
+    const DEFAULT_AVATAR = "/assets/default_avatar.png";
 
     try {
+        const response = await fetch("/workspace/", {
+            credentials: "include"
+        });
 
-        const response = await fetch(
-            "/workspace/",
-            {
-                credentials: "include"
-            }
-        );
-
-
-        /* ----------------------------------------------------
-           AUTHENTICATION FAILURE
-           ---------------------------------------------------- */
-
-        if (
-            response.status === 401 ||
-            response.status === 403
-        ) {
-
-            /*
-             * If we already have cached data,
-             * KEEP SHOWING IT.
-             *
-             * Do not suddenly replace the dashboard
-             * with "Not signed in".
-             */
-
-            if (!cachedWorkspace) {
-
-                renderWorkspace({
-                    name: "Workspace",
-                    email: "Not signed in",
-                    avatar: "/assets/default_avatar.png",
-                    total_tools: "--",
-                    executions: "--",
-                    daily_credits: {}
-                });
-
-            }
-
+        if (response.status === 401 || response.status === 403) {
+            if (toolsEl) toolsEl.textContent = "--";
+            if (creditsEl) creditsEl.textContent = "--";
+            if (execEl) execEl.textContent = "--";
             return;
         }
 
+        if (!response.ok) throw new Error("Workspace request failed");
 
-        /* ----------------------------------------------------
-           OTHER HTTP ERRORS
-           ---------------------------------------------------- */
+        const data = await response.json();
+        if (!data.success || !data.workspace) throw new Error("Malformed workspace response");
 
-        if (!response.ok) {
+        const ws = data.workspace;
 
-            throw new Error(
-                "Workspace request failed"
-            );
+        nameEls.forEach(el => el.textContent = ws.name || "Workspace");
+        emailEls.forEach(el => el.textContent = ws.email || "Not signed in");
+        avatarEls.forEach(img => {
+            img.src = ws.avatar || DEFAULT_AVATAR;
+            img.onerror = function () { this.src = DEFAULT_AVATAR; };
+        });
+
+        if (toolsEl) toolsEl.textContent = formatMetric(ws.total_tools);
+        if (execEl) execEl.textContent = formatMetric(ws.executions);
+
+        if (creditsEl) {
+            const dc = ws.daily_credits || {};
+            const remaining = dc.remaining ?? "--";
+            const limit = dc.limit ?? "--";
+            creditsEl.textContent = `${remaining} / ${limit}`;
         }
 
-
-        /* ----------------------------------------------------
-           PARSE RESPONSE
-           ---------------------------------------------------- */
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data.success ||
-            !data.workspace
-        ) {
-
-            throw new Error(
-                "Malformed workspace response"
-            );
-        }
-
-
-        const workspace =
-            data.workspace;
-
-
-        /* ====================================================
-           3. SAVE FRESH DATA TO CACHE
-           ==================================================== */
-
-        setCachedWorkspace(
-            workspace
-        );
-
-
-        /* ====================================================
-           4. UPDATE DASHBOARD WITH FRESH DATA
-           ==================================================== */
-
-        renderWorkspace(
-            workspace
-        );
-
-    }
-
-
-    /* ========================================================
-       NETWORK ERROR
-       ======================================================== */
-
-    catch (err) {
-
-        console.error(
-            "Failed to load workspace:",
-            err
-        );
-
-
-        /*
-         * IMPORTANT:
-         *
-         * If cached workspace exists,
-         * DO NOT replace it.
-         *
-         * The user should continue seeing
-         * their existing workspace information.
-         */
-
-        if (!cachedWorkspace) {
-
-            renderWorkspace({
-
-                name: "Workspace",
-
-                email: "Not signed in",
-
-                avatar:
-                    "/assets/default_avatar.png",
-
-                total_tools: "--",
-
-                executions: "--",
-
-                daily_credits: {}
-
-            });
-
-        }
+    } catch (err) {
+        console.error("Failed to load workspace:", err);
+        if (toolsEl) toolsEl.textContent = "Unable to load workspace.";
+        if (creditsEl) creditsEl.textContent = "Unable to load workspace.";
+        if (execEl) execEl.textContent = "Unable to load workspace.";
     }
 }
 async function fetchFirstAvailable(urls) {
