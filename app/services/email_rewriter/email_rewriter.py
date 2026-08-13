@@ -187,7 +187,6 @@ class EmailStudioService:
                 prompt=prompt,
                 temperature=0.5,
                 max_output_tokens=8000,
-                response_mime_type="application/json",
                 tool_slug="email_rewriter"
             )
 
