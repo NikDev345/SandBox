@@ -4,7 +4,7 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_BASE_URL = os.getenv("APP_BASE_URL")
-email_api_key = os.getenv('EMAIL_API')
+email_api_key = os.getenv('EMAIL_PASSWORD')
 email_from = os.getenv('EMAIL_FROM')
 GEMINI_MODEL = os.getenv("GEMINI_MODEL")
 GEMINI_KEYS = [
