@@ -8,7 +8,8 @@ Responsibilities
 ----------------
 - Select the active OCR engine
 - Provide a singleton OCR client
-- Hide OCR implementation details from the service layer
+- Hide OCR implementation details
+  from the service layer
 
 Supported Engines
 -----------------
@@ -29,7 +30,11 @@ from app.services.ocr.rapidocr_client import RapidOCRClient
 # Configuration
 # ==========================================================
 
-OCR_ENGINE = os.getenv("OCR_ENGINE", "rapid").lower()
+OCR_ENGINE = os.getenv(
+    "OCR_ENGINE",
+    "rapid",
+).lower()
+
 
 # ==========================================================
 # Factory
@@ -38,6 +43,11 @@ OCR_ENGINE = os.getenv("OCR_ENGINE", "rapid").lower()
 def create_ocr_client() -> BaseOCRClient:
     """
     Create the configured OCR client.
+
+    Important:
+    Creating RapidOCRClient does NOT initialize RapidOCR.
+    The actual RapidOCR model is initialized lazily when
+    extract() is first called.
     """
 
     if OCR_ENGINE == "rapid":
@@ -46,6 +56,7 @@ def create_ocr_client() -> BaseOCRClient:
     raise ValueError(
         f"Unsupported OCR engine: {OCR_ENGINE}"
     )
+
 
 # ==========================================================
 # Singleton Instance

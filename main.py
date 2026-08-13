@@ -1,3 +1,17 @@
+import time
+
+_APP_START = time.perf_counter()
+
+def startup_time(label):
+    print(
+        f"[STARTUP] {label}: "
+        f"{time.perf_counter() - _APP_START:.2f}s",
+        flush=True
+    )
+
+startup_time("main.py started")
+
+
 from fastapi import FastAPI, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
@@ -48,7 +62,7 @@ async def add_cache_headers(request: Request, call_next):
 
 from app.models import *
 from app.database.engine import *
-
+startup_time("models + database imported")
 Base.metadata.create_all(bind=engine)
 
 # ── Routers ────────────────────────────────────────────────────────────────────
@@ -58,12 +72,19 @@ from app.api.auth import router as auth_router
 from app.api.tools import router as tool_router
 from app.api.exec import router as exe_router
 from app.api.analytics import router as analytic_router
+startup_time("before Google API")
 from app.routes.auth import router as google_router
+startup_time("after Google API")
 from app.api.summarizer.summarizer import router as summarizer_router
+startup_time("after Summarizer API")
 from app.api.json_fixer.json_fixer import router as json_fixer_router
+startup_time("after JSON Fixer API")
 from app.api.ELI5.eli5 import router as eli5_router
+startup_time("after ELI5 API")
 from app.api.sql_generator.sql_generator import router as sql_router
+startup_time("after SQL Generator API")
 from app.api.ss_explainer.ss_explainer import router as ss_router
+startup_time("after SS Explainer API")
 from app.api.pro_cons_gen.pro_cons import router as pro_cons_router
 from app.api.notes_cleaner.notes_cleaner import router as notes_cleaner_router
 from app.api.quiz.quiz_generator import router as quiz_router
@@ -90,7 +111,7 @@ from app.routes.user import router as user_router
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
 from nicegui import ui
-
+startup_time("all API routers imported")
 # ── Static files ───────────────────────────────────────────────────────────────
 
 fast_app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -146,9 +167,9 @@ fast_app.include_router(bookmark_router)
 # ── NiceGUI pages ──────────────────────────────────────────────────────────────
 
 import app.main
-
+startup_time("NiceGUI pages imported")
 # ── Run ────────────────────────────────────────────────────────────────────────
-
+startup_time("before ui.run_with")
 ui.run_with(
     fast_app,
     title="SandBox",

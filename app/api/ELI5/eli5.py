@@ -1,30 +1,37 @@
 """
 ELI5 API
 --------
-Handles HTTP endpoints for the ELI5 (Explain Like I'm Five) tool.
+HTTP endpoints for the Explain Like I'm Five tool.
 
-Responsibilities:
-- Authenticate users
-- Validate incoming requests
-- Delegate business logic to the service layer
-- Return structured responses
-
-No AI logic or prompt engineering should exist in this file.
+The API layer intentionally remains lightweight.
+Heavy AI/business dependencies are imported only when
+the endpoint is actually used.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from __future__ import annotations
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+)
+from sqlalchemy.orm import Session
+
 from app.database.engine import get_db
 from app.models.eli5 import ELI5Request, ELI5Response
-from app.services.ELI5.eli5_services import ELI5Service
 from app.utils.auth import get_current_user
-from app.models.user import Users
-from sqlalchemy.orm import Session
+
 
 router = APIRouter(
     prefix="/eli5",
     tags=["ELI5"],
 )
 
+
+# ============================================================
+# GENERATE ELI5 EXPLANATION
+# ============================================================
 
 @router.post(
     "/explain",
@@ -34,17 +41,27 @@ router = APIRouter(
 )
 async def explain_topic(
     request: ELI5Request,
-    current_user: Users = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> ELI5Response:
     """
-    Generate a beginner-friendly explanation for a topic.
+    Generate a beginner-friendly explanation.
 
-    The endpoint authenticates the user, validates the request,
-    delegates processing to the ELI5 service, and returns the
-    formatted explanation.
+    The ELI5 service is imported lazily so that importing
+    the API router does not initialize the AI stack during
+    application startup.
     """
+
     try:
+
+        # ----------------------------------------------------
+        # Lazy import
+        # ----------------------------------------------------
+
+        from app.services.ELI5.eli5_services import (
+            ELI5Service,
+        )
+
         service = ELI5Service()
 
         response = await service.generate_explanation(
@@ -58,8 +75,21 @@ async def explain_topic(
     except HTTPException:
         raise
 
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
     except Exception as exc:
+
+        print(
+            "[ELI5] Generation failed:",
+            repr(exc),
+        )
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate explanation: {str(exc)}",
+            detail="Failed to generate explanation.",
         )

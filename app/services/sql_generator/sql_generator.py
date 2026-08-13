@@ -1,16 +1,36 @@
-from app.models.sql_generator import SQLGeneratorRequest, SQLGeneratorResponse, GenerationMode, SQLDialect, ExecutionCost
-import sqlparse, re, json
-from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
-from sqlparse.sql import Identifier, IdentifierList
-from sqlparse.tokens import Keyword
+"""
+SQL Generator Service
+---------------------
+Business logic for:
+- AI SQL generation
+- Visual SQL builder
+- SQL formatting
+- Query metadata extraction
+- Complexity estimation
+- Execution history
+"""
+
+from __future__ import annotations
+
+import re
 from typing import List
-from app.services.tool_executor import ExecutionService
-from app.services.tool_service import ToolService
+
 from sqlalchemy.orm import Session
 
-class SQLGeneratorService:
+from app.models.sql_generator import (
+    SQLGeneratorRequest,
+    SQLGeneratorResponse,
+    GenerationMode,
+    SQLDialect,
+    ExecutionCost,
+)
+from app.models.gateway import LLMRequest
+from app.services.LLM_Gateway.llm_config import gateway
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
 
+
+class SQLGeneratorService:
     @staticmethod
     async def generate(request: SQLGeneratorRequest, db: Session, user=None) -> SQLGeneratorResponse:
         """
@@ -703,7 +723,8 @@ class SQLGeneratorService:
         - Reindents nested queries
         - Removes extra whitespace
         """
-
+        import sqlparse
+        
         if not sql or not sql.strip():
             return ""
 
@@ -778,7 +799,9 @@ class SQLGeneratorService:
         Returns:
             ['employees', 'departments']
         """
-
+        import sqlparse
+        from sqlparse.sql import Identifier, IdentifierList
+        from sqlparse.tokens import Keyword 
         if not sql:
             return []
 

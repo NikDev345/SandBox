@@ -1,4 +1,4 @@
-from SandBox.app.api.summarizer.ai_api import AIAPI
+from app.api.summarizer.ai_api import AIAPI
 
 
 class SummarizerAPI:

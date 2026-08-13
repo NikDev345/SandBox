@@ -1,14 +1,18 @@
-from sqlalchemy.orm import Session
-from app.services.prompt_engine import PromptEngine
-from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
-from app.services.tool_executor import ExecutionService
-from app.services.tool_service import ToolService
+from __future__ import annotations
+
 import json
+
+from sqlalchemy.orm import Session
+
+from app.services.prompt_engine import PromptEngine
+
 
 class SummarizerService:
     """
     Business logic for AI Text Summarizer.
+
+    Heavy AI / execution dependencies are imported lazily
+    so they do not slow down application startup.
     """
 
     @staticmethod
@@ -18,20 +22,31 @@ class SummarizerService:
         text: str,
         length: str,
         instructions: str | None = None,
-    ) -> str:
+    ):
 
-        # -------------------------
-        # Validate Input
-        # -------------------------
+        # ====================================================
+        # VALIDATE
+        # ====================================================
 
         text = text.strip()
 
         if not text:
-            raise ValueError("Text cannot be empty.")
+            raise ValueError(
+                "Text cannot be empty."
+            )
 
-        # -------------------------
-        # Build Prompt
-        # -------------------------
+        if length not in {
+            "short",
+            "medium",
+            "detailed",
+        }:
+            raise ValueError(
+                "Invalid summary length."
+            )
+
+        # ====================================================
+        # BUILD PROMPT
+        # ====================================================
 
         prompt = PromptEngine.build_summary_prompt(
             text=text,
@@ -39,55 +54,95 @@ class SummarizerService:
             instructions=instructions,
         )
 
-        # -------------------------
-# Get Tool
-# -------------------------
+        # ====================================================
+        # LAZY AI IMPORT
+        # ====================================================
 
-        tool = ToolService.get_tool_by_slug(
-        db=db,
-        slug="text_summarizer",
+        from app.services.LLM_Gateway.llm_config import (
+            gateway,
         )
-        if tool is None:
-            # In local/dev environments the tool registry may not be populated.
-            # Fall back to a placeholder tool id so summaries can still be generated
-            # and execution history saved under a generic id.
-            tool_id = "text_summarizer"
-        else:
-            tool_id = tool.id
 
-# -------------------------
-# Generate Summary
-# -------------------------
+        from app.models.gateway import LLMRequest
 
+        # ====================================================
+        # GENERATE
+        # ====================================================
 
-        result = await gateway.generate(LLMRequest(
-            prompt=prompt,
-            tool_slug="text_summarizer",
-            temperature=0.5
-        ))
-
-        summary = result.text
-
-# -------------------------
-# Save Execution History
-# -------------------------
-
-        # Save execution history where possible. Use fallback tool_id when needed.
-        execution_id: str | None = None
-        try:
-            execution = ExecutionService.create_execution(
-                db=db,
-                user_id=user_id,
-                tool_id=tool_id,
-                user_input=json.dumps({"text": text, "length": length, "instructions": instructions,}),
-                output=summary,
+        result = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                tool_slug="text_summarizer",
+                temperature=0.5,
             )
-            execution_id = execution.id 
-        except Exception:
-            # don't block returning the summary if history save fails in dev
-            pass
-        # -------------------------
-        # Return Summary
-        # -------------------------
+        )
+
+        if not result or not result.text:
+            raise RuntimeError(
+                "AI returned an empty summary."
+            )
+
+        summary = result.text.strip()
+
+        # ====================================================
+        # SAVE EXECUTION
+        # ====================================================
+
+        execution_id = None
+
+        try:
+
+            # Lazy imports
+            from app.services.tool_executor import (
+                ExecutionService,
+            )
+
+            from app.services.tool_service import (
+                ToolService,
+            )
+
+            tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="text_summarizer",
+            )
+
+            # Only save history when the real tool exists.
+            #
+            # This avoids creating executions with a fake
+            # "text_summarizer" tool ID.
+            if tool:
+
+                user_input = json.dumps(
+                    {
+                        "text": text,
+                        "length": length,
+                        "instructions": instructions,
+                    },
+                    ensure_ascii=False,
+                )
+
+                execution = (
+                    ExecutionService.create_execution(
+                        db=db,
+                        user_id=user_id,
+                        tool_id=tool.id,
+                        user_input=user_input,
+                        output=summary,
+                    )
+                )
+
+                execution_id = execution.id
+
+        except Exception as exc:
+
+            # History failure must not destroy a successfully
+            # generated summary.
+            print(
+                "[SUMMARIZER] Execution history failed:",
+                repr(exc),
+            )
+
+        # ====================================================
+        # RETURN
+        # ====================================================
 
         return summary, execution_id

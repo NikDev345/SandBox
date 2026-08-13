@@ -1,4 +1,16 @@
-from fastapi import APIRouter, Depends
+from __future__ import annotations
+
+import io
+from datetime import datetime
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+)
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.database.engine import get_db
@@ -8,20 +20,18 @@ from app.models.summarizer import (
     ExtractResponse,
     DownloadRequest,
 )
-from app.services.summarizer.summarizer_service import SummarizerService
-from fastapi import UploadFile, File, HTTPException
-from fastapi.responses import StreamingResponse
-import io
-from pypdf import PdfReader
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-from datetime import datetime
+from app.utils.auth import get_current_user
+
 
 router = APIRouter(
     prefix="/summarizer",
     tags=["AI - Text Summarizer"],
 )
 
+
+# ============================================================
+# GENERATE SUMMARY
+# ============================================================
 
 @router.post(
     "/generate",
@@ -30,169 +40,388 @@ router = APIRouter(
 async def generate_summary(
     request: SummarizeRequest,
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """
-    Generate AI summary.
+    Generate an AI summary for the authenticated user.
     """
 
+    text = request.text.strip()
+
+    if not text:
+        raise HTTPException(
+            status_code=400,
+            detail="Text cannot be empty.",
+        )
+
     try:
-        summary, exe_id = await SummarizerService.summarize(
+        # Lazy import:
+        # The summarizer service and LLM gateway are not loaded
+        # during application startup.
+        from app.services.summarizer.summarizer_service import (
+            SummarizerService,
+        )
+
+        summary, execution_id = await SummarizerService.summarize(
             db=db,
-            user_id='anonymous',
-            text=request.text,
+            user_id=current_user["sub"],
+            text=text,
             length=request.length,
             instructions=request.instructions,
         )
 
         return SummarizeResponse(
             summary=summary,
-            execution_id=exe_id,
+            execution_id=execution_id,
         )
 
-    except Exception as e:
-        print("Summarizer Error:", repr(e))
-        raise
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        )
+
+    except Exception as exc:
+        print(
+            "[SUMMARIZER] Generation failed:",
+            repr(exc),
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to generate summary.",
+        )
 
 
+# ============================================================
+# DOCUMENT EXTRACTION
+# ============================================================
 
 @router.post(
     "/extract",
     response_model=ExtractResponse,
 )
-def extract_text_from_file(
+async def extract_text_from_file(
     file: UploadFile = File(...),
 ):
     """
-    Extract text from uploaded document (PDF/TXT/DOCX).
+    Extract text from PDF, DOCX, or TXT files.
+
+    Heavy document libraries are imported only when this
+    endpoint is actually used.
     """
 
+    if not file.filename:
+        raise HTTPException(
+            status_code=400,
+            detail="No file provided.",
+        )
+
+    filename = file.filename.lower()
+
+    allowed_extensions = (
+        ".pdf",
+        ".docx",
+        ".txt",
+    )
+
+    if not filename.endswith(allowed_extensions):
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported file type.",
+        )
+
     try:
-        content = file.file.read()
+        content = await file.read()
 
-        filename = (file.filename or '').lower()
-        extracted = ""
-        print(f"[extract] received file={file.filename} size={len(content)} bytes")
+        if not content:
+            raise HTTPException(
+                status_code=400,
+                detail="Uploaded file is empty.",
+            )
 
-        # PDF handling with fallbacks
-        if filename.endswith('.pdf'):
-            try:
-                reader = PdfReader(io.BytesIO(content))
-                texts = []
-                for i, page in enumerate(reader.pages):
-                    try:
-                        t = page.extract_text() or ""
-                        texts.append(t)
-                        print(f"[extract][pypdf] page={i} len={len(t)}")
-                    except Exception as e:
-                        print(f"[extract][pypdf] page={i} error={e}")
-                        texts.append("")
-                extracted = "\n\n".join(texts).strip()
-                print(f"[extract][pypdf] total_len={len(extracted)}")
-            except Exception as e:
-                print('[extract][pypdf] failed', e)
-                extracted = ""
+        # ----------------------------------------------------
+        # PDF
+        # ----------------------------------------------------
 
-            # If extraction yielded little/no text, try pdfplumber if available
-            if (not extracted or len(extracted) < 100):
+        if filename.endswith(".pdf"):
+
+            # Lazy import
+            from pypdf import PdfReader
+
+            reader = PdfReader(
+                io.BytesIO(content)
+            )
+
+            pages = []
+
+            for page in reader.pages:
+                try:
+                    text = page.extract_text() or ""
+
+                    if text.strip():
+                        pages.append(text.strip())
+
+                except Exception:
+                    continue
+
+            extracted = "\n\n".join(pages).strip()
+
+            # Optional fallback only when necessary.
+            #
+            # pdfplumber is intentionally NOT imported during
+            # application startup.
+            if len(extracted) < 100:
+
                 try:
                     import pdfplumber
-                    print('[extract][pdfplumber] trying fallback')
-                    with pdfplumber.open(io.BytesIO(content)) as pdf:
-                        pages = []
-                        for i, p in enumerate(pdf.pages):
+
+                    with pdfplumber.open(
+                        io.BytesIO(content)
+                    ) as pdf:
+
+                        fallback_pages = []
+
+                        for page in pdf.pages:
+
                             try:
-                                t = p.extract_text() or ""
-                                pages.append(t)
-                                print(f"[extract][pdfplumber] page={i} len={len(t)}")
-                            except Exception as e:
-                                print(f"[extract][pdfplumber] page={i} error={e}")
-                                pages.append("")
-                        extracted = "\n\n".join(pages).strip()
-                    print(f"[extract][pdfplumber] total_len={len(extracted)}")
+                                text = page.extract_text() or ""
+
+                                if text.strip():
+                                    fallback_pages.append(
+                                        text.strip()
+                                    )
+
+                            except Exception:
+                                continue
+
+                        fallback_text = "\n\n".join(
+                            fallback_pages
+                        ).strip()
+
+                        if len(fallback_text) > len(extracted):
+                            extracted = fallback_text
+
                 except Exception:
-                    # pdfplumber not available or failed — leave extracted as-is
                     pass
 
-        # DOCX handling
-        elif filename.endswith('.docx'):
-            try:
-                from docx import Document
-                doc = Document(io.BytesIO(content))
-                paragraphs = [p.text for p in doc.paragraphs if p.text]
-                extracted = "\n\n".join(paragraphs).strip()
-            except Exception:
-                extracted = ""
+        # ----------------------------------------------------
+        # DOCX
+        # ----------------------------------------------------
 
-        # Plain text fallback
+        elif filename.endswith(".docx"):
+
+            # Lazy import
+            from docx import Document
+
+            document = Document(
+                io.BytesIO(content)
+            )
+
+            paragraphs = [
+                paragraph.text.strip()
+                for paragraph in document.paragraphs
+                if paragraph.text.strip()
+            ]
+
+            extracted = "\n\n".join(
+                paragraphs
+            ).strip()
+
+        # ----------------------------------------------------
+        # TXT
+        # ----------------------------------------------------
+
         else:
-            try:
-                extracted = content.decode('utf-8', errors='ignore')
-            except Exception:
-                extracted = ""
 
-        return ExtractResponse(text=extracted)
+            extracted = content.decode(
+                "utf-8",
+                errors="ignore",
+            ).strip()
 
-    except Exception as e:
-        print('Extract Error:', repr(e))
-        raise HTTPException(status_code=500, detail='Failed to extract file')
+        if not extracted:
+
+            raise HTTPException(
+                status_code=422,
+                detail="Could not extract any text from the file.",
+            )
+
+        return ExtractResponse(
+            text=extracted,
+        )
+
+    except HTTPException:
+        raise
+
+    except Exception as exc:
+
+        print(
+            "[SUMMARIZER] File extraction failed:",
+            repr(exc),
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to extract text from file.",
+        )
 
 
+# ============================================================
+# DOWNLOAD SUMMARY AS PDF
+# ============================================================
 
-@router.post("/download")
+@router.post(
+    "/download",
+)
 def download_summary_pdf(
     request: DownloadRequest,
 ):
     """
-    Render provided summary text into a simple PDF and return it.
+    Convert a generated summary into a PDF.
+
+    ReportLab is imported only when the user clicks
+    Download PDF.
     """
 
+    summary = request.summary.strip()
+
+    if not summary:
+        raise HTTPException(
+            status_code=400,
+            detail="Summary cannot be empty.",
+        )
+
     try:
+
+        # Lazy import
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter
+
         buffer = io.BytesIO()
-        c = canvas.Canvas(buffer, pagesize=letter)
+
+        pdf = canvas.Canvas(
+            buffer,
+            pagesize=letter,
+        )
+
         width, height = letter
 
         margin = 72
-        max_width = width - margin * 2
+        max_width = width - (margin * 2)
+
         y = height - margin
 
-        lines = []
-        # Simple wrapping by splitting words
-        for paragraph in request.summary.split('\n'):
-            words = paragraph.split(' ')
-            line = ''
-            for w in words:
-                test = (line + ' ' + w).strip()
-                if c.stringWidth(test, 'Helvetica', 11) <= max_width:
-                    line = test
-                else:
-                    lines.append(line)
-                    line = w
-            if line:
-                lines.append(line)
-            lines.append('')
+        pdf.setFont(
+            "Helvetica",
+            11,
+        )
 
-        c.setFont('Helvetica', 11)
-        for line in lines:
-            if y < margin + 20:
-                c.showPage()
-                c.setFont('Helvetica', 11)
-                y = height - margin
-            c.drawString(margin, y, line)
-            y -= 14
+        for paragraph in summary.split("\n"):
+
+            words = paragraph.split()
+
+            line = ""
+
+            for word in words:
+
+                test_line = (
+                    f"{line} {word}"
+                ).strip()
+
+                if pdf.stringWidth(
+                    test_line,
+                    "Helvetica",
+                    11,
+                ) <= max_width:
+
+                    line = test_line
+
+                else:
+
+                    if line:
+
+                        if y < margin + 30:
+                            pdf.showPage()
+                            pdf.setFont(
+                                "Helvetica",
+                                11,
+                            )
+                            y = height - margin
+
+                        pdf.drawString(
+                            margin,
+                            y,
+                            line,
+                        )
+
+                        y -= 14
+
+                    line = word
+
+            if line:
+
+                if y < margin + 30:
+                    pdf.showPage()
+                    pdf.setFont(
+                        "Helvetica",
+                        11,
+                    )
+                    y = height - margin
+
+                pdf.drawString(
+                    margin,
+                    y,
+                    line,
+                )
+
+                y -= 14
+
+            # Paragraph spacing
+            y -= 6
 
         # Footer
-        c.setFont('Helvetica', 9)
-        footer = f"Generated by AI SandBox — {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}"
-        c.drawRightString(width - margin, margin - 20, footer)
+        pdf.setFont(
+            "Helvetica",
+            8,
+        )
 
-        c.save()
+        timestamp = datetime.utcnow().strftime(
+            "%Y-%m-%d %H:%M UTC"
+        )
+
+        pdf.drawRightString(
+            width - margin,
+            margin - 20,
+            f"Generated by AI SandBox — {timestamp}",
+        )
+
+        pdf.save()
+
         buffer.seek(0)
 
-        filename = f"summary-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}.pdf"
-        return StreamingResponse(buffer, media_type='application/pdf', headers={
-            'Content-Disposition': f'attachment; filename="{filename}"'
-        })
+        filename = (
+            f"summary-"
+            f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+            f".pdf"
+        )
 
-    except Exception as e:
-        print('PDF Generation Error:', repr(e))
-        raise HTTPException(status_code=500, detail='Failed to generate PDF')
+        return StreamingResponse(
+            buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition":
+                    f'attachment; filename="{filename}"'
+            },
+        )
+
+    except Exception as exc:
+
+        print(
+            "[SUMMARIZER] PDF generation failed:",
+            repr(exc),
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to generate PDF.",
+        )
