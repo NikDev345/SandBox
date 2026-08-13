@@ -304,6 +304,7 @@ function applyAdminRole() {
         document.body.classList.add("is-admin");
         const addBtn = document.getElementById("add-tool-btn");
         if (addBtn) addBtn.style.display = "";
+        initAdminDashboard();   // ← this is the only change
     } else {
         document.body.classList.remove("is-admin");
     }
@@ -1456,3 +1457,370 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 window.refreshWorkspace = refreshWorkspace;
+/* ============================================================
+   ADMIN DASHBOARD — FIXED VERSION
+   Replace the entire admin section in your JS with this.
+   ============================================================ */
+
+const ADMIN_PAGE_SIZE = 20;
+let adminExecPage     = 0;
+let adminExecTotal    = 0;
+let adminExecAll      = [];
+let adminExecFiltered = [];
+
+async function initAdminDashboard() {
+  injectAdminNavItem();
+  await Promise.allSettled([
+    loadAdminStats(),
+    loadAdminToolViews(),
+    loadAdminExecutions(),
+  ]);
+  wireAdminControls();
+  injectExecDetailModal();
+}
+
+/* ── Inject "Admin" nav item ── */
+function injectAdminNavItem() {
+  if (document.getElementById("nav-admin")) return;
+
+  const nav = document.querySelector(".sidebar-nav");
+  if (!nav) return;
+
+  const li = document.createElement("a");
+  li.className       = "nav-item nav-item--admin";
+  li.id              = "nav-admin";
+  li.href            = "#admin-dashboard";
+  li.dataset.section = "admin-dashboard";
+  li.innerHTML = `
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </span>
+    <span>Admin</span>`;
+
+  const bottom = nav.parentElement.querySelector(".sidebar-bottom");
+  if (bottom) nav.parentElement.insertBefore(li, bottom);
+  else nav.appendChild(li);
+
+  li.addEventListener("click", e => { e.preventDefault(); showAdminSection(); });
+}
+
+/* ── Show admin section ── */
+function showAdminSection() {
+  document.querySelectorAll(".dashboard-section").forEach(s => {
+    const active = s.dataset.sectionId === "admin-dashboard";
+    s.style.display = active ? "" : "none";
+    s.classList.toggle("active", active);
+  });
+  document.querySelectorAll(".nav-item[data-section]").forEach(item => {
+    item.classList.toggle("active", item.dataset.section === "admin-dashboard");
+  });
+  history.replaceState(null, "", "#admin-dashboard");
+}
+
+/* ── Wire controls — called ONCE after DOM is ready ── */
+function wireAdminControls() {
+  /* Refresh */
+  const refreshBtn = document.getElementById("admin-refresh-btn");
+    if (refreshBtn) {
+    const newRefresh = refreshBtn.cloneNode(true);
+    refreshBtn.replaceWith(newRefresh);
+    newRefresh.addEventListener("click", async () => {
+        adminExecPage = 0;
+        await Promise.allSettled([loadAdminStats(), loadAdminToolViews(), loadAdminExecutions()]);
+        showToast("Dashboard refreshed.", "success");
+    });
+    }
+
+  /* Search */
+  document.getElementById("admin-exec-search")
+    ?.addEventListener("input", e => filterAdminExecTable(e.target.value));
+
+  /* FIX 2: pagination — use { once: true } so listeners don't stack on refresh */
+  const prevBtn = document.getElementById("admin-prev-btn");
+  const nextBtn = document.getElementById("admin-next-btn");
+
+  if (prevBtn) {
+    const newPrev = prevBtn.cloneNode(true);   // clone strips old listeners
+    prevBtn.replaceWith(newPrev);
+    newPrev.addEventListener("click", () => {
+      if (adminExecPage > 0) { adminExecPage--; renderAdminExecPage(); }
+    });
+  }
+
+  if (nextBtn) {
+    const newNext = nextBtn.cloneNode(true);
+    nextBtn.replaceWith(newNext);
+    newNext.addEventListener("click", () => {
+      const maxPage = Math.ceil(adminExecFiltered.length / ADMIN_PAGE_SIZE) - 1;
+      if (adminExecPage < maxPage) { adminExecPage++; renderAdminExecPage(); }
+    });
+  }
+}
+
+/* ── Stats ── */
+async function loadAdminStats() {
+  try {
+    const res  = await fetch("/admin/stats", { credentials: "include" });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    animateCount("admin-total-users", data.total_users);
+    animateCount("admin-total-tools", data.total_tools);
+    animateCount("admin-total-exec",  data.total_executions);
+  } catch {
+    ["admin-total-users","admin-total-tools","admin-total-exec"]
+      .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "—"; });
+  }
+}
+
+/* ── Tool views ── */
+async function loadAdminToolViews() {
+  const list = document.getElementById("admin-tool-list");
+  if (!list) return;
+  try {
+    const res  = await fetch("/admin/tool-views", { credentials: "include" });
+    if (!res.ok) throw new Error();
+    const { tools = [] } = await res.json();
+
+    const countEl = document.getElementById("admin-tool-views-count");
+    if (countEl) countEl.textContent = `${tools.length} tool${tools.length !== 1 ? "s" : ""}`;
+
+    if (!tools.length) { list.innerHTML = `<p class="admin-table-empty">No tools found.</p>`; return; }
+
+    const max = Math.max(...tools.map(t => t.execution_count), 1);
+    list.innerHTML = tools.map((tool, i) => `
+      <div class="admin-tool-row">
+        <span class="admin-tool-rank">${i + 1}</span>
+        <div class="admin-tool-info">
+          <p class="admin-tool-name" title="${escapeHtml(tool.tool_name)}">${escapeHtml(tool.tool_name)}</p>
+          <p class="admin-tool-cat">${escapeHtml(tool.category || "—")}</p>
+        </div>
+        <div class="admin-tool-bar-wrap">
+          <div class="admin-tool-bar-bg">
+            <div class="admin-tool-bar-fill" style="width:${Math.max(4, Math.round((tool.execution_count / max) * 100))}%"></div>
+          </div>
+        </div>
+        <span class="admin-tool-exec-count">${formatMetric(tool.execution_count)}</span>
+      </div>`).join("");
+  } catch {
+    if (list) list.innerHTML = `<p class="admin-table-empty">Failed to load tool usage.</p>`;
+  }
+}
+
+/* ── Executions ── */
+async function loadAdminExecutions() {
+  const tbody = document.getElementById("admin-exec-tbody");
+  if (!tbody) return;
+
+  tbody.innerHTML = Array(6).fill(0).map(() =>
+    `<tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>`
+  ).join("");
+
+  try {
+    const res  = await fetch("/admin/executions?limit=500&offset=0", { credentials: "include" });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    adminExecAll      = data.executions || [];
+    adminExecTotal    = data.total || adminExecAll.length;
+    adminExecFiltered = [...adminExecAll];
+    adminExecPage     = 0;
+
+    const countEl = document.getElementById("admin-exec-count");
+    if (countEl) countEl.textContent = `${adminExecTotal.toLocaleString()} records`;
+
+    renderAdminExecPage();
+  } catch {
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="admin-table-empty">Failed to load executions.</td></tr>`;
+  }
+}
+
+/* ── Render table page ── */
+function renderAdminExecPage() {
+  const tbody = document.getElementById("admin-exec-tbody");
+  if (!tbody) return;
+
+  const start = adminExecPage * ADMIN_PAGE_SIZE;
+  const slice = adminExecFiltered.slice(start, start + ADMIN_PAGE_SIZE);
+
+  if (!slice.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="admin-table-empty">No executions match your filter.</td></tr>`;
+    updateAdminPagination();
+    return;
+  }
+
+  /* FIX 3: each row is clickable — data stored in data-idx for the modal */
+  tbody.innerHTML = slice.map((row, i) => `
+    <tr class="admin-exec-row" data-idx="${start + i}" style="cursor:pointer;" title="Click to view details">
+      <td title="${escapeHtml(row.exec_id)}">${escapeHtml(truncateId(row.exec_id))}</td>
+      <td><span class="admin-chip admin-chip--tool">${escapeHtml(row.tool_name)}</span></td>
+      <td>${escapeHtml(row.user_email)}</td>
+      <td><span class="admin-chip admin-chip--user">${escapeHtml(truncateId(row.user_id))}</span></td>
+      <td><span class="admin-ts">${formatAdminTs(row.timestamp)}</span></td>
+    </tr>`).join("");
+
+  /* Delegate row clicks */
+  tbody.querySelectorAll(".admin-exec-row").forEach(row => {
+    row.addEventListener("click", () => openExecDetail(adminExecFiltered[+row.dataset.idx]));
+  });
+
+  updateAdminPagination();
+}
+
+/* ── Filter ── */
+function filterAdminExecTable(query) {
+  const needle = query.trim().toLowerCase();
+  adminExecFiltered = needle
+    ? adminExecAll.filter(r =>
+        [r.exec_id, r.tool_name, r.user_email, r.user_id]
+          .some(v => (v || "").toLowerCase().includes(needle)))
+    : [...adminExecAll];
+  adminExecPage = 0;
+  renderAdminExecPage();
+}
+
+/* ── Pagination ── */
+function updateAdminPagination() {
+  const totalPages = Math.max(1, Math.ceil(adminExecFiltered.length / ADMIN_PAGE_SIZE));
+  const info = document.getElementById("admin-page-info");
+  /* Re-query because we may have cloned+replaced these buttons */
+  const prev = document.getElementById("admin-prev-btn");
+  const next = document.getElementById("admin-next-btn");
+
+  if (info) info.textContent = `Page ${adminExecPage + 1} of ${totalPages}`;
+  if (prev) prev.disabled = adminExecPage === 0;
+  if (next) next.disabled = adminExecPage >= totalPages - 1;
+}
+
+/* ============================================================
+   FIX 3 — EXECUTION DETAIL MODAL
+   ============================================================ */
+
+function injectExecDetailModal() {
+  if (document.getElementById("exec-detail-modal")) return;
+
+  const modal = document.createElement("div");
+  modal.id        = "exec-detail-modal";
+  modal.className = "modal-backdrop";
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="exec-detail-title" style="max-width:560px;">
+      <div class="modal-header">
+        <h3 id="exec-detail-title">Execution Detail</h3>
+        <button class="modal-close" id="exec-detail-close" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="exec-detail-body" style="gap:14px;"></div>
+    </div>`;
+
+  document.body.appendChild(modal);
+
+  /* Close handlers */
+  modal.addEventListener("click", e => { if (e.target === modal) closeExecDetail(); });
+  document.getElementById("exec-detail-close")
+    ?.addEventListener("click", closeExecDetail);
+}
+
+function openExecDetail(row) {
+  const modal = document.getElementById("exec-detail-modal");
+  const body  = document.getElementById("exec-detail-body");
+  if (!modal || !body || !row) return;
+
+  body.innerHTML = `
+    ${detailField("Execution ID",  row.exec_id,    "mono")}
+    ${detailField("Tool",          row.tool_name)}
+    ${detailField("User Email",    row.user_email)}
+    ${detailField("User ID",       row.user_id,    "mono")}
+    ${detailField("Timestamp",     formatAdminTs(row.timestamp))}
+    ${row.user_input ? detailBlock("User Input",  row.user_input)  : ""}
+    ${row.output     ? detailBlock("Output",      row.output)      : ""}`;
+
+  modal.classList.add("open");
+  modal.removeAttribute("aria-hidden");
+}
+
+function closeExecDetail() {
+  const modal = document.getElementById("exec-detail-modal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function detailField(label, value, style = "") {
+  const mono = style === "mono"
+    ? "font-family:ui-monospace,'Cascadia Code',monospace;font-size:11px;word-break:break-all;"
+    : "";
+  return `
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${escapeHtml(label)}</span>
+      <span style="font-size:var(--text-sm);color:var(--ink-1);${mono}">${escapeHtml(value || "—")}</span>
+    </div>`;
+}
+
+function detailBlock(label, value) {
+  return `
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${escapeHtml(label)}</span>
+      <pre style="
+        margin:0;padding:14px;
+        border:1px solid var(--border-1);
+        border-radius:var(--radius-md);
+        background:var(--surface-1);
+        color:var(--ink-2);
+        font-family:ui-monospace,'Cascadia Code',monospace;
+        font-size:11px;
+        line-height:1.6;
+        white-space:pre-wrap;
+        word-break:break-word;
+        max-height:200px;
+        overflow-y:auto;
+      ">${escapeHtml(value)}</pre>
+    </div>`;
+}
+
+/* ============================================================
+   FIX 1 — TIMESTAMP: always IST (UTC+5:30)
+   ============================================================ */
+
+function formatAdminTs(isoString) {
+  if (!isoString) return "—";
+  try {
+    const d = new Date(isoString);
+    /* Force IST regardless of browser locale */
+    return d.toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",   // ← key fix
+      day:    "2-digit",
+      month:  "short",
+      year:   "numeric",
+      hour:   "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return isoString;
+  }
+}
+
+/* ── Helpers ── */
+function truncateId(id) {
+  if (!id) return "—";
+  return id.length > 10 ? id.slice(0, 8) + "…" : id;
+}
+
+function animateCount(elementId, target) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const duration = 800;
+  const startTs  = performance.now();
+  function step(now) {
+    const progress = Math.min((now - startTs) / duration, 1);
+    const eased    = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(target * eased).toLocaleString();
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}

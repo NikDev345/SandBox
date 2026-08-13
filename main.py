@@ -110,6 +110,7 @@ from app.api.bookmarks import router as bookmark_router
 from app.routes.user import router as user_router
 from app.seed.seed_tools import seed_tools
 from app.database.engine import SessionLocal
+from app.api.admin import router as admin_router
 from nicegui import ui
 startup_time("all API routers imported")
 # ── Static files ───────────────────────────────────────────────────────────────
@@ -129,6 +130,7 @@ def get_sitemap_xml():
 # ── Include all routers ────────────────────────────────────────────────────────
 
 fast_app.include_router(auth_router)
+fast_app.include_router(admin_router)
 fast_app.include_router(tool_router)
 fast_app.include_router(exe_router)
 fast_app.include_router(analytic_router)
