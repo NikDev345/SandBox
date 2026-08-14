@@ -192,19 +192,72 @@
             <p class="eyebrow">SandBox</p>
             <h2>Featured tools</h2>
           </div>
-          <div class="toolbar">
-            <span>
-              <button
+          <div class="tool-category-filter" role="tablist" aria-label="Filter tools by category">
+
+            <div class="toolbar">
+              <span>
+                <button
                 id="add-tool-btn"
                 title="Add Tool"
                 class="btn btn-ghost btn-add-tool"
                 type="button"
                 style="display: none;"
-              >
+                >
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               </button>
             </span>
           </div>
+          <button
+              class="tool-filter active"
+              type="button"
+              data-filter="all"
+              role="tab"
+              aria-selected="true"
+          >
+              All Tools
+          </button>
+  
+          <button
+              class="tool-filter"
+              type="button"
+              data-filter="Developer Tools"
+              role="tab"
+              aria-selected="false"
+          >
+              Developer
+          </button>
+  
+          <button
+              class="tool-filter"
+              type="button"
+              data-filter="Content Tools"
+              role="tab"
+              aria-selected="false"
+          >
+              Content
+          </button>
+  
+          <button
+              class="tool-filter"
+              type="button"
+              data-filter="Productivity Tools"
+              role="tab"
+              aria-selected="false"
+          >
+              Productivity
+          </button>
+  
+          <button
+              class="tool-filter"
+              type="button"
+              data-filter="Image Tools"
+              role="tab"
+              aria-selected="false"
+          >
+              Image
+          </button>
+  
+      </div>
           <span class="result-count" data-result-count>0 tools</span>
         </div>
 
@@ -781,7 +834,7 @@
 
       </a>
       
-      <a class="tool-card" href="/item" data-tool-name="Action-Item Extractor" data-tool-category="Productivity Tools" data-tool-id="static-content-2">
+      <a class="tool-card" href="/item" data-tool-name="Action-Item Extractor" data-tool-category="Content Tools" data-tool-id="static-content-2">
 
         <div class="tool-card-header">
 

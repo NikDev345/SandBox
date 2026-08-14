@@ -2678,3 +2678,116 @@
     }
 
 }
+/* ============================================================
+   TOOL CATEGORY FILTER
+   ============================================================ */
+
+.tool-category-filter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    margin-bottom: 22px;
+    padding: 4px;
+
+    width: fit-content;
+
+    border: 1px solid var(--border-0);
+    border-radius: var(--radius-md);
+
+    background: var(--surface-0);
+}
+
+.tool-filter {
+    height: 30px;
+    padding: 0 13px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    background: transparent;
+    color: var(--text-muted);
+
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: var(--weight-semi);
+
+    letter-spacing: 0.02em;
+
+    cursor: pointer;
+
+    transition:
+        color var(--dur-fast) var(--ease),
+        background var(--dur-fast) var(--ease),
+        border-color var(--dur-fast) var(--ease),
+        box-shadow var(--dur-fast) var(--ease);
+}
+
+
+/* ─────────────────────────────────────────────
+   ALL
+   ───────────────────────────────────────────── */
+
+.tool-filter[data-filter="all"]:hover,
+.tool-filter[data-filter="all"].active {
+    color: var(--ink-0);
+    background: var(--surface-2);
+    border-color: var(--border-1);
+}
+
+
+/* ─────────────────────────────────────────────
+   DEVELOPER
+   ───────────────────────────────────────────── */
+
+.tool-filter[data-filter="Developer Tools"]:hover,
+.tool-filter[data-filter="Developer Tools"].active {
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.10);
+    border-color: rgba(99, 102, 241, 0.28);
+}
+
+
+/* ─────────────────────────────────────────────
+   CONTENT
+   ───────────────────────────────────────────── */
+
+.tool-filter[data-filter="Content Tools"]:hover,
+.tool-filter[data-filter="Content Tools"].active {
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.10);
+    border-color: rgba(52, 211, 153, 0.28);
+}
+
+
+/* ─────────────────────────────────────────────
+   PRODUCTIVITY
+   ───────────────────────────────────────────── */
+
+.tool-filter[data-filter="Productivity Tools"]:hover,
+.tool-filter[data-filter="Productivity Tools"].active {
+    color: #fde047;
+    background: rgba(234, 179, 8, 0.10);
+    border-color: rgba(234, 179, 8, 0.28);
+}
+
+
+/* ─────────────────────────────────────────────
+   IMAGE
+   ───────────────────────────────────────────── */
+
+.tool-filter[data-filter="Image Tools"]:hover,
+.tool-filter[data-filter="Image Tools"].active {
+    color: #f9a8d4;
+    background: rgba(236, 72, 153, 0.10);
+    border-color: rgba(236, 72, 153, 0.28);
+}
+
+
+/* ─────────────────────────────────────────────
+   PRESS
+   ───────────────────────────────────────────── */
+
+.tool-filter:active {
+    transform: scale(0.97);
+}
