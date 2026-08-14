@@ -1,1245 +1,304 @@
-<div class="dashboard-shell" data-dashboard>
+  <div class="dashboard-shell" data-dashboard>
 
-  <!-- Grid texture layer -->
-  <div class="bg-grid" aria-hidden="true"></div>
+    <!-- Grid texture layer -->
+    <div class="bg-grid" aria-hidden="true"></div>
 
-  <!-- Mobile hamburger -->
-  <button class="mobile-menu" type="button" aria-label="Open navigation" aria-controls="dashboard-sidebar" aria-expanded="false">
-    <span></span>
-    <span></span>
-  </button>
+    <!-- Mobile hamburger -->
+    <button class="mobile-menu" type="button" aria-label="Open navigation" aria-controls="dashboard-sidebar" aria-expanded="false">
+      <span></span>
+      <span></span>
+    </button>
 
-  <!-- ── SIDEBAR ── -->
-  <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Workspace navigation">
+    <!-- ── SIDEBAR ── -->
+    <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Workspace navigation">
 
-    <!-- Logo -->
-    <a class="logo-only" href="/" aria-label="SandBox home">
-      <div class="logo-mark" aria-hidden="true">
-        <img src="/assets/logo.png" alt="SandBox Logo" class="logo-image">
-      </div>
-      <span class="logo-wordmark">SandBox</span>
-    </a>
-
-    <!-- Workspace switcher -->
-    <div class="workspace-switch">
-      <img class="avatar" data-user-avatar src="/assets/default_avatar.png" alt="Profile">
-      <div class="ws-info">
-        <strong data-user-name>Workspace</strong>
-        <small data-user-bio>Hello there!</small>
-      </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="sidebar-nav" aria-label="Main navigation">
-      <span class="nav-section-label">Navigate</span>
-
-      <a class="nav-item active" href="/" data-section="dashboard">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        </span>
-        <span>Overview</span>
+      <!-- Logo -->
+      <a class="logo-only" href="/" aria-label="SandBox home">
+        <div class="logo-mark" aria-hidden="true">
+          <img src="/assets/logo.png" alt="SandBox Logo" class="logo-image">
+        </div>
+        <span class="logo-wordmark">SandBox</span>
       </a>
 
-      <a class="nav-item" href="#workspace" data-section="workspace">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </span>
-        <span>Workspace</span>
-      </a>
-
-      <a class="nav-item" href="#tools" data-section="tools">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        </span>
-        <span>Tools</span>
-      </a>
-
-      <a class="nav-item" href="/bookmarks_page" id="nav-bookmarks" data-native-link>
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-          </svg>
-        </span>
-        <span>Bookmarks</span>
-      </a>
-
-      <a class="nav-item" href="#account" data-section="account">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </span>
-        <span>Settings</span>
-      </a>
-
-      <a class="nav-item" href="/history" data-section="history">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>
-        </span>
-        <span>History</span>
-      </a>
-    </nav>
-    <!-- Sidebar bottom -->
-    
-
-  </aside>
-
-  <!-- ── MAIN ── -->
-  <main class="dashboard-main">
-
-    <!-- Topbar -->
-    <header class="dashboard-topbar">
-      <div class="command-search" role="search">
-        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input class="search" id="global-search" type="search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
-        <kbd>⌘ K</kbd>
-      </div>
-
-      <div class="topbar-actions">
-        <button class="icon-button" type="button" aria-label="Open command palette" data-open-command>
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-
-        <a class="icon-button bm-topbar-btn" href="/bookmarks_page" aria-label="Open Bookmarks" title="Bookmarks" id="topbar-bookmarks-btn">
-          <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        </a>
-
-        <button class="icon-button" type="button" aria-label="Notifications">
-          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </button>
-
-        <div class="profile-menu">
-          <button class="profile-trigger" type="button" aria-label="Open profile" aria-expanded="false">
-            <img class="avatar" data-user-avatar src="/assets/default_avatar.png" alt="Profile">
-          </button>
-          <div class="profile-dropdown" role="menu">
-            <div class="profile-dropdown-header">
-              <strong data-user-name>Workspace</strong>
-              <p data-user-email>Not signed in</p>
-            </div>
-            <a href="/login" role="menuitem" data-auth-link>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-              Sign in
-            </a>
-            <a href="/signup" role="menuitem" data-auth-link>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-              Create account
-            </a>
-            <div class="dropdown-sep"></div>
-            <button type="button" role="menuitem" data-logout hidden>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Sign out
-            </button>
-          </div>
+      <!-- Workspace switcher -->
+      <div class="workspace-switch">
+        <img class="avatar" data-user-avatar src="/assets/default_avatar.png" alt="Profile">
+        <div class="ws-info">
+          <strong data-user-name>Workspace</strong>
+          <small data-user-bio>Hello there!</small>
         </div>
       </div>
-    </header>
 
-    <!-- ── DASHBOARD SECTION ── -->
-    <section class="dashboard-section active" data-section-id="dashboard">
-      
-      <!-- Hero -->
-      <section class="hero-panel anim-fade-up">
-        <div>
-          <p class="eyebrow">
-            <span class="eyebrow-dot" aria-hidden="true"></span>
-            Premium SandBox workspace
-          </p>
-          <h1>One Place, Many Ways </h1>
-          <p>Generate SQL, repair JSON, create regex, review code and more — without ever leaving your workspace.</p>
-        </div>
-        <button class="btn btn-primary" type="button" data-open-command>
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Open Tools
-        </button>
-      </section>
+      <!-- Navigation -->
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <span class="nav-section-label">Navigate</span>
 
-      <!-- Workspace panel -->
-      <section class="workspace-panel anim-fade-up delay-2" id="workspace">
-        <div class="workspace-copy">
-          <p class="eyebrow">Workspace</p>
-          <h2 data-workspace-title>Your active workspace</h2>
-          <p data-workspace-subtitle>Sign in to sync your tools, history, and saved workflows.</p>
-
-          <div class="workspace-user-row">
-            <img class="workspace-user-avatar" data-workspace-avatar src="/assets/default_avatar.png" alt="User avatar">
-            <div class="workspace-user-meta">
-              <strong data-workspace-name>Workspace</strong>
-              <span data-workspace-email>Not signed in</span>
-            </div>
-          </div>
-        </div>
-        <div class="workspace-metrics-area" aria-label="Workspace detail metrics">
-          <div class="workspace-metric-row">
-            <span>Tools</span>
-            <strong data-workspace-tools>--</strong>
-          </div>
-          <div class="workspace-metric-row">
-            <span>Daily Credits</span>
-            <strong data-workspace-credits>--</strong>
-          </div>
-          <div class="workspace-metric-row">
-            <span>Total Executions</span>
-            <strong data-workspace-executions>--</strong>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tools section -->
-      <section class="tools-section anim-fade-up delay-3" id="tools">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">SandBox</p>
-            <h2>Featured tools</h2>
-          </div>
-          <div class="tool-category-filter" role="tablist" aria-label="Filter tools by category">
-
-            <div class="toolbar">
-              <span>
-                <button
-                id="add-tool-btn"
-                title="Add Tool"
-                class="btn btn-ghost btn-add-tool"
-                type="button"
-                style="display: none;"
-                >
-                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              </button>
-            </span>
-          </div>
-          <button
-              class="tool-filter active"
-              type="button"
-              data-filter="all"
-              role="tab"
-              aria-selected="true"
-          >
-              All Tools
-          </button>
-  
-          <button
-              class="tool-filter"
-              type="button"
-              data-filter="Developer Tools"
-              role="tab"
-              aria-selected="false"
-          >
-              Developer
-          </button>
-  
-          <button
-              class="tool-filter"
-              type="button"
-              data-filter="Content Tools"
-              role="tab"
-              aria-selected="false"
-          >
-              Content
-          </button>
-  
-          <button
-              class="tool-filter"
-              type="button"
-              data-filter="Productivity Tools"
-              role="tab"
-              aria-selected="false"
-          >
-              Productivity
-          </button>
-  
-          <button
-              class="tool-filter"
-              type="button"
-              data-filter="Image Tools"
-              role="tab"
-              aria-selected="false"
-          >
-              Image
-          </button>
-  
-      </div>
-          <span class="result-count" data-result-count>0 tools</span>
-        </div>
-
-        <div class="tool-grid" data-tool-grid>
-
-          <a class="tool-card" href="/pro_cons_gen" data-tool-name="Pros-Cons Generator" data-tool-category="Productivity Tools" data-tool-id="static-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 6V42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M14 42H34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M8 12H40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M8 12L4 22C4 25 8 27 8 27C8 27 12 25 12 22L8 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M40 12L36 22C36 25 40 27 40 27C40 27 44 25 44 22L40 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <circle cx="24" cy="8" r="2.5" fill="currentColor"/>
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Pros-Cons Generator</h3>
-            <p>Generate Pro's and Con's for any topic or decision</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge" data-cat="Productivity Tools">
-                Productivity Tools
-              </span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
-
-          <a class="tool-card" href="/table_extractor" data-tool-name="AI Table Extractor" data-tool-category="Image Tools" data-tool-id="static-1">
-          <div class="tool-card-header">
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-              <!-- Table Border -->
-              <rect x="8" y="10" width="32" height="28" rx="2"
-                    stroke="currentColor"
-                    stroke-width="2"/>
-
-              <!-- Horizontal Lines -->
-              <path d="M8 18H40" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 26H40" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 34H40" stroke="currentColor" stroke-width="2"/>
-
-              <!-- Vertical Lines -->
-              <path d="M18 10V38" stroke="currentColor" stroke-width="2"/>
-              <path d="M30 10V38" stroke="currentColor" stroke-width="2"/>
-
-              <!-- AI Spark -->
-              <path d="M39 7L40.5 10L44 11L40.5 12L39 15L37.5 12L34 11L37.5 10L39 7Z"
-                    fill="currentColor"/>
-
-            </svg>
-
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-          </div>
-
-          <h3>AI Table Extractor</h3>
-
-          <p>
-            Extract tables from PDFs and images with AI into structured Excel, CSV, or JSON.
-          </p>
-
-          <div class="tool-meta">
-            <span class="tool-category-badge" data-cat="Image Tools">
-              Image Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-          </div>
-        </a>
-        <a class="tool-card" href="/decision-maker" data-tool-name="Decision Maker" data-tool-category="Productivity Tools" data-tool-id="static-1">
-          <div class="tool-card-header">
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-              <!-- Decision Flow -->
-              <circle cx="12" cy="24" r="3"
-                      stroke="currentColor"
-                      stroke-width="2"/>
-
-              <circle cx="36" cy="14" r="3"
-                      stroke="currentColor"
-                      stroke-width="2"/>
-
-              <circle cx="36" cy="34" r="3"
-                      stroke="currentColor"
-                      stroke-width="2"/>
-
-              <!-- Connecting Lines -->
-              <path d="M15 24H25" stroke="currentColor" stroke-width="2"/>
-
-              <path d="M25 24L33 16" stroke="currentColor" stroke-width="2"/>
-
-              <path d="M25 24L33 32" stroke="currentColor" stroke-width="2"/>
-
-              <!-- AI Spark -->
-              <path d="M39 5L40.5 8L44 9L40.5 10L39 13L37.5 10L34 9L37.5 8L39 5Z"
-                    fill="currentColor"/>
-
-            </svg>
-
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-          </div>
-
-          <h3>Decision Maker</h3>
-
-          <p>
-            Compare multiple choices with AI, evaluate pros and cons, assess risks, and receive confident recommendations.
-          </p>
-
-          <div class="tool-meta">
-            <span class="tool-category-badge" data-cat="Productivity Tools">
-              Productivity Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-          </div>
-        </a>
-          <a class="tool-card" href="/sql_gen" data-tool-name="SQL Generator" data-tool-category="Developer Tools" data-tool-id="static-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48">
-                <ellipse cx="24" cy="12" rx="15" ry="6"/>
-                <path d="M9 12v18c0 3.3 6.7 6 15 6s15-2.7 15-6V12"/>
-                <path d="M9 21c0 3.3 6.7 6 15 6s15-2.7 15-6"/>
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>SQL Generator</h3>
-            <p>Generate fully optimized and error-free SQL commands</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">Developer Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
-
-          <a class="tool-card" href="/ss_explain" data-tool-name="Screenshot Explainer" data-tool-category="Image Tools" data-tool-id="static-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="7" y="9" width="34" height="26" rx="3" stroke="currentColor" stroke-width="2"/>
-                <circle cx="17" cy="18" r="2.5" fill="currentColor"/>
-                <path d="M11 30L19 22L25 28L31 20L37 27" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M7 3L11 3M37 3L41 3M7 3L7 7M41 3L41 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Screenshot Explainer</h3>
-            <p>Explain any type of Screenshot in the most effecient way</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">Image Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
-
-          <a class="tool-card" href="/notes_cleaner" data-tool-name="Notes Cleaner" data-tool-category="Productivity Tools" data-tool-id="static-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                <!-- Document -->
-                <rect
-                    x="10"
-                    y="7"
-                    width="28"
-                    height="34"
-                    rx="5"
-                    stroke="currentColor"
-                    stroke-width="2"/>
-
-                <!-- Text lines -->
-                <path
-                    d="M17 17H31M17 23H28"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"/>
-
-                <!-- Check mark -->
-                <path
-                    d="M18 31L22 35L30 27"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
-
-              </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Notes Cleaner</h3>
-            <p>Clean and correct your notes before reading it.</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">Productivity Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
-
-          <a class="tool-card" href="/mock_api" data-tool-name="Mock API Generator" data-tool-category="Developer Tools" data-tool-id="static-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48" fill="none">
-
-                <circle cx="14" cy="24" r="3"
-                stroke="currentColor"
-                stroke-width="2"/>
-
-                <circle cx="34" cy="16" r="3"
-                stroke="currentColor"
-                stroke-width="2"/>
-
-                <circle cx="34" cy="32" r="3"
-                stroke="currentColor"
-                stroke-width="2"/>
-
-                <path
-                d="M17 24H24V16H31"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"/>
-
-                <path
-                d="M24 24V32H31"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"/>
-
-                </svg>
-              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-            <h3>Mock API Generator</h3>
-            <p>Create Mock API with CRUD Operations</p>
-            <div class="tool-meta">
-              <span class="tool-category-badge">Developer Tools</span>
-              <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </div>
-          </a>
-
-         <a class="tool-card" href="/quiz-generator" data-tool-name="Quiz Generator" data-tool-category="Content Tools" data-tool-id="static-content-1">
-
-          <div class="tool-card-header">
-
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="10" y="6" width="28" height="36" rx="5" stroke="currentColor" stroke-width="2"/>
-              <path d="M18 15H30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M18 21H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="20" cy="31" r="2.2" fill="currentColor"/>
-              <path d="M25 31L28 34L34 27" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-
-          </div>
-
-          <h3>Quiz Generator</h3>
-
-          <p>
-            Generate AI-powered quizzes from prompts or documents with multiple question
-            types, explanations, hints, and interactive scoring.
-          </p>
-
-          <div class="tool-meta">
-
-            <span class="tool-category-badge" data-cat="Content Tools">
-              Content Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-
-          </div>
-        </a>
-
-        <a class="tool-card" href="/yaml" data-tool-name="Kubernetes YAML Generator" data-tool-category="Developer Tools" data-tool-id="static-content-1">
-
-          <div class="tool-card-header">
-
-            <svg class="tool-logo"
-              viewBox="0 0 48 48"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              aria-hidden="true">
-
-              <!-- Outer Hexagon -->
-              <polygon
-                  points="24,5 39.6,14 39.6,32 24,41 8.4,32 8.4,14"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  opacity="0.28"/>
-
-              <!-- Nodes -->
-              <circle cx="24" cy="5" r="1.7" fill="currentColor"/>
-              <circle cx="39.6" cy="14" r="1.7" fill="currentColor"/>
-              <circle cx="39.6" cy="32" r="1.7" fill="currentColor"/>
-              <circle cx="24" cy="41" r="1.7" fill="currentColor"/>
-              <circle cx="8.4" cy="32" r="1.7" fill="currentColor"/>
-              <circle cx="8.4" cy="14" r="1.7" fill="currentColor"/>
-
-              <!-- Connections -->
-              <line x1="24" y1="5" x2="24" y2="16"
-                    stroke="currentColor" stroke-width="1" opacity=".25"/>
-
-              <line x1="39.6" y1="14" x2="30" y2="18.5"
-                    stroke="currentColor" stroke-width="1" opacity=".25"/>
-
-              <line x1="39.6" y1="32" x2="30" y2="23.5"
-                    stroke="currentColor" stroke-width="1" opacity=".25"/>
-
-              <line x1="24" y1="41" x2="24" y2="26"
-                    stroke="currentColor" stroke-width="1" opacity=".25"/>
-
-              <line x1="8.4" y1="32" x2="18" y2="23.5"
-                    stroke="currentColor" stroke-width="1" opacity=".25"/>
-
-              <line x1="8.4" y1="14" x2="18" y2="18.5"
-                    stroke="currentColor" stroke-width="1" opacity=".25"/>
-
-              <!-- Center Hub -->
-              <circle
-                  cx="24"
-                  cy="21"
-                  r="8"
-                  stroke="currentColor"
-                  stroke-width="1.2"
-                  opacity=".5"/>
-
-              <circle
-                  cx="24"
-                  cy="21"
-                  r="7.4"
-                  fill="currentColor"
-                  opacity=".06"/>
-
-              <!-- YAML Document -->
-              <rect
-                  x="20"
-                  y="16"
-                  width="8"
-                  height="10"
-                  rx="1.4"
-                  stroke="currentColor"
-                  stroke-width="1.4"/>
-
-              <line
-                  x1="22"
-                  y1="19"
-                  x2="26"
-                  y2="19"
-                  stroke="currentColor"
-                  stroke-width="1.3"
-                  stroke-linecap="round"/>
-
-              <line
-                  x1="22"
-                  y1="21.8"
-                  x2="25"
-                  y2="21.8"
-                  stroke="currentColor"
-                  stroke-width="1.3"
-                  stroke-linecap="round"
-                  opacity=".7"/>
-
-              <line
-                  x1="22"
-                  y1="24.5"
-                  x2="24"
-                  y2="24.5"
-                  stroke="currentColor"
-                  stroke-width="1.3"
-                  stroke-linecap="round"
-                  opacity=".45"/>
-
-          </svg>
-
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-
-          </div>
-
-          <h3>Kubernetes YAML Generator</h3>
-
-          <p>
-            Generate Professional and deployment level YAML file 
-            from Docker Compose File
-          </p>
-
-          <div class="tool-meta">
-
-            <span class="tool-category-badge" data-cat="Content Tools">
-              Developer Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-
-          </div>
-        </a>
-        
-        <a class="tool-card" href="/flashcard-generator" data-tool-name="Flashcard Generator" data-tool-category="Content Tools" data-tool-id="static-content-2">
-
-        <div class="tool-card-header">
-
-          <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="8" y="6" width="32" height="36" rx="5" stroke="currentColor" stroke-width="2"/>
-            <path d="M16 16H32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M16 22H28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-
-            <rect x="14" y="29" width="20" height="9" rx="2.5" stroke="currentColor" stroke-width="2"/>
-
-            <path d="M24 29V38" stroke="currentColor" stroke-width="2"/>
-          </svg>
-
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <h3>Flashcard Generator</h3>
-
-        <p>
-          Create AI-powered flashcards from prompts, notes, PDFs, and documents with
-          smart categorization, memory tips, examples, and interactive study cards.
-        </p>
-
-        <div class="tool-meta">
-
-          <span class="tool-category-badge" data-cat="Content Tools">
-            Content Tools
+        <a class="nav-item active" href="/" data-section="dashboard">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-
-      <a class="tool-card" href="/regex-gen" data-tool-name="Regex Generator" data-tool-category="Developer Tools" data-tool-id="static-content-2">
-
-        <div class="tool-card-header">
-
-          <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-  <!-- Main rounded square -->
-  <rect
-      x="6"
-      y="6"
-      width="36"
-      height="36"
-      rx="8"
-      stroke="currentColor"
-      stroke-width="2"/>
-
-  <!-- Regex brackets -->
-  <path
-      d="M17 15
-         C14.5 15 13 17 13 20
-         V28
-         C13 31 14.5 33 17 33"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"/>
-
-  <path
-      d="M31 15
-         C33.5 15 35 17 35 20
-         V28
-         C35 31 33.5 33 31 33"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"/>
-
-  <!-- .* -->
-  <circle
-      cx="21"
-      cy="20"
-      r="1.8"
-      fill="currentColor"/>
-
-  <path
-      d="M24.5 20H27.5"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"/>
-
-  <path
-      d="M26 18.5V21.5"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"/>
-
-  <!-- Pattern line -->
-  <path
-      d="M19 28H29"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"/>
-
-</svg>
-
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <h3>Regex Generator</h3>
-
-        <p>
-          Create Regex for any key or general format using AI.
-        </p>
-
-        <div class="tool-meta">
-
-          <span class="tool-category-badge" data-cat="Developer Tools">
-              Developer Tools
-            </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-      
-      <a class="tool-card" href="/item" data-tool-name="Action-Item Extractor" data-tool-category="Content Tools" data-tool-id="static-content-2">
-
-        <div class="tool-card-header">
-
-          <svg class="tool-logo"
-     viewBox="0 0 48 48"
-     fill="none"
-     xmlns="http://www.w3.org/2000/svg">
-
-    <!-- Outer Container -->
-    <rect
-        x="6"
-        y="6"
-        width="36"
-        height="36"
-        rx="9"
-        stroke="currentColor"
-        stroke-width="2"/>
-
-    <!-- Document -->
-    <path
-        d="M17 14H26L31 19V33H17V14Z"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linejoin="round"/>
-
-    <!-- Fold -->
-    <path
-        d="M26 14V19H31"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linejoin="round"/>
-
-    <!-- Checklist -->
-    <path
-        d="M20 23L21.8 24.8L24.8 21.8"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-
-    <path
-        d="M27 23H29"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-    <path
-        d="M20 29L21.8 30.8L24.8 27.8"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-
-    <path
-        d="M27 29H29"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-    <!-- AI Spark -->
-    <path
-        d="M35.5 11L36.4 13.3L38.7 14.2L36.4 15.1L35.5 17.4L34.6 15.1L32.3 14.2L34.6 13.3Z"
-        fill="currentColor"/>
-
-</svg>
-
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <h3>Action-Item Extractor</h3>
-
-        <p>
-          Extract Actions/Tasks assigned to employee in a large transcript/text.
-        </p>
-
-        <div class="tool-meta">
-              <span class="tool-category-badge" data-cat="Content Tools">
-                Content Tools
-              </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-
-      
-       <a class="tool-card" href="/brainstorm-generator" data-tool-name="BrainStorm Generator" data-tool-category="Productivity Tools" data-tool-id="static-content-2">
-
-        <div class="tool-card-header">
-
-          <svg class="tool-logo"
-     viewBox="0 0 48 48"
-     fill="none"
-     xmlns="http://www.w3.org/2000/svg">
-
-    <!-- Outer Container -->
-    <rect
-        x="6"
-        y="6"
-        width="36"
-        height="36"
-        rx="9"
-        stroke="currentColor"
-        stroke-width="2"/>
-
-    <!-- Lightbulb -->
-    <path
-        d="M24 14
-           C20.7 14 18 16.7 18 20
-           C18 22.3 19.2 24.1 21 25.6
-           C22 26.5 22.5 27.4 22.5 28.5
-           H25.5
-           C25.5 27.4 26 26.5 27 25.6
-           C28.8 24.1 30 22.3 30 20
-           C30 16.7 27.3 14 24 14Z"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linejoin="round"/>
-
-    <!-- Bulb Base -->
-    <path
-        d="M22 30H26"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-    <path
-        d="M22.5 33H25.5"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"/>
-
-    <!-- Brainstorm Nodes -->
-    <circle
-        cx="21"
-        cy="20"
-        r="1.2"
-        fill="currentColor"/>
-
-    <circle
-        cx="27"
-        cy="20"
-        r="1.2"
-        fill="currentColor"/>
-
-    <circle
-        cx="24"
-        cy="23"
-        r="1.2"
-        fill="currentColor"/>
-
-    <!-- Connections -->
-    <path
-        d="M21 20L24 23L27 20"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-
-    <!-- AI Spark -->
-    <path
-        d="M35.5 11
-           L36.4 13.3
-           L38.7 14.2
-           L36.4 15.1
-           L35.5 17.4
-           L34.6 15.1
-           L32.3 14.2
-           L34.6 13.3Z"
-        fill="currentColor"/>
-
-</svg>
-
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <h3>BrainStorm Generator</h3>
-
-        <p>
-          Transform a simple prompt into structured, high-quality brainstorming ideas powered by AI.
-        </p>
-
-        <div class="tool-meta">
-
-          <span class="tool-category-badge" data-cat="Productivity Tools">
-              Productivity Tools
-            </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-
-      <a class="tool-card" href="/commit-gen" data-tool-name="Commit Message Generator" data-tool-category="Developer Tools" data-tool-id="static-content-2">
-
-        <div class="tool-card-header">
-
-          <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-  <!-- Commit node -->
-  <circle
-      cx="14"
-      cy="24"
-      r="4"
-      stroke="currentColor"
-      stroke-width="2"/>
-
-  <!-- Commit line -->
-  <path
-      d="M18 24H34"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"/>
-
-  <!-- Commit message -->
-  <path
-      d="M24 18H34M24 30H30"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"/>
-
-</svg>
-
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <h3>Commit Message Generator</h3>
-
-        <p>
-          Generate multiple Commit messages according to your Code and Repository.
-        </p>
-
-        <div class="tool-meta">
-
-          <span class="tool-category-badge" data-cat="Developer Tools">
-              Developer Tools
-            </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-          <a class="tool-card" href="/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer Tools" data-tool-id="static-3">
-
-          <div class="tool-card-header">
-
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 10C13 10 11 13 11 18V20C11 23 9 25 6 25C9 25 11 27 11 30V32C11 37 13 40 18 40"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
-
-              <path d="M30 10C35 10 37 13 37 18V20C37 23 39 25 42 25C39 25 37 27 37 30V32C37 37 35 40 30 40"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
-
-              <path d="M21 24L23.5 27L28 21"
-                    stroke="currentColor"
-                    stroke-width="2.6"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
-            </svg>
-
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-
-          </div>
-
-          <h3>JSON Fixer</h3>
-
-          <p>
-            Repair malformed JSON, validate syntax, and instantly convert broken data
-            into clean, production-ready JSON.
-          </p>
-
-          <div class="tool-meta">
-
-            <span class="tool-category-badge" data-cat="Developer Tools">
-              Developer Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-
-          </div>
-
+          <span>Overview</span>
         </a>
-        <a class="tool-card" href="/code" data-tool-name="Code Reviewer" data-tool-category="Developer Tools" data-tool-id="static-4">
 
-          <div class="tool-card-header">
+        <a class="nav-item" href="#workspace" data-section="workspace">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </span>
+          <span>Workspace</span>
+        </a>
 
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <a class="nav-item" href="#tools" data-section="tools">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </span>
+          <span>Tools</span>
+        </a>
 
-              <path d="M17 18L11 24L17 30"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
+        <a class="nav-item" href="/bookmarks_page" id="nav-bookmarks" data-native-link>
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <span>Bookmarks</span>
+        </a>
 
-              <path d="M31 18L37 24L31 30"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
+        <a class="nav-item" href="#account" data-section="account">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <span>Settings</span>
+        </a>
 
-              <path d="M24 14L21 34"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"/>
+        <a class="nav-item" href="/history" data-section="history">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>
+          </span>
+          <span>History</span>
+        </a>
+      </nav>
+      <!-- Sidebar bottom -->
+      
 
-              <circle cx="35" cy="35" r="6"
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="dashboard-main">
+
+      <!-- Topbar -->
+      <header class="dashboard-topbar">
+        <div class="command-search" role="search">
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input class="search" id="global-search" type="search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+          <kbd>⌘ K</kbd>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-button" type="button" aria-label="Open command palette" data-open-command>
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+
+          <a class="icon-button bm-topbar-btn" href="/bookmarks_page" aria-label="Open Bookmarks" title="Bookmarks" id="topbar-bookmarks-btn">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </a>
+
+          <button class="icon-button" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+
+          <div class="profile-menu">
+            <button class="profile-trigger" type="button" aria-label="Open profile" aria-expanded="false">
+              <img class="avatar" data-user-avatar src="/assets/default_avatar.png" alt="Profile">
+            </button>
+            <div class="profile-dropdown" role="menu">
+              <div class="profile-dropdown-header">
+                <strong data-user-name>Workspace</strong>
+                <p data-user-email>Not signed in</p>
+              </div>
+              <a href="/login" role="menuitem" data-auth-link>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                Sign in
+              </a>
+              <a href="/signup" role="menuitem" data-auth-link>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                Create account
+              </a>
+              <div class="dropdown-sep"></div>
+              <button type="button" role="menuitem" data-logout hidden>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ── DASHBOARD SECTION ── -->
+      <section class="dashboard-section active" data-section-id="dashboard">
+        
+        <!-- Hero -->
+        <section class="hero-panel anim-fade-up">
+          <div>
+            <p class="eyebrow">
+              <span class="eyebrow-dot" aria-hidden="true"></span>
+              Premium SandBox workspace
+            </p>
+            <h1>One Place, Many Ways </h1>
+            <p>Generate SQL, repair JSON, create regex, review code and more — without ever leaving your workspace.</p>
+          </div>
+          <button class="btn btn-primary" type="button" data-open-command>
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Open Tools
+          </button>
+        </section>
+
+        <!-- Workspace panel -->
+        <section class="workspace-panel anim-fade-up delay-2" id="workspace">
+          <div class="workspace-copy">
+            <p class="eyebrow">Workspace</p>
+            <h2 data-workspace-title>Your active workspace</h2>
+            <p data-workspace-subtitle>Sign in to sync your tools, history, and saved workflows.</p>
+
+            <div class="workspace-user-row">
+              <img class="workspace-user-avatar" data-workspace-avatar src="/assets/default_avatar.png" alt="User avatar">
+              <div class="workspace-user-meta">
+                <strong data-workspace-name>Workspace</strong>
+                <span data-workspace-email>Not signed in</span>
+              </div>
+            </div>
+          </div>
+          <div class="workspace-metrics-area" aria-label="Workspace detail metrics">
+            <div class="workspace-metric-row">
+              <span>Tools</span>
+              <strong data-workspace-tools>--</strong>
+            </div>
+            <div class="workspace-metric-row">
+              <span>Daily Credits</span>
+              <strong data-workspace-credits>--</strong>
+            </div>
+            <div class="workspace-metric-row">
+              <span>Total Executions</span>
+              <strong data-workspace-executions>--</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tools section -->
+        <section class="tools-section anim-fade-up delay-3" id="tools">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">SandBox</p>
+              <h2>Featured tools</h2>
+            </div>
+            <div class="tool-category-filter" role="tablist" aria-label="Filter tools by category">
+
+              <div class="toolbar">
+                
+            </div>
+            <button
+                class="tool-filter active"
+                type="button"
+                data-filter="all"
+                role="tab"
+                aria-selected="true"
+            >
+                All Tools
+            </button>
+    
+            <button
+                class="tool-filter"
+                type="button"
+                data-filter="Developer Tools"
+                role="tab"
+                aria-selected="false"
+            >
+                Developer
+            </button>
+    
+            <button
+                class="tool-filter"
+                type="button"
+                data-filter="Content Tools"
+                role="tab"
+                aria-selected="false"
+            >
+                Content
+            </button>
+    
+            <button
+                class="tool-filter"
+                type="button"
+                data-filter="Productivity Tools"
+                role="tab"
+                aria-selected="false"
+            >
+                Productivity
+            </button>
+    
+            <button
+                class="tool-filter"
+                type="button"
+                data-filter="Image Tools"
+                role="tab"
+                aria-selected="false"
+            >
+                Image
+            </button>
+    
+        </div>
+            <span class="result-count" data-result-count>0 tools</span>
+          </div>
+
+          <div class="tool-grid" data-tool-grid>
+
+            <a class="tool-card" href="/pro_cons_gen" data-tool-name="Pros-Cons Generator" data-tool-category="Productivity Tools" data-tool-id="static-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M24 6V42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M14 42H34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M8 12H40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M8 12L4 22C4 25 8 27 8 27C8 27 12 25 12 22L8 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M40 12L36 22C36 25 40 27 40 27C40 27 44 25 44 22L40 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <circle cx="24" cy="8" r="2.5" fill="currentColor"/>
+                </svg>
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                </button>
+              </div>
+              <h3>Pros-Cons Generator</h3>
+              <p>Generate Pro's and Con's for any topic or decision</p>
+              <div class="tool-meta">
+                <span class="tool-category-badge" data-cat="Productivity Tools">
+                  Productivity Tools
+                </span>
+                <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+
+            <a class="tool-card" href="/table_extractor" data-tool-name="AI Table Extractor" data-tool-category="Image Tools" data-tool-id="static-1">
+            <div class="tool-card-header">
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                <!-- Table Border -->
+                <rect x="8" y="10" width="32" height="28" rx="2"
                       stroke="currentColor"
                       stroke-width="2"/>
 
-              <path d="M32.8 35L34.5 36.8L37.6 33.6"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"/>
+                <!-- Horizontal Lines -->
+                <path d="M8 18H40" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 26H40" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 34H40" stroke="currentColor" stroke-width="2"/>
 
-            </svg>
+                <!-- Vertical Lines -->
+                <path d="M18 10V38" stroke="currentColor" stroke-width="2"/>
+                <path d="M30 10V38" stroke="currentColor" stroke-width="2"/>
 
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
+                <!-- AI Spark -->
+                <path d="M39 7L40.5 10L44 11L40.5 12L39 15L37.5 12L34 11L37.5 10L39 7Z"
+                      fill="currentColor"/>
 
-          </div>
-
-          <h3>Code Reviewer</h3>
-
-          <p>
-            Analyze projects for bugs, security risks, code quality, performance, and
-            best practices with AI-powered review insights.
-          </p>
-
-          <div class="tool-meta">
-
-            <span class="tool-category-badge" data-cat="Developer Tools">
-              Developer Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-
-          </div>
-
-        </a>
-
-          <a class="tool-card" href="/youtube-summarizer" data-tool-name="YouTube Summarizer" data-tool-category="Content Tool" data-tool-id="static-yt-1">
-            <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="10" width="28" height="20" rx="4" stroke="currentColor" stroke-width="2"/>
-                <path d="M13 16L21 20L13 24V16Z" fill="currentColor"/>
-                <path d="M36 14H44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M36 21H44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M36 28H41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
 
               <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
@@ -1251,14 +310,234 @@
               </button>
             </div>
 
-            <h3>YouTube Summarizer</h3>
+            <h3>AI Table Extractor</h3>
 
             <p>
-              Generate AI-powered summaries from YouTube videos with key points,
-              timelines, important quotes, action items, and keywords.
+              Extract tables from PDFs and images with AI into structured Excel, CSV, or JSON.
             </p>
 
             <div class="tool-meta">
+              <span class="tool-category-badge" data-cat="Image Tools">
+                Image Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+          </a>
+          <a class="tool-card" href="/decision-maker" data-tool-name="Decision Maker" data-tool-category="Productivity Tools" data-tool-id="static-1">
+            <div class="tool-card-header">
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                <!-- Decision Flow -->
+                <circle cx="12" cy="24" r="3"
+                        stroke="currentColor"
+                        stroke-width="2"/>
+
+                <circle cx="36" cy="14" r="3"
+                        stroke="currentColor"
+                        stroke-width="2"/>
+
+                <circle cx="36" cy="34" r="3"
+                        stroke="currentColor"
+                        stroke-width="2"/>
+
+                <!-- Connecting Lines -->
+                <path d="M15 24H25" stroke="currentColor" stroke-width="2"/>
+
+                <path d="M25 24L33 16" stroke="currentColor" stroke-width="2"/>
+
+                <path d="M25 24L33 32" stroke="currentColor" stroke-width="2"/>
+
+                <!-- AI Spark -->
+                <path d="M39 5L40.5 8L44 9L40.5 10L39 13L37.5 10L34 9L37.5 8L39 5Z"
+                      fill="currentColor"/>
+
+              </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+            </div>
+
+            <h3>Decision Maker</h3>
+
+            <p>
+              Compare multiple choices with AI, evaluate pros and cons, assess risks, and receive confident recommendations.
+            </p>
+
+            <div class="tool-meta">
+              <span class="tool-category-badge" data-cat="Productivity Tools">
+                Productivity Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </div>
+          </a>
+            <a class="tool-card" href="/sql_gen" data-tool-name="SQL Generator" data-tool-category="Developer Tools" data-tool-id="static-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48">
+                  <ellipse cx="24" cy="12" rx="15" ry="6"/>
+                  <path d="M9 12v18c0 3.3 6.7 6 15 6s15-2.7 15-6V12"/>
+                  <path d="M9 21c0 3.3 6.7 6 15 6s15-2.7 15-6"/>
+                </svg>
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                </button>
+              </div>
+              <h3>SQL Generator</h3>
+              <p>Generate fully optimized and error-free SQL commands</p>
+              <div class="tool-meta">
+                <span class="tool-category-badge">Developer Tools</span>
+                <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+
+            <a class="tool-card" href="/ss_explain" data-tool-name="Screenshot Explainer" data-tool-category="Image Tools" data-tool-id="static-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="7" y="9" width="34" height="26" rx="3" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="17" cy="18" r="2.5" fill="currentColor"/>
+                  <path d="M11 30L19 22L25 28L31 20L37 27" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M7 3L11 3M37 3L41 3M7 3L7 7M41 3L41 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                </button>
+              </div>
+              <h3>Screenshot Explainer</h3>
+              <p>Explain any type of Screenshot in the most effecient way</p>
+              <div class="tool-meta">
+                <span class="tool-category-badge">Image Tools</span>
+                <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+
+            <a class="tool-card" href="/notes_cleaner" data-tool-name="Notes Cleaner" data-tool-category="Productivity Tools" data-tool-id="static-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                  <!-- Document -->
+                  <rect
+                      x="10"
+                      y="7"
+                      width="28"
+                      height="34"
+                      rx="5"
+                      stroke="currentColor"
+                      stroke-width="2"/>
+
+                  <!-- Text lines -->
+                  <path
+                      d="M17 17H31M17 23H28"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"/>
+
+                  <!-- Check mark -->
+                  <path
+                      d="M18 31L22 35L30 27"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+                </svg>
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                </button>
+              </div>
+              <h3>Notes Cleaner</h3>
+              <p>Clean and correct your notes before reading it.</p>
+              <div class="tool-meta">
+                <span class="tool-category-badge">Productivity Tools</span>
+                <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+
+            <a class="tool-card" href="/mock_api" data-tool-name="Mock API Generator" data-tool-category="Developer Tools" data-tool-id="static-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none">
+
+                  <circle cx="14" cy="24" r="3"
+                  stroke="currentColor"
+                  stroke-width="2"/>
+
+                  <circle cx="34" cy="16" r="3"
+                  stroke="currentColor"
+                  stroke-width="2"/>
+
+                  <circle cx="34" cy="32" r="3"
+                  stroke="currentColor"
+                  stroke-width="2"/>
+
+                  <path
+                  d="M17 24H24V16H31"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+
+                  <path
+                  d="M24 24V32H31"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+
+                  </svg>
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                </button>
+              </div>
+              <h3>Mock API Generator</h3>
+              <p>Create Mock API with CRUD Operations</p>
+              <div class="tool-meta">
+                <span class="tool-category-badge">Developer Tools</span>
+                <svg class="tool-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+
+          <a class="tool-card" href="/quiz-generator" data-tool-name="Quiz Generator" data-tool-category="Content Tools" data-tool-id="static-content-1">
+
+            <div class="tool-card-header">
+
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="6" width="28" height="36" rx="5" stroke="currentColor" stroke-width="2"/>
+                <path d="M18 15H30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18 21H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="20" cy="31" r="2.2" fill="currentColor"/>
+                <path d="M25 31L28 34L34 27" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <h3>Quiz Generator</h3>
+
+            <p>
+              Generate AI-powered quizzes from prompts or documents with multiple question
+              types, explanations, hints, and interactive scoring.
+            </p>
+
+            <div class="tool-meta">
+
               <span class="tool-category-badge" data-cat="Content Tools">
                 Content Tools
               </span>
@@ -1267,35 +546,110 @@
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
               </svg>
+
             </div>
           </a>
 
-          <a class="tool-card" href="/docker" data-tool-name="DockerFile Generator" data-tool-category="Developer Tool" data-tool-id="static-yt-1">
+          <a class="tool-card" href="/yaml" data-tool-name="Kubernetes YAML Generator" data-tool-category="Developer Tools" data-tool-id="static-content-1">
+
             <div class="tool-card-header">
-              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Stack of container layers -->
-  <rect x="6" y="20" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.9"/>
-  <rect x="18" y="20" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.9"/>
-  <rect x="6" y="11" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
-  <rect x="18" y="11" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
-  <rect x="30" y="11" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
-  <rect x="18" y="2" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.35"/>
 
-  <!-- Whale body -->
-  <path d="M4 32 Q6 28 10 29 Q14 27 20 29 Q28 27 36 29 Q42 28 44 32 Q42 37 36 36 Q28 38 20 36 Q12 38 6 36 Q2 35 4 32Z"
-    fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5"/>
+              <svg class="tool-logo"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                aria-hidden="true">
 
-  <!-- Whale tail -->
-  <path d="M38 33 Q43 30 46 32 Q44 36 41 35"
-    fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.6" stroke-linecap="round"/>
+                <!-- Outer Hexagon -->
+                <polygon
+                    points="24,5 39.6,14 39.6,32 24,41 8.4,32 8.4,14"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    opacity="0.28"/>
 
-  <!-- Whale spout -->
-  <path d="M12 29 Q11 24 10 22 M10 22 Q9 20 11 19 M10 22 Q12 20 13 19"
-    stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                <!-- Nodes -->
+                <circle cx="24" cy="5" r="1.7" fill="currentColor"/>
+                <circle cx="39.6" cy="14" r="1.7" fill="currentColor"/>
+                <circle cx="39.6" cy="32" r="1.7" fill="currentColor"/>
+                <circle cx="24" cy="41" r="1.7" fill="currentColor"/>
+                <circle cx="8.4" cy="32" r="1.7" fill="currentColor"/>
+                <circle cx="8.4" cy="14" r="1.7" fill="currentColor"/>
 
-  <!-- Eye -->
-  <circle cx="14" cy="32" r="1.2" fill="currentColor" opacity="0.8"/>
-</svg>
+                <!-- Connections -->
+                <line x1="24" y1="5" x2="24" y2="16"
+                      stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+                <line x1="39.6" y1="14" x2="30" y2="18.5"
+                      stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+                <line x1="39.6" y1="32" x2="30" y2="23.5"
+                      stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+                <line x1="24" y1="41" x2="24" y2="26"
+                      stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+                <line x1="8.4" y1="32" x2="18" y2="23.5"
+                      stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+                <line x1="8.4" y1="14" x2="18" y2="18.5"
+                      stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+                <!-- Center Hub -->
+                <circle
+                    cx="24"
+                    cy="21"
+                    r="8"
+                    stroke="currentColor"
+                    stroke-width="1.2"
+                    opacity=".5"/>
+
+                <circle
+                    cx="24"
+                    cy="21"
+                    r="7.4"
+                    fill="currentColor"
+                    opacity=".06"/>
+
+                <!-- YAML Document -->
+                <rect
+                    x="20"
+                    y="16"
+                    width="8"
+                    height="10"
+                    rx="1.4"
+                    stroke="currentColor"
+                    stroke-width="1.4"/>
+
+                <line
+                    x1="22"
+                    y1="19"
+                    x2="26"
+                    y2="19"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    stroke-linecap="round"/>
+
+                <line
+                    x1="22"
+                    y1="21.8"
+                    x2="25"
+                    y2="21.8"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    stroke-linecap="round"
+                    opacity=".7"/>
+
+                <line
+                    x1="22"
+                    y1="24.5"
+                    x2="24"
+                    y2="24.5"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    stroke-linecap="round"
+                    opacity=".45"/>
+
+            </svg>
 
               <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1304,16 +658,18 @@
                   <circle cx="12" cy="19" r="1.5"/>
                 </svg>
               </button>
+
             </div>
 
-            <h3>DockerFile Generator</h3>
+            <h3>Kubernetes YAML Generator</h3>
 
             <p>
-              Generate Production level DockerFile
-              according to your Code structure and Repository.
+              Generate Professional and deployment level YAML file 
+              from Docker Compose File
             </p>
 
             <div class="tool-meta">
+
               <span class="tool-category-badge" data-cat="Content Tools">
                 Developer Tools
               </span>
@@ -1322,46 +678,515 @@
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
               </svg>
+
             </div>
           </a>
+          
+          <a class="tool-card" href="/flashcard-generator" data-tool-name="Flashcard Generator" data-tool-category="Content Tools" data-tool-id="static-content-2">
 
-          <a class="tool-card" href="/text-summarizer" data-tool-name="AI Text Summarizer" data-tool-category="Content Tools" data-tool-id="static-ai-1">
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="6" width="32" height="36" rx="5" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 16H32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 22H28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+              <rect x="14" y="29" width="20" height="9" rx="2.5" stroke="currentColor" stroke-width="2"/>
+
+              <path d="M24 29V38" stroke="currentColor" stroke-width="2"/>
+            </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>Flashcard Generator</h3>
+
+          <p>
+            Create AI-powered flashcards from prompts, notes, PDFs, and documents with
+            smart categorization, memory tips, examples, and interactive study cards.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Content Tools">
+              Content Tools
+            </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+
+        <a class="tool-card" href="/regex-gen" data-tool-name="Regex Generator" data-tool-category="Developer Tools" data-tool-id="static-content-2">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Main rounded square -->
+    <rect
+        x="6"
+        y="6"
+        width="36"
+        height="36"
+        rx="8"
+        stroke="currentColor"
+        stroke-width="2"/>
+
+    <!-- Regex brackets -->
+    <path
+        d="M17 15
+          C14.5 15 13 17 13 20
+          V28
+          C13 31 14.5 33 17 33"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+    <path
+        d="M31 15
+          C33.5 15 35 17 35 20
+          V28
+          C35 31 33.5 33 31 33"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+    <!-- .* -->
+    <circle
+        cx="21"
+        cy="20"
+        r="1.8"
+        fill="currentColor"/>
+
+    <path
+        d="M24.5 20H27.5"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+    <path
+        d="M26 18.5V21.5"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+    <!-- Pattern line -->
+    <path
+        d="M19 28H29"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>Regex Generator</h3>
+
+          <p>
+            Create Regex for any key or general format using AI.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Developer Tools">
+                Developer Tools
+              </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+        
+        <a class="tool-card" href="/item" data-tool-name="Action-Item Extractor" data-tool-category="Content Tools" data-tool-id="static-content-2">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo"
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Outer Container -->
+      <rect
+          x="6"
+          y="6"
+          width="36"
+          height="36"
+          rx="9"
+          stroke="currentColor"
+          stroke-width="2"/>
+
+      <!-- Document -->
+      <path
+          d="M17 14H26L31 19V33H17V14Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"/>
+
+      <!-- Fold -->
+      <path
+          d="M26 14V19H31"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"/>
+
+      <!-- Checklist -->
+      <path
+          d="M20 23L21.8 24.8L24.8 21.8"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+      <path
+          d="M27 23H29"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"/>
+
+      <path
+          d="M20 29L21.8 30.8L24.8 27.8"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+      <path
+          d="M27 29H29"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"/>
+
+      <!-- AI Spark -->
+      <path
+          d="M35.5 11L36.4 13.3L38.7 14.2L36.4 15.1L35.5 17.4L34.6 15.1L32.3 14.2L34.6 13.3Z"
+          fill="currentColor"/>
+
+  </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>Action-Item Extractor</h3>
+
+          <p>
+            Extract Actions/Tasks assigned to employee in a large transcript/text.
+          </p>
+
+          <div class="tool-meta">
+                <span class="tool-category-badge" data-cat="Content Tools">
+                  Content Tools
+                </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+
+        
+        <a class="tool-card" href="/brainstorm-generator" data-tool-name="BrainStorm Generator" data-tool-category="Productivity Tools" data-tool-id="static-content-2">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo"
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Outer Container -->
+      <rect
+          x="6"
+          y="6"
+          width="36"
+          height="36"
+          rx="9"
+          stroke="currentColor"
+          stroke-width="2"/>
+
+      <!-- Lightbulb -->
+      <path
+          d="M24 14
+            C20.7 14 18 16.7 18 20
+            C18 22.3 19.2 24.1 21 25.6
+            C22 26.5 22.5 27.4 22.5 28.5
+            H25.5
+            C25.5 27.4 26 26.5 27 25.6
+            C28.8 24.1 30 22.3 30 20
+            C30 16.7 27.3 14 24 14Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"/>
+
+      <!-- Bulb Base -->
+      <path
+          d="M22 30H26"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"/>
+
+      <path
+          d="M22.5 33H25.5"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"/>
+
+      <!-- Brainstorm Nodes -->
+      <circle
+          cx="21"
+          cy="20"
+          r="1.2"
+          fill="currentColor"/>
+
+      <circle
+          cx="27"
+          cy="20"
+          r="1.2"
+          fill="currentColor"/>
+
+      <circle
+          cx="24"
+          cy="23"
+          r="1.2"
+          fill="currentColor"/>
+
+      <!-- Connections -->
+      <path
+          d="M21 20L24 23L27 20"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+      <!-- AI Spark -->
+      <path
+          d="M35.5 11
+            L36.4 13.3
+            L38.7 14.2
+            L36.4 15.1
+            L35.5 17.4
+            L34.6 15.1
+            L32.3 14.2
+            L34.6 13.3Z"
+          fill="currentColor"/>
+
+  </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>BrainStorm Generator</h3>
+
+          <p>
+            Transform a simple prompt into structured, high-quality brainstorming ideas powered by AI.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Productivity Tools">
+                Productivity Tools
+              </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+
+        <a class="tool-card" href="/commit-gen" data-tool-name="Commit Message Generator" data-tool-category="Developer Tools" data-tool-id="static-content-2">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Commit node -->
+    <circle
+        cx="14"
+        cy="24"
+        r="4"
+        stroke="currentColor"
+        stroke-width="2"/>
+
+    <!-- Commit line -->
+    <path
+        d="M18 24H34"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+    <!-- Commit message -->
+    <path
+        d="M24 18H34M24 30H30"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  </svg>
+
+            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="1.5"/>
+                <circle cx="12" cy="12" r="1.5"/>
+                <circle cx="12" cy="19" r="1.5"/>
+              </svg>
+            </button>
+
+          </div>
+
+          <h3>Commit Message Generator</h3>
+
+          <p>
+            Generate multiple Commit messages according to your Code and Repository.
+          </p>
+
+          <div class="tool-meta">
+
+            <span class="tool-category-badge" data-cat="Developer Tools">
+                Developer Tools
+              </span>
+
+            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+
+          </div>
+
+        </a>
+            <a class="tool-card" href="/json-fixer" data-tool-name="JSON Fixer" data-tool-category="Developer Tools" data-tool-id="static-3">
+
+            <div class="tool-card-header">
+
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 10C13 10 11 13 11 18V20C11 23 9 25 6 25C9 25 11 27 11 30V32C11 37 13 40 18 40"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+                <path d="M30 10C35 10 37 13 37 18V20C37 23 39 25 42 25C39 25 37 27 37 30V32C37 37 35 40 30 40"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+                <path d="M21 24L23.5 27L28 21"
+                      stroke="currentColor"
+                      stroke-width="2.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+              </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <h3>JSON Fixer</h3>
+
+            <p>
+              Repair malformed JSON, validate syntax, and instantly convert broken data
+              into clean, production-ready JSON.
+            </p>
+
+            <div class="tool-meta">
+
+              <span class="tool-category-badge" data-cat="Developer Tools">
+                Developer Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+
+            </div>
+
+          </a>
+          <a class="tool-card" href="/code" data-tool-name="Code Reviewer" data-tool-category="Developer Tools" data-tool-id="static-4">
 
             <div class="tool-card-header">
 
               <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                <rect x="10" y="7" width="22" height="30" rx="3"
+                <path d="M17 18L11 24L17 30"
                       stroke="currentColor"
-                      stroke-width="2"/>
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
 
-                <path d="M16 16H26"
+                <path d="M31 18L37 24L31 30"
                       stroke="currentColor"
-                      stroke-width="2"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+                <path d="M24 14L21 34"
+                      stroke="currentColor"
+                      stroke-width="2.5"
                       stroke-linecap="round"/>
 
-                <path d="M16 21H26"
+                <circle cx="35" cy="35" r="6"
+                        stroke="currentColor"
+                        stroke-width="2"/>
+
+                <path d="M32.8 35L34.5 36.8L37.6 33.6"
                       stroke="currentColor"
                       stroke-width="2"
-                      stroke-linecap="round"/>
-
-                <path d="M16 26H22"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"/>
-
-                <path d="M35 15L36.3 18.2L39.5 19.5L36.3 20.8L35 24L33.7 20.8L30.5 19.5L33.7 18.2L35 15Z"
-                      fill="currentColor"/>
-
-                <path d="M33 31H39"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"/>
-
-                <path d="M31 35H39"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"/>
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
 
               </svg>
 
@@ -1375,10 +1200,256 @@
 
             </div>
 
-            <h3>AI Text Summarizer</h3>
+            <h3>Code Reviewer</h3>
 
             <p>
-              Transform lengthy text and documents into clear, concise summaries while preserving key insights and context.
+              Analyze projects for bugs, security risks, code quality, performance, and
+              best practices with AI-powered review insights.
+            </p>
+
+            <div class="tool-meta">
+
+              <span class="tool-category-badge" data-cat="Developer Tools">
+                Developer Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+
+            </div>
+
+          </a>
+
+            <a class="tool-card" href="/youtube-summarizer" data-tool-name="YouTube Summarizer" data-tool-category="Content Tool" data-tool-id="static-yt-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="10" width="28" height="20" rx="4" stroke="currentColor" stroke-width="2"/>
+                  <path d="M13 16L21 20L13 24V16Z" fill="currentColor"/>
+                  <path d="M36 14H44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M36 21H44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M36 28H41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="1.5"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <circle cx="12" cy="19" r="1.5"/>
+                  </svg>
+                </button>
+              </div>
+
+              <h3>YouTube Summarizer</h3>
+
+              <p>
+                Generate AI-powered summaries from YouTube videos with key points,
+                timelines, important quotes, action items, and keywords.
+              </p>
+
+              <div class="tool-meta">
+                <span class="tool-category-badge" data-cat="Content Tools">
+                  Content Tools
+                </span>
+
+                <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </div>
+            </a>
+
+            <a class="tool-card" href="/docker" data-tool-name="DockerFile Generator" data-tool-category="Developer Tool" data-tool-id="static-yt-1">
+              <div class="tool-card-header">
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Stack of container layers -->
+    <rect x="6" y="20" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.9"/>
+    <rect x="18" y="20" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.9"/>
+    <rect x="6" y="11" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
+    <rect x="18" y="11" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
+    <rect x="30" y="11" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
+    <rect x="18" y="2" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.35"/>
+
+    <!-- Whale body -->
+    <path d="M4 32 Q6 28 10 29 Q14 27 20 29 Q28 27 36 29 Q42 28 44 32 Q42 37 36 36 Q28 38 20 36 Q12 38 6 36 Q2 35 4 32Z"
+      fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.5"/>
+
+    <!-- Whale tail -->
+    <path d="M38 33 Q43 30 46 32 Q44 36 41 35"
+      fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.6" stroke-linecap="round"/>
+
+    <!-- Whale spout -->
+    <path d="M12 29 Q11 24 10 22 M10 22 Q9 20 11 19 M10 22 Q12 20 13 19"
+      stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+    <!-- Eye -->
+    <circle cx="14" cy="32" r="1.2" fill="currentColor" opacity="0.8"/>
+  </svg>
+
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="1.5"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <circle cx="12" cy="19" r="1.5"/>
+                  </svg>
+                </button>
+              </div>
+
+              <h3>DockerFile Generator</h3>
+
+              <p>
+                Generate Production level DockerFile
+                according to your Code structure and Repository.
+              </p>
+
+              <div class="tool-meta">
+                <span class="tool-category-badge" data-cat="Content Tools">
+                  Developer Tools
+                </span>
+
+                <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </div>
+            </a>
+
+            <a class="tool-card" href="/text-summarizer" data-tool-name="AI Text Summarizer" data-tool-category="Content Tools" data-tool-id="static-ai-1">
+
+              <div class="tool-card-header">
+
+                <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                  <rect x="10" y="7" width="22" height="30" rx="3"
+                        stroke="currentColor"
+                        stroke-width="2"/>
+
+                  <path d="M16 16H26"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
+                  <path d="M16 21H26"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
+                  <path d="M16 26H22"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
+                  <path d="M35 15L36.3 18.2L39.5 19.5L36.3 20.8L35 24L33.7 20.8L30.5 19.5L33.7 18.2L35 15Z"
+                        fill="currentColor"/>
+
+                  <path d="M33 31H39"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
+                  <path d="M31 35H39"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"/>
+
+                </svg>
+
+                <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="1.5"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <circle cx="12" cy="19" r="1.5"/>
+                  </svg>
+                </button>
+
+              </div>
+
+              <h3>AI Text Summarizer</h3>
+
+              <p>
+                Transform lengthy text and documents into clear, concise summaries while preserving key insights and context.
+              </p>
+
+              <div class="tool-meta">
+
+                <span class="tool-category-badge" data-cat="Content Tools">
+                  Content Tools
+                </span>
+
+                <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+
+              </div>
+            </a>
+            <a class="tool-card" href="/email-rewriter" data-tool-name="Email Generator" data-tool-category="Productivity Tools" data-tool-id="static-content-2">
+
+            <div class="tool-card-header">
+
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="10" width="36" height="28" rx="5" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 14L24 26L40 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <h3>Email Generator</h3>
+
+            <p>
+              Generate AI-powered emails from prompts or context with adjustable tone,
+              subject line suggestions, and ready-to-send formatting.
+            </p>
+
+            <div class="tool-meta">
+
+              <span class="tool-category-badge" data-cat="Productivity Tools">
+                Productivity Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+
+            </div>
+          </a>
+          <a class="tool-card" href="/blog-outline-generator" data-tool-name="Blog Outline Generator" data-tool-category="Content Tools" data-tool-id="static-content-3">
+
+            <div class="tool-card-header">
+
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 6h20l8 8v28a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M30 6v8h8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <line x1="14" y1="24" x2="34" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="14" y1="30" x2="34" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="14" y1="36" x2="26" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <h3>Blog Outline Generator</h3>
+
+            <p>
+              Generate SEO-ready blog outlines from a single topic prompt, complete
+              with structured headings, key points, and content flow.
             </p>
 
             <div class="tool-meta">
@@ -1394,13 +1465,97 @@
 
             </div>
           </a>
-          <a class="tool-card" href="/email-rewriter" data-tool-name="Email Generator" data-tool-category="Productivity Tools" data-tool-id="static-content-2">
+
+          <a class="tool-card" href="/error" data-tool-name="Error Explainer" data-tool-category="Developer Tools" data-tool-id="static-content-3">
+
+            <div class="tool-card-header">
+
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Code brackets -->
+    <path
+        d="M17 16L12 24L17 32"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+    <path
+        d="M31 16L36 24L31 32"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+    <!-- Warning -->
+    <path
+        d="M24 13L29.5 23H18.5L24 13Z"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linejoin="round"/>
+
+    <path
+        d="M24 18V20"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+    <circle
+        cx="24"
+        cy="22.5"
+        r="1"
+        fill="currentColor"/>
+
+  </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <h3>Error Explainer</h3>
+
+            <p>
+              Explain any kind of error that is a bottleneck to your code.
+            </p>
+
+            <div class="tool-meta">
+
+              <span class="tool-category-badge" data-cat="Content Tools">
+                Developer Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+
+            </div>
+          </a>
+
+          <a class="tool-card" href="/chart-explainer" data-tool-name="Chart Explainer" data-tool-category="Analytics Tools" data-tool-id="static-content-4">
 
           <div class="tool-card-header">
 
             <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6" y="10" width="36" height="28" rx="5" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 14L24 26L40 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2"/>
+              <line x1="16" y1="34" x2="16" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="24" y1="34" x2="24" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="32" y1="34" x2="32" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="14,18 22,14 30,20 36,12"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"/>
+              <circle cx="14" cy="18" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="14" r="1.5" fill="currentColor"/>
+              <circle cx="30" cy="20" r="1.5" fill="currentColor"/>
+              <circle cx="36" cy="12" r="1.5" fill="currentColor"/>
             </svg>
 
             <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
@@ -1413,17 +1568,18 @@
 
           </div>
 
-          <h3>Email Generator</h3>
+          <h3>Chart Explainer</h3>
 
           <p>
-            Generate AI-powered emails from prompts or context with adjustable tone,
-            subject line suggestions, and ready-to-send formatting.
+            Upload any chart or graph and receive AI-powered analysis including
+            trends, key insights, business recommendations, and easy-to-understand
+            explanations.
           </p>
 
           <div class="tool-meta">
 
-            <span class="tool-category-badge" data-cat="Productivity Tools">
-              Productivity Tools
+            <span class="tool-category-badge" data-cat="Image Tools">
+              Image Tools
             </span>
 
             <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1432,201 +1588,118 @@
             </svg>
 
           </div>
+
         </a>
-        <a class="tool-card" href="/blog-outline-generator" data-tool-name="Blog Outline Generator" data-tool-category="Content Tools" data-tool-id="static-content-3">
+            <a class="tool-card" href="/eli5" data-tool-name="ELI5 Tool" data-tool-category="Content Tools" data-tool-id="static-ai-2">
 
-          <div class="tool-card-header">
+            <div class="tool-card-header">
 
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 6h20l8 8v28a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M30 6v8h8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              <line x1="14" y1="24" x2="34" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="14" y1="30" x2="34" y2="30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <line x1="14" y1="36" x2="26" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+              <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-
-          </div>
-
-          <h3>Blog Outline Generator</h3>
-
-          <p>
-            Generate SEO-ready blog outlines from a single topic prompt, complete
-            with structured headings, key points, and content flow.
-          </p>
-
-          <div class="tool-meta">
-
-            <span class="tool-category-badge" data-cat="Content Tools">
-              Content Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-
-          </div>
-        </a>
-
-        <a class="tool-card" href="/error" data-tool-name="Error Explainer" data-tool-category="Developer Tools" data-tool-id="static-content-3">
-
-          <div class="tool-card-header">
-
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-  <!-- Code brackets -->
-  <path
-      d="M17 16L12 24L17 32"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"/>
-
-  <path
-      d="M31 16L36 24L31 32"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"/>
-
-  <!-- Warning -->
-  <path
-      d="M24 13L29.5 23H18.5L24 13Z"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linejoin="round"/>
-
-  <path
-      d="M24 18V20"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"/>
-
-  <circle
-      cx="24"
-      cy="22.5"
-      r="1"
-      fill="currentColor"/>
-
-</svg>
-
-            <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/>
-                <circle cx="12" cy="12" r="1.5"/>
-                <circle cx="12" cy="19" r="1.5"/>
-              </svg>
-            </button>
-
-          </div>
-
-          <h3>Error Explainer</h3>
-
-          <p>
-            Explain any kind of error that is a bottleneck to your code.
-          </p>
-
-          <div class="tool-meta">
-
-            <span class="tool-category-badge" data-cat="Content Tools">
-              Developer Tools
-            </span>
-
-            <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-
-          </div>
-        </a>
-
-        <a class="tool-card" href="/chart-explainer" data-tool-name="Chart Explainer" data-tool-category="Analytics Tools" data-tool-id="static-content-4">
-
-        <div class="tool-card-header">
-
-          <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2"/>
-            <line x1="16" y1="34" x2="16" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <line x1="24" y1="34" x2="24" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <line x1="32" y1="34" x2="32" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <polyline points="14,18 22,14 30,20 36,12"
+                <path d="M24 10C18.5 10 14 14.5 14 20C14 23.8 16 27 19 28.8V32C19 33.1 19.9 34 21 34H27C28.1 34 29 33.1 29 32V28.8C32 27 34 23.8 34 20C34 14.5 29.5 10 24 10Z"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
+                      stroke-width="2.3"
                       stroke-linejoin="round"/>
-            <circle cx="14" cy="18" r="1.5" fill="currentColor"/>
-            <circle cx="22" cy="14" r="1.5" fill="currentColor"/>
-            <circle cx="30" cy="20" r="1.5" fill="currentColor"/>
-            <circle cx="36" cy="12" r="1.5" fill="currentColor"/>
-          </svg>
 
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
+                <path d="M21 38H27"
+                      stroke="currentColor"
+                      stroke-width="2.3"
+                      stroke-linecap="round"/>
 
-        </div>
+                <path d="M22 34H26"
+                      stroke="currentColor"
+                      stroke-width="2.3"
+                      stroke-linecap="round"/>
 
-        <h3>Chart Explainer</h3>
-
-        <p>
-          Upload any chart or graph and receive AI-powered analysis including
-          trends, key insights, business recommendations, and easy-to-understand
-          explanations.
-        </p>
-
-        <div class="tool-meta">
-
-          <span class="tool-category-badge" data-cat="Image Tools">
-            Image Tools
-          </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-          <a class="tool-card" href="/eli5" data-tool-name="ELI5 Tool" data-tool-category="Content Tools" data-tool-id="static-ai-2">
-
-          <div class="tool-card-header">
-
-            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-              <path d="M24 10C18.5 10 14 14.5 14 20C14 23.8 16 27 19 28.8V32C19 33.1 19.9 34 21 34H27C28.1 34 29 33.1 29 32V28.8C32 27 34 23.8 34 20C34 14.5 29.5 10 24 10Z"
-                    stroke="currentColor"
-                    stroke-width="2.3"
-                    stroke-linejoin="round"/>
-
-              <path d="M21 38H27"
-                    stroke="currentColor"
-                    stroke-width="2.3"
-                    stroke-linecap="round"/>
-
-              <path d="M22 34H26"
-                    stroke="currentColor"
-                    stroke-width="2.3"
-                    stroke-linecap="round"/>
-
-              <path d="M37 11L38 13L40 14L38 15L37 17L36 15L34 14L36 13L37 11Z"
-                    fill="currentColor"/>
-
-              <circle cx="24" cy="20" r="1.2"
+                <path d="M37 11L38 13L40 14L38 15L37 17L36 15L34 14L36 13L37 11Z"
                       fill="currentColor"/>
 
+                <circle cx="24" cy="20" r="1.2"
+                        fill="currentColor"/>
+
+              </svg>
+
+              <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.5"/>
+                  <circle cx="12" cy="12" r="1.5"/>
+                  <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+              </button>
+
+            </div>
+
+            <h3>ELI5 Tool</h3>
+
+            <p>
+              Break down complex topics into simple, easy-to-understand explanations with clear examples and everyday analogies.
+            </p>
+
+            <div class="tool-meta">
+
+              <span class="tool-category-badge" data-cat="Content Tools">
+                Content Tools
+              </span>
+
+              <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+
+            </div>
+
+          </a>
+          <a class="tool-card" href="/image-text-extractor" data-tool-name="Image Text Extractor" data-tool-category="Image Tools" data-tool-id="static-img-1">
+
+          <div class="tool-card-header">
+
+            <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <!-- Image Frame -->
+              <rect x="8" y="9"
+                    width="22"
+                    height="22"
+                    rx="3"
+                    stroke="currentColor"
+                    stroke-width="2"/>
+
+              <!-- Mountains -->
+              <path d="M11 26L16 20L20 24L25 18L30 26"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+
+              <!-- Sun -->
+              <circle cx="15" cy="15"
+                      r="2"
+                      fill="currentColor"/>
+
+              <!-- OCR Scan Line -->
+              <line x1="6"
+                    y1="20"
+                    x2="42"
+                    y2="20"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"/>
+
+              <!-- Extracted Text -->
+              <path d="M35 15H41"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"/>
+
+              <path d="M33 21H41"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"/>
+
+              <path d="M35 27H41"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"/>
+
             </svg>
 
             <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
@@ -1639,16 +1712,16 @@
 
           </div>
 
-          <h3>ELI5 Tool</h3>
+          <h3>Image Text Extractor</h3>
 
           <p>
-            Break down complex topics into simple, easy-to-understand explanations with clear examples and everyday analogies.
+            Extract, recognize, and export text from images with high-accuracy AI-powered OCR while preserving formatting.
           </p>
 
           <div class="tool-meta">
 
-            <span class="tool-category-badge" data-cat="Content Tools">
-              Content Tools
+            <span class="tool-category-badge" data-cat="Image Tools">
+              Image Tools
             </span>
 
             <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1659,303 +1732,929 @@
           </div>
 
         </a>
-        <a class="tool-card" href="/image-text-extractor" data-tool-name="Image Text Extractor" data-tool-category="Image Tools" data-tool-id="static-img-1">
 
-        <div class="tool-card-header">
+          <!-- Empty state -->
+          <div class="empty-state" data-empty-state hidden>
+            <svg viewBox="0 0 48 48" width="40" height="40" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3;margin-bottom:4px"><rect x="6" y="6" width="36" height="36" rx="4"/><line x1="16" y1="16" x2="32" y2="16"/><line x1="16" y1="24" x2="24" y2="24"/></svg>
+            <h3>No tools found</h3>
+            <p id="empty-state-msg">Try a different search term.</p>
+            <button id="empty-create-btn" class="btn btn-ghost admin-only" type="button" style="display:none;margin-top:8px">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create First Tool
+            </button>
+          </div>
+        </section>
 
-          <svg class="tool-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-            <!-- Image Frame -->
-            <rect x="8" y="9"
-                  width="22"
-                  height="22"
-                  rx="3"
-                  stroke="currentColor"
-                  stroke-width="2"/>
-
-            <!-- Mountains -->
-            <path d="M11 26L16 20L20 24L25 18L30 26"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"/>
-
-            <!-- Sun -->
-            <circle cx="15" cy="15"
-                    r="2"
-                    fill="currentColor"/>
-
-            <!-- OCR Scan Line -->
-            <line x1="6"
-                  y1="20"
-                  x2="42"
-                  y2="20"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"/>
-
-            <!-- Extracted Text -->
-            <path d="M35 15H41"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"/>
-
-            <path d="M33 21H41"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"/>
-
-            <path d="M35 27H41"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"/>
-
-          </svg>
-
-          <button class="tool-menu-btn admin-only" type="button" aria-label="Tool options">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="5" r="1.5"/>
-              <circle cx="12" cy="12" r="1.5"/>
-              <circle cx="12" cy="19" r="1.5"/>
-            </svg>
-          </button>
-
-        </div>
-
-        <h3>Image Text Extractor</h3>
-
-        <p>
-          Extract, recognize, and export text from images with high-accuracy AI-powered OCR while preserving formatting.
-        </p>
-
-        <div class="tool-meta">
-
-          <span class="tool-category-badge" data-cat="Image Tools">
-            Image Tools
-          </span>
-
-          <svg class="tool-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-            <polyline points="12 5 19 12 12 19"/>
-          </svg>
-
-        </div>
-
-      </a>
-
-        <!-- Empty state -->
-        <div class="empty-state" data-empty-state hidden>
-          <svg viewBox="0 0 48 48" width="40" height="40" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.3;margin-bottom:4px"><rect x="6" y="6" width="36" height="36" rx="4"/><line x1="16" y1="16" x2="32" y2="16"/><line x1="16" y1="24" x2="24" y2="24"/></svg>
-          <h3>No tools found</h3>
-          <p id="empty-state-msg">Try a different search term.</p>
-          <button id="empty-create-btn" class="btn btn-ghost admin-only" type="button" style="display:none;margin-top:8px">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Create First Tool
-          </button>
-        </div>
       </section>
+<!-- ── ACCOUNT / SETTINGS SECTION ── -->
+<section class="dashboard-section" data-section-id="account">
 
-    </section>
+    <div class="settings-view">
 
-<!-- ── ADMIN DASHBOARD SECTION ── -->
-<!-- Replace your entire existing admin-dashboard-section with this -->
+        <div class="settings-view-header">
+            <h1 class="settings-view-title">Account Settings</h1>
+            <p class="settings-view-subtitle">
+                Manage your profile, security, and preferences
+            </p>
+        </div>
 
-<section class="dashboard-section" data-section-id="admin-dashboard" id="admin-dashboard-section">
+        <div class="settings-page">
 
-  <!-- Hero -->
-  <div class="admin-hero">
-    <div class="admin-hero-copy">
-      <p class="eyebrow">
-        <span class="eyebrow-dot" aria-hidden="true"></span>
-        Admin Control Panel
-      </p>
-      <h1 class="admin-hero-title">Platform Overview</h1>
-      <p class="admin-hero-sub">Real-time metrics, execution logs, tool analytics, and user management.</p>
-    </div>
-    <button class="btn btn-ghost btn-sm" id="admin-refresh-btn" type="button">
-      <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-      Refresh
-    </button>
-  </div>
+            <!-- SETTINGS SIDEBAR -->
+            <nav class="settings-nav" aria-label="Settings navigation">
 
-  <!-- ── Stat Cards ── -->
-  <div class="admin-stat-grid">
-    <div class="admin-stat-card">
-      <div class="admin-stat-icon admin-stat-icon--users">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      </div>
-      <div class="admin-stat-body">
-        <span class="admin-stat-label">Total Users</span>
-        <strong class="admin-stat-value" id="admin-total-users">—</strong>
-      </div>
-    </div>
+                <div class="settings-nav-header">
+                    <p class="settings-nav-title">Settings</p>
+                </div>
 
-    <div class="admin-stat-card">
-      <div class="admin-stat-icon admin-stat-icon--tools">
-        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-      </div>
-      <div class="admin-stat-body">
-        <span class="admin-stat-label">Total Tools</span>
-        <strong class="admin-stat-value" id="admin-total-tools">—</strong>
-      </div>
-    </div>
+                <ul class="settings-nav-list">
 
-    <div class="admin-stat-card">
-      <div class="admin-stat-icon admin-stat-icon--exec">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div class="admin-stat-body">
-        <span class="admin-stat-label">Total Executions</span>
-        <strong class="admin-stat-value" id="admin-total-exec">—</strong>
-      </div>
-    </div>
-  </div>
+                    <li>
+                        <a
+                            class="settings-nav-link active"
+                            href="#settings-profile"
+                            data-settings-section="profile"
+                        >
+                            <span class="s-nav-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </span>
+                            <span>Profile</span>
+                        </a>
+                    </li>
 
-  <!-- ── Tabs ── -->
-  <div class="admin-tabs-wrap">
+                    <li>
+                        <a
+                            class="settings-nav-link"
+                            href="#settings-appearance"
+                            data-settings-section="appearance"
+                        >
+                            <span class="s-nav-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 6v6l4 2"/>
+                                </svg>
+                            </span>
+                            <span>Appearance</span>
+                        </a>
+                    </li>
 
-    <!-- Tab Bar -->
-    <div class="admin-tab-bar" role="tablist">
-      <button class="admin-tab active" role="tab" data-admin-tab="executions" aria-selected="true">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Executions
-        <span class="admin-tab-count" id="admin-tab-exec-count"></span>
-      </button>
-      <button class="admin-tab" role="tab" data-admin-tab="tools" aria-selected="false">
-        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        Tool Usage
-        <span class="admin-tab-count" id="admin-tab-tools-count"></span>
-      </button>
-      <button class="admin-tab" role="tab" data-admin-tab="users" aria-selected="false">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Users
-        <span class="admin-tab-count" id="admin-tab-users-count"></span>
-      </button>
-    </div>
+                    <li>
+                        <a
+                            class="settings-nav-link"
+                            href="#settings-security"
+                            data-settings-section="security"
+                        >
+                            <span class="s-nav-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12
+                                             5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                                </svg>
+                            </span>
+                            <span>Security</span>
+                        </a>
+                    </li>
 
-    <!-- ── EXECUTIONS TAB ── -->
-    <div class="admin-tab-panel active" data-admin-panel="executions">
-      <div class="admin-panel">
-        <div class="admin-panel-header">
-          <h2 class="admin-panel-title">Execution Log</h2>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <span class="result-count" id="admin-exec-count">— records</span>
-            <div class="admin-table-search">
-              <svg viewBox="0 0 24 24" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="search" id="admin-exec-search" placeholder="Filter by tool, email, ID…" autocomplete="off">
+                    <li>
+                        <a
+                            class="settings-nav-link"
+                            href="#settings-accounts"
+                            data-settings-section="accounts"
+                        >
+                            <span class="s-nav-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="9" cy="8" r="4"/>
+                                    <path d="M3 21c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+                                    <path d="M17 11c2.2 0 4 1.8 4 4"/>
+                                </svg>
+                            </span>
+                            <span>Connected Accounts</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="settings-nav-link"
+                            href="#settings-about"
+                            data-settings-section="about"
+                        >
+                            <span class="s-nav-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="16" x2="12" y2="12"/>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                                </svg>
+                            </span>
+                            <span>About</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="settings-nav-link settings-nav-link--danger"
+                            href="#settings-danger"
+                            data-settings-section="danger"
+                        >
+                            <span class="s-nav-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="16"/>
+                                    <line x1="8" y1="12" x2="16" y2="12"/>
+                                </svg>
+                            </span>
+                            <span>Danger Zone</span>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </nav>
+
+
+            <!-- SETTINGS CONTENT -->
+            <div class="settings-content">
+
+                <!-- PROFILE -->
+                <section
+                    class="settings-section active"
+                    data-settings-section="profile"
+                    id="settings-profile"
+                >
+
+                    <div class="settings-heading">
+                        Profile
+                    </div>
+
+                    <p class="settings-description">
+                        Update your personal information and avatar
+                    </p>
+
+                    <div class="settings-card">
+
+                        <div class="settings-avatar-row">
+
+                            <div class="settings-avatar">
+
+                                <img
+                                    class="settings-avatar-img"
+                                    src="/assets/default_avatar.png"
+                                    alt="User avatar"
+                                >
+
+                                <label class="settings-avatar-edit">
+
+                                    <input
+                                        id="avatarUpload"
+                                        type="file"
+                                        accept="image/*"
+                                        hidden
+                                    >
+
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14
+                                                 a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1
+                                                 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+
+                                </label>
+
+                            </div>
+
+                            <div class="settings-avatar-meta">
+
+                                <p class="settings-avatar-name" data-user-name>
+                                    User Name
+                                </p>
+
+                                <p class="settings-avatar-email" data-user-email>
+                                    user@example.com
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-card">
+
+                        <p class="settings-card-heading">
+                            Basic Information
+                        </p>
+
+                        <form id="profileForm" class="settings-form">
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+
+                                    <label class="form-label">
+                                        Full Name
+                                    </label>
+
+                                    <input
+                                        id="profileFullName"
+                                        class="form-input"
+                                        type="text"
+                                        placeholder="Your full name"
+                                    >
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="form-label">
+                                        Email
+                                    </label>
+
+                                    <input
+                                        id="profileEmail"
+                                        class="form-input"
+                                        type="email"
+                                        readonly
+                                    >
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Bio
+                                </label>
+
+                                <textarea
+                                    id="profileBio"
+                                    class="form-textarea"
+                                    placeholder="Tell us about yourself"
+                                    rows="3"
+                                ></textarea>
+
+                            </div>
+
+                            <div class="form-actions">
+
+                                <button
+                                    id="profileCancelBtn"
+                                    class="btn btn-ghost"
+                                    type="reset"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    id="profileSaveBtn"
+                                    class="btn btn-primary"
+                                    type="submit"
+                                >
+                                    Save Changes
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+
+                <!-- APPEARANCE -->
+                <section
+                    class="settings-section"
+                    data-settings-section="appearance"
+                    id="settings-appearance"
+                >
+
+                    <div class="settings-heading">
+                        Appearance
+                    </div>
+
+                    <p class="settings-description">
+                        Customize how SandBox looks and feels
+                    </p>
+
+                    <div class="settings-card">
+
+                        <p class="settings-card-heading">
+                            Theme
+                        </p>
+
+                        <p class="settings-card-subtext">
+                            Choose your preferred color scheme
+                        </p>
+
+                        <div class="theme-selector">
+
+                            <label class="theme-option">
+                                <input
+                                    type="radio"
+                                    name="theme"
+                                    value="dark"
+                                    class="theme-radio"
+                                >
+                                <div class="theme-card">
+                                    <div class="theme-preview theme-preview--dark"></div>
+                                    <p class="theme-label">Dark</p>
+                                </div>
+                            </label>
+
+                            <label class="theme-option">
+                                <input
+                                    type="radio"
+                                    name="theme"
+                                    value="light"
+                                    class="theme-radio"
+                                >
+                                <div class="theme-card">
+                                    <div class="theme-preview theme-preview--light"></div>
+                                    <p class="theme-label">Light</p>
+                                </div>
+                            </label>
+
+                            <label class="theme-option">
+                                <input
+                                    type="radio"
+                                    name="theme"
+                                    value="system"
+                                    class="theme-radio"
+                                    checked
+                                >
+                                <div class="theme-card">
+                                    <div class="theme-preview theme-preview--system"></div>
+                                    <p class="theme-label">System</p>
+                                </div>
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="settings-card">
+
+                        <p class="settings-card-heading">
+                            Accent Color
+                        </p>
+
+                        <p class="settings-card-subtext">
+                            Choose your preferred accent color
+                        </p>
+
+                        <div class="accent-selector">
+
+                            <label class="accent-option">
+                                <input type="radio" name="accent" value="blue" class="accent-radio" checked>
+                                <span class="accent-swatch accent-swatch--blue"></span>
+                            </label>
+
+                            <label class="accent-option">
+                                <input type="radio" name="accent" value="purple" class="accent-radio">
+                                <span class="accent-swatch accent-swatch--purple"></span>
+                            </label>
+
+                            <label class="accent-option">
+                                <input type="radio" name="accent" value="green" class="accent-radio">
+                                <span class="accent-swatch accent-swatch--green"></span>
+                            </label>
+
+                            <label class="accent-option">
+                                <input type="radio" name="accent" value="orange" class="accent-radio">
+                                <span class="accent-swatch accent-swatch--orange"></span>
+                            </label>
+
+                            <label class="accent-option">
+                                <input type="radio" name="accent" value="red" class="accent-radio">
+                                <span class="accent-swatch accent-swatch--red"></span>
+                            </label>
+
+                            <label class="accent-option">
+                                <input type="radio" name="accent" value="gray" class="accent-radio">
+                                <span class="accent-swatch accent-swatch--gray"></span>
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="settings-actions">
+
+                        <button
+                            id="appearance-save-btn"
+                            class="btn btn-primary"
+                            disabled
+                        >
+                            Save Changes
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SECURITY -->
+                <section
+                    class="settings-section"
+                    data-settings-section="security"
+                    id="settings-security"
+                >
+
+                    <div class="settings-heading">
+                        Security
+                    </div>
+
+                    <p class="settings-description">
+                        Keep your account safe and secure
+                    </p>
+
+                    <div class="settings-card">
+
+                        <p class="settings-card-heading">
+                            Change Password
+                        </p>
+
+                        <div id="password-email-step">
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Email
+                                </label>
+
+                                <input
+                                    id="passwordEmail"
+                                    class="form-input"
+                                    type="email"
+                                    readonly
+                                >
+
+                            </div>
+
+                            <div class="form-actions">
+
+                                <button
+                                    id="sendPasswordOtpBtn"
+                                    class="btn btn-primary"
+                                    type="button"
+                                >
+                                    Send OTP
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div id="password-otp-step" hidden>
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Verification Code
+                                </label>
+
+                                <div class="otp-container">
+
+                                    <input class="otp-box password-otp-box" maxlength="1">
+                                    <input class="otp-box password-otp-box" maxlength="1">
+                                    <input class="otp-box password-otp-box" maxlength="1">
+                                    <input class="otp-box password-otp-box" maxlength="1">
+                                    <input class="otp-box password-otp-box" maxlength="1">
+                                    <input class="otp-box password-otp-box" maxlength="1">
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-actions">
+
+                                <button
+                                    id="verifyPasswordOtpBtn"
+                                    class="btn btn-primary"
+                                    type="button"
+                                >
+                                    Verify OTP
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div id="password-change-step" hidden>
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    New Password
+                                </label>
+
+                                <input
+                                    id="newPassword"
+                                    class="form-input"
+                                    type="password"
+                                >
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Confirm Password
+                                </label>
+
+                                <input
+                                    id="confirmPassword"
+                                    class="form-input"
+                                    type="password"
+                                >
+
+                            </div>
+
+                            <div class="form-actions">
+
+                                <button
+                                    id="changePasswordBtn"
+                                    class="btn btn-primary"
+                                    type="button"
+                                >
+                                    Update Password
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- CONNECTED ACCOUNTS -->
+                <section
+                    class="settings-section"
+                    data-settings-section="accounts"
+                    id="settings-accounts"
+                >
+
+                    <div class="settings-heading">
+                        Connected Accounts
+                    </div>
+
+                    <p class="settings-description">
+                        Manage your connected social and OAuth accounts
+                    </p>
+
+                    <div class="settings-card">
+
+                        <div class="connected-account-row">
+
+                            <div class="connected-account-info">
+                                <div>
+                                    <p class="connected-account-name">Google</p>
+                                    <p class="connected-account-status" id="google-status">
+                                        Not connected
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button
+                                id="google-connect-btn"
+                                class="btn btn-ghost btn-sm"
+                                type="button"
+                            >
+                                Connect
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="settings-card">
+
+                        <div class="connected-account-row">
+
+                            <div class="connected-account-info">
+                                <div>
+                                    <p class="connected-account-name">GitHub</p>
+                                    <p class="connected-account-status" id="github-status">
+                                        Not connected
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button
+                                id="github-connect-btn"
+                                class="btn btn-ghost btn-sm"
+                                type="button"
+                            >
+                                Connect
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ABOUT -->
+                <section
+                    class="settings-section"
+                    data-settings-section="about"
+                    id="settings-about"
+                >
+
+                    <div class="settings-heading">
+                        About
+                    </div>
+
+                    <p class="settings-description">
+                        Information about your account and SandBox
+                    </p>
+
+                    <div class="settings-card">
+
+                        <dl class="about-list">
+
+                            <div class="about-row">
+                                <dt class="about-term">Account Created</dt>
+                                <dd class="about-definition" id="aboutCreated">-</dd>
+                            </div>
+
+                            <div class="about-row">
+                                <dt class="about-term">SandBox Version</dt>
+                                <dd class="about-definition">1.0.1</dd>
+                            </div>
+
+                            <div class="about-row">
+                                <dt class="about-term">Last Updated</dt>
+                                <dd class="about-definition" id="aboutUpdated">-</dd>
+                            </div>
+
+                        </dl>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DANGER ZONE -->
+                <section
+                    class="settings-section"
+                    data-settings-section="danger"
+                    id="settings-danger"
+                >
+
+                    <div class="settings-heading">
+                        Danger Zone
+                    </div>
+
+                    <p class="settings-description">
+                        Irreversible and destructive actions
+                    </p>
+
+                    <div class="settings-card settings-card--danger">
+
+                        <div class="danger-card-content">
+
+                            <div class="danger-card-copy">
+
+                                <p class="danger-card-title">
+                                    Delete Account
+                                </p>
+
+                                <p class="danger-card-desc">
+                                    Permanently delete your account and all associated data
+                                </p>
+
+                            </div>
+
+                            <button
+                                id="deleteAccountBtn"
+                                class="btn btn-danger"
+                                type="button"
+                            >
+                                Delete Account
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
             </div>
-          </div>
-        </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table" id="admin-exec-table">
-            <thead>
-              <tr>
-                <th>Exec ID</th>
-                <th>Tool</th>
-                <th>User Email</th>
-                <th>User ID</th>
-                <th>Timestamp</th>
-              </tr>
-            </thead>
-            <tbody id="admin-exec-tbody">
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="admin-pagination">
-          <button class="btn btn-ghost btn-sm" id="admin-prev-btn" type="button" disabled>
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Prev
-          </button>
-          <span class="admin-page-info" id="admin-page-info">Page 1</span>
-          <button class="btn btn-ghost btn-sm" id="admin-next-btn" type="button">
-            Next<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
 
-    <!-- ── TOOL USAGE TAB ── -->
-    <div class="admin-tab-panel" data-admin-panel="tools">
-      <div class="admin-panel">
-        <div class="admin-panel-header">
-          <h2 class="admin-panel-title">Tool Usage</h2>
-          <span class="result-count" id="admin-tool-views-count">— tools</span>
         </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th style="width:48px;">#</th>
-                <th>Tool Name</th>
-                <th>Category</th>
-                <th>Usage Bar</th>
-                <th style="text-align:right;">Executions</th>
-              </tr>
-            </thead>
-            <tbody id="admin-tool-tbody">
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
 
-    <!-- ── USERS TAB ── -->
-    <div class="admin-tab-panel" data-admin-panel="users">
-      <div class="admin-panel">
-        <div class="admin-panel-header">
-          <h2 class="admin-panel-title">Users</h2>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <span class="result-count" id="admin-user-count">— users</span>
-            <div class="admin-table-search">
-              <svg viewBox="0 0 24 24" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="search" id="admin-user-search" placeholder="Search name, email, role…" autocomplete="off">
-            </div>
-          </div>
-        </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table" id="admin-user-table">
-            <thead>
-              <tr>
-                <th>Avatar</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Provider</th>
-                <th>Google</th>
-                <th>GitHub</th>
-                <th>Credits</th>
-                <th>Joined</th>
-                <th>Last Updated</th>
-              </tr>
-            </thead>
-            <tbody id="admin-user-tbody">
-              <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-              <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="admin-pagination">
-          <button class="btn btn-ghost btn-sm" id="admin-user-prev-btn" type="button" disabled>
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Prev
-          </button>
-          <span class="admin-page-info" id="admin-user-page-info">Page 1</span>
-          <button class="btn btn-ghost btn-sm" id="admin-user-next-btn" type="button">
-            Next<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-        </div>
-      </div>
     </div>
-
-  </div><!-- end .admin-tabs-wrap -->
 
 </section>
+  <!-- ── ADMIN DASHBOARD SECTION ── -->
+  <!-- Replace your entire existing admin-dashboard-section with this -->
+
+  <section class="dashboard-section" data-section-id="admin-dashboard" id="admin-dashboard-section">
+
+    <!-- Hero -->
+    <div class="admin-hero">
+      <div class="admin-hero-copy">
+        <p class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          Admin Control Panel
+        </p>
+        <h1 class="admin-hero-title">Platform Overview</h1>
+        <p class="admin-hero-sub">Real-time metrics, execution logs, tool analytics, and user management.</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="admin-refresh-btn" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh
+      </button>
+    </div>
+
+    <!-- ── Stat Cards ── -->
+    <div class="admin-stat-grid">
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon admin-stat-icon--users">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="admin-stat-body">
+          <span class="admin-stat-label">Total Users</span>
+          <strong class="admin-stat-value" id="admin-total-users">—</strong>
+        </div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon admin-stat-icon--tools">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="admin-stat-body">
+          <span class="admin-stat-label">Total Tools</span>
+          <strong class="admin-stat-value" id="admin-total-tools">—</strong>
+        </div>
+      </div>
+
+      <div class="admin-stat-card">
+        <div class="admin-stat-icon admin-stat-icon--exec">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="admin-stat-body">
+          <span class="admin-stat-label">Total Executions</span>
+          <strong class="admin-stat-value" id="admin-total-exec">—</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tabs ── -->
+    <div class="admin-tabs-wrap">
+
+      <!-- Tab Bar -->
+      <div class="admin-tab-bar" role="tablist">
+        <button class="admin-tab active" role="tab" data-admin-tab="executions" aria-selected="true">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Executions
+          <span class="admin-tab-count" id="admin-tab-exec-count"></span>
+        </button>
+        <button class="admin-tab" role="tab" data-admin-tab="tools" aria-selected="false">
+          <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Tool Usage
+          <span class="admin-tab-count" id="admin-tab-tools-count"></span>
+        </button>
+        <button class="admin-tab" role="tab" data-admin-tab="users" aria-selected="false">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+          <span class="admin-tab-count" id="admin-tab-users-count"></span>
+        </button>
+      </div>
+
+      <!-- ── EXECUTIONS TAB ── -->
+      <div class="admin-tab-panel active" data-admin-panel="executions">
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title">Execution Log</h2>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span class="result-count" id="admin-exec-count">— records</span>
+              <div class="admin-table-search">
+                <svg viewBox="0 0 24 24" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" id="admin-exec-search" placeholder="Filter by tool, email, ID…" autocomplete="off">
+              </div>
+            </div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="admin-exec-table">
+              <thead>
+                <tr>
+                  <th>Exec ID</th>
+                  <th>Tool</th>
+                  <th>User Email</th>
+                  <th>User ID</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="admin-exec-tbody">
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="admin-pagination">
+            <button class="btn btn-ghost btn-sm" id="admin-prev-btn" type="button" disabled>
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Prev
+            </button>
+            <span class="admin-page-info" id="admin-page-info">Page 1</span>
+            <button class="btn btn-ghost btn-sm" id="admin-next-btn" type="button">
+              Next<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TOOL USAGE TAB ── -->
+      <div class="admin-tab-panel" data-admin-panel="tools">
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title">Tool Usage</h2>
+            <span class="result-count" id="admin-tool-views-count">— tools</span>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width:48px;">#</th>
+                  <th>Tool Name</th>
+                  <th>Category</th>
+                  <th>Usage Bar</th>
+                  <th style="text-align:right;">Executions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-tool-tbody">
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── USERS TAB ── -->
+      <div class="admin-tab-panel" data-admin-panel="users">
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title">Users</h2>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span class="result-count" id="admin-user-count">— users</span>
+              <div class="admin-table-search">
+                <svg viewBox="0 0 24 24" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" id="admin-user-search" placeholder="Search name, email, role…" autocomplete="off">
+              </div>
+            </div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="admin-user-table">
+              <thead>
+                <tr>
+                  <th>Avatar</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Provider</th>
+                  <th>Google</th>
+                  <th>GitHub</th>
+                  <th>Credits</th>
+                  <th>Joined</th>
+                  <th>Last Updated</th>
+                </tr>
+              </thead>
+              <tbody id="admin-user-tbody">
+                <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+                <tr><td colspan="10"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="admin-pagination">
+            <button class="btn btn-ghost btn-sm" id="admin-user-prev-btn" type="button" disabled>
+              <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Prev
+            </button>
+            <span class="admin-page-info" id="admin-user-page-info">Page 1</span>
+            <button class="btn btn-ghost btn-sm" id="admin-user-next-btn" type="button">
+              Next<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .admin-tabs-wrap -->
+
+  </section>
