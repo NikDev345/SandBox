@@ -14,6 +14,11 @@ ui.add_head_html("""
 <link rel="stylesheet" href="/assets/css/auth.css">
 
 <script type="module" src="/assets/js/appearance.js"></script>
+
+<script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8552108038095333"
+    crossorigin="anonymous">
+</script>
 """, shared=True)
 
 

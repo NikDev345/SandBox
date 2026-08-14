@@ -126,6 +126,12 @@ def get_robots_txt():
 @fast_app.get("/sitemap.xml", include_in_schema=False)
 def get_sitemap_xml():
     return Response(content=sitemap_xml(), media_type="application/xml; charset=utf-8")
+@fast_app.get("/ads.txt", include_in_schema=False)
+def get_ads_txt():
+    return Response(
+        content="google.com, pub-8552108038095333, DIRECT, f08c47fec0942fa0",
+        media_type="text/plain; charset=utf-8",
+    )
 
 # ── Include all routers ────────────────────────────────────────────────────────
 
