@@ -36,6 +36,9 @@ def fix_json(
 
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
+    
+    except HTTPException as e:
+        raise e
 
     except Exception as e:
         print("JSON Fixer Error:", repr(e))

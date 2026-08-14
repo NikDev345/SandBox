@@ -41,6 +41,8 @@ class FlashcardGeneratorService:
         db: Session,
         user=None,
     ) -> FlashcardGeneratorResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user['sub'])
         """
         Generate flashcards.
         """

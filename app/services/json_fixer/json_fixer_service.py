@@ -17,6 +17,8 @@ class JSONFixerService:
         user_id: str,
         json_text: str,
     ) -> dict:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         # -------------------------
         # Validate Input
         # -------------------------

@@ -239,6 +239,8 @@ class NotesCleaner:
         
     @staticmethod
     async def _clean_notes(user: None, db: Session, request: NotesCleanerRequest, file: UploadFile | None = None) -> NotesCleanerResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user['sub'])
         source, data = await NotesCleaner._validate_request(request, file)
         
         if source != "text":

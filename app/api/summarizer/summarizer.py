@@ -74,6 +74,9 @@ async def generate_summary(
             summary=summary,
             execution_id=execution_id,
         )
+        
+    except HTTPException as e:
+        raise e
 
     except ValueError as exc:
         raise HTTPException(

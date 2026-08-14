@@ -105,29 +105,24 @@ async def extract_text(
             user_id=current_user["sub"],
             db=db,
         )
-
-
         return response
+    
+    except HTTPException as e:
+        raise e
 
     except ValueError as exc:
-
-
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
         ) from exc
 
     except RuntimeError as exc:
-
-
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=str(exc),
         ) from exc
 
     except Exception as exc:
-
-
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error.",

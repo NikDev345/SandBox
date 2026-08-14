@@ -33,6 +33,8 @@ async def explain_error(
     try:
         service = ErrorExplainer()
         return await service.explain_error(request, current_user["sub"], db)
+    except HTTPException as e:
+        raise e
 
     except ValueError as e:
         raise HTTPException(

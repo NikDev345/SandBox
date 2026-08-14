@@ -57,7 +57,9 @@ async def generate_dockerfile(
 
         try:
             return DockerService.generate(project_root, current_user["sub"], db)
-
+        except HTTPException as e:
+            raise e
+        
         except ValueError as e:
             raise HTTPException(
                 status_code=400,

@@ -49,6 +49,8 @@ async def analyze_decision(
         )
 
         return response
+    except HTTPException as e:
+        raise e
 
     except ValueError as exc:
 

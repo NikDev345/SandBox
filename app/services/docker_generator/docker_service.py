@@ -1530,7 +1530,8 @@ class DockerService:
     
     @staticmethod
     def generate(project_root: Path, user_id: str, db: Session) -> DockerfileGeneratorResponse:
-
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         # --------------------------------------------------------
         # Scan project
         # --------------------------------------------------------

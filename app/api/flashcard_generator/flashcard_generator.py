@@ -139,8 +139,8 @@ async def generate_flashcards(
             user=current_user,
         )
 
-    except HTTPException:
-        raise
+    except HTTPException as e:
+        raise e
 
     except ValueError as exc:
         raise HTTPException(

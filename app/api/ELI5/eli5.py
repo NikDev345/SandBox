@@ -71,6 +71,8 @@ async def explain_topic(
         )
 
         return response
+    except HTTPException as e:
+        raise e
 
     except HTTPException:
         raise

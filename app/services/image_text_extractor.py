@@ -125,6 +125,8 @@ class ImageTextExtractorService:
                 size, empty file, undecodable image).
             RuntimeError: If OCR extraction fails for any reason.
         """
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         filename: str = file.filename or "unknown"
         start_time: float = time.perf_counter()
 

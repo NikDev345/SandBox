@@ -41,7 +41,8 @@ class YouTubeSummarizerService:
         """
         Generate a structured summary for a YouTube video.
         """
-
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         start_time = time.perf_counter()
 
         try:

@@ -542,7 +542,8 @@ class YAMLGen:
         db: Session,
         compose_data: dict | None = None,
     ) -> KubernetesGeneratorResponse:
-
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         # Step 1: Normalize input
         normalized = YAMLGen._process_input(
             request=request,

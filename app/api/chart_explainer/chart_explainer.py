@@ -49,35 +49,37 @@ async def analyze_chart(
     """
     Analyze an uploaded chart image.
     """
+    try:
+        if not image.content_type.startswith("image/"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only image files are supported.",
+            )
 
-    if not image.content_type.startswith("image/"):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only image files are supported.",
+        image_bytes = await image.read()
+
+        request = ChartExplainerRequest(
+            language=language,
+            explanation_level=explanation_level,
+            include_summary=include_summary,
+            include_axis_explanation=include_axis_explanation,
+            include_key_insights=include_key_insights,
+            include_trend_analysis=include_trend_analysis,
+            include_outliers=include_outliers,
+            include_business_insights=include_business_insights,
+            include_recommendations=include_recommendations,
+            include_questions_answered=include_questions_answered,
+            include_limitations=include_limitations,
+            include_eli5=include_eli5,
+            include_confidence=include_confidence,
         )
 
-    image_bytes = await image.read()
-
-    request = ChartExplainerRequest(
-        language=language,
-        explanation_level=explanation_level,
-        include_summary=include_summary,
-        include_axis_explanation=include_axis_explanation,
-        include_key_insights=include_key_insights,
-        include_trend_analysis=include_trend_analysis,
-        include_outliers=include_outliers,
-        include_business_insights=include_business_insights,
-        include_recommendations=include_recommendations,
-        include_questions_answered=include_questions_answered,
-        include_limitations=include_limitations,
-        include_eli5=include_eli5,
-        include_confidence=include_confidence,
-    )
-
-    return await service.analyze(
-        request=request,
-        image_bytes=image_bytes,
-        mime_type=image.content_type,
-        user_id=current_user["sub"],
-        db=db,
-    )
+        return await service.analyze(
+            request=request,
+            image_bytes=image_bytes,
+            mime_type=image.content_type,
+            user_id=current_user["sub"],
+            db=db,
+        )
+    except HTTPException as e:
+        raise e

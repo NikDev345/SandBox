@@ -161,6 +161,8 @@ Rules:
      
     @staticmethod
     async def explain_error(request: ErrorExplainerRequest, user_id: str, db: Session) -> ErrorExplainerResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         (
             error,
             code,
@@ -168,7 +170,6 @@ Rules:
             error_file_path,
             code_file_path,
         ) = ErrorExplainer._validate_input(request)
-        
         prompt = ErrorExplainer._build_prompt()
         
         raw_response = await ErrorExplainer._call_ai(

@@ -70,6 +70,8 @@ async def generate_email(
             current_user["sub"],
             db,
         )
+    except HTTPException as e:
+        raise e
 
     except ValueError as exc:
 
@@ -77,9 +79,6 @@ async def generate_email(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
         ) from exc
-
-    except HTTPException:
-        raise
 
     except RuntimeError as exc:
 

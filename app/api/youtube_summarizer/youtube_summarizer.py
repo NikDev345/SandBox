@@ -21,7 +21,6 @@ router = APIRouter(
 
 youtube_summarizer_service = YouTubeSummarizerService()
 
-
 @router.post(
     "/generate",
     response_model=YouTubeSummaryResponse,
@@ -42,23 +41,23 @@ async def generate_summary(
             user_id=current_user['sub'],
             db=db,
         )
+        
+    except HTTPException as e:
+        raise e
 
     except ValueError as e:
-
         raise HTTPException(
             status_code=400,
             detail=str(e),
         )
 
     except RuntimeError as e:
-
         raise HTTPException(
             status_code=500,
             detail=str(e),
         )
 
     except Exception:
-
         raise HTTPException(
             status_code=500,
             detail="Internal server error.",

@@ -50,6 +50,8 @@ class BrainstormGeneratorService:
         """
 
         # Step 1: Validate request
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         BrainstormValidator.validate(request)
 
         # Step 2: Build prompt

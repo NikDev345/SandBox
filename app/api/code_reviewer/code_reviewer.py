@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from app.database.engine import get_db
 from app.utils.auth import get_current_user
@@ -28,16 +28,19 @@ async def code_review(
     current_user: Users = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    input_type = ReviewInputType.FILE if file is not None else ReviewInputType.SNIPPET
-    request = CodeReviewRequest(
-        input_type=input_type,
-        language=language,
-        code=code,
-    )
+    try:
+        input_type = ReviewInputType.FILE if file is not None else ReviewInputType.SNIPPET
+        request = CodeReviewRequest(
+            input_type=input_type,
+            language=language,
+            code=code,
+        )
 
-    return await CodeReview.generate_review(
-        request=request,
-        user_id=current_user["sub"],
-        db=db,
-        uploaded_file=file,
-    )
+        return await CodeReview.generate_review(
+            request=request,
+            user_id=current_user["sub"],
+            db=db,
+            uploaded_file=file,
+        )
+    except HTTPException as e:
+        raise e

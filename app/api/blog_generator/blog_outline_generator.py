@@ -34,9 +34,14 @@ async def generate_blog_outline(
 
     try:
         return await BlogOutlineGeneratorService.generate(request, current_user['sub'], db)
+    
+    except HTTPException as e:
+        raise e
 
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate blog outline: {str(e)}",
         )
+        
+        

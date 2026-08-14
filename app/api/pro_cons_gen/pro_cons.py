@@ -18,8 +18,8 @@ async def generate_pro_cons(request: ProConsRequest, current_user: Users = Depen
     try:
         response = await ProConsService._generate_analysis(request, db, current_user)
         return response
-    except  HTTPException:
-        raise
+    except HTTPException as e:
+        raise e
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

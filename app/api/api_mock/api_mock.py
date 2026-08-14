@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database.engine import get_db
@@ -42,12 +42,15 @@ async def create_mock_api(
     db: Session = Depends(get_db),
     current_user: Users = Depends(get_current_user),
 ):
-    return MockAPIService.create_mock_api(
-        db=db,
-        request=request,
-        user_id=current_user['sub'],
-        
-    )
+    try:
+        return MockAPIService.create_mock_api(
+            db=db,
+            request=request,
+            user_id=current_user['sub'],
+            
+        )
+    except HTTPException as e:
+        raise e
     
 @router.get(
     "/list",

@@ -212,7 +212,8 @@ async def extract_tables(
             )
 
         return response
-
+    except HTTPException as e:
+        raise e
     except FileValidationError as exc:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)
@@ -229,8 +230,6 @@ async def extract_tables(
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
         ) from exc
-    except HTTPException:
-        raise
     except Exception as exc:  # noqa: BLE001
         print(
             "Unexpected error during table extraction for user_id=%s filename=%s",
@@ -284,6 +283,8 @@ def _log_execution(
             user_input=json.dumps(validated_input),
             output=json.dumps(response),
         )
+    except HTTPException as e:
+        raise e
     except Exception:
         pass
 

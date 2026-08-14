@@ -114,6 +114,8 @@ class TableExtractor:
         step yourself afterwards — `db` (a SQLAlchemy Session) cannot be
         passed across a process boundary.
         """
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         response, file_type = self._run_pipeline(file_path, output_format, fast_mode)
         self._log_execution(file_path, user_id, db, output_format, fast_mode, file_type, response)
         return response

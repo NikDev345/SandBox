@@ -28,6 +28,9 @@ async def generate_regex(
 ):
     try:
         return await Regex.generate_regex(request, current_user["sub"], db)
+    
+    except HTTPException as e:
+        raise e
 
     except ValueError as e:
         raise HTTPException(

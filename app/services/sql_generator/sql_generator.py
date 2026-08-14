@@ -44,7 +44,8 @@ class SQLGeneratorService:
         4. Build metadata
         5. Return response
         """
-
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user['sub'])
         SQLGeneratorService._validate_request(request)
 
         if request.mode == GenerationMode.AI:

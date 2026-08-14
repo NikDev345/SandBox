@@ -61,15 +61,7 @@ class WorkspaceService:
             )   
             .count()
         )
-        
-        # Daily reset logic
         today = datetime.utcnow().date()
-
-        if user.last_credit_reset != today:
-            user.free_credits_remaining = user.free_credits_total
-            user.last_credit_reset = today
-            db.commit()
-        
         
         return {
             "name": user.name,

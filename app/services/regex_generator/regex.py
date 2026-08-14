@@ -353,6 +353,8 @@ class Regex:
 # main function  
     @staticmethod
     async def generate_regex(request: RegexGeneratorRequest, user_id: str, db: Session) -> RegexGeneratorResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         # Validate request
         request = Regex._validate_request(request)
 

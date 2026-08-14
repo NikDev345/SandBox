@@ -54,6 +54,9 @@ async def generate_kubernetes_yaml(
             db=db,
             compose_data=compose_dict,
         )
+        
+    except HTTPException as e:
+        raise e
 
     except Exception as e:
         raise HTTPException(

@@ -38,6 +38,9 @@ async def explain_screenshot(
             db,
             current_user
         )
+        
+    except HTTPException as e:
+        raise e
 
     except ValueError as e:
         raise HTTPException(

@@ -28,9 +28,8 @@ class ELI5Service:
         db: Session,
         user=None,
     ) -> ELI5Response:
-        """
-        Generate an ELI5 explanation.
-        """
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user['sub'])
 
         # ====================================================
         # LAZY BUSINESS LOGIC IMPORTS

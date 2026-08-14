@@ -328,6 +328,8 @@ class SSExplainer:
         db: Session,
         user=None
     ):
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user['sub'])
         
         # 1. Validate request
         request = SSExplainer._validate_request(request)

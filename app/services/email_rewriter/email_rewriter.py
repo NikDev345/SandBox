@@ -35,6 +35,8 @@ class EmailStudioService:
         user_id: str,
         db: Session,
     ) -> EmailStudioResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         """Generate or rewrite an email."""
 
         cleaned_request = cls._preprocess_input(request)

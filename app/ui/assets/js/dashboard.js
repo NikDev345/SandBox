@@ -1516,40 +1516,56 @@ function escapeHtml(value) {
 }
 window.refreshWorkspace = refreshWorkspace;
 /* ============================================================
-   ADMIN DASHBOARD — FIXED VERSION
-   Replace the entire admin section in your JS with this.
+   ADMIN DASHBOARD — COMPLETE UNIFIED JS
+   Replace ALL previous admin JS (admin_dashboard_fixed.js +
+   admin_user_table.js) with this single file.
    ============================================================ */
 
-const ADMIN_PAGE_SIZE = 20;
+/* ── State ── */
+const ADMIN_PAGE_SIZE      = 20;
+const ADMIN_USER_PAGE_SIZE = 20;
+
 let adminExecPage     = 0;
-let adminExecTotal    = 0;
 let adminExecAll      = [];
 let adminExecFiltered = [];
 
+let adminUserPage     = 0;
+let adminUserAll      = [];
+let adminUserFiltered = [];
+
+/* ============================================================
+   ENTRY POINT
+   ============================================================ */
+
 async function initAdminDashboard() {
   injectAdminNavItem();
+  initAdminTabs();
   await Promise.allSettled([
     loadAdminStats(),
-    loadAdminToolViews(),
     loadAdminExecutions(),
+    loadAdminToolViews(),
+    loadAdminUsers(),
   ]);
   wireAdminControls();
   injectExecDetailModal();
+  injectUserDetailModal();
 }
 
-/* ── Inject "Admin" nav item ── */
+/* ============================================================
+   SIDEBAR NAV ITEM
+   ============================================================ */
+
 function injectAdminNavItem() {
   if (document.getElementById("nav-admin")) return;
-
   const nav = document.querySelector(".sidebar-nav");
   if (!nav) return;
 
-  const li = document.createElement("a");
-  li.className       = "nav-item nav-item--admin";
-  li.id              = "nav-admin";
-  li.href            = "#admin-dashboard";
-  li.dataset.section = "admin-dashboard";
-  li.innerHTML = `
+  const a = document.createElement("a");
+  a.className       = "nav-item nav-item--admin";
+  a.id              = "nav-admin";
+  a.href            = "#admin-dashboard";
+  a.dataset.section = "admin-dashboard";
+  a.innerHTML = `
     <span class="nav-icon">
       <svg viewBox="0 0 24 24">
         <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -1560,66 +1576,102 @@ function injectAdminNavItem() {
     <span>Admin</span>`;
 
   const bottom = nav.parentElement.querySelector(".sidebar-bottom");
-  if (bottom) nav.parentElement.insertBefore(li, bottom);
-  else nav.appendChild(li);
+  if (bottom) nav.parentElement.insertBefore(a, bottom);
+  else nav.appendChild(a);
 
-  li.addEventListener("click", e => { e.preventDefault(); showAdminSection(); });
+  a.addEventListener("click", e => { e.preventDefault(); showAdminSection(); });
 }
 
-/* ── Show admin section ── */
 function showAdminSection() {
   document.querySelectorAll(".dashboard-section").forEach(s => {
     const active = s.dataset.sectionId === "admin-dashboard";
     s.style.display = active ? "" : "none";
     s.classList.toggle("active", active);
   });
-  document.querySelectorAll(".nav-item[data-section]").forEach(item => {
-    item.classList.toggle("active", item.dataset.section === "admin-dashboard");
-  });
+  document.querySelectorAll(".nav-item[data-section]").forEach(item =>
+    item.classList.toggle("active", item.dataset.section === "admin-dashboard")
+  );
   history.replaceState(null, "", "#admin-dashboard");
 }
 
-/* ── Wire controls — called ONCE after DOM is ready ── */
-function wireAdminControls() {
-  /* Refresh */
-  const refreshBtn = document.getElementById("admin-refresh-btn");
-    if (refreshBtn) {
-    const newRefresh = refreshBtn.cloneNode(true);
-    refreshBtn.replaceWith(newRefresh);
-    newRefresh.addEventListener("click", async () => {
-        adminExecPage = 0;
-        await Promise.allSettled([loadAdminStats(), loadAdminToolViews(), loadAdminExecutions()]);
-        showToast("Dashboard refreshed.", "success");
-    });
-    }
+/* ============================================================
+   TABS
+   ============================================================ */
 
-  /* Search */
-  document.getElementById("admin-exec-search")
-    ?.addEventListener("input", e => filterAdminExecTable(e.target.value));
-
-  /* FIX 2: pagination — use { once: true } so listeners don't stack on refresh */
-  const prevBtn = document.getElementById("admin-prev-btn");
-  const nextBtn = document.getElementById("admin-next-btn");
-
-  if (prevBtn) {
-    const newPrev = prevBtn.cloneNode(true);   // clone strips old listeners
-    prevBtn.replaceWith(newPrev);
-    newPrev.addEventListener("click", () => {
-      if (adminExecPage > 0) { adminExecPage--; renderAdminExecPage(); }
-    });
-  }
-
-  if (nextBtn) {
-    const newNext = nextBtn.cloneNode(true);
-    nextBtn.replaceWith(newNext);
-    newNext.addEventListener("click", () => {
-      const maxPage = Math.ceil(adminExecFiltered.length / ADMIN_PAGE_SIZE) - 1;
-      if (adminExecPage < maxPage) { adminExecPage++; renderAdminExecPage(); }
-    });
-  }
+function initAdminTabs() {
+  document.querySelectorAll(".admin-tab").forEach(tab => {
+    tab.addEventListener("click", () => switchAdminTab(tab.dataset.adminTab));
+  });
 }
 
-/* ── Stats ── */
+function switchAdminTab(tabId) {
+  document.querySelectorAll(".admin-tab").forEach(t => {
+    const active = t.dataset.adminTab === tabId;
+    t.classList.toggle("active", active);
+    t.setAttribute("aria-selected", String(active));
+  });
+  document.querySelectorAll(".admin-tab-panel").forEach(p => {
+    const active = p.dataset.adminPanel === tabId;
+    p.classList.toggle("active", active);
+  });
+}
+
+/* ============================================================
+   WIRE CONTROLS — clone buttons to prevent listener stacking
+   ============================================================ */
+
+function wireAdminControls() {
+  /* Refresh */
+  cloneAndListen("admin-refresh-btn", "click", async () => {
+    adminExecPage = 0;
+    adminUserPage = 0;
+    await Promise.allSettled([
+      loadAdminStats(),
+      loadAdminExecutions(),
+      loadAdminToolViews(),
+      loadAdminUsers(),
+    ]);
+    showToast("Dashboard refreshed.", "success");
+  });
+
+  /* Exec search */
+  cloneAndListen("admin-exec-search", "input", e => filterAdminExecTable(e.target.value));
+
+  /* Exec pagination */
+  cloneAndListen("admin-prev-btn", "click", () => {
+    if (adminExecPage > 0) { adminExecPage--; renderAdminExecPage(); }
+  });
+  cloneAndListen("admin-next-btn", "click", () => {
+    const max = Math.ceil(adminExecFiltered.length / ADMIN_PAGE_SIZE) - 1;
+    if (adminExecPage < max) { adminExecPage++; renderAdminExecPage(); }
+  });
+
+  /* User search */
+  cloneAndListen("admin-user-search", "input", e => filterAdminUserTable(e.target.value));
+
+  /* User pagination */
+  cloneAndListen("admin-user-prev-btn", "click", () => {
+    if (adminUserPage > 0) { adminUserPage--; renderAdminUserPage(); }
+  });
+  cloneAndListen("admin-user-next-btn", "click", () => {
+    const max = Math.ceil(adminUserFiltered.length / ADMIN_USER_PAGE_SIZE) - 1;
+    if (adminUserPage < max) { adminUserPage++; renderAdminUserPage(); }
+  });
+}
+
+/* Clone element → strip old listeners → attach new one */
+function cloneAndListen(id, event, handler) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const clone = el.cloneNode(true);
+  el.replaceWith(clone);
+  clone.addEventListener(event, handler);
+}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+
 async function loadAdminStats() {
   try {
     const res  = await fetch("/admin/stats", { credentials: "include" });
@@ -1630,52 +1682,18 @@ async function loadAdminStats() {
     animateCount("admin-total-exec",  data.total_executions);
   } catch {
     ["admin-total-users","admin-total-tools","admin-total-exec"]
-      .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "—"; });
+      .forEach(id => setEl(id, "—"));
   }
 }
 
-/* ── Tool views ── */
-async function loadAdminToolViews() {
-  const list = document.getElementById("admin-tool-list");
-  if (!list) return;
-  try {
-    const res  = await fetch("/admin/tool-views", { credentials: "include" });
-    if (!res.ok) throw new Error();
-    const { tools = [] } = await res.json();
+/* ============================================================
+   EXECUTIONS
+   ============================================================ */
 
-    const countEl = document.getElementById("admin-tool-views-count");
-    if (countEl) countEl.textContent = `${tools.length} tool${tools.length !== 1 ? "s" : ""}`;
-
-    if (!tools.length) { list.innerHTML = `<p class="admin-table-empty">No tools found.</p>`; return; }
-
-    const max = Math.max(...tools.map(t => t.execution_count), 1);
-    list.innerHTML = tools.map((tool, i) => `
-      <div class="admin-tool-row">
-        <span class="admin-tool-rank">${i + 1}</span>
-        <div class="admin-tool-info">
-          <p class="admin-tool-name" title="${escapeHtml(tool.tool_name)}">${escapeHtml(tool.tool_name)}</p>
-          <p class="admin-tool-cat">${escapeHtml(tool.category || "—")}</p>
-        </div>
-        <div class="admin-tool-bar-wrap">
-          <div class="admin-tool-bar-bg">
-            <div class="admin-tool-bar-fill" style="width:${Math.max(4, Math.round((tool.execution_count / max) * 100))}%"></div>
-          </div>
-        </div>
-        <span class="admin-tool-exec-count">${formatMetric(tool.execution_count)}</span>
-      </div>`).join("");
-  } catch {
-    if (list) list.innerHTML = `<p class="admin-table-empty">Failed to load tool usage.</p>`;
-  }
-}
-
-/* ── Executions ── */
 async function loadAdminExecutions() {
   const tbody = document.getElementById("admin-exec-tbody");
   if (!tbody) return;
-
-  tbody.innerHTML = Array(6).fill(0).map(() =>
-    `<tr><td colspan="5"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>`
-  ).join("");
+  skeletons(tbody, 5, 5);
 
   try {
     const res  = await fetch("/admin/executions?limit=500&offset=0", { credentials: "include" });
@@ -1683,202 +1701,422 @@ async function loadAdminExecutions() {
     const data = await res.json();
 
     adminExecAll      = data.executions || [];
-    adminExecTotal    = data.total || adminExecAll.length;
     adminExecFiltered = [...adminExecAll];
     adminExecPage     = 0;
 
-    const countEl = document.getElementById("admin-exec-count");
-    if (countEl) countEl.textContent = `${adminExecTotal.toLocaleString()} records`;
+    setEl("admin-exec-count",      `${(data.total || adminExecAll.length).toLocaleString()} records`);
+    setEl("admin-tab-exec-count",  String(data.total || adminExecAll.length));
 
     renderAdminExecPage();
   } catch {
-    if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="admin-table-empty">Failed to load executions.</td></tr>`;
+    tbody.innerHTML = emptyRow(5, "Failed to load executions.");
   }
 }
 
-/* ── Render table page ── */
 function renderAdminExecPage() {
   const tbody = document.getElementById("admin-exec-tbody");
   if (!tbody) return;
-
   const start = adminExecPage * ADMIN_PAGE_SIZE;
   const slice = adminExecFiltered.slice(start, start + ADMIN_PAGE_SIZE);
 
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="5" class="admin-table-empty">No executions match your filter.</td></tr>`;
-    updateAdminPagination();
+    tbody.innerHTML = emptyRow(5, "No executions match your filter.");
+    updatePagination("admin-page-info", "admin-prev-btn", "admin-next-btn",
+                     adminExecPage, adminExecFiltered.length, ADMIN_PAGE_SIZE);
     return;
   }
 
-  /* FIX 3: each row is clickable — data stored in data-idx for the modal */
   tbody.innerHTML = slice.map((row, i) => `
     <tr class="admin-exec-row" data-idx="${start + i}" style="cursor:pointer;" title="Click to view details">
-      <td title="${escapeHtml(row.exec_id)}">${escapeHtml(truncateId(row.exec_id))}</td>
-      <td><span class="admin-chip admin-chip--tool">${escapeHtml(row.tool_name)}</span></td>
-      <td>${escapeHtml(row.user_email)}</td>
-      <td><span class="admin-chip admin-chip--user">${escapeHtml(truncateId(row.user_id))}</span></td>
-      <td><span class="admin-ts">${formatAdminTs(row.timestamp)}</span></td>
+      <td title="${esc(row.exec_id)}">${esc(truncId(row.exec_id))}</td>
+      <td><span class="admin-chip admin-chip--tool">${esc(row.tool_name)}</span></td>
+      <td>${esc(row.user_email)}</td>
+      <td><span class="admin-chip admin-chip--user">${esc(truncId(row.user_id))}</span></td>
+      <td><span class="admin-ts">${fmtTs(row.timestamp)}</span></td>
     </tr>`).join("");
 
-  /* Delegate row clicks */
-  tbody.querySelectorAll(".admin-exec-row").forEach(row => {
-    row.addEventListener("click", () => openExecDetail(adminExecFiltered[+row.dataset.idx]));
-  });
+  tbody.querySelectorAll(".admin-exec-row").forEach(row =>
+    row.addEventListener("click", () => openExecDetail(adminExecFiltered[+row.dataset.idx]))
+  );
 
-  updateAdminPagination();
+  updatePagination("admin-page-info", "admin-prev-btn", "admin-next-btn",
+                   adminExecPage, adminExecFiltered.length, ADMIN_PAGE_SIZE);
 }
 
-/* ── Filter ── */
-function filterAdminExecTable(query) {
-  const needle = query.trim().toLowerCase();
-  adminExecFiltered = needle
-    ? adminExecAll.filter(r =>
-        [r.exec_id, r.tool_name, r.user_email, r.user_id]
-          .some(v => (v || "").toLowerCase().includes(needle)))
+function filterAdminExecTable(q) {
+  const n = q.trim().toLowerCase();
+  adminExecFiltered = n
+    ? adminExecAll.filter(r => [r.exec_id, r.tool_name, r.user_email, r.user_id]
+        .some(v => (v||"").toLowerCase().includes(n)))
     : [...adminExecAll];
   adminExecPage = 0;
   renderAdminExecPage();
 }
 
-/* ── Pagination ── */
-function updateAdminPagination() {
-  const totalPages = Math.max(1, Math.ceil(adminExecFiltered.length / ADMIN_PAGE_SIZE));
-  const info = document.getElementById("admin-page-info");
-  /* Re-query because we may have cloned+replaced these buttons */
-  const prev = document.getElementById("admin-prev-btn");
-  const next = document.getElementById("admin-next-btn");
+/* ============================================================
+   TOOL VIEWS — now renders into a proper table
+   ============================================================ */
 
-  if (info) info.textContent = `Page ${adminExecPage + 1} of ${totalPages}`;
-  if (prev) prev.disabled = adminExecPage === 0;
-  if (next) next.disabled = adminExecPage >= totalPages - 1;
+async function loadAdminToolViews() {
+  const tbody = document.getElementById("admin-tool-tbody");
+  if (!tbody) return;
+  skeletons(tbody, 3, 5);
+
+  try {
+    const res  = await fetch("/admin/tool-views", { credentials: "include" });
+    if (!res.ok) throw new Error();
+    const { tools = [] } = await res.json();
+
+    setEl("admin-tool-views-count", `${tools.length} tool${tools.length !== 1 ? "s" : ""}`);
+    setEl("admin-tab-tools-count",  String(tools.length));
+
+    if (!tools.length) { tbody.innerHTML = emptyRow(5, "No tools found."); return; }
+
+    const max = Math.max(...tools.map(t => t.execution_count), 1);
+
+    tbody.innerHTML = tools.map((tool, i) => `
+      <tr>
+        <td style="color:var(--text-muted);font-weight:700;">${i + 1}</td>
+        <td style="font-weight:500;color:var(--ink-1);">${esc(tool.tool_name)}</td>
+        <td><span class="tool-category-badge" data-cat="${esc(tool.category)}">${esc(tool.category || "—")}</span></td>
+        <td>
+          <div class="admin-inline-bar-bg">
+            <div class="admin-inline-bar-fill"
+                 style="width:${Math.max(4, Math.round((tool.execution_count / max) * 100))}%">
+            </div>
+          </div>
+        </td>
+        <td style="text-align:right;font-weight:700;color:var(--ink-1);">
+          ${(tool.execution_count || 0).toLocaleString()}
+        </td>
+      </tr>`).join("");
+  } catch {
+    tbody.innerHTML = emptyRow(5, "Failed to load tool usage.");
+  }
 }
 
 /* ============================================================
-   FIX 3 — EXECUTION DETAIL MODAL
+   USERS
+   ============================================================ */
+
+async function loadAdminUsers() {
+  const tbody = document.getElementById("admin-user-tbody");
+  if (!tbody) return;
+  skeletons(tbody, 5, 10);
+
+  try {
+    const res  = await fetch("/admin/users?limit=500&offset=0", { credentials: "include" });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    adminUserAll      = data.users || [];
+    adminUserFiltered = [...adminUserAll];
+    adminUserPage     = 0;
+
+    setEl("admin-user-count",      `${data.total.toLocaleString()} users`);
+    setEl("admin-tab-users-count", String(data.total));
+
+    renderAdminUserPage();
+  } catch {
+    tbody.innerHTML = emptyRow(10, "Failed to load users.");
+  }
+}
+
+function renderAdminUserPage() {
+  const tbody = document.getElementById("admin-user-tbody");
+  if (!tbody) return;
+  const start = adminUserPage * ADMIN_USER_PAGE_SIZE;
+  const slice = adminUserFiltered.slice(start, start + ADMIN_USER_PAGE_SIZE);
+
+  if (!slice.length) {
+    tbody.innerHTML = emptyRow(10, "No users match your filter.");
+    updatePagination("admin-user-page-info","admin-user-prev-btn","admin-user-next-btn",
+                     adminUserPage, adminUserFiltered.length, ADMIN_USER_PAGE_SIZE);
+    return;
+  }
+
+  tbody.innerHTML = slice.map((u, i) => {
+    const pct = u.credits_total > 0
+      ? Math.round((u.credits_remaining / u.credits_total) * 100) : 0;
+    return `
+      <tr class="admin-user-row" data-idx="${start + i}" style="cursor:pointer;" title="Click to view details">
+        <td style="padding:8px 16px;">
+          <img class="admin-user-avatar"
+               src="${esc(u.avatar_url || "/assets/default_avatar.png")}"
+               alt=""
+               onerror="this.src='/assets/default_avatar.png'">
+        </td>
+        <td style="font-weight:500;color:var(--ink-1);">${esc(u.name || "—")}</td>
+        <td>${esc(u.email || "—")}</td>
+        <td>${u.role === "admin"
+          ? `<span class="admin-chip admin-chip--admin">admin</span>`
+          : `<span class="admin-chip admin-chip--user-role">user</span>`}</td>
+        <td style="color:var(--text-muted);font-size:11px;">${esc(u.provider || "—")}</td>
+        <td>${u.google_connected
+          ? `<span class="admin-badge admin-badge--yes">✓ Yes</span>`
+          : `<span class="admin-badge admin-badge--no">— No</span>`}</td>
+        <td>${u.github_connected
+          ? `<span class="admin-badge admin-badge--yes">✓ Yes</span>`
+          : `<span class="admin-badge admin-badge--no">— No</span>`}</td>
+        <td>
+          <div class="admin-credit-wrap">
+            <span class="admin-credit-label">${u.credits_remaining} / ${u.credits_total}</span>
+            <div class="admin-credit-bar-bg">
+              <div class="admin-credit-bar-fill" style="width:${pct}%"></div>
+            </div>
+          </div>
+        </td>
+        <td><span class="admin-ts">${fmtTs(u.created_at)}</span></td>
+        <td><span class="admin-ts">${esc(u.last_updated || "—")}</span></td>
+      </tr>`;
+  }).join("");
+
+  tbody.querySelectorAll(".admin-user-row").forEach(row =>
+    row.addEventListener("click", () => openUserDetail(adminUserFiltered[+row.dataset.idx]))
+  );
+
+  updatePagination("admin-user-page-info","admin-user-prev-btn","admin-user-next-btn",
+                   adminUserPage, adminUserFiltered.length, ADMIN_USER_PAGE_SIZE);
+}
+
+function filterAdminUserTable(q) {
+  const n = q.trim().toLowerCase();
+  adminUserFiltered = n
+    ? adminUserAll.filter(u => [u.name, u.email, u.role, u.provider]
+        .some(v => (v||"").toLowerCase().includes(n)))
+    : [...adminUserAll];
+  adminUserPage = 0;
+  renderAdminUserPage();
+}
+
+/* ============================================================
+   EXEC DETAIL MODAL
    ============================================================ */
 
 function injectExecDetailModal() {
   if (document.getElementById("exec-detail-modal")) return;
-
-  const modal = document.createElement("div");
-  modal.id        = "exec-detail-modal";
-  modal.className = "modal-backdrop";
-  modal.setAttribute("aria-hidden", "true");
-  modal.innerHTML = `
-    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="exec-detail-title" style="max-width:560px;">
+  const m = document.createElement("div");
+  m.id = "exec-detail-modal";
+  m.className = "modal-backdrop";
+  m.setAttribute("aria-hidden","true");
+  m.innerHTML = `
+    <div class="modal-box" role="dialog" aria-modal="true" style="max-width:560px;">
       <div class="modal-header">
-        <h3 id="exec-detail-title">Execution Detail</h3>
+        <h3>Execution Detail</h3>
         <button class="modal-close" id="exec-detail-close" type="button" aria-label="Close">
           <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <div class="modal-body" id="exec-detail-body" style="gap:14px;"></div>
     </div>`;
-
-  document.body.appendChild(modal);
-
-  /* Close handlers */
-  modal.addEventListener("click", e => { if (e.target === modal) closeExecDetail(); });
-  document.getElementById("exec-detail-close")
-    ?.addEventListener("click", closeExecDetail);
+  document.body.appendChild(m);
+  m.addEventListener("click", e => { if (e.target === m) closeExecDetail(); });
+  document.getElementById("exec-detail-close")?.addEventListener("click", closeExecDetail);
 }
 
 function openExecDetail(row) {
   const modal = document.getElementById("exec-detail-modal");
   const body  = document.getElementById("exec-detail-body");
   if (!modal || !body || !row) return;
-
   body.innerHTML = `
-    ${detailField("Execution ID",  row.exec_id,    "mono")}
-    ${detailField("Tool",          row.tool_name)}
-    ${detailField("User Email",    row.user_email)}
-    ${detailField("User ID",       row.user_id,    "mono")}
-    ${detailField("Timestamp",     formatAdminTs(row.timestamp))}
-    ${row.user_input ? detailBlock("User Input",  row.user_input)  : ""}
-    ${row.output     ? detailBlock("Output",      row.output)      : ""}`;
-
+    ${dField("Execution ID", row.exec_id, "mono")}
+    ${dField("Tool",         row.tool_name)}
+    ${dField("User Email",   row.user_email)}
+    ${dField("User ID",      row.user_id, "mono")}
+    ${dField("Timestamp",    fmtTs(row.timestamp))}
+    ${row.user_input ? dBlock("User Input", row.user_input) : ""}
+    ${row.output     ? dBlock("Output",     row.output)     : ""}`;
   modal.classList.add("open");
   modal.removeAttribute("aria-hidden");
 }
 
 function closeExecDetail() {
-  const modal = document.getElementById("exec-detail-modal");
-  if (!modal) return;
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-}
-
-function detailField(label, value, style = "") {
-  const mono = style === "mono"
-    ? "font-family:ui-monospace,'Cascadia Code',monospace;font-size:11px;word-break:break-all;"
-    : "";
-  return `
-    <div style="display:flex;flex-direction:column;gap:4px;">
-      <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${escapeHtml(label)}</span>
-      <span style="font-size:var(--text-sm);color:var(--ink-1);${mono}">${escapeHtml(value || "—")}</span>
-    </div>`;
-}
-
-function detailBlock(label, value) {
-  return `
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${escapeHtml(label)}</span>
-      <pre style="
-        margin:0;padding:14px;
-        border:1px solid var(--border-1);
-        border-radius:var(--radius-md);
-        background:var(--surface-1);
-        color:var(--ink-2);
-        font-family:ui-monospace,'Cascadia Code',monospace;
-        font-size:11px;
-        line-height:1.6;
-        white-space:pre-wrap;
-        word-break:break-word;
-        max-height:200px;
-        overflow-y:auto;
-      ">${escapeHtml(value)}</pre>
-    </div>`;
+  const m = document.getElementById("exec-detail-modal");
+  if (m) { m.classList.remove("open"); m.setAttribute("aria-hidden","true"); }
 }
 
 /* ============================================================
-   FIX 1 — TIMESTAMP: always IST (UTC+5:30)
+   USER DETAIL MODAL
    ============================================================ */
 
-function formatAdminTs(isoString) {
-  if (!isoString) return "—";
-  try {
-    const d = new Date(isoString);
-    /* Force IST regardless of browser locale */
-    return d.toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",   // ← key fix
-      day:    "2-digit",
-      month:  "short",
-      year:   "numeric",
-      hour:   "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return isoString;
-  }
+function injectUserDetailModal() {
+  if (document.getElementById("user-detail-modal")) return;
+  const m = document.createElement("div");
+  m.id = "user-detail-modal";
+  m.className = "modal-backdrop";
+  m.setAttribute("aria-hidden","true");
+  m.innerHTML = `
+    <div class="modal-box" role="dialog" aria-modal="true" style="max-width:620px;">
+      <div class="modal-header">
+        <h3>User Detail</h3>
+        <button class="modal-close" id="user-detail-close" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="user-detail-body"></div>
+    </div>`;
+  document.body.appendChild(m);
+  m.addEventListener("click", e => { if (e.target === m) closeUserDetail(); });
+  document.getElementById("user-detail-close")?.addEventListener("click", closeUserDetail);
 }
 
-/* ── Helpers ── */
-function truncateId(id) {
+function openUserDetail(u) {
+  const modal = document.getElementById("user-detail-modal");
+  const body  = document.getElementById("user-detail-body");
+  if (!modal || !body || !u) return;
+
+  const pct = u.credits_total > 0
+    ? Math.round((u.credits_remaining / u.credits_total) * 100) : 0;
+
+  body.innerHTML = `
+    <div class="user-detail-grid">
+      <!-- Avatar row -->
+      <div class="user-detail-avatar-row">
+        <img class="user-detail-avatar-img"
+             src="${esc(u.avatar_url || "/assets/default_avatar.png")}"
+             alt=""
+             onerror="this.src='/assets/default_avatar.png'">
+        <div class="user-detail-avatar-meta">
+          <strong>${esc(u.name || "—")}</strong>
+          <span>${esc(u.email || "—")}</span>
+          <span style="margin-top:4px;display:block;">
+            ${u.role === "admin"
+              ? `<span class="admin-chip admin-chip--admin">admin</span>`
+              : `<span class="admin-chip admin-chip--user-role">user</span>`}
+          </span>
+        </div>
+      </div>
+
+      ${uField("User ID",    u.id,       "mono")}
+      ${uField("Provider",   u.provider)}
+      ${uField("Bio",        u.bio || "—")}
+      ${uField("Avatar URL", u.avatar_url, "mono")}
+
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${label("Google")}
+        ${u.google_connected
+          ? `<span class="admin-badge admin-badge--yes">✓ Connected${u.google_email ? " · "+esc(u.google_email) : ""}</span>`
+          : `<span class="admin-badge admin-badge--no">Not connected</span>`}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${label("GitHub")}
+        ${u.github_connected
+          ? `<span class="admin-badge admin-badge--yes">✓ Connected${u.github_email ? " · "+esc(u.github_email) : ""}</span>`
+          : `<span class="admin-badge admin-badge--no">Not connected</span>`}
+      </div>
+
+      <div class="user-detail-full" style="display:flex;flex-direction:column;gap:8px;">
+        ${label("Credits")}
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span style="font-size:var(--text-xl);font-weight:700;color:var(--ink-0);">${u.credits_remaining}</span>
+          <span style="color:var(--text-muted);font-size:var(--text-sm);">/ ${u.credits_total} total</span>
+          <span style="color:var(--text-muted);font-size:var(--text-xs);">(reset: ${esc(u.last_credit_reset || "—")})</span>
+        </div>
+        <div class="admin-credit-bar-bg" style="height:6px;">
+          <div class="admin-credit-bar-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+
+      ${uField("Joined",       fmtTs(u.created_at))}
+      ${uField("Last Updated", u.last_updated || "—")}
+    </div>`;
+
+  modal.classList.add("open");
+  modal.removeAttribute("aria-hidden");
+}
+
+function closeUserDetail() {
+  const m = document.getElementById("user-detail-modal");
+  if (m) { m.classList.remove("open"); m.setAttribute("aria-hidden","true"); }
+}
+
+/* ============================================================
+   SHARED HELPERS
+   ============================================================ */
+
+function updatePagination(infoId, prevId, nextId, page, total, pageSize) {
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  setEl(infoId, `Page ${page + 1} of ${totalPages}`);
+  const prev = document.getElementById(prevId);
+  const next = document.getElementById(nextId);
+  if (prev) prev.disabled = page === 0;
+  if (next) next.disabled = page >= totalPages - 1;
+}
+
+function skeletons(tbody, rows, cols) {
+  tbody.innerHTML = Array(rows).fill(0).map(() =>
+    `<tr><td colspan="${cols}"><div class="skeleton" style="height:18px;border-radius:6px;"></div></td></tr>`
+  ).join("");
+}
+
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" class="admin-table-empty">${msg}</td></tr>`;
+}
+
+function setEl(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function truncId(id) {
   if (!id) return "—";
   return id.length > 10 ? id.slice(0, 8) + "…" : id;
 }
 
-function animateCount(elementId, target) {
-  const el = document.getElementById(elementId);
+function fmtTs(iso) {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit", month: "short", year: "numeric",
+      hour: "2-digit", minute: "2-digit", hour12: true,
+    });
+  } catch { return iso; }
+}
+
+function esc(v) { return escapeHtml(String(v ?? "")); }
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
   if (!el) return;
-  const duration = 800;
-  const startTs  = performance.now();
-  function step(now) {
-    const progress = Math.min((now - startTs) / duration, 1);
-    const eased    = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.round(target * eased).toLocaleString();
-    if (progress < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
+  const start = performance.now();
+  const dur   = 800;
+  (function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  })(start);
+}
+
+/* Modal field helpers */
+function dField(label, value, style = "") {
+  const mono = style === "mono"
+    ? "font-family:ui-monospace,monospace;font-size:11px;word-break:break-all;" : "";
+  return `<div style="display:flex;flex-direction:column;gap:4px;">
+    <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${esc(label)}</span>
+    <span style="font-size:var(--text-sm);color:var(--ink-1);${mono}">${esc(value || "—")}</span>
+  </div>`;
+}
+
+function dBlock(lbl, value) {
+  return `<div style="display:flex;flex-direction:column;gap:6px;">
+    <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${esc(lbl)}</span>
+    <pre style="margin:0;padding:14px;border:1px solid var(--border-1);border-radius:var(--radius-md);
+                background:var(--surface-1);color:var(--ink-2);
+                font-family:ui-monospace,monospace;font-size:11px;line-height:1.6;
+                white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;">${esc(value)}</pre>
+  </div>`;
+}
+
+function uField(lbl, value, style = "") {
+  const mono = style === "mono"
+    ? "font-family:ui-monospace,monospace;font-size:11px;word-break:break-all;" : "";
+  return `<div style="display:flex;flex-direction:column;gap:4px;">
+    <span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${esc(lbl)}</span>
+    <span style="font-size:var(--text-sm);color:var(--ink-1);${mono}">${esc(String(value ?? "—"))}</span>
+  </div>`;
+}
+
+function label(text) {
+  return `<span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${esc(text)}</span>`;
 }

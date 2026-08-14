@@ -514,7 +514,8 @@ class CodeReview:
         uploaded_file: UploadFile | None = None,
         
     ) -> CodeReviewResponse:
-
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         # Task 1
         validated_input = await CodeReview._validate_input(
             request,

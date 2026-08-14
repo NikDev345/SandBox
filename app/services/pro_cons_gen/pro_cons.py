@@ -22,6 +22,8 @@ class ProConsService:
     
     @staticmethod
     async def _generate_analysis(request: ProConsRequest, db: Session, user=None) -> ProConsResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user['sub'])
         cleaned_req = ProConsService._preprocess_input(request)
         prompt = ProConsService._prompt_builder(cleaned_req)
         final_prompt = (

@@ -118,6 +118,8 @@ class MockAPIService:
 # ----------------------------------------------------------------------------------------------------------------------------------- 
     @staticmethod
     def create_mock_api(db: Session, request: MockAPIRequest, user_id: str,) -> MockAPIResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         MockAPIService._validate_request(request)
 
         endpoint_token = MockAPIService._generate_endpoint_token()

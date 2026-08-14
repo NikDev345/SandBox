@@ -335,6 +335,8 @@ class ActionItemService:
         user_id: str,
         db: Session
     ) -> ActionItemExtractorResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
 
         ActionItemService._validate_request(request)
 

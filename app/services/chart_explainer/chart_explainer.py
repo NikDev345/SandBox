@@ -30,7 +30,8 @@ class ChartExplainerService:
         """
         Analyze the uploaded chart image.
         """
-
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         prompt = PromptEngine.build_chart_explainer_prompt(request)
 
         uploaded_image = types.Part.from_bytes(

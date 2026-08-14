@@ -39,14 +39,14 @@ async def clean_notes(
 
         return response
 
+    except HTTPException as e:
+        raise e
+
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
         )
-
-    except HTTPException:
-        raise
 
     except Exception as e:
         raise HTTPException(

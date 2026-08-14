@@ -163,8 +163,8 @@ async def generate_quiz(
             user=current_user,
         )
 
-    except HTTPException:
-        raise
+    except HTTPException as e:
+        raise e
 
     except Exception as exc:
 

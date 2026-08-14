@@ -219,6 +219,8 @@ class CommitMessageGenerator:
     # main function--------------------------------------------------------------------------------
     @staticmethod
     async def generate(request: CommitMessageRequest, user_id: str, db: Session,)->CommitMessageResponse:
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
         # Validate repository
         repo = CommitMessageGenerator._validate_git_repo(
             request.repository_path

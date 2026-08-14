@@ -18,6 +18,9 @@ class BlogOutlineGeneratorService:
         user_id: str,
         db: Session
     ) -> BlogOutlineResponse:
+        
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
 
         prompt = PromptEngine.build_blog_outline_prompt(request)
 

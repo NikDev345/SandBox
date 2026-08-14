@@ -51,22 +51,8 @@ class DecisionMakerService:
         user_id: str,
         db: Session,
     ) -> DecisionMakerResponse:
-        """
-        Analyze a user's decision using AI.
-
-        Args:
-            request: DecisionMakerRequest
-
-        Returns:
-            DecisionMakerResponse
-
-        Raises:
-            ValueError:
-                Invalid user input.
-
-            RuntimeError:
-                AI processing failed.
-        """
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user_id)
 
         # ----------------------------------------------------
         # Validate request

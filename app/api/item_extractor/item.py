@@ -69,6 +69,9 @@ async def extract_action_items(
 
     try:
         return await service.generate(request, current_user["sub"], db)
+    
+    except HTTPException as e:
+        raise e
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
