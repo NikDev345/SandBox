@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     initializeMobileDrawer();
     initializeLogoDropZone();
     initializeAdminControls();
+    initToolCategoryFilter();
     await loadDashboardData();
     applyAdminRole();
     updateCategoryBadges();
@@ -984,7 +985,64 @@ function closeDeleteModal() {
     modal.setAttribute("aria-hidden", "true");
     deletingToolId = null;
 }
+/* ============================================================
+   TOOL CATEGORY FILTER
+   ============================================================ */
 
+function initToolCategoryFilter() {
+
+    const filters = document.querySelectorAll(".tool-filter");
+    const cards = document.querySelectorAll(".tool-card");
+    const resultCount = document.querySelector("[data-result-count]");
+
+    if (!filters.length || !cards.length) {
+        return;
+    }
+
+    filters.forEach((filter) => {
+
+        filter.addEventListener("click", () => {
+
+            const selectedCategory = filter.dataset.filter;
+
+            /* Update active state */
+            filters.forEach((item) => {
+                item.classList.remove("active");
+                item.setAttribute("aria-selected", "false");
+            });
+
+            filter.classList.add("active");
+            filter.setAttribute("aria-selected", "true");
+
+            /* Filter cards */
+            let visibleCount = 0;
+
+            cards.forEach((card) => {
+
+                const category = card.dataset.toolCategory;
+
+                const shouldShow =
+                    selectedCategory === "all" ||
+                    category === selectedCategory;
+
+                card.hidden = !shouldShow;
+
+                if (shouldShow) {
+                    visibleCount++;
+                }
+
+            });
+
+            /* Update result count */
+            if (resultCount) {
+                resultCount.textContent =
+                    `${visibleCount} ${visibleCount === 1 ? "tool" : "tools"}`;
+            }
+
+        });
+
+    });
+}
 async function confirmDeleteTool() {
     if (!deletingToolId) return;
 
