@@ -112,6 +112,7 @@
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-right: 1px solid var(--border-0);
     transition: transform var(--dur-slow) var(--ease);
+    height: 100vh;
   }
 
   /* Scrollable nav area */
@@ -262,10 +263,12 @@
 
   /* Nav items — enhanced */
   .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow-y: auto;
+}
 
   .nav-item {
     display: flex;
@@ -2213,10 +2216,6 @@
 
   }
 
-  .dashboard-sidebar {
-    /* already has these, just add: */
-    height: 100vh;
-}
 .settings-avatar {
     cursor: pointer;
     position: relative;
@@ -2670,4 +2669,12 @@
   .admin-grid-2col {
     grid-template-columns: 1fr;
   }
+}
+@media (min-width: 769px) {
+
+    .dashboard-shell {
+        zoom: 0.9;
+        width: 101.87%;
+    }
+
 }
