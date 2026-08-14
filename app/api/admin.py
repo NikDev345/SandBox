@@ -6,7 +6,6 @@ from app.utils.auth import get_current_user
 from app.utils.permissions import require_admin
 from datetime import datetime, timezone, timedelta
 
-# Import your models — adjust paths if needed
 from app.models.user import Users
 from app.models.tool import Tools
 from app.models.execution import Executions, to_ist
@@ -15,17 +14,17 @@ router = APIRouter(
     prefix="/admin",
     tags=["Admin"]
 )
+
 IST = timezone(timedelta(hours=5, minutes=30))
 
 def _to_ist_str(value):
     if value is None:
         return None
     if isinstance(value, str):
-        # Parse the string first
         try:
             dt = datetime.fromisoformat(value)
         except ValueError:
-            return value  # return as-is if unparseable
+            return value
     else:
         dt = value
     if dt.tzinfo is None:
@@ -33,13 +32,11 @@ def _to_ist_str(value):
     return dt.astimezone(IST).isoformat()
 
 def _admin_user(current_user=Depends(get_current_user)):
-    """Dependency: resolves current user AND enforces admin role."""
     require_admin(current_user)
     return current_user
 
 
 # ── GET /admin/stats ──────────────────────────────────────────
-# Returns headline counts for the admin dashboard cards.
 
 @router.get("/stats")
 def get_admin_stats(
@@ -58,8 +55,6 @@ def get_admin_stats(
 
 
 # ── GET /admin/executions ─────────────────────────────────────
-# Full execution log with joined user e-mail and tool name.
-# Supports ?limit=&offset= for basic pagination.
 
 @router.get("/executions")
 def get_all_executions(
@@ -100,7 +95,9 @@ def get_all_executions(
                 "tool_name":  r.tool_name  or "—",
                 "user_id":    r.user_id,
                 "user_email": r.user_email or "—",
-                "timestamp": _to_ist_str(r.created_at),
+                "timestamp":  _to_ist_str(r.created_at),
+                "user_input": r.user_input or "",
+                "output":     r.output     or "",
             }
             for r in rows
         ],
@@ -108,7 +105,6 @@ def get_all_executions(
 
 
 # ── GET /admin/tool-views ─────────────────────────────────────
-# How many times each tool has been executed, sorted by most used.
 
 @router.get("/tool-views")
 def get_tool_views(
@@ -142,11 +138,11 @@ def get_tool_views(
 
 
 # ── GET /admin/users ──────────────────────────────────────────
-# Light user list (no passwords) for potential future use.
+# Full user list — no password_hash, all other fields included.
 
 @router.get("/users")
 def get_all_users(
-    limit:  int = 100,
+    limit:  int = 200,
     offset: int = 0,
     db: Session = Depends(get_db),
     current_user=Depends(_admin_user)
@@ -164,12 +160,29 @@ def get_all_users(
         "total": total,
         "users": [
             {
-                "id":         u.id,
-                "name":       u.name,
-                "email":      u.email,
-                "role":       u.role,
-                "provider":   u.provider,
-                "created_at": u.created_at.isoformat() if u.created_at else None,
+                # Identity
+                "id":           u.id,
+                "name":         u.name,
+                "email":        u.email,
+                "bio":          u.bio or "",
+                "role":         u.role,
+                "provider":     u.provider,
+                "avatar_url":   u.avatar_url,
+
+                # Connected accounts
+                "google_connected": u.google_connected or False,
+                "github_connected": u.github_connected or False,
+                "google_email":     u.google_email or None,
+                "github_email":     u.github_email or None,
+
+                # Credits
+                "credits_remaining": u.free_credits_remaining,
+                "credits_total":     u.free_credits_total,
+                "last_credit_reset": str(u.last_credit_reset) if u.last_credit_reset else None,
+
+                # Timestamps
+                "created_at":   _to_ist_str(u.created_at),
+                "last_updated": u.last_updated or None,
             }
             for u in users
         ],

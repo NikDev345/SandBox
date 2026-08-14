@@ -63,7 +63,7 @@ class APIKeyState(BaseModel):
 
 class LLMRequest(BaseModel):
     """Universal request object for every LLM call."""
-
+    
     # Prompt
     prompt: str
     system_prompt: str | None = None

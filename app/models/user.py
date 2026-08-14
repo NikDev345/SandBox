@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Boolean
+from sqlalchemy import Column, String, DateTime, Boolean, Integer, Date
 from app.database.engine import Base
 from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
@@ -63,6 +63,11 @@ class Users(Base):
     name_customized = Column(Boolean, default=False)
     email_customized = Column(Boolean, default=False)
     avatar_customized = Column(Boolean, default=False)
+    
+    free_credits_remaining = Column(Integer, default=100, nullable=False)
+    free_credits_total = Column(Integer, default=100, nullable=False)
+
+    last_credit_reset = Column(Date, default=datetime.utcnow().date, nullable=False)
     
     last_updated = Column(String, nullable=True)
 

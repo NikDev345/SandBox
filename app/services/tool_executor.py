@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.execution import Executions
+from app.models.user import Users
 import uuid
 
 class ExecutionService:
@@ -16,6 +17,12 @@ class ExecutionService:
         )
         
         db.add(execution)
+        CREDIT_COST = 20
+
+        user = db.query(Users).filter(Users.id == user_id).first()
+
+        if user.free_credits_remaining >= CREDIT_COST:
+            user.free_credits_remaining -= CREDIT_COST
         db.commit()
         db.refresh(execution)
         

@@ -62,16 +62,14 @@ class WorkspaceService:
             .count()
         )
         
-        credit_per_execution = 20
-        used_credits = min(
-            today_executions * credit_per_execution,
-            100
-        )
+        # Daily reset logic
+        today = datetime.utcnow().date()
 
-        remaining_credits = max(
-            100 - used_credits,
-            0
-        )
+        if user.last_credit_reset != today:
+            user.free_credits_remaining = user.free_credits_total
+            user.last_credit_reset = today
+            db.commit()
+        
         
         return {
             "name": user.name,
@@ -82,9 +80,9 @@ class WorkspaceService:
             "executions": total_executions,
 
             "daily_credits": {
-                "remaining": remaining_credits,
-                "used": used_credits,
-                "limit": 100,
+                "remaining": user.free_credits_remaining,
+                "used": user.free_credits_total - user.free_credits_remaining,
+                "limit": user.free_credits_total,
                 "executions_today": today_executions,
             }
         }
