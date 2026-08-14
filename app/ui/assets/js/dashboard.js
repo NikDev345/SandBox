@@ -197,6 +197,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         });
     }
+
+    // ── DELETE ACCOUNT ──
+    const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener("click", async () => {
+            // Disable button and show loading state
+            deleteAccountBtn.disabled = true;
+            const originalHTML = deleteAccountBtn.innerHTML;
+            deleteAccountBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    style="animation:da-spin .7s linear infinite;flex-shrink:0;">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                Loading…`;
+
+            try {
+                const confirmRes = await fetch("/auth/confirm-delete", { credentials: "include" });
+
+                if (!confirmRes.ok) {
+                    showToast("Failed to initiate account deletion.", "error");
+                    return;
+                }
+
+                const { confirmation_text } = await confirmRes.json();
+                openDeleteAccountModal(confirmation_text);
+
+            } catch {
+                showToast("Network error.", "error");
+            } finally {
+                // Always restore button regardless of success or failure
+                deleteAccountBtn.disabled = false;
+                deleteAccountBtn.innerHTML = originalHTML;
+            }
+        });
+    }
 });
 /* ============================================================
    ADMIN CONTROLS — event delegation, no inline handlers
@@ -2119,4 +2155,183 @@ function uField(lbl, value, style = "") {
 
 function label(text) {
   return `<span style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);">${esc(text)}</span>`;
+}
+
+/* ============================================================
+   DELETE ACCOUNT MODAL
+   ============================================================ */
+
+function openDeleteAccountModal(phrase) {
+    document.getElementById("delete-account-modal")?.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "delete-account-modal";
+    modal.style.cssText = [
+        "position:fixed",
+        "inset:0",
+        "z-index:9999",
+        "background:rgba(0,0,0,.72)",
+        "backdrop-filter:blur(18px) saturate(160%)",
+        "-webkit-backdrop-filter:blur(18px) saturate(160%)",
+        "display:flex",
+        "align-items:center",
+        "justify-content:center",
+        "padding:1rem"
+    ].join(";");
+
+    modal.innerHTML = `
+    <div class="da-card">
+
+        <div class="da-header">
+            <div class="da-icon">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v6"/><path d="M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                </svg>
+            </div>
+            <div>
+                <p class="da-title">Delete account</p>
+                <p class="da-subtitle">This action cannot be undone.</p>
+            </div>
+            <button id="da-close" class="da-close-btn" type="button" aria-label="Close">
+                <svg viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="da-warning">
+            <svg viewBox="0 0 24 24">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span>All your data, tools, history, and settings will be permanently deleted. You won't be able to recover anything.</span>
+        </div>
+
+        <div class="da-divider"></div>
+
+        <label class="da-label" for="da-input">
+            To confirm, type <code>${escapeHtml(phrase)}</code> below
+        </label>
+
+        <input
+            id="da-input"
+            class="da-input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Type the phrase exactly…"
+        >
+
+        <p class="da-error" id="da-err" aria-live="polite"></p>
+
+        <div class="da-actions">
+            <button id="da-cancel" class="da-btn-cancel" type="button">Cancel</button>
+            <button id="da-submit" class="da-btn-delete" type="button" disabled>
+                <svg viewBox="0 0 24 24">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v6"/><path d="M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                </svg>
+                Delete my account
+            </button>
+        </div>
+    </div>`;
+
+    document.body.appendChild(modal);
+
+    const inp    = modal.querySelector("#da-input");
+    const submit = modal.querySelector("#da-submit");
+    const errEl  = modal.querySelector("#da-err");
+
+    inp.focus();
+
+    // Enable button only when phrase matches exactly
+    inp.addEventListener("input", () => {
+        errEl.textContent = "";
+        inp.style.borderColor = "";
+        const match = inp.value.trim() === phrase;
+        submit.disabled   = !match;
+        submit.style.opacity = match ? "1" : ".45";
+        submit.style.cursor  = match ? "pointer" : "not-allowed";
+    });
+
+    // Close handlers
+    const closeModal = () => modal.remove();
+    modal.querySelector("#da-close").addEventListener("click", closeModal);
+    modal.querySelector("#da-cancel").addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+
+    // Escape key
+    const onKeyDown = e => { if (e.key === "Escape") { closeModal(); document.removeEventListener("keydown", onKeyDown); } };
+    document.addEventListener("keydown", onKeyDown);
+
+    // Submit
+    submit.addEventListener("click", async () => {
+        if (inp.value.trim() !== phrase) {
+            errEl.textContent = "Phrase doesn't match. Check for typos.";
+            inp.style.borderColor = "var(--border-danger)";
+            inp.focus();
+            return;
+        }
+
+        submit.disabled = true;
+        submit.style.opacity = ".6";
+        submit.style.cursor = "not-allowed";
+        submit.innerHTML = `
+            <svg class="da-spinner" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </svg>
+            Deleting…`;
+
+        try {
+            const res = await fetch("/auth/account", {
+                method: "DELETE",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ confirmation_text: inp.value.trim() })
+            });
+
+            if (res.ok) {
+                modal.remove();
+                showToast("Account deleted successfully.", "success");
+                clearAuthSession();
+                setTimeout(() => window.location.href = "/login", 1500);
+            } else {
+                const err = await res.json().catch(() => ({}));
+                errEl.textContent = err.detail || "Something went wrong. Try again.";
+                inp.style.borderColor = "var(--border-danger)";
+                submit.disabled = false;
+                submit.style.opacity = "1";
+                submit.style.cursor = "pointer";
+                submit.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14H6L5 6"/>
+                        <path d="M10 11v6"/><path d="M14 11v6"/>
+                        <path d="M9 6V4h6v2"/>
+                    </svg>
+                    Delete my account`;
+            }
+        } catch {
+            errEl.textContent = "Network error. Check your connection.";
+            submit.disabled = !match;
+            submit.style.opacity = "1";
+            submit.style.cursor = "pointer";
+        }
+    });
+}
+
+/* Spinner keyframe — injected once */
+if (!document.getElementById("da-spin-style")) {
+    const s = document.createElement("style");
+    s.id = "da-spin-style";
+    s.textContent = "@keyframes da-spin { to { transform: rotate(360deg); } }";
+    document.head.appendChild(s);
 }
