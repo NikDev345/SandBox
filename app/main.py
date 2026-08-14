@@ -6,6 +6,10 @@ app.add_static_files(
     '/assets',
     'app/ui/assets'
 )
+app.add_static_files(
+    '/email-assets',
+    'app/ui/assets/email'
+)
 app.include_router(auth_router)
 
 
