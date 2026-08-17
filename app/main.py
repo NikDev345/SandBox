@@ -59,6 +59,8 @@ import app.ui.pages.error_explainer
 import app.ui.pages.yaml
 import app.ui.pages.code_reviewer
 import app.ui.pages.docker_generator
+import app.ui.pages.about
+import app.ui.pages.nagraj_profile
 import app.ui.pages.item
 import app.ui.pages.bookmarks
 # ui.run(
