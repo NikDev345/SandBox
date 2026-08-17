@@ -1,4 +1,7 @@
+import json
+
 from nicegui import ui
+from app.utils.tools_registry import TOOLS
 
 
 def add_shared_assets(
@@ -28,10 +31,19 @@ def add_shared_assets(
             "/assets/css/dashboard.css",
             "/assets/css/settings.css",
         ]
-
+        
     base_js = [
         "/assets/js/transitions.js",
     ]
+    if tool_page:
+        base_css += [
+            "/assets/css/sidebar.css",
+        ]
+
+        base_js += [
+            "/assets/js/tool_switcher.js",
+        ]
+
 
     # Tool pages
     if tool_page:
@@ -49,6 +61,15 @@ def add_shared_assets(
         for src in base_js + extra_js
     )
 
+
     ui.add_head_html(
         css_tags + "\n" + js_tags
     )
+
+    ui.add_head_html(css_tags + "\n" + js_tags)
+    ui.add_head_html(f"""
+        <script>
+            window.TOOLS = {json.dumps(TOOLS)};
+        </script>
+        """)
+
