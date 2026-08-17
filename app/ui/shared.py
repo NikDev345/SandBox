@@ -1,7 +1,8 @@
-# app/ui/shared.py
 import json
+
 from nicegui import ui
 from app.utils.tools_registry import TOOLS
+
 
 def add_shared_assets(
     extra_css: list[str] = [],
@@ -9,7 +10,7 @@ def add_shared_assets(
     auth_page: bool = False,
     tool_page: bool = False,
 ):
-    # Only tokens and animations load everywhere
+
     base_css = [
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
         "/assets/css/tokens.css",
@@ -17,6 +18,12 @@ def add_shared_assets(
         "/assets/css/buttons.css",
         "/assets/css/layout.css",
     ]
+
+    # Tool pages
+    if tool_page or auth_page:
+        base_css.append(
+            "/assets/css/tool-back-button.css"
+        )
 
     # Dashboard and settings only on dashboard/settings pages
     if not auth_page and not tool_page:
@@ -38,6 +45,12 @@ def add_shared_assets(
         ]
 
 
+    # Tool pages
+    if tool_page:
+        base_js.append(
+            "/assets/js/tool-back-button.js"
+        )
+
     css_tags = "\n".join(
         f'<link rel="stylesheet" href="{href}">'
         for href in base_css + extra_css
@@ -48,9 +61,15 @@ def add_shared_assets(
         for src in base_js + extra_js
     )
 
+
+    ui.add_head_html(
+        css_tags + "\n" + js_tags
+    )
+
     ui.add_head_html(css_tags + "\n" + js_tags)
     ui.add_head_html(f"""
         <script>
             window.TOOLS = {json.dumps(TOOLS)};
         </script>
         """)
+

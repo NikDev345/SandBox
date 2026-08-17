@@ -1,0 +1,73 @@
+.tool-back-button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    width: fit-content;
+
+    margin: 18px 0 0 24px;
+    padding: 9px 14px;
+
+    color: var(--text-primary, #e2e8f0);
+    background: rgba(255, 255, 255, 0.04);
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        color 0.2s ease;
+}
+
+.tool-back-button svg {
+    width: 17px;
+    height: 17px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    transition: transform 0.2s ease;
+}
+
+.tool-back-button:hover {
+    color: #22d3ee;
+
+    background: rgba(34, 211, 238, 0.08);
+    border-color: rgba(34, 211, 238, 0.25);
+
+    transform: translateX(-2px);
+}
+
+.tool-back-button:hover svg {
+    transform: translateX(-2px);
+}
+
+.tool-back-button:focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+    .tool-back-button {
+        margin: 14px 0 0 16px;
+        padding: 8px 12px;
+
+        font-size: 13px;
+    }
+}

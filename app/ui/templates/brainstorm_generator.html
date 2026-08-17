@@ -159,29 +159,35 @@
   </form>
 
   <!-- ── LOADING STATE ────────────────────────────────────────────────── -->
-  <div class="brn-loading glass-panel" id="brnLoading" hidden>
-    <div class="brn-loading-orb" aria-hidden="true">
-      <span class="brn-orb-ring"></span>
-      <span class="brn-orb-ring"></span>
-      <span class="brn-orb-core"></span>
-    </div>
-    <p class="brn-loading-text" id="brnLoadingText">Analyzing possibilities…</p>
-    <div class="brn-loading-bar"><div class="brn-loading-bar-fill"></div></div>
-  </div>
+<!-- ── LOADING STATE (Quiz-style overlay) ──────────────────────────── -->
+  <div class="brn-loading-overlay" id="brnLoading" hidden>
+    <div class="brn-loading-box glass-panel">
+      <div class="brn-loader-wrapper" aria-hidden="true">
+        <div class="brn-loader"></div>
+      </div>
+      <p class="brn-loading-title">Generating your ideas…</p>
+      <p class="brn-loading-subtitle" id="brnLoadingText">Analyzing possibilities…</p>
 
-  <!-- ── EMPTY STATE ──────────────────────────────────────────────────── -->
-  <div class="brn-empty-state" id="brnEmptyState">
-    <div class="brn-empty-illustration" aria-hidden="true">
-      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 18h6"/>
-        <path d="M10 22h4"/>
-        <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3v.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-.5c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2z"/>
-      </svg>
+      <ul class="brn-loading-steps" id="brnLoadingSteps">
+        <li class="brn-step brn-step--active" data-step="topic">
+          <span class="brn-step-icon"></span>
+          <span>Understanding your topic</span>
+        </li>
+        <li class="brn-step" data-step="explore">
+          <span class="brn-step-icon"></span>
+          <span>Exploring angles &amp; categories</span>
+        </li>
+        <li class="brn-step" data-step="score">
+          <span class="brn-step-icon"></span>
+          <span>Scoring innovation &amp; feasibility</span>
+        </li>
+        <li class="brn-step" data-step="finalize">
+          <span class="brn-step-icon"></span>
+          <span>Finalizing recommendation</span>
+        </li>
+      </ul>
     </div>
-    <p class="brn-empty-title">Your ideas will appear here</p>
-    <p class="brn-empty-desc">Fill in a topic above and generate — or try one of the examples in the hero.</p>
   </div>
-
   <!-- ── RESULT SECTION ───────────────────────────────────────────────── -->
   <div class="brn-results" id="brnResults" hidden>
 
