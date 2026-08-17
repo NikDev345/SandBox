@@ -1770,33 +1770,31 @@
     <div class="sb-footer-column">
       <h3>PRODUCT</h3>
 
-      <a href="/dashboard">Dashboard</a>
-      <a href="/tools">Tools</a>
-      <a href="/workspace">Workspace</a>
+      <a href="#" onclick="document.querySelector('.dashboard-section.active').scrollIntoView({behavior:'smooth'}); return false;">Overview</a>
+      <a href="#tools" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'}); return false;">Tools</a>
+      <a href="#workspace" onclick="document.getElementById('workspace').scrollIntoView({behavior:'smooth'}); return false;">Workspace</a>
       <a href="/history">History</a>
-      <a href="/bookmarks">Bookmarks</a>
+      <a href="/bookmarks_page">Bookmarks</a>
     </div>
 
     <!-- TOOLS -->
     <div class="sb-footer-column">
       <h3>TOOLS</h3>
 
-      <a href="/tools/text-summarizer">AI Text Summarizer</a>
-      <a href="/tools/json-fixer">JSON Fixer</a>
-      <a href="/tools/eli5">ELI5</a>
-      <a href="/tools/sql-generator">SQL Generator</a>
-      <a href="/tools/code-reviewer">Code Reviewer</a>
+      <a href="/text-summarizer">AI Text Summarizer</a>
+      <a href="/json-fixer">JSON Fixer</a>
+      <a href="/eli5">ELI5</a>
+      <a href="/sql-gen">SQL Generator</a>
+      <a href="/code">Code Reviewer</a>
 
-      <a href="/tools">
-        Explore all <span>→</span>
-      </a>
+      <a href="#tools" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'}); return false;">Explore all</a>
     </div>
 
     <!-- COMPANY -->
     <div class="sb-footer-column">
       <h3>COMPANY</h3>
 
-      <a href="/settings">Settings</a>
+      <a href="#account" onclick="document.querySelector('.nav-item[data-section=account]').click(); return false;">Settings</a>
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
       <a href="/support">Support</a>

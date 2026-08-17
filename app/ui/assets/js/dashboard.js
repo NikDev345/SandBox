@@ -1277,6 +1277,17 @@ function initializeSectionNavigation() {
 
     const exists = [...sections].some(s => s.dataset.sectionId === initial);
     showSection(exists ? initial : "dashboard");
+
+    // Expose for footer links and hashchange
+    window.__showSection = showSection;
+
+    // React to hash changes at runtime (footer links, etc.)
+    window.addEventListener("hashchange", () => {
+        const hash = window.location.hash.replace("#", "");
+        if (!hash) return;
+        const sectionExists = [...sections].some(s => s.dataset.sectionId === hash);
+        showSection(sectionExists ? hash : "dashboard");
+    });
 }
 
 function initializeScrollSpy() {
