@@ -112,7 +112,7 @@
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-right: 1px solid var(--border-0);
     transition: transform var(--dur-slow) var(--ease);
-    height: 100vh;
+   
   }
 
   /* Scrollable nav area */
