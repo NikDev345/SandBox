@@ -22,7 +22,7 @@
                 <path d="M12 19L5 12L12 5"></path>
             </svg>
 
-            <span>Back to Tools</span>
+            
         `;
 
         /*
