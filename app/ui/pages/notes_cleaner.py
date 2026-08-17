@@ -9,8 +9,10 @@ def ss_explainer():
     add_page_seo("/notes_cleaner")
 
     add_shared_assets(
-        extra_css=["/assets/css/notes_cleaner.css"],
-        extra_js=["/assets/js/notes_cleaner.js"],
+        extra_css=["/assets/css/notes_cleaner.css",
+                   "/assets/css/tool-back-button.css"],
+        extra_js=["/assets/js/notes_cleaner.js",
+                  "/assets/js/tool-back-button.js"],
         tool_page=True,
     )
 
