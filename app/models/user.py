@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime, Boolean, Integer, Date
 from app.database.engine import Base
 from pydantic import BaseModel, EmailStr, Field
-from datetime import datetime
+from datetime import datetime, date
 import uuid
 
 
@@ -67,7 +67,7 @@ class Users(Base):
     free_credits_remaining = Column(Integer, default=100, nullable=False)
     free_credits_total = Column(Integer, default=100, nullable=False)
 
-    last_credit_reset = Column(Date, default=datetime.utcnow().date, nullable=False)
+    last_credit_reset = Column(Date, default=date.today, nullable=False)
     
     last_updated = Column(String, nullable=True)
 

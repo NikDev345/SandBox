@@ -11,7 +11,7 @@ def check_user_credits(user: Users):
 def reset_credits_if_needed(user: Users):
     today = datetime.utcnow().date()
 
-    if user.last_credit_reset != today:
+    if not user.last_credit_reset or user.last_credit_reset != today:
         user.free_credits_remaining = user.free_credits_total
         user.last_credit_reset = today
         return True
