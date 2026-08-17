@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         loadAppearance()
     ]);
     initializeScrollSpy();
-    initializeSandboxFooter();
+
 
     // =======================================================
     // Theme
@@ -2334,39 +2334,4 @@ if (!document.getElementById("da-spin-style")) {
     s.id = "da-spin-style";
     s.textContent = "@keyframes da-spin { to { transform: rotate(360deg); } }";
     document.head.appendChild(s);
-}
-/* =========================================================
-   SANDBOX FOOTER
-   ========================================================= */
-
-function initSandboxFooter() {
-
-    const yearElement = document.getElementById(
-        "sb-footer-year"
-    );
-
-    if (!yearElement) {
-        return;
-    }
-
-    yearElement.textContent = new Date().getFullYear();
-}
-
-
-/* ---------------------------------------------------------
-   Initialize
-   --------------------------------------------------------- */
-
-if (document.readyState === "loading") {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initSandboxFooter,
-        { once: true }
-    );
-
-} else {
-
-    initSandboxFooter();
-
 }
