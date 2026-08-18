@@ -58,7 +58,7 @@ class LLMGateway:
         key_data = {
             "prompt": request.prompt,
             "system_prompt": request.system_prompt,
-            "model": request.model,
+            "model": request.model or self.client.settings.model,
             "temperature": request.temperature,
             "max_tokens": request.max_output_tokens,
         }

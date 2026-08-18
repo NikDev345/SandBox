@@ -26,7 +26,6 @@ class GeminiClient:
         
         if request.response_mime_type:
             config.response_mime_type = request.response_mime_type
-            config.response_mime_type = "application/json"
             
         response = await self.client.aio.models.generate_content(
             model=model,
