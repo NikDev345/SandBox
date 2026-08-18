@@ -28,7 +28,7 @@ class ProConsService:
             f"{prompt['system_prompt']}\n\n"
             f"{prompt['user_prompt']}"
         )
-        final = await ProConsService._generate_points(final_prompt)
+        final = await ProConsService._generate_points(prompt)
 
         # enforce server-side fields
         final.topic = cleaned_req.topic
@@ -41,7 +41,7 @@ class ProConsService:
         for c in final.cons:
             c.impact = RiskLevel(c.impact.lower())
         
-        user_output = json.dumps(final.model_dump())
+        user_output = json.dumps(final.model_dump(mode="json"))
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -242,7 +242,7 @@ class ProConsService:
         try:
             response = await gateway.generate(
                 LLMRequest(
-                    prompt=prompt,
+                    prompt=prompt["system_prompt"] + "\n\n" + prompt["user_prompt"],
                     temperature=0.3,
                     max_output_tokens=6000,
                     tool_slug="pro_cons",
@@ -252,6 +252,12 @@ class ProConsService:
 
             if not response or not response.text:
                 raise RuntimeError("Empty response from LLM")
+
+            if isinstance(response.text, str):
+                try:
+                    response.text = json.loads(response.text)
+                except:
+                    raise RuntimeError("LLM returned non-JSON string")
 
             if not isinstance(response.text, dict):
                 raise RuntimeError("Invalid structured response from LLM")
