@@ -3,7 +3,7 @@ from app.models.blog_outline_generator import (
     BlogOutlineResponse,
 )
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from SandBox.app.router_llm.gateway import LLMRequest
 from app.services.prompt_engine import PromptEngine
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService

@@ -79,7 +79,7 @@ class ELI5Service:
             gateway,
         )
 
-        from app.models.gateway import (
+        from SandBox.app.router_llm.gateway import (
             LLMRequest,
         )
 

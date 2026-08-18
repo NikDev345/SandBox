@@ -1,23 +1,32 @@
 import os
 from dotenv import load_dotenv
+from SandBox.app.router_llm.gateway import LLMProviderSettings, GatewayConfig
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_BASE_URL = os.getenv("APP_BASE_URL")
 email_api_key = os.getenv('EMAIL_PASSWORD')
 email_from = os.getenv('EMAIL_FROM')
-GEMINI_MODEL = os.getenv("GEMINI_MODEL")
-GEMINI_KEYS = [
-    os.getenv("GEMINI_API_KEY"),
-    os.getenv("GEMINI_API_KEY_2"),
-]
-# remove None / empty
-GEMINI_KEYS = [k for k in GEMINI_KEYS if k]
 
-OPENAI_MODEL = os.getenv("OPENAI_MODEL")
-OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+def load_llm_config():
+    provider = os.getenv("LLM_PROVIDER")
+    api_key = os.getenv("LLM_API_KEY")
+    model = os.getenv("LLM_MODEL")
 
-OPENAI_KEYS = [
-    OPENAI_KEY,
-]
-OPENAI_KEYS = [k.strip() for k in OPENAI_KEYS if k and k.strip()]
+    # basic validation
+    if not provider:
+        raise ValueError("LLM_PROVIDER missing in .env")
+    if not api_key:
+        raise ValueError("LLM_API_KEY missing in .env")
+    if not model:
+        raise ValueError("LLM_MODEL missing in .env")
+
+    provider_settings = LLMProviderSettings(
+        provider=provider.lower(),
+        api_key=api_key,
+        model=model,
+    )
+    
+    gateway_config = GatewayConfig()
+
+    return provider_settings, gateway_config
