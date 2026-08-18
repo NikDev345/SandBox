@@ -1,62 +1,70 @@
+"""
+LLM Configuration
+
+Creates and exposes a single global gateway instance
+used across all tools.
+"""
+
+from __future__ import annotations
+
+from typing import Optional, Type
+from pydantic import BaseModel
+
+# Core gateway
 from app.services.LLM_Gateway.llm_gateway import LLMGateway
-from app.models.gateway import GatewayConfig, ProviderConfig
-from config import *
 
-# gemini provider
-gemini_provider = ProviderConfig(
-    name="gemini",
-    enabled=True,
-    priority=1,
+# Central config loader (ONLY source of truth)
+from config import load_llm_config
 
-    default_model=GEMINI_MODEL,
 
-    supported_models=[
-        GEMINI_MODEL
-    ],
+# =====================================================
+# LOAD CONFIG (Single Source of Truth)
+# =====================================================
 
-    api_keys=GEMINI_KEYS,
+provider_settings, config = load_llm_config()
 
-    max_requests_per_minute=60,
-    max_tokens_per_minute=None,
-)
 
-# openai provider
-openai_provider = ProviderConfig(
-    name="openai",
-    enabled=True,
-    priority=2,  # fallback after gemini
+# =====================================================
+# GLOBAL GATEWAY INSTANCE
+# =====================================================
 
-    default_model="gpt-4o-mini",
-
-    supported_models=[
-        "gpt-4o-mini",
-    ],
-
-    api_keys=OPENAI_KEYS,
-
-    max_requests_per_minute=60,
-    max_tokens_per_minute=None,
-)
-
-# gateway config
-gateway_config = GatewayConfig(
-    timeout=60,
-    max_retries=3,
-    retry_backoff=2.0,
-
-    cache_enabled=True,
-    cache_ttl=600,
-
-    requests_per_minute=60,
-
-    max_failures=5,
-    cooldown_seconds=60,
-)
-
-providers = [gemini_provider]
-if OPENAI_KEYS:
-    providers.append(openai_provider)
 gateway = LLMGateway(
-    config=gateway_config,
-    providers=providers,
+    provider_settings=provider_settings,
+    config=config,
 )
+
+
+# =====================================================
+# OPTIONAL HELPER (STANDARDIZED CALL)
+# =====================================================
+
+async def generate(
+    prompt: str,
+    tool_slug: str,
+    *,
+    temperature: Optional[float] = None,
+    max_output_tokens: Optional[int] = None,
+    response_schema: Optional[Type[BaseModel]] = None,
+    cache: bool = False,
+):
+    """
+    Unified helper so services don’t repeat boilerplate.
+    """
+
+    from app.router_llm.gateway import LLMRequest
+
+    response = await gateway.generate(
+        LLMRequest(
+            prompt=prompt,
+            tool_slug=tool_slug,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+            response_schema=response_schema,
+            cache=cache,
+        )
+    )
+
+    if not response or not response.text:
+        raise RuntimeError("Empty response from LLM")
+
+    return response

@@ -23,8 +23,9 @@ from app.models.sql_generator import (
     GenerationMode,
     SQLDialect,
     ExecutionCost,
+    SQLGeneratorLLMResponse
 )
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.LLM_Gateway.llm_config import gateway
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
@@ -49,9 +50,15 @@ class SQLGeneratorService:
         SQLGeneratorService._validate_request(request)
 
         if request.mode == GenerationMode.AI:
-            sql = await SQLGeneratorService._generate_from_ai_prompt(
+            ai_res = await SQLGeneratorService._generate_from_ai_prompt(
                 request.prompt
             )
+
+            sql = ai_res.sql
+            query_type = ai_res.query_type
+            tables = ai_res.tables
+            complexity = ai_res.complexity
+            execution_cost = ai_res.execution_cost
 
         elif request.mode == GenerationMode.BUILDER:
             sql = SQLGeneratorService._generate_from_builder(
@@ -59,10 +66,30 @@ class SQLGeneratorService:
                 request.dialect
             )
 
+            query_type = request.builder.query_type.value
+            tables = [request.builder.table]
+
+            complexity = "low"
+
+            execution_cost = ExecutionCost(
+                label="Low",
+                score=10,
+                factors=["Simple builder query"]
+            )
+
         else:
             raise ValueError(f"Unsupported generation mode: {request.mode}")
 
         formatted_sql = SQLGeneratorService._format_sql(sql)
+        final_response = SQLGeneratorResponse(
+            success=True,
+            sql=sql,
+            query_type=query_type,
+            tables=tables,
+            complexity=complexity,
+            execution_cost=execution_cost,
+            formatted_sql=formatted_sql,
+        )
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -76,9 +103,10 @@ class SQLGeneratorService:
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=formatted_sql,
+                output=final_response.model_dump_json(),
             )
             execution_id = execution.id 
+            return final_response
         except Exception:
             pass
 
@@ -1062,7 +1090,7 @@ class SQLGeneratorService:
         )
     
     @staticmethod
-    async def _generate_from_ai_prompt(prompt: str) -> str:
+    async def _generate_from_ai_prompt(prompt: str) -> SQLGeneratorLLMResponse:
         """
         Generates SQL from a natural language prompt.
 
@@ -1084,14 +1112,24 @@ class SQLGeneratorService:
         # TODO:
         # Replace with your Gemini/OpenAI implementation.
         try:
-            result = await gateway.generate(LLMRequest(
-                prompt=final_prompt,
-                tool_slug="sql_generator",
-                temperature=0.2,
-            ))
-            sql = SQLGeneratorService._extract_sql(result.text)
-            SQLGeneratorService._validate_generated_sql(sql)
-            return sql
+            response = await gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    temperature=0.2,
+                    max_output_tokens=3000,
+                    tool_slug="sql_generator",
+                    response_schema=SQLGeneratorLLMResponse,  
+                )
+            )
+            
+            if not response or not response.text:
+                raise RuntimeError("Empty response from LLM")
+
+            if not isinstance(response.text, dict):
+                raise RuntimeError("Invalid structured response from LLM")
+
+            return SQLGeneratorLLMResponse(**response.text)
+            
         except Exception as e:
             raise RuntimeError(f"Failed to generate SQL: {e}") from e
         

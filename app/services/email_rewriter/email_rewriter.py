@@ -11,8 +11,8 @@ from app.models.email_rewriter import (
     EmailMode,
     EmailStudioRequest,
     EmailStudioResponse,
+    EmailStudioLLMResponse
 )
-from app.services.email_rewriter.formatter import EmailStudioFormatter
 from app.services.email_rewriter.prompts import (
     GENERATE_SYSTEM_PROMPT,
     GENERATE_USER_PROMPT,
@@ -21,7 +21,7 @@ from app.services.email_rewriter.prompts import (
 )
 from app.services.email_rewriter.validator import EmailStudioValidator
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 
@@ -41,9 +41,23 @@ class EmailStudioService:
 
         cleaned_request = cls._preprocess_input(request)
         prompt = cls._build_prompt(cleaned_request)
-        raw_response = await cls._generate_email(prompt)
-        parsed_response = cls._parse_response(raw_response)
-        response = EmailStudioFormatter.format(parsed_response)
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                temperature=0.5,
+                max_output_tokens=8000,
+                tool_slug="email_rewriter",
+                response_schema=EmailStudioLLMResponse
+            )
+        )
+        if not llm_response or not llm_response.text:
+            raise RuntimeError("Empty response from LLM")
+
+        if not isinstance(llm_response.text, dict):
+            raise RuntimeError("Invalid structured response")
+
+        data = EmailStudioLLMResponse(**llm_response.text)
+        
         tool = ToolService.get_tool_by_slug(
                     db=db,
                     slug="email_rewriter",
@@ -56,12 +70,23 @@ class EmailStudioService:
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=json.dumps(parsed_response),
+                output=json.dumps(data.model_dump())
             )
         except Exception:
             pass
+            execution_id = execution_record.id if execution_record else None
+        response = EmailStudioResponse(
+            subject=data.subject,
+            greeting=data.greeting,
+            body=data.body,
+            closing=data.closing,
+            full_email=data.full_email,
+            suggestions=data.suggestions,
+            execution_id=execution_id
+        )
+
         validated = cls._validate_response(response)
-        validated.execution_id = execution_record.id if execution_record else None
+
         return validated
 
     @classmethod
@@ -179,49 +204,6 @@ class EmailStudioService:
             )
 
         raise ValueError("Unsupported email mode.")
-
-    @staticmethod
-    async def _generate_email(prompt: str) -> str:
-        """Call Gemini to generate the raw email JSON string."""
-
-        try:
-            request = LLMRequest(
-                prompt=prompt,
-                temperature=0.5,
-                max_output_tokens=8000,
-                response_mime_type="application/json",
-                tool_slug="email_rewriter"
-            )
-
-            response = await gateway.generate(request)
-
-        except Exception as exc:
-            raise RuntimeError("Failed to generate email.") from exc
-
-        if not response or not response.text:
-            raise RuntimeError("Empty response from LLM Gateway")
-
-        return response.text.strip()
-
-    @staticmethod
-    def _parse_response(response: str) -> dict[str, Any]:
-        """Parse Gemini JSON after removing optional markdown fences."""
-
-        text = response.strip()
-
-        if text.startswith("```"):
-            text = re.sub(r"^```(?:json)?", "", text, flags=re.IGNORECASE)
-            text = re.sub(r"```$", "", text).strip()
-
-        try:
-            parsed = json.loads(text)
-        except json.JSONDecodeError as exc:
-            raise RuntimeError("AI returned invalid JSON.") from exc
-
-        if not isinstance(parsed, dict):
-            raise RuntimeError("AI response must be a JSON object.")
-
-        return parsed
 
     @staticmethod
     def _validate_response(

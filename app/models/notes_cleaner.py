@@ -48,3 +48,6 @@ class NotesCleanerResponse(BaseModel):
     )
     
     execution_id: Optional[str] = None
+    
+class NotesCleanerLLMResponse(BaseModel):
+    cleaned_notes: str

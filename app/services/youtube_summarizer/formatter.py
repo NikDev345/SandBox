@@ -24,10 +24,7 @@ class YouTubeSummaryFormatter:
 
         timeline = []
 
-        for item in data.get("timeline", []):
-
-            if not isinstance(item, dict):
-                continue
+        for item in data["timeline"]:
 
             timeline.append(
                 TimelineItem(

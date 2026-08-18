@@ -171,3 +171,29 @@ class QuizResponse(BaseModel):
     error: Optional[str] = None
     
     execution_id: Optional[str] = None
+    
+class QuizLLMOption(BaseModel):
+    id: str
+    text: str
+
+
+class QuizLLMQuestion(BaseModel):
+    id: Optional[str] = None
+    question: str
+    question_type: str
+    options: List[QuizLLMOption] = []
+    correct_answers: List[str] = []
+    explanation: Optional[str] = None
+    hint: Optional[str] = None
+    difficulty: Optional[str] = "medium"
+    marks: Optional[int] = 1
+
+
+class QuizLLMResponse(BaseModel):
+    title: Optional[str] = "Generated Quiz"
+    description: Optional[str] = None
+    questions: List[QuizLLMQuestion]
+
+    estimated_time_minutes: Optional[int] = 10
+    language: Optional[str] = "english"
+    difficulty: Optional[str] = "medium"

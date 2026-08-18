@@ -29,12 +29,10 @@ from sqlalchemy.orm import Session
 from app.models.decision_maker import (
     DecisionMakerRequest,
     DecisionMakerResponse,
+    DecisionLLMResponse
 )
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
-from app.services.decision_maker.formatter import (
-    DecisionMakerFormatter,
-)
+from app.router_llm.gateway import LLMRequest
 from app.services.decision_maker.prompt_engine import PromptEngine
 from app.services.decision_maker.validator import (
     DecisionMakerValidator,
@@ -71,14 +69,24 @@ class DecisionMakerService:
         # ----------------------------------------------------
 
         try:
-            request_payload = LLMRequest(
-                prompt=prompt,
-                temperature=0.4,
-                max_tokens=2000,
-                tool_slug='decision_maker',
+            llm_response = await gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    temperature=0.4,
+                    max_output_tokens=2000,
+                    tool_slug="decision_maker",
+                    response_schema=DecisionLLMResponse
+                )
             )
-
-            ai_response = await gateway.generate(request_payload)
+            
+            if not llm_response or not llm_response.text:
+                raise ValueError("Empty response from LLM")
+    
+            if not isinstance(llm_response.text, dict):
+                raise ValueError("Invalid structured response")
+    
+            data = DecisionLLMResponse(**llm_response.text)
+            
             tool = ToolService.get_tool_by_slug(
                     db=db,
                     slug="decision_maker",
@@ -90,7 +98,7 @@ class DecisionMakerService:
                     user_id=user_id,
                     tool_id=tool_id,
                     user_input=request.model_dump_json(),
-                    output=json.dumps(ai_response.model_dump()),
+                    output=json.dumps(data.model_dump())
                 )
             execution_id = execution.id
         except Exception as exc:
@@ -99,6 +107,15 @@ class DecisionMakerService:
                 status_code=500,
                 detail=str(exc),
             ) from exc
-        response = DecisionMakerFormatter.format(ai_response.text)
-        response.execution_id = execution_id
+            
+        response = DecisionMakerResponse(
+            success=True,
+            summary=data.summary,
+            recommendation=data.recommendation,
+            analysis=data.analysis,
+            key_factors=data.key_factors,
+            final_advice=data.final_advice,
+            disclaimer=data.disclaimer,
+            execution_id=execution_id
+        )
         return response

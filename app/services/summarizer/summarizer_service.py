@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 
 from sqlalchemy.orm import Session
-
+from app.models.summarizer import SummarizeResponse
 from app.services.prompt_engine import PromptEngine
 
 
@@ -63,7 +63,7 @@ class SummarizerService:
             gateway,
         )
 
-        from app.models.gateway import LLMRequest
+        from app.router_llm.gateway import LLMRequest
 
         # ====================================================
         # GENERATE
@@ -74,16 +74,14 @@ class SummarizerService:
                 prompt=prompt,
                 tool_slug="text_summarizer",
                 temperature=0.5,
+                max_output_tokens=2000,
             )
         )
 
-        if not result or not result.text:
-            raise RuntimeError(
-                "AI returned an empty summary."
-            )
+        if not result or not result.text or not result.text.strip():
+            raise RuntimeError("AI returned an empty summary.")
 
         summary = result.text.strip()
-
         # ====================================================
         # SAVE EXECUTION
         # ====================================================
@@ -127,7 +125,7 @@ class SummarizerService:
                         user_id=user_id,
                         tool_id=tool.id,
                         user_input=user_input,
-                        output=summary,
+                        output=json.dumps({"summary": summary}, ensure_ascii=False),
                     )
                 )
 
@@ -146,4 +144,7 @@ class SummarizerService:
         # RETURN
         # ====================================================
 
-        return summary, execution_id
+        return SummarizeResponse(
+            summary=summary,
+            execution_id=execution_id
+        )

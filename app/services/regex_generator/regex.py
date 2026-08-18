@@ -1,8 +1,8 @@
-from app.models.regex import RegexGeneratorRequest, RegexEngine, RegexMatchResult, RegexGeneratorResponse
+from app.models.regex import RegexGeneratorRequest, RegexLLMResponse, RegexEngine, RegexMatchResult, RegexGeneratorResponse
 import re, string, json
 from typing import Optional,List
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
@@ -254,46 +254,47 @@ class Regex:
         - Return ONLY valid JSON.
         - No markdown.
         - No code fences.
-        - The regex must be compatible with the requested engine.
-        - Keep it readable and efficient.
-        - Avoid catastrophic backtracking.
-
-        JSON Schema:
-
-        {
-            "regex": "...",
-            "explanation": "..."
-        }
+        - Regex must be compatible with the given engine.
+        - Keep it efficient and safe.
         """
-        
+
         user_prompt = f"""
         Engine: {request.engine}
-        
+
         Request:
         {request.prompt}
         """
-        
+
         final_prompt = f"{prompt}\n{user_prompt}"
-        
+
         try:
-            result_obj = await gateway.generate(LLMRequest(
-                prompt=final_prompt,
-                tool_slug="regex_generator",
-                response_mime_type="application/json",
-            ))
-            result = json.loads(result_obj.text.strip())
-            if "regex" not in result or "explanation" not in result:
-                raise ValueError("Invalid AI response.")
-            
-            return RegexGeneratorResponse(
-                regex=result['regex'],
-                explanation=result['explanation'],
-                source='ai',
-                engine=request.engine
+            response = await gateway.generate(
+                LLMRequest(
+                    prompt=final_prompt,
+                    temperature=0.2,
+                    max_output_tokens=2000,
+                    tool_slug="regex_generator",
+                    response_schema=RegexLLMResponse,   # ✅ KEY FIX
+                )
             )
-            
+
+            if not response or not response.text:
+                raise RuntimeError("Empty response from LLM")
+
+            if not isinstance(response.text, dict):
+                raise RuntimeError("Invalid structured response")
+
+            data = RegexLLMResponse(**response.text)
+
+            return RegexGeneratorResponse(
+                regex=data.regex,
+                explanation=data.explanation,
+                source="ai",
+                engine=request.engine,
+            )
+
         except Exception as e:
-            raise ValueError(f"Failed to generate regex: {e}") from e
+            raise RuntimeError(f"AI regex generation failed: {e}") from e
         
     @staticmethod
     def _validate_regex(regex: str):
@@ -408,7 +409,11 @@ class Regex:
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=response.regex,
+                output=json.dumps({
+                    "regex": response.regex,
+                    "explanation": response.explanation,
+                    "source": response.source
+                })
             )
             response.execution_id = execution.id if execution else None
         except Exception:

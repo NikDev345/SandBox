@@ -4,7 +4,7 @@ from docx import Document
 import fitz, re, json, spacy
 from spacy.language import Language
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
@@ -233,7 +233,6 @@ class ActionItemService:
     - Infer the deadline only if explicitly mentioned; otherwise use null.
     - Preserve the original wording of each task as much as possible and dont make the task to longer.
     - Paraphrase the task so that it contains 12-17 words without changing its meaning.
-    - Return [] if there are no action items.
     - If there are no action items, return: 
         {{
         "action_items": []
@@ -253,52 +252,20 @@ class ActionItemService:
                     prompt=prompt,
                     temperature=0.4,
                     max_output_tokens=8000,
-                    response_mime_type = "application/json",
+                    response_schema=ActionItemExtractorLLMResponse,
                     tool_slug="item_extractor",
                     cache=False,
                 )
             )
 
             response = llm_response.text
+            if not isinstance(response, dict):
+                raise ValueError("Invalid structured response")
             if not response:
                 raise ValueError("The AI returned an empty response.")
             return response
         except Exception as e:
             raise ValueError(f"Failed to generate response: {e}") from e
-        
-    @staticmethod
-    def _parse_response(response: str) -> list[ActionItem]:
-        try:
-            cleaned = response.strip()
-
-            # remove markdown
-            if cleaned.startswith("```"):
-                cleaned = (
-                    cleaned.replace("```json", "")
-                    .replace("```", "")
-                    .strip()
-                )
-
-            # ✅ HANDLE [] CASE FIRST
-            if cleaned.startswith("["):
-                data = {"action_items": json.loads(cleaned)}
-            else:
-                start = cleaned.find("{")
-                end = cleaned.rfind("}") + 1
-                if start == -1 or end == 0:
-                    raise ValueError(f"No valid JSON object found: {cleaned}")
-
-                cleaned = cleaned[start:end]
-                data = json.loads(cleaned)
-
-            parsed = ActionItemExtractorResponse.model_validate(data)
-            return parsed.action_items
-
-        except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON from AI: {cleaned}") from e
-
-        except ValidationError as e:
-            raise ValueError(f"Invalid AI response schema: {e}") from e
         
     @staticmethod
     def _remove_duplicates(action_items: list[ActionItem]) -> list[ActionItem]:
@@ -352,13 +319,21 @@ class ActionItemService:
 
         prompt = ActionItemService._build_prompt(candidate_sentences)
 
-        ai_response = await ActionItemService._call_ai(prompt)
+        llm_response = await ActionItemService._call_ai(prompt)
 
-        action_items = ActionItemService._parse_response(ai_response)
+        if not llm_response or not llm_response.text:
+            raise RuntimeError("Empty response from LLM")
+
+        if not isinstance(llm_response.text, dict):
+            raise RuntimeError("Invalid structured response")
+
+        data = ActionItemExtractorLLMResponse(**llm_response.text)
+
+        action_items = data.action_items
 
         action_items = ActionItemService._remove_duplicates(action_items)
         
-        tool = ToolService.get_tool_by_slug(
+        tool = ToolService.get_tool_by_slug(    
                 db=db,
                 slug="item_extractor",
             )
@@ -370,12 +345,22 @@ class ActionItemService:
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=str(ai_response),
+                output=json.dumps(data.model_dump())
             )
             execution_id = execution.id if execution else None
         except Exception:
             pass
-
-        response = ActionItemService._build_response(action_items)
-        response.execution_id = execution_id
+        
+        items = [
+            ActionItem(
+                task=i.task,
+                assignee=i.assignee,
+                deadline=i.deadline
+            )
+            for i in data.action_items
+        ]
+        response = ActionItemService._build_response(
+            items,
+            execution_id=execution_id
+        )
         return response

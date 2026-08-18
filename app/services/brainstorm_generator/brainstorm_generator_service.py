@@ -1,21 +1,8 @@
-"""
-Brainstorm Generator Service
-
-Flow:
-    Validate
-        ↓
-    Build Prompt
-        ↓
-    Gemini
-        ↓
-    Formatter
-        ↓
-    Response
-"""
 
 from app.models.brainstorm_generator import (
     BrainstormRequest,
     BrainstormResponse,
+    BrainstormLLMResponse
 )
 from app.services.brainstorm_generator.validator import (
     BrainstormValidator,
@@ -23,11 +10,9 @@ from app.services.brainstorm_generator.validator import (
 from app.services.brainstorm_generator.prompt_engine import (
     BrainstormPromptEngine,
 )
-from app.services.brainstorm_generator.formatter import (
-    BrainstormFormatter,
-)
+
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
@@ -58,20 +43,23 @@ class BrainstormGeneratorService:
         prompt = BrainstormPromptEngine.build_prompt(request)
 
         # Step 3: Generate response from Gemini
-        raw_response = await gateway.generate(LLMRequest(
-            prompt=prompt,
-            tool_slug="brainstorm_generator",
-            temperature=0.5,
-        ))
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                tool_slug="brainstorm_generator",
+                temperature=0.5,
+                response_schema=BrainstormLLMResponse
+            )
+        )
 
-        if raw_response is None:
-            raise ValueError("Gemini returned no response.")
-
-        if not raw_response or not raw_response.text or not raw_response.text.strip():
-            raise ValueError("Gemini returned an empty response.")
-
+        if not llm_response or not llm_response.text:
+            raise ValueError("LLM returned empty response")
+        
+        response = BrainstormResponse(
+            **llm_response.text,
+            execution_id=execution_id
+        )
         # Step 4: Format & validate response
-        response = BrainstormFormatter.format(raw_response.text)
         user_input = request.model_dump_json()
         
         tool = ToolService.get_tool_by_slug(

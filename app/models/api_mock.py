@@ -9,8 +9,9 @@ from sqlalchemy import (
     JSON,
     String,
 )
+from sqlalchemy.sql import func
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from app.database.engine import Base
 
 class MockAPI(Base):
@@ -48,22 +49,12 @@ class MockAPI(Base):
         nullable=False,
     )
 
-    response_headers = Column(
-        JSON,
-        nullable=False,
-        default=dict,
-    )
+    response_headers = Column(JSON, nullable=False, default=lambda: {})
 
     response_delay_ms = Column(
         Integer,
         nullable=False,
         default=0,
-    )
-
-    auth_type = Column(
-        String,
-        nullable=False,
-        default="NONE",
     )
 
     auth_config = Column(
@@ -123,6 +114,20 @@ class AuthConfig(BaseModel):
     # Basic Authentication
     username: Optional[str] = None
     password: Optional[str] = None
+    
+    @model_validator(mode="after")
+    def validate_auth(self):
+        if self.auth_type == AuthType.BEARER and not self.bearer_token:
+            raise ValueError("bearer_token required for BEARER auth")
+
+        if self.auth_type == AuthType.API_KEY and not self.api_key:
+            raise ValueError("api_key required for API_KEY auth")
+
+        if self.auth_type == AuthType.BASIC:
+            if not self.username or not self.password:
+                raise ValueError("username and password required for BASIC auth")
+
+        return self
 
 
 class MockAPIRequest(BaseModel):

@@ -1,12 +1,12 @@
-from app.models.notes_cleaner import NotesCleanerRequest, NotesCleanerResponse
+from app.models.notes_cleaner import NotesCleanerRequest, NotesCleanerResponse, NotesCleanerLLMResponse
 from fastapi import UploadFile
 from pathlib import Path
 from pypdf import PdfReader
 from io import BytesIO
 from docx import Document
-import re, asyncio
+import re, asyncio, json
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
@@ -153,20 +153,36 @@ class NotesCleaner:
         - Keep the same language as the input.
         - Return only the cleaned notes as plain readable text — no markdown
           syntax, no raw symbols used for formatting.
+        - Return ONLY valid JSON:
+
+            {
+            "cleaned_notes": "string"
+            }
+
+            Do not return plain text.
+            Do not wrap in markdown.
         """
             
     @staticmethod
     async def _clean_chunk(chunk, prompt):
         final_prompt = f"{prompt}\n\nNotes:\n{chunk}"
         try:
-            result = await gateway.generate(LLMRequest(
-                prompt=final_prompt,
-                tool_slug="notes_cleaner",
-                cache=False,
-            ))
-            if not result.text or not result.text.strip():
-                raise ValueError("LLM returned an empty response.")
-            return result.text.strip()
+            result = await gateway.generate(
+                LLMRequest(
+                    prompt=final_prompt,
+                    temperature=0.3,
+                    max_output_tokens=4000,
+                    tool_slug="notes_cleaner",
+                    response_schema=NotesCleanerLLMResponse,
+                    cache=False,
+                )
+            )
+
+            if not result or not isinstance(result.text, dict):
+                raise RuntimeError("Invalid structured response")
+
+            data = NotesCleanerLLMResponse(**result.text)
+            return data.cleaned_notes.strip()
         except Exception as e:
             raise ValueError(f"API Failed: {e}") from e
         
@@ -174,8 +190,14 @@ class NotesCleaner:
     async def _clean_chunks_parallel(chunks: list[str], prompt: str):
         tasks = [NotesCleaner._clean_chunk(chunk, prompt) for chunk in chunks]
         
-        cleaned_chunks = await asyncio.gather(*tasks)
-        return cleaned_chunks
+        cleaned_chunks = await asyncio.gather(*tasks, return_exceptions=True)
+        safe_chunks = []
+        for chunk in cleaned_chunks:
+            if isinstance(chunk, Exception):
+                continue
+            safe_chunks.append(chunk)
+
+        return safe_chunks
     
     @staticmethod
     def _merge_chunks(cleaned_chunks):
@@ -205,14 +227,22 @@ class NotesCleaner:
         """
         
         try:
-            result = await gateway.generate(LLMRequest(
-                prompt=prompt,
-                tool_slug="notes_cleaner",
-                cache=False,
-            ))
-            if not result.text or not result.text.strip():
-                raise ValueError("LLM returned an empty response.")
-            return result.text.strip()
+            result = await gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    temperature=0.2,
+                    max_output_tokens=4000,
+                    tool_slug="notes_cleaner",
+                    response_schema=NotesCleanerLLMResponse,
+                    cache=False,
+                )
+            )
+
+            if not result or not isinstance(result.text, dict):
+                raise RuntimeError("Invalid structured response")
+
+            data = NotesCleanerLLMResponse(**result.text)
+            return data.cleaned_notes.strip()
         except Exception as e:
             raise ValueError(f"API Failed: {e}") from e
         
@@ -238,7 +268,7 @@ class NotesCleaner:
         )
         
     @staticmethod
-    async def _clean_notes(user: None, db: Session, request: NotesCleanerRequest, file: UploadFile | None = None) -> NotesCleanerResponse:
+    async def _clean_notes(user: Session, db: Session, request: NotesCleanerRequest, file: UploadFile | None = None) -> NotesCleanerResponse:
         from app.services.credit_service import enforce_credit_limit
         enforce_credit_limit(db, user['sub'])
         source, data = await NotesCleaner._validate_request(request, file)
@@ -267,17 +297,20 @@ class NotesCleaner:
         tool_id = tool.id if tool else "notes_cleaner"
         execution_id = None
         try:
+            response = NotesCleaner._parse_response(final_text)
             execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=final_text,
+                output=json.dumps({
+                    "title": response.title,
+                    "length": len(final_text),
+                })
             )
             execution_id = execution.id 
         except Exception:
             pass
         
-        response = NotesCleaner._parse_response(final_text)
         response.execution_id = execution_id   
         return response

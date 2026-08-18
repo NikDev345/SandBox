@@ -60,3 +60,6 @@ class GitData(BaseModel):
     changed_files: List[str]
 
     diff: str
+    
+class CommitLLMResponse(BaseModel):
+    suggestions: List[CommitSuggestion]

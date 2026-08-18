@@ -1,9 +1,10 @@
 from app.models.blog_outline_generator import (
     BlogOutlineRequest,
     BlogOutlineResponse,
+    BlogOutlineSchema
 )
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.prompt_engine import PromptEngine
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
@@ -24,15 +25,21 @@ class BlogOutlineGeneratorService:
 
         prompt = PromptEngine.build_blog_outline_prompt(request)
 
-        llm_response = await gateway.generate(LLMRequest(
-            prompt=prompt,
-            tool_slug="blog_generator",
-            temperature=0.7,
-        ))
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                tool_slug="blog_generator",
+                temperature=0.7,
+                response_schema=BlogOutlineSchema
+            )
+        )
         if not llm_response or not llm_response.text:
             raise ValueError("Empty response from LLM")
 
-        result = llm_response.text.strip()
+        if not llm_response or not llm_response.text:
+            raise ValueError("Empty response from LLM")
+
+        result = llm_response.text
         
         user_input = json.dumps({
             "topic": request.topic,
@@ -68,14 +75,14 @@ class BlogOutlineGeneratorService:
             user_id=user_id,
             tool_id=tool_id,
             user_input=user_input,
-            output=result,
+            output=json.dumps(result),
             )
             execution_id = execution.id if execution else None
         except Exception:
             pass
 
         return BlogOutlineResponse(
-            outline=result,
+            outline=json.dumps(result, indent=2),
             usage=None,
             execution_id=execution_id,
         )

@@ -1,63 +1,96 @@
-from app.models.error_explainer import ErrorExplainerRequest, ErrorExplainerResponse
-import tempfile, textwrap, json, asyncio
-from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
-from typing import Optional
-from pydantic import ValidationError
-from app.services.tool_executor import ExecutionService
-from app.services.tool_service import ToolService
+"""
+Error Explainer Service
+----------------------
+Explains errors using LLM with support for:
+• Structured output (Pydantic schema)
+• Large input handling via temp files (1500+ chars)
+• Execution tracking
+"""
+
+from __future__ import annotations
+
+import json
+import tempfile
+import textwrap
+from typing import Optional, Tuple
+
 from sqlalchemy.orm import Session
+from pydantic import ValidationError
+
 from google.genai import types
 
+from app.models.error_explainer import (
+    ErrorExplainerRequest,
+    ErrorExplainerResponse,
+)
+
+from app.services.LLM_Gateway.llm_config import gateway
+from app.router_llm.gateway import LLMRequest
+from app.services.tool_executor import ExecutionService
+from app.services.tool_service import ToolService
+from app.services.credit_service import enforce_credit_limit
+
+
 class ErrorExplainer:
+    """
+    Handles full error explanation pipeline.
+    """
+
+    THRESHOLD = 1500  # chars
+
+    # ====================================================
+    # INPUT VALIDATION + FILE HANDLING
+    # ====================================================
+
     @staticmethod
-    def _validate_input(request: ErrorExplainerRequest):
-        thres = 1500
-        
-        # helper for creating txt file
-        def create_temp_file(content: str):
-            with tempfile.NamedTemporaryFile(
-                mode='w',
-                suffix='.txt',
-                delete=False,
-                encoding='utf-8'
-            ) as temp_file:
-                temp_file.write(content)
-                return temp_file.name
-        
+    def _create_temp_file(content: str) -> str:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".txt",
+            delete=False,
+            encoding="utf-8",
+        ) as temp_file:
+            temp_file.write(content)
+            return temp_file.name
+
+    @classmethod
+    def _prepare_input(
+        cls,
+        request: ErrorExplainerRequest,
+    ) -> Tuple[str, Optional[str], bool, Optional[str], Optional[str]]:
+
         if not request.error or not request.error.strip():
-            raise ValueError("Give the error!")
+            raise ValueError("Error is required")
+
         error = request.error.strip()
-        code = request.code.strip() if request.code and request.code.strip() else None
+        code = request.code.strip() if request.code else None
+
         error_file_path = None
         code_file_path = None
-        if len(error) > thres:
-            error_file_path = create_temp_file(error)
-            
-        if code is not None and len(code) > thres:
-            code_file_path = create_temp_file(code) 
-        use_file = error_file_path is not None or code_file_path is not None
-        
-        return (error, code, use_file, error_file_path, code_file_path)
-            
-        
+
+        # Use file if exceeds threshold
+        if len(error) > cls.THRESHOLD:
+            error_file_path = cls._create_temp_file(error)
+
+        if code and len(code) > cls.THRESHOLD:
+            code_file_path = cls._create_temp_file(code)
+
+        use_file = bool(error_file_path or code_file_path)
+
+        return error, code, use_file, error_file_path, code_file_path
+
+    # ====================================================
+    # PROMPT
+    # ====================================================
+
     @staticmethod
-    def _build_prompt():
+    def _build_prompt() -> str:
         return textwrap.dedent("""
-    You are an expert software debugging assistant.
+You are an expert software debugging assistant.
 
-Your task is to analyze the provided error message, stack trace, log, and optional source code to determine the actual issue.
+Analyze the provided error and optional source code.
 
-Instructions:
-- Read the provided error carefully.
-- If source code is provided, use it to identify the root cause.
-- If no source code is provided, explain the error using only the available information.
-- Keep the explanation clear, concise, and beginner-friendly.
-- If a corrected code snippet, terminal command, or configuration is helpful, include it in the "code" field.
-- If no code is required, return null for the "code" field.
-- Do not make up information that is not supported by the provided input.
-
-Return ONLY valid JSON matching this schema:
+Return ONLY valid JSON:
 
 {
   "title": "string",
@@ -66,11 +99,15 @@ Return ONLY valid JSON matching this schema:
 }
 
 Rules:
-- Do not wrap the JSON in markdown.
-- Do not include any additional text before or after the JSON.
-- Ensure the response is valid JSON.
-    """)
-    
+- No markdown
+- No extra text
+- Strict JSON only
+""")
+
+    # ====================================================
+    # AI CALL
+    # ====================================================
+
     @staticmethod
     async def _call_ai(
         prompt: str,
@@ -79,17 +116,18 @@ Rules:
         use_file: bool,
         error_file_path: Optional[str],
         code_file_path: Optional[str],
-    ):
+    ) -> dict:
+
         contents = []
 
-        # ---- FILE MODE ----
+        # -------- FILE MODE --------
         if use_file:
             if error_file_path:
                 with open(error_file_path, "rb") as f:
                     contents.append(
                         types.Part.from_bytes(
                             data=f.read(),
-                            mime_type="text/plain"
+                            mime_type="text/plain",
                         )
                     )
 
@@ -98,81 +136,75 @@ Rules:
                     contents.append(
                         types.Part.from_bytes(
                             data=f.read(),
-                            mime_type="text/plain"
+                            mime_type="text/plain",
                         )
                     )
 
             user_prompt = prompt
 
             if not error_file_path:
-                user_prompt += f"\n\nError:\n{error}"
+                user_prompt += f"\n\n### ERROR ###\n{error}"
 
             if code and not code_file_path:
-                user_prompt += f"\n\nSource Code:\n{code}"
+                user_prompt += f"\n\n### CODE ###\n{code}"
 
-        # ---- TEXT MODE ----
+        # -------- TEXT MODE --------
         else:
-            user_prompt = f"{prompt}\n\nError:\n{error}"
+            user_prompt = f"{prompt}\n\n### ERROR ###\n{error}"
+
             if code:
-                user_prompt += f"\n\nSource Code:\n{code}"
+                user_prompt += f"\n\n### CODE ###\n{code}"
 
-        # ---- LLM REQUEST ----
-        llm_request = LLMRequest(
-            prompt=user_prompt,
-            contents=contents,              # empty if text mode
-            temperature=0.2,                # structured output
-            max_output_tokens=8000,
-
-            response_mime_type="application/json",
-
-            cache=False,                    # error explanations shouldn't be cached
-            tool_slug="error_explainer",
+        # -------- LLM REQUEST --------
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=user_prompt,
+                contents=contents,  # empty if text mode
+                temperature=0.2,
+                max_output_tokens=4000,
+                response_mime_type="application/json",
+                tool_slug="error_explainer",
+                response_schema=ErrorExplainerResponse,
+                cache=False,
+            )
         )
 
-        response = await gateway.generate(llm_request)
+        if not llm_response or not llm_response.text:
+            raise RuntimeError("Empty response from LLM")
 
-        return response.text.strip()
-    
+        if not isinstance(llm_response.text, dict):
+            raise RuntimeError("Invalid structured response")
+
+        return llm_response.text
+
+    # ====================================================
+    # MAIN SERVICE
+    # ====================================================
+
     @staticmethod
-    def _parse_response(raw_text) -> ErrorExplainerResponse:
-        raw_text = raw_text.strip()
-        # Remove markdown code fences if present
-        if raw_text.startswith("```"):
-            lines = raw_text.splitlines()
+    async def explain_error(
+        request: ErrorExplainerRequest,
+        user_id: str,
+        db: Session,
+    ) -> ErrorExplainerResponse:
 
-            # Remove opening fence (``` or ```json)
-            lines = lines[1:]
-
-            # Remove closing fence
-            if lines and lines[-1].strip() == "```":
-                lines = lines[:-1]
-
-            raw_text = "\n".join(lines).strip()
-
-        try:
-            data = json.loads(raw_text)
-        except json.JSONDecodeError as e:
-            raise ValueError(f"AI returned invalid JSON: {e}") from e
-        
-        try:
-            return ErrorExplainerResponse.model_validate(data)
-        except ValidationError as e:
-            raise ValueError(f"AI response does not match the expected schema: {e}") from e
-     
-    @staticmethod
-    async def explain_error(request: ErrorExplainerRequest, user_id: str, db: Session) -> ErrorExplainerResponse:
-        from app.services.credit_service import enforce_credit_limit
+        # ---- Credit check ----
         enforce_credit_limit(db, user_id)
+
+        # ---- Prepare input ----
         (
             error,
             code,
             use_file,
             error_file_path,
             code_file_path,
-        ) = ErrorExplainer._validate_input(request)
+        ) = ErrorExplainer._prepare_input(request)
+
+        # ---- Prompt ----
         prompt = ErrorExplainer._build_prompt()
-        
-        raw_response = await ErrorExplainer._call_ai(
+
+        # ---- AI Call ----
+        raw_data = await ErrorExplainer._call_ai(
             prompt=prompt,
             error=error,
             code=code,
@@ -180,24 +212,33 @@ Rules:
             error_file_path=error_file_path,
             code_file_path=code_file_path,
         )
-        
-        tool = ToolService.get_tool_by_slug(
-                    db=db,
-                    slug="error_explainer",
-                )
-        tool_id = tool.id if tool else "error_explainer"
-        execution_record = None      
+
+        # ---- Validate response ----
         try:
-            execution_record = ExecutionService.create_execution(
+            data = ErrorExplainerResponse(**raw_data)
+        except ValidationError as e:
+            raise RuntimeError(f"Invalid AI response format: {e}")
+
+        # ---- Save execution ----
+        execution_id = None
+        try:
+            tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="error_explainer",
+            )
+
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
-                tool_id=tool_id,
+                tool_id=tool.id if tool else "error_explainer",
                 user_input=request.model_dump_json(),
-                output=str(raw_response),
+                output=json.dumps(data.model_dump()),
             )
+
+            execution_id = execution.id
+
         except Exception:
-            pass
-        
-        result = ErrorExplainer._parse_response(raw_response)
-        result.execution_id = execution_record.id if execution_record else None
-        return result
+            pass  # do not break flow
+
+        data.execution_id = execution_id
+        return data

@@ -140,3 +140,34 @@ class FlashcardGeneratorResponse(BaseModel):
     error: Optional[str] = None
     
     execution_id: Optional[str] = None 
+
+class FlashcardLLMItem(BaseModel):
+    id: Optional[str] = None
+
+    front: str
+    back: str
+
+    card_type: Optional[str] = None
+    difficulty: Optional[str] = None
+    category: Optional[str] = "General"
+
+    tags: Optional[List[str]] = []
+    keywords: Optional[List[str]] = []
+
+    example: Optional[str] = None
+    memory_tip: Optional[str] = None
+
+
+class FlashcardGeneratorLLMResponse(BaseModel):
+    title: Optional[str] = Field(
+        default="Generated Flashcards"
+    )
+
+    description: Optional[str] = None
+
+    flashcards: List[FlashcardLLMItem]
+
+    # Optional metadata (used in formatter fallback)
+    difficulty: Optional[str] = None
+    card_type: Optional[str] = None
+    language: Optional[str] = None

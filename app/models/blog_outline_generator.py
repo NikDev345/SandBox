@@ -57,6 +57,18 @@ class Language(str, Enum):
     SPANISH = "Spanish"
     FRENCH = "French"
     GERMAN = "German"
+    
+class OutlineSection(BaseModel):
+    title: str
+    points: List[str]
+
+
+class BlogOutlineSchema(BaseModel):
+    title: str
+    introduction: str | None
+    sections: List[OutlineSection]
+    conclusion: str | None
+    faqs: List[str] | None
 
 
 class BlogOutlineRequest(BaseModel):

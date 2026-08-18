@@ -4,7 +4,7 @@ from typing import Optional
 from pathlib import Path
 import re, tempfile, lizard, json, os
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from app.services.tool_executor import ExecutionService
@@ -18,7 +18,6 @@ class CodeReview:
     chunk_size = 150
     overlap = 20
     AI_MAX_CHARS = 50_000
-    client = gateway
     
     EXTENSION_TO_LANGUAGE = {
         "py": "python",
@@ -429,60 +428,6 @@ class CodeReview:
             )
 
         return "\n".join(prompt)
-    
-    @staticmethod
-    async def _call_ai(prompt):
-        try:
-            # Use generate_json instead of generate
-            request = LLMRequest(
-                prompt=prompt,
-                temperature=0.2,
-                max_tokens=10000,
-                response_mime_type="application/json",
-                tool_slug="code_reviewer", # important for your schema
-            )
-            data = await CodeReview.client.generate(request)
-            if not data:
-                raise ValueError("AI returned an empty response.")
-            return data  # already a dict, no need to json.loads
-        except Exception as e:
-            raise ValueError(f"Error: {e}") from e
-        
-    @staticmethod
-    def _parse_ai_review(raw_response: str) -> AIReviewResult:
-
-        if not raw_response:
-            raise ValueError("AI returned an empty response.")
-        
-        if isinstance(raw_response, str):
-            raw_response = raw_response.strip()
-            if not raw_response:
-                raise ValueError("AI returned an empty response.")
-            try:
-                data = json.loads(raw_response)
-            except json.JSONDecodeError as e:
-                raise ValueError(f"Invalid JSON returned by AI: {e}") from e
-        else:
-            data = raw_response
-
-        try:
-            if hasattr(data, "text"):
-                data = data.text   # extract LLM output
-
-            if isinstance(data, str):
-                data = json.loads(data)  # convert to dict
-
-            review = AIReviewResult.model_validate(data) # ← was CodeReviewResponse
-        except ValidationError as e:
-            raise ValueError(f"AI response does not match the expected schema: {e}") from e
-
-        if len(review.errors) > 10:
-            review.errors = review.errors[:10]
-
-        if len(review.suggestions) > 5:
-            review.suggestions = review.suggestions[:5]
-
-        return review
 
     @staticmethod
     async def _generate_ai_review(
@@ -490,21 +435,24 @@ class CodeReview:
         chunks: list[dict],
     ) -> AIReviewResult:
 
-        # Merge all chunks into one single code block
-        full_code = "\n".join(chunk["chunk"] for chunk in chunks)
+        prompt = CodeReview._build_prompt(local_report, chunks)
 
-        prompt = CodeReview._build_prompt(
-            local_report=local_report,
-            chunks=[{
-                "id": "full",
-                "start_line": chunks[0]["start_line"],
-                "end_line": chunks[-1]["end_line"],
-                "chunk": full_code,
-            }],
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                tool_slug="code_review",
+                temperature=0.2,
+                response_schema=AIReviewResult
+            )
         )
 
-        raw = await CodeReview._call_ai(prompt)
-        return CodeReview._parse_ai_review(raw)
+        if not llm_response or not llm_response.text:
+            raise ValueError("LLM returned empty response")
+
+        if not isinstance(llm_response.text, dict):
+            raise ValueError("Invalid structured response")
+
+        return AIReviewResult(**llm_response.text)
         
     @staticmethod
     async def generate_review(
@@ -545,7 +493,7 @@ class CodeReview:
 
         # Task 6
         lines = metadata["source_code"].splitlines()
-        chunks = [{"id": "full", "start_line": 1, "end_line": len(lines), "chunk": metadata["source_code"]}]
+        chunks = [{"id": "full", "start_line": 1, "end_line": len(lines), "chunk": metadata["source_code"][:CodeReview.AI_MAX_CHARS]}]
         ai_review = await CodeReview._generate_ai_review(
             local_report,
             chunks,
@@ -558,13 +506,19 @@ class CodeReview:
                 slug="code_reviewer",
             )
         tool_id = tool.id if tool else "code_reviewer"
+        safe_input = {
+            "input_type": str(validated_input.get("input_type")),
+            "filename": validated_input.get("filename"),
+            "language": str(validated_input.get("language")),
+        }
+
         execution_id = None
         try:
             execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user_id,
                 tool_id=tool_id,
-                user_input=json.dumps(validated_input, default=str),
+                user_input=json.dumps(safe_input),
                 output=user_output,
             )
             execution_id = execution.id 
@@ -573,14 +527,19 @@ class CodeReview:
 
         # Final Response
         return CodeReviewResponse(
-            language=local_report["language"],
-            lines_of_code=local_report["lines_of_code"],
-            file_size=local_report["file_size"],
-            cyclomatic_complexity=local_report["cyclomatic_complexity"],
+            language=metadata["language"],
+            lines_of_code=metadata["LOC"],
+            file_size=round(metadata["File_Size_in_MB"], 2),
+            cyclomatic_complexity={
+                "maximum": cyclomatic["max_complexity"],
+                "average": cyclomatic["average_complexity"],
+            },
+
+            summary=ai_review.summary,
             time_complexity=ai_review.time_complexity,
             space_complexity=ai_review.space_complexity,
-            summary=ai_review.summary,
             errors=ai_review.errors,
             suggestions=ai_review.suggestions,
-            execution_id = execution_id
+
+            execution_id=execution_id
         )

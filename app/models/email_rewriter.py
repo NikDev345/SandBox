@@ -176,3 +176,11 @@ class EmailStudioResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True
     )
+    
+class EmailStudioLLMResponse(BaseModel):
+    subject: str
+    greeting: str
+    body: str
+    closing: str
+    full_email: str
+    suggestions: List[str] = []

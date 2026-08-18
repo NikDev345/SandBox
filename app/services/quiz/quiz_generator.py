@@ -7,6 +7,7 @@ Coordinates the complete Quiz Generator workflow.
 from app.models.quiz_generator import (
     QuizRequest,
     QuizResponse,
+    QuizLLMResponse
 )
 
 from app.services.quiz.parser import DocumentParser
@@ -15,7 +16,7 @@ from app.services.quiz.validator import QuizValidator
 from app.services.quiz.formatter import QuizFormatter
 from app.utils.text_cleaner import TextCleaner
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 from sqlalchemy.orm import Session
@@ -46,7 +47,6 @@ class QuizGeneratorService:
         # --------------------------------------------------
         # Clean Text
         # --------------------------------------------------
-        ip = ""
         if request.input_type.value == "document":
 
             request.extracted_text = TextCleaner.clean(
@@ -72,22 +72,31 @@ class QuizGeneratorService:
         # --------------------------------------------------
 
 
-        result = await gateway.generate(LLMRequest(
-            prompt=prompt,
-            tool_slug="quiz_generator",
-            response_mime_type="application/json",
-            temperature=0.6,
-        ))
+        result = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                tool_slug="quiz_generator",
+                temperature=0.5,
+                max_output_tokens=8000,
+                response_schema=QuizLLMResponse, 
+            )
+        )
 
         response_json = result.text
 
         # --------------------------------------------------
         # Format Response
         # --------------------------------------------------
-        data = json.loads(response_json)
-        response = QuizFormatter.format(
-            data
-        )
+        if not result or not result.text:
+            raise RuntimeError("Empty response from LLM")
+
+        if not isinstance(result.text, dict):
+            raise RuntimeError("Invalid structured response")
+
+        llm_data = QuizLLMResponse(**result.text)
+        if not llm_data.questions:
+            raise RuntimeError("LLM returned empty quiz")
+        response = QuizFormatter.format(llm_data.model_dump())
 
         # --------------------------------------------------
         # Validate AI Response
@@ -110,7 +119,7 @@ class QuizGeneratorService:
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=str(response.questions),
+                output=json.dumps(response.model_dump()),
             )
             execution_id = execution.id
         except Exception:
