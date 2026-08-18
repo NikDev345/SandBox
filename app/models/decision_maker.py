@@ -118,3 +118,11 @@ class DecisionMakerResponse(BaseModel):
     disclaimer: str
     
     execution_id: Optional[str] = None
+    
+class DecisionLLMResponse(BaseModel):
+    summary: str
+    recommendation: DecisionRecommendation
+    analysis: List[DecisionAnalysis]
+    key_factors: List[str]
+    final_advice: str
+    disclaimer: str

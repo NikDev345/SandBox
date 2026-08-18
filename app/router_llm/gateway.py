@@ -55,7 +55,7 @@ class LLMRequest(BaseModel):
 class LLMResponse(BaseModel):
     """Standardized response returned by the gateway."""
 
-    text: str
+    text: Any
 
     provider: str
     model: str

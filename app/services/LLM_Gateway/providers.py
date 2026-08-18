@@ -1,7 +1,7 @@
 import time, asyncio
 from google import genai
 from google.genai import types
-from app.models.gateway import LLMRequest, LLMResponse
+from app.router_llm.gateway import LLMRequest, LLMResponse
 from openai import OpenAI
 
 # gemini client
@@ -26,6 +26,7 @@ class GeminiClient:
         
         if request.response_mime_type:
             config.response_mime_type = request.response_mime_type
+            config.response_mime_type = "application/json"
             
         response = await self.client.aio.models.generate_content(
             model=model,
@@ -78,6 +79,17 @@ class OpenAIClient:
             "role": "user",
             "content": request.prompt
         })
+        if request.response_schema:
+            schema_json = request.response_schema.model_json_schema()
+
+            messages.append({
+                "role": "system",
+                "content": f"""
+        Return ONLY valid JSON matching this schema:
+        {schema_json}
+        Do not add explanation.
+        """
+            })
         
         response = await asyncio.to_thread(
             self.client.chat.completions.create,

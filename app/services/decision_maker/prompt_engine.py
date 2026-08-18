@@ -108,36 +108,30 @@ Additional Context:
 
 ----------------------------------------------------
 
-Return ONLY valid JSON.
+Return ONLY valid JSON:
 
-Do NOT wrap it inside markdown.
+{
+  "summary": "...",
+  "recommendation": {
+    "selected_option": "...",
+    "confidence": 0-100,
+    "reasoning": "..."
+  },
+  "analysis": [
+    {
+      "option": "...",
+      "pros": [],
+      "cons": [],
+      "risks": [],
+      "score": 0
+    }
+  ],
+  "key_factors": [],
+  "final_advice": "...",
+  "disclaimer": "..."
+}
 
-Use EXACTLY this schema:
-
-{{
-    "summary": "...",
-
-    "recommendation": {{
-        "selected_option": "...",
-        "confidence": 0,
-        "reasoning": "..."
-    }},
-
-    "analysis": [
-        {{
-            "option": "...",
-            "pros": [],
-            "cons": [],
-            "risks": [],
-            "score": 0
-        }}
-    ],
-
-    "key_factors": [],
-
-    "final_advice": "...",
-
-    "disclaimer":
-        "This recommendation is AI-generated and should support—not replace—your personal judgment."
-}}
+Rules:
+- No markdown
+- No explanation outside JSON
 """

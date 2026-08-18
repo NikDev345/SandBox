@@ -8,12 +8,13 @@ when the service is actually executed.
 """
 
 from __future__ import annotations
-
+import json
 from sqlalchemy.orm import Session
 
 from app.models.eli5 import (
     ELI5Request,
     ELI5Response,
+    ELI5LLMResponse
 )
 
 
@@ -43,9 +44,6 @@ class ELI5Service:
             ELI5Validator,
         )
 
-        from app.services.ELI5.formatter import (
-            ELI5Formatter,
-        )
 
         # ====================================================
         # VALIDATION
@@ -87,34 +85,23 @@ class ELI5Service:
         # GENERATE EXPLANATION
         # ====================================================
 
-        llm_request = LLMRequest(
-            prompt=prompt,
-            temperature=0.6,
-            max_output_tokens=8000,
-            tool_slug="eli5",
-        )
-
-        response = await gateway.generate(
-            llm_request
-        )
-
-        if not response or not response.text:
-
-            raise RuntimeError(
-                "Empty response from LLM Gateway."
-            )
-
-        explanation = response.text.strip()
-
-        # ====================================================
-        # FORMAT RESPONSE
-        # ====================================================
-
-        formatted_response = (
-            ELI5Formatter.format(
-                explanation
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                temperature=0.6,
+                max_output_tokens=8000,
+                tool_slug="eli5",
+                response_schema=ELI5LLMResponse
             )
         )
+
+        if not llm_response or not llm_response.text:
+            raise RuntimeError("Empty response from LLM")
+
+        if not isinstance(llm_response.text, dict):
+            raise RuntimeError("Invalid structured response")
+
+        data = ELI5LLMResponse(**llm_response.text)
 
         # ====================================================
         # SAVE EXECUTION HISTORY
@@ -153,11 +140,11 @@ class ELI5Service:
                         user_id=user["sub"],
                         tool_id=tool.id,
                         user_input=request.model_dump_json(),
-                        output=explanation,
+                        output=json.dumps(data.model_dump())
                     )
                 )
 
-                execution_id = execution.id
+                execution_id = execution.id if execution else None
 
         except Exception as exc:
 
@@ -173,8 +160,11 @@ class ELI5Service:
         # ATTACH EXECUTION ID
         # ====================================================
 
-        formatted_response.execution_id = (
-            execution_id
+        response = ELI5Response(
+            summary=data.summary,
+            explanation=data.explanation,
+            analogy=data.analogy,
+            important_concepts=data.important_concepts,
+            execution_id=execution_id
         )
-
-        return formatted_response
+        return response

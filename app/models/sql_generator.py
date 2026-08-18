@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 class GenerationMode(str, Enum):
     AI = "ai"
@@ -106,6 +106,16 @@ class SQLGeneratorRequest(BaseModel):
 
     dialect: SQLDialect = SQLDialect.MYSQL
     
+    @model_validator(mode="after")
+    def validate_mode(self):
+        if self.mode == GenerationMode.AI and not self.prompt:
+            raise ValueError("Prompt is required when mode='ai'")
+
+        if self.mode == GenerationMode.BUILDER and not self.builder:
+            raise ValueError("Builder is required when mode='builder'")
+
+        return self
+    
 class SQLGeneratorResponse(BaseModel):
     success: bool
 
@@ -121,3 +131,10 @@ class SQLGeneratorResponse(BaseModel):
     formatted_sql: Optional[str] = None
     
     execution_id: Optional[str] = None
+    
+class SQLGeneratorLLMResponse(BaseModel):
+    sql: str
+    query_type: str
+    tables: List[str]
+    complexity: str
+    execution_cost: ExecutionCost

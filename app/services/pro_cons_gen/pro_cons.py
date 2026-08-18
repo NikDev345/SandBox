@@ -1,9 +1,7 @@
 from datetime import datetime, timezone
-from sqlalchemy.orm import Session
-from app.services.tool_executor import ExecutionService
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
-from app.models.pro_cons import ProConsRequest, AnalysisDepth, ProConsResponse
+from app.router_llm.gateway import LLMRequest
+from app.models.pro_cons import ProConsRequest, AnalysisDepth, ProConsResponse, RiskLevel, ProConsLLMResponse
 import re, json, unicodedata
 from pydantic import ValidationError
 from app.services.tool_executor import ExecutionService
@@ -30,24 +28,20 @@ class ProConsService:
             f"{prompt['system_prompt']}\n\n"
             f"{prompt['user_prompt']}"
         )
-        raw_res = await ProConsService._generate_points(final_prompt)
-        parsed_res = ProConsService._parse_response(raw_res)
-        parsed_res["pros"] = [
-            {**p, "impact": p.get("impact", "medium").lower()} 
-            for p in parsed_res.get("pros", [])
-        ]
-        parsed_res["cons"] = [
-            {**c, "impact": c.get("impact", "medium").lower()} 
-            for c in parsed_res.get("cons", [])
-        ]
-        parsed_res["topic"] = cleaned_req.topic          # ← add this
-        parsed_res["generated_at"] = datetime.now(timezone.utc).isoformat()
-        final = ProConsService._validate_response(parsed_res)
+        final = await ProConsService._generate_points(final_prompt)
+
+        # enforce server-side fields
+        final.topic = cleaned_req.topic
+        final.generated_at = datetime.now(timezone.utc)
+
+        # normalize impact values
+        for p in final.pros:
+            p.impact = RiskLevel(p.impact.lower())
+
+        for c in final.cons:
+            c.impact = RiskLevel(c.impact.lower())
         
-        user_output = json.dumps({
-            "pros": [p.model_dump() for p in final.pros],
-            "cons": [c.model_dump() for c in final.cons],
-        })
+        user_output = json.dumps(final.model_dump())
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -243,41 +237,35 @@ class ProConsService:
         
         
     @staticmethod
-    async def _generate_points(prompt: str):
+    async def _generate_points(prompt: str) -> ProConsResponse:
         
         try:
-            result = await gateway.generate(LLMRequest(
-                prompt=prompt,
-                tool_slug="pro_cons",
-                temperature=0.3,
-            ))
-            return result.text
+            response = await gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    temperature=0.3,
+                    max_output_tokens=6000,
+                    tool_slug="pro_cons",
+                    response_schema=ProConsLLMResponse,   
+                )
+            )
+
+            if not response or not response.text:
+                raise RuntimeError("Empty response from LLM")
+
+            if not isinstance(response.text, dict):
+                raise RuntimeError("Invalid structured response from LLM")
+
+            llm_data = ProConsLLMResponse(**response.text)
+
+            return ProConsResponse(
+                topic="",  # will be filled later
+                summary=llm_data.summary,
+                pros=llm_data.pros,
+                cons=llm_data.cons,
+                recommendation=llm_data.recommendation,
+                generated_at=datetime.now(timezone.utc),
+            )
         except Exception as e:
             raise RuntimeError(f"Failed to generate Pro Cons: {e}")
         
-    @staticmethod
-    def _parse_response(response: str):
-        
-        response = response.strip()
-        if response.startswith("```"):
-            response = response.replace("```json", "")
-            response = response.replace("```", "")
-            response = response.strip()
-            
-        try:
-            data = json.loads(response)
-        except json.JSONDecodeError as e:
-            raise RuntimeError(
-            f"Invalid JSON returned by AI: {e}"
-        ) from e
-        
-        return data
-    
-    @staticmethod
-    def _validate_response(data: dict) -> ProConsResponse:
-        try:
-            return ProConsResponse.model_validate(data)
-        except ValidationError as e:
-            raise RuntimeError(
-            f"AI response validation failed:\n{e}"
-        ) from e

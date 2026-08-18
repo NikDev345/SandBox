@@ -56,3 +56,20 @@ class ChartExplainerResponse(BaseModel):
 
     execution_id: Optional[str] = None
     usage: Optional[dict] = None
+    
+class ChartExplainerLLMResponse(BaseModel):
+    chart_type: str
+    executive_summary: str
+
+    axis_explanation: AxisExplanation
+
+    key_insights: List[str]
+    trend_analysis: List[str]
+    outliers: List[str]
+    business_insights: List[str]
+    recommendations: List[str]
+    questions_answered: List[str]
+    limitations: List[str]
+
+    eli5_explanation: str
+    confidence_score: int

@@ -1,11 +1,12 @@
-import time, json
+import time
 from typing import Optional
 from app.models.youtube_summarizer import (
     YouTubeSummaryRequest,
     YouTubeSummaryResponse,
+    YouTubeSummaryLLMResponse
 )
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.utils.text_cleaner import TextCleaner
 from app.services.youtube_summarizer.formatter import (
     YouTubeSummaryFormatter,
@@ -65,20 +66,22 @@ class YouTubeSummarizerService:
                 request=request,
             )
 
-            # Step 5 — Generate AI response
-            result = await self.gateway.generate(LLMRequest(
-                prompt=prompt,
-                tool_slug="youtube_summarizer",
-                response_mime_type="application/json",
-                temperature=0.1,
-            ))
-
-            response = json.loads(result.text)
-
-            if not isinstance(response, dict):
-                raise RuntimeError(
-                    "LLM returned an invalid response."
+            result = await self.gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    tool_slug="youtube_summarizer",
+                    temperature=0.1,
+                    response_schema=YouTubeSummaryLLMResponse,
                 )
+            )
+
+            if not result or not result.text:
+                raise RuntimeError("Empty response from LLM")
+
+            if not isinstance(result.text, dict):
+                raise RuntimeError("Invalid structured response from LLM")
+
+            response = result.text
 
             # Step 6 — Calculate processing time
             processing_time = round(
@@ -90,7 +93,10 @@ class YouTubeSummarizerService:
                 data=response,
                 processing_time=processing_time,
             )
-            user_output = output.model_dump_json()         
+            output.key_points = list(dict.fromkeys(output.key_points))
+            output.keywords = list(dict.fromkeys(output.keywords))
+            YouTubeSummaryValidator.validate_output(output)
+            user_output = output.model_dump_json(exclude_none=True)
             
             tool = ToolService.get_tool_by_slug(
                     db=db,

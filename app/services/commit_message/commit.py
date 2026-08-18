@@ -1,9 +1,9 @@
-from app.models.commit import CommitMessageRequest, CommitMessageResponse, CommitSuggestion, GitData
+from app.models.commit import CommitMessageRequest, CommitMessageResponse, CommitSuggestion, GitData, CommitLLMResponse
 from pathlib import Path
 import subprocess, re, json
 from typing import Literal, List
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 from sqlalchemy.orm import Session
@@ -14,7 +14,6 @@ class NotGitRepositoryError(Exception):
 
 class CommitMessageGenerator:
     
-    client = gateway
     
     STYLE_MAP = {
         "conventional": "Use the Conventional Commits specification (feat:, fix:, docs:, refactor:, test:, chore:, perf:, ci:, build:).",
@@ -141,81 +140,59 @@ class CommitMessageGenerator:
     def _build_prompt(git_data: GitData, style: Literal["conventional", "normal", "emoji"], suggestions: int):
         
         style_desc = CommitMessageGenerator.STYLE_MAP[style]
+        MAX_DIFF_CHARS = 12000
+        diff = git_data.diff[:MAX_DIFF_CHARS]
         
         return f"""You are an expert software engineer who writes clear, concise Git commit messages.
 
-            Generate exactly {suggestions} Git commit message(s).
+            Return ONLY valid JSON:
 
-            Style:
-            {style_desc}
+            {
+            "suggestions": [
+                {"message": "string"}
+            ]
+            }
 
             Rules:
-            - Base every message only on the Git diff.
-            - Do NOT invent changes.
-            - Return ONLY the commit messages.
-            - One per line.
-            - Ensure each suggestion is unique.
+            - Exactly {suggestions} items
+            - No markdown
+            - No explanation
 
             Branch:
             {git_data.branch}
 
+            Style:
+            {style_desc}
+            
             Git Diff:
-            {git_data.diff}
+            {diff}
+            
             """
         
     @staticmethod
-    async def _generate_commit_message(prompt):
-        try:
-            request = LLMRequest(
+    async def _generate_commit_message(prompt: str, expected_count: int) -> List[CommitSuggestion]:
+
+        llm_response = await gateway.generate(
+            LLMRequest(
                 prompt=prompt,
                 temperature=0.2,
-                max_tokens=1000,
-                tool_slug="commit_mgs",
-                # commit message → plain text output
+                tool_slug="commit_msg",
+                response_schema=CommitLLMResponse
             )
+        )
 
-            response = await CommitMessageGenerator.client.generate(request)
+        if not llm_response or not llm_response.text:
+            raise RuntimeError("Empty response from LLM")
 
-            if not response or not response.text or not response.text.strip():
-                raise RuntimeError("Empty response from LLM Gateway")
+        if not isinstance(llm_response.text, dict):
+            raise RuntimeError("Invalid structured response")
 
-            return response.text.strip()
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to generate commit messages. : str{e}"
-            ) from e
-            
-    @staticmethod
-    def _parse_commit_message(raw_text: str, expected_count: int) -> List[CommitSuggestion]:
-        
-        messages = []
-        seen = set()
-        
-        for line in raw_text.splitlines():
-            message = re.sub(
-                r"^\s*(?:[-*•]|\d+[.)])\s*",
-                "",
-                line.strip(),
-            )
+        data = CommitLLMResponse(**llm_response.text)
 
-            
-            if not message or message in seen:
-                continue
-            
-            seen.add(message)
-            messages.append(message)
-            
-        if len(messages) < expected_count:
-            raise RuntimeError(
-                "AI returned fewer commit messages than expected."
-            )
-            
-        return [
-            CommitSuggestion(
-                message=message
-            )  for message in messages[:expected_count]
-        ]
-        
+        if len(data.suggestions) < expected_count:
+            raise RuntimeError("LLM returned fewer suggestions than expected")
+
+        return data.suggestions[:expected_count]
     # main function--------------------------------------------------------------------------------
     @staticmethod
     async def generate(request: CommitMessageRequest, user_id: str, db: Session,)->CommitMessageResponse:
@@ -250,15 +227,9 @@ class CommitMessageGenerator:
             suggestions=request.suggestions,
         )
 
-        # Generate commit messages
-        raw_response = await CommitMessageGenerator._generate_commit_message(
+        commit_suggestions = await CommitMessageGenerator._generate_commit_message(
             prompt,
-        )
-
-        # Parse AI response
-        commit_suggestions = CommitMessageGenerator._parse_commit_message(
-            raw_response,
-            request.suggestions,
+            request.suggestions
         )
         
         tool = ToolService.get_tool_by_slug(
@@ -273,7 +244,7 @@ class CommitMessageGenerator:
                 user_id=user_id,
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=str(commit_suggestions),
+                output=json.dumps([c.model_dump() for c in commit_suggestions])
             )
             execution_id = execution.id
         except Exception as e:

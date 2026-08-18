@@ -30,7 +30,7 @@ class TableFormatter:
 
     def _dataframe(self, table: ParsedTable) -> pd.DataFrame:
 
-        data = asdict(table)
+        data = asdict(table) if not isinstance(table, dict) else table
 
         headers = data["headers"]
 
@@ -43,7 +43,7 @@ class TableFormatter:
 
     def to_excel(
         self,
-        tables: list[dict[str, Any]],
+        tables: list[ParsedTable],
         filename: str,
     ) -> str:
 
@@ -67,7 +67,7 @@ class TableFormatter:
 
     def to_csv(
         self,
-        tables: list[dict[str, Any]],
+        tables: list[ParsedTable],
         filename: str,
     ) -> str:
 
@@ -107,7 +107,7 @@ class TableFormatter:
 
     def to_markdown(
         self,
-        tables: list[dict[str, Any]],
+        tables: list[ParsedTable],
         filename: str,
     ) -> str:
 
@@ -129,7 +129,7 @@ class TableFormatter:
 
     def to_html(
         self,
-        tables: list[dict[str, Any]],
+        tables: list[ParsedTable],
         filename: str,
     ) -> str:
 
@@ -157,7 +157,7 @@ class TableFormatter:
 
     def export(
         self,
-        tables: list[dict[str, Any]],
+        tables: list[ParsedTable],
         filename: str,
         output_format: str,
     ) -> str:

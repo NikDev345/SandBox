@@ -2,7 +2,7 @@ import asyncio
 
 from config import load_llm_config
 from app.services.LLM_Gateway.llm_gateway import LLMGateway
-from SandBox.app.router_llm.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 
 provider_settings, gateway_config = load_llm_config()
 

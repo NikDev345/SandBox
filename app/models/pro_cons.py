@@ -62,3 +62,9 @@ class ProConsResponse(BaseModel):
     recommendation: Recommendation
     generated_at: datetime
     execution_id: Optional[str] = None
+    
+class ProConsLLMResponse(BaseModel):
+    summary: str
+    pros: List[ComparisonItem]
+    cons: List[ComparisonItem]
+    recommendation: Recommendation

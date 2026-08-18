@@ -1,9 +1,9 @@
 from fastapi import UploadFile
-from app.models.ss_explainer import ScreenshotExplainerRequest, ExplanationAction, ScreenshotMetadata, ScreenshotExplainerResponse
+from app.models.ss_explainer import ScreenshotExplainerRequest, ExplanationAction, ScreenshotExplainerResponse, ScreenshotMetadata, ScreenshotExplainerLLMResponse
 from PIL import Image, UnidentifiedImageError, ImageOps
 from io import BytesIO
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
+from app.router_llm.gateway import LLMRequest
 from google.genai import types
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
@@ -24,6 +24,14 @@ class SSExplainer:
             - Overall observations
 
             Do not assume or infer information that is not visible.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -33,6 +41,14 @@ class SSExplainer:
 
             Focus only on the most important information visible in the image.
             Do not include unnecessary details or assumptions.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -49,6 +65,14 @@ class SSExplainer:
             - Key observations
 
             Base your explanation only on what is visible.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -63,6 +87,14 @@ class SSExplainer:
             - The likely workflow from top to bottom
 
             Only describe what is visible.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -77,6 +109,14 @@ class SSExplainer:
             - Recommended solutions or next steps
 
             If no error is visible, clearly state that.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -90,6 +130,14 @@ class SSExplainer:
             - Highlight any important information
 
             Preserve the original wording whenever possible.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -105,6 +153,14 @@ class SSExplainer:
             - Design consistency
 
             Provide strengths, weaknesses, and practical improvement suggestions.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -121,6 +177,14 @@ class SSExplainer:
             - Overall usability
 
             Suggest improvements that would make the interface more accessible.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -131,6 +195,14 @@ class SSExplainer:
             Assume the reader has little or no prior knowledge.
 
             Define technical terms, explain concepts simply, and provide enough context for understanding.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
 
@@ -145,6 +217,14 @@ class SSExplainer:
             - Information that may be missing to fully diagnose the issue
 
             Do not make assumptions beyond what is visible.
+            Return ONLY valid JSON in this format:
+
+{
+  "title": "string",
+  "explanation": "string"
+}
+
+Do not include markdown or extra text.
             """
         ),
     }
@@ -171,7 +251,7 @@ class SSExplainer:
         return request
     
     @staticmethod
-    def _validate_image(img: UploadFile):
+    async def _validate_image(img: UploadFile):
         MAX_FILE_SIZE = 50 * 1024 * 1024
         ALLOWED_MIME_TYPES = {
             "image/png",
@@ -186,7 +266,7 @@ class SSExplainer:
         if img.content_type not in ALLOWED_MIME_TYPES:
             raise ValueError("Unsupported image format. Allowed formats: PNG, JPEG, JPG, WEBP.")
 
-        image_bytes = img.file.read()
+        image_bytes = await img.read()
         
         if len(image_bytes) > MAX_FILE_SIZE:
             raise ValueError("Image size exceeds the maximum limit of 50 MB.")
@@ -200,9 +280,6 @@ class SSExplainer:
             
         except (UnidentifiedImageError, OSError) as e:
             raise ValueError(f"Error: {e}")
-        
-        finally:
-            img.file.seek(0)
             
         return image, len(image_bytes)
         
@@ -270,56 +347,32 @@ class SSExplainer:
             raise RuntimeError(f"Failed to upload image: {e}") from e
         
     @staticmethod
-    async def _generate_explanation(    
+    async def _generate_explanation(
         uploaded_image,
         prompt: str,
-        temperature: float = 0.3,
-        max_output_tokens: int = 10000,
-    ) -> str:
-        """
-        Generate an explanation for an uploaded image.
-        """
+    ):
         try:
-            result = await gateway.generate(LLMRequest(
-                prompt=prompt,
-                contents=[uploaded_image],
-                temperature=temperature,
-                max_output_tokens=max_output_tokens,
-                tool_slug="ss_explainer",
-            ))
-            return result.text
-
-        except Exception as e:
-            raise RuntimeError(f"Gemini explanation failed: {e}") from e
-        
-    @staticmethod
-    def _parse_response(raw_response: str):
-        """
-        Convert Gemini output into ScreenshotExplainerResponse.
-
-        Responsibilities:
-        - Validate response.
-        - Handle empty responses.
-        - Handle malformed responses.
-        - Populate response model.
-        """
-
-        if raw_response is None:
-            raise RuntimeError("Gemini returned no response.")
-
-        explanation = raw_response.strip()
-
-        if not explanation:
-            raise RuntimeError("Gemini returned an empty response.")
-
-        try:
-            return ScreenshotExplainerResponse(
-                title="Screenshot Explanation",
-                explanation=explanation,
+            response = await gateway.generate(
+                LLMRequest(
+                    prompt=prompt,
+                    files=[uploaded_image],
+                    temperature=0.3,
+                    max_output_tokens=2000,
+                    tool_slug="screenshot_explainer",
+                    response_schema=ScreenshotExplainerLLMResponse
+                )
             )
 
+            if not response or not response.text:
+                raise RuntimeError("Empty response from LLM")
+
+            if not isinstance(response.text, dict):
+                raise RuntimeError("Invalid structured response")
+
+            return ScreenshotExplainerLLMResponse(**response.text)
+
         except Exception as e:
-            raise RuntimeError(f"Failed to parse Gemini response: {e}") from e
+            raise RuntimeError(f"Gemini explanation failed: {e}")
         
     @staticmethod
     async def explain(
@@ -335,7 +388,7 @@ class SSExplainer:
         request = SSExplainer._validate_request(request)
 
         # 2. Validate image
-        validated_image, file_size = SSExplainer._validate_image(image)
+        validated_image, file_size = await SSExplainer._validate_image(image)
 
         # 4. Extract metadata
         metadata = SSExplainer._extract_metadata(
@@ -362,14 +415,10 @@ class SSExplainer:
             mime_type='image/jpeg',
         )
 
-        # 8. Generate explanation
-        raw_response = await SSExplainer._generate_explanation(
+        data = await SSExplainer._generate_explanation(
             uploaded_image=uploaded_image,
             prompt=prompt,
         )
-
-        # 9. Parse response
-        response = SSExplainer._parse_response(raw_response)
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -377,23 +426,24 @@ class SSExplainer:
             )
         tool_id = tool.id if tool else "ss_explainer"
         
-        user_input = json.dumps({
-            "filename": image.filename,
-            "content_type": image.content_type,
-            "size": file_size,
-            "actions": request.model_dump_json(),
-        })
+        execution_id = None
         
         try:
             execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user['sub'],
                 tool_id=tool_id,
-                user_input=user_input,
-                output=response.explanation,
+                user_input=request.model_dump_json(),
+                output=data.model_dump_json(),
             )
-            response.execution_id = execution.id
+            execution_id = execution.id
         except Exception:
             pass
 
-        return response
+        final = ScreenshotExplainerResponse(
+            title=data.title,
+            explanation=data.explanation
+        )
+
+        final.execution_id = execution_id
+        return final

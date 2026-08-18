@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from SandBox.app.router_llm.gateway import LLMProviderSettings, GatewayConfig
+from app.router_llm.gateway import LLMProviderSettings, GatewayConfig
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")

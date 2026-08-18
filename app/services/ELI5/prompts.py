@@ -14,18 +14,23 @@ RULES:
 - Separate paragraphs inside "explanation" with a blank line (\\n\\n).
 - Do not use ** or * for formatting inside any field.
 
-Return exactly this structure:
+Return ONLY valid JSON:
+
 {
-  "summary": "One clear sentence that captures the core idea.",
-  "explanation": "Three to five paragraphs separated by blank lines. Plain prose only.",
-  "analogy": "One relatable real-world analogy that makes the concept click.",
+  "summary": "...",
+  "explanation": "...",
+  "analogy": "...",
   "important_concepts": [
     {
-      "title": "Concept name",
-      "description": "One simple sentence explaining it."
+      "title": "...",
+      "description": "..."
     }
   ]
-}\
+}
+
+Rules:
+- No markdown
+- No explanation outside JSON
 """
 
 USER_PROMPT_TEMPLATE = "Explain this topic simply: {topic}"

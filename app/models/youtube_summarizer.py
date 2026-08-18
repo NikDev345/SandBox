@@ -62,3 +62,16 @@ class YouTubeSummaryResponse(BaseModel):
     processing_time: float
     
     execution_id: Optional[str] = None
+    
+class TimelineItemLLM(BaseModel):
+    title: str
+    summary: str
+
+
+class YouTubeSummaryLLMResponse(BaseModel):
+    summary: str
+    key_points: List[str]
+    timeline: List[TimelineItemLLM]
+    important_quotes: List[str]
+    action_items: List[str]
+    keywords: List[str]

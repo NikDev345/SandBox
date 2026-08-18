@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-
 class BrainstormCategory(str, Enum):
     BUSINESS = "business"
     STARTUP = "startup"
@@ -92,3 +91,12 @@ class BrainstormResponse(BaseModel):
     final_recommendation: str
     
     execution_id: Optional[str] = None
+    
+class BrainstormLLMResponse(BaseModel):
+    success: bool
+    summary: str
+    ideas: List[BrainstormIdea]
+    best_idea: str
+    implementation_tips: List[str]
+    common_mistakes: List[str]
+    final_recommendation: str

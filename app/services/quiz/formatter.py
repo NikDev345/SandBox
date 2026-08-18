@@ -50,7 +50,7 @@ class QuizFormatter:
             question = QuizQuestion(
                 id=item.get("id", str(index)),
                 question=item["question"],
-                question_type=item["question_type"],
+                question_type=item["question_type"].lower(),
                 options=options,
                 correct_answers=item.get(
                     "correct_answers",
@@ -58,10 +58,7 @@ class QuizFormatter:
                 ),
                 explanation=item.get("explanation"),
                 hint=item.get("hint"),
-                difficulty=item.get(
-                    "difficulty",
-                    "medium",
-                ),
+                difficulty=item.get("difficulty", "medium").lower(),
                 marks=item.get("marks", 1),
             )
 

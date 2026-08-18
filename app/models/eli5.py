@@ -53,3 +53,9 @@ class ELI5Response(BaseModel):
         description="Key concepts extracted from the explanation.",
     )
     execution_id: str | None = Field(default=None, description="Execution record ID for bookmarking.")
+    
+class ELI5LLMResponse(BaseModel):
+    summary: str
+    explanation: str
+    analogy: str
+    important_concepts: List[ImportantConcept]

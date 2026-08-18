@@ -1,39 +1,45 @@
 """
 Flashcard Generator Service
 ---------------------------
-Coordinates the complete Flashcard Generator workflow.
+Production-grade version with structured LLM output.
 """
 
-import json
+from __future__ import annotations
+
 import random
 import re
 import unicodedata
+import json
 
+from sqlalchemy.orm import Session
 from pydantic import ValidationError
 
 from app.models.flashcard_generator import (
     FlashcardGeneratorRequest,
     FlashcardGeneratorResponse,
+    FlashcardGeneratorLLMResponse,  # <-- ADD THIS MODEL
 )
+
 from app.services.flashcard_generator.formatter import (
     FlashcardGeneratorFormatter,
 )
+
 from app.services.flashcard_generator.prompt_engine import (
     PromptEngine,
 )
+
 from app.services.flashcard_generator.validator import (
     FlashcardGeneratorValidator,
 )
+
 from app.services.LLM_Gateway.llm_config import gateway
-from app.models.gateway import LLMRequest
-from sqlalchemy.orm import Session
+from app.router_llm.gateway import LLMRequest
+
 from app.services.tool_service import ToolService
 from app.services.tool_executor import ExecutionService
 
+
 class FlashcardGeneratorService:
-    """
-    Orchestrates the Flashcard Generator workflow.
-    """
 
     @staticmethod
     async def generate(
@@ -41,68 +47,108 @@ class FlashcardGeneratorService:
         db: Session,
         user=None,
     ) -> FlashcardGeneratorResponse:
-        from app.services.credit_service import enforce_credit_limit
-        enforce_credit_limit(db, user['sub'])
-        """
-        Generate flashcards.
-        """
 
+        from app.services.credit_service import enforce_credit_limit
+        enforce_credit_limit(db, user["sub"])
+
+        # ====================================================
+        # VALIDATION
+        # ====================================================
         FlashcardGeneratorValidator.validate_request(request)
 
+        # ====================================================
+        # PREPROCESS
+        # ====================================================
         cleaned_request = FlashcardGeneratorService._preprocess(request)
 
-        prompt = PromptEngine.build_prompt(
-            cleaned_request
+        # ====================================================
+        # PROMPT
+        # ====================================================
+        prompt = PromptEngine.build_prompt(cleaned_request)
+
+        # ====================================================
+        # LLM CALL (STRUCTURED)
+        # ====================================================
+        llm_response = await gateway.generate(
+            LLMRequest(
+                prompt=prompt,
+                temperature=0.3,
+                max_output_tokens=10000,
+                tool_slug="flashcard_generator",
+                response_schema=FlashcardGeneratorLLMResponse,
+            )
         )
 
-        raw_response = await FlashcardGeneratorService._generate_flashcards(
-            prompt
-        )
+        if not llm_response or not llm_response.text:
+            raise RuntimeError("Empty response from LLM")
 
-        parsed_response = FlashcardGeneratorService._parse_json(
-            raw_response
-        )
+        if not isinstance(llm_response.text, dict):
+            raise RuntimeError("Invalid structured response")
 
+        # ====================================================
+        # PARSE STRUCTURED OUTPUT
+        # ====================================================
+        try:
+            data = FlashcardGeneratorLLMResponse(**llm_response.text)
+        except ValidationError as e:
+            raise RuntimeError(f"Invalid AI response format: {e}")
+
+        # ====================================================
+        # FORMAT RESPONSE
+        # ====================================================
         response = FlashcardGeneratorFormatter.format(
-            parsed_response,
+            data.model_dump(),
             cleaned_request.settings,
         )
 
+        # ====================================================
+        # SHUFFLE (OPTIONAL)
+        # ====================================================
         if cleaned_request.settings.shuffle_cards:
             random.shuffle(response.result.flashcards)
 
+        # ====================================================
+        # VALIDATE FINAL RESPONSE
+        # ====================================================
         FlashcardGeneratorService._validate_response(
             response,
             cleaned_request,
         )
-        
-        tool = ToolService.get_tool_by_slug(
-                    db=db,
-                    slug="flashcard_generator",
-                )
-        tool_id = tool.id if tool else "flashcard_generator"
-        execution_record = None
+
+        # ====================================================
+        # SAVE EXECUTION
+        # ====================================================
+        execution_id = None
         try:
-            execution_record = ExecutionService.create_execution(
+            tool = ToolService.get_tool_by_slug(
+                db=db,
+                slug="flashcard_generator",
+            )
+
+            execution = ExecutionService.create_execution(
                 db=db,
                 user_id=user["sub"],
-                tool_id=tool_id,
+                tool_id=tool.id if tool else "flashcard_generator",
                 user_input=request.model_dump_json(),
-                output=str(response),
+                output=json.dumps(data.model_dump()),
             )
+
+            execution_id = execution.id
+
         except Exception:
             pass
 
-        response.execution_id = execution_record.id if execution_record else None
+        response.execution_id = execution_id
         return response
+
+    # ====================================================
+    # PREPROCESS
+    # ====================================================
 
     @staticmethod
     def _preprocess(
         request: FlashcardGeneratorRequest,
     ) -> FlashcardGeneratorRequest:
-        """
-        Clean and normalize request content before prompt construction.
-        """
 
         content = FlashcardGeneratorService._clean_text(
             request.content
@@ -115,9 +161,6 @@ class FlashcardGeneratorService:
 
     @staticmethod
     def _clean_text(text: str) -> str:
-        """
-        Normalize unicode, remove invisible characters, and normalize whitespace.
-        """
 
         if not text:
             return ""
@@ -129,8 +172,7 @@ class FlashcardGeneratorService:
         text = "".join(
             ch
             for ch in text
-            if ch == "\n"
-            or ch == "\t"
+            if ch in ("\n", "\t")
             or unicodedata.category(ch)[0] != "C"
         )
 
@@ -142,7 +184,6 @@ class FlashcardGeneratorService:
         previous_blank = False
 
         for line in lines:
-
             if line == "":
                 if previous_blank:
                     continue
@@ -153,88 +194,19 @@ class FlashcardGeneratorService:
             cleaned_lines.append(line)
 
         text = "\n".join(cleaned_lines)
-
         text = re.sub(r"[ \t]+", " ", text)
 
         return text.strip()
 
-    @staticmethod
-    async def _generate_flashcards(prompt: str) -> str:
-        """
-        Generate raw flashcard JSON text with Gemini.
-        """
-
-        try:
-            llm_request = LLMRequest(
-                prompt=prompt,
-
-                # structured output → stable generation
-                temperature=0.3,
-                max_output_tokens=10000,
-                # IMPORTANT → JSON output
-                response_mime_type="application/json",
-                # this tool is cacheable
-                tool_slug="flashcard_generator",
-            )
-
-            response = await gateway.generate(llm_request)
-        except Exception as exc:
-            raise RuntimeError(
-                "Flashcard generation failed."
-            ) from exc
-
-        if not response or not response.text or not response.text.strip():
-            raise RuntimeError("LLM returned an empty response.")
-
-        return response.text.strip()
-
-    @staticmethod
-    def _parse_json(response: str) -> dict:
-        """
-        Parse and validate raw JSON returned by Gemini.
-        """
-
-        text = response.strip()
-
-        if text.startswith("```"):
-            text = (
-                text.replace("```json", "")
-                .replace("```", "")
-                .strip()
-            )
-
-        try:
-            data = json.loads(text)
-        except json.JSONDecodeError as exc:
-            raise RuntimeError(
-                "Gemini returned invalid JSON."
-            ) from exc
-
-        if not isinstance(data, dict):
-            raise RuntimeError(
-                "Gemini returned malformed AI output."
-            )
-
-        if "flashcards" not in data:
-            raise RuntimeError(
-                "Gemini response is missing flashcards."
-            )
-
-        if not isinstance(data["flashcards"], list):
-            raise RuntimeError(
-                "Gemini response flashcards must be a list."
-            )
-
-        return data
+    # ====================================================
+    # VALIDATION
+    # ====================================================
 
     @staticmethod
     def _validate_response(
         response: FlashcardGeneratorResponse,
         request: FlashcardGeneratorRequest,
-    ) -> None:
-        """
-        Validate the final typed response.
-        """
+    ):
 
         try:
             FlashcardGeneratorValidator.validate_response(

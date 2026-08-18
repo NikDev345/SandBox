@@ -1,4 +1,4 @@
-from app.models.gateway import LLMProviderSettings
+from app.router_llm.gateway import LLMProviderSettings
 from app.services.LLM_Gateway.providers import GeminiClient, OpenAIClient
 
 # later you will add more:

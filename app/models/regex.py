@@ -57,3 +57,7 @@ class RegexGeneratorResponse(BaseModel):
     matches: Optional[List[RegexMatchResult]] = None
     
     execution_id: Optional[str] = None
+    
+class RegexLLMResponse(BaseModel):
+    regex: str
+    explanation: str

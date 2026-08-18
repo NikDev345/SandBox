@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from typing import Optional
 
 class ExplanationAction(str, Enum):
@@ -27,6 +27,16 @@ class ScreenshotExplainerRequest(BaseModel):
         description="Required only when action is OTHER."
     )
     
+    @model_validator(mode="after")
+    def validate_custom_action(self):
+        if self.action == ExplanationAction.OTHER and not self.custom_action:
+            raise ValueError("custom_action is required when action is OTHER")
+
+        if self.action != ExplanationAction.OTHER and self.custom_action:
+            raise ValueError("custom_action should only be provided when action is OTHER")
+
+        return self
+    
 class ScreenshotExplainerResponse(BaseModel):
     title: str
     explanation: str
@@ -38,3 +48,7 @@ class ScreenshotMetadata(BaseModel):
     file_size: int
     width: int
     height: int
+    
+class ScreenshotExplainerLLMResponse(BaseModel):
+    title: str
+    explanation: str
