@@ -27,6 +27,12 @@ def load_llm_config():
         model=model,
     )
     
-    gateway_config = GatewayConfig()
+    gateway_config = GatewayConfig(
+        timeout=int(os.getenv("LLM_TIMEOUT", "60")),
+        max_retries=int(os.getenv("LLM_MAX_RETRIES", "2")),
+        retry_backoff=2,
+        cache_enabled=True,
+        cache_ttl=300,
+    )
 
     return provider_settings, gateway_config

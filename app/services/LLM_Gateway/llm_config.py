@@ -7,58 +7,27 @@ used across all tools.
 
 from __future__ import annotations
 
-import os
 from typing import Optional, Type
-
 from pydantic import BaseModel
 
-# Import your core gateway implementation
+# Core gateway
 from app.services.LLM_Gateway.llm_gateway import LLMGateway
 
-
-# =====================================================
-# ENV CONFIG
-# =====================================================
-
-class LLMSettings:
-    """
-    Central configuration for LLM behavior.
-    """
-
-    MODEL: str = os.getenv("LLM_MODEL", "gemini-1.5-flash")
-    TIMEOUT: int = int(os.getenv("LLM_TIMEOUT", "60"))
-    MAX_RETRIES: int = int(os.getenv("LLM_MAX_RETRIES", "2"))
-    TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.3"))
-    MAX_OUTPUT_TOKENS: int = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "4096"))
-
-    # Optional logging/debug
-    DEBUG: bool = os.getenv("LLM_DEBUG", "false").lower() == "true"
+# Central config loader (ONLY source of truth)
+from config import load_llm_config
 
 
 # =====================================================
-# GATEWAY INSTANCE
+# LOAD CONFIG (Single Source of Truth)
 # =====================================================
 
-from app.router_llm.gateway import GatewayConfig, LLMProviderSettings
+provider_settings, config = load_llm_config()
 
-# Provider settings (API + model)
-provider_settings = LLMProviderSettings(
-    provider=os.getenv("LLM_PROVIDER", "gemini"),
-    api_key=os.getenv("LLM_API_KEY"),
-    model=os.getenv("LLM_MODEL", "gemini-1.5-flash"),
-    base_url=os.getenv("LLM_BASE_URL"),  # optional
-)
 
-# Gateway config (retry + cache)
-config = GatewayConfig(
-    timeout=LLMSettings.TIMEOUT,
-    max_retries=LLMSettings.MAX_RETRIES,
-    retry_backoff=2,
-    cache_enabled=True,
-    cache_ttl=300,
-)
+# =====================================================
+# GLOBAL GATEWAY INSTANCE
+# =====================================================
 
-# FINAL INSTANCE
 gateway = LLMGateway(
     provider_settings=provider_settings,
     config=config,
