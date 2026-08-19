@@ -12,9 +12,10 @@ Business logic for:
 
 from __future__ import annotations
 
-import re
+import re, json
 from typing import List
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.models.sql_generator import (
@@ -106,21 +107,11 @@ class SQLGeneratorService:
                 output=final_response.model_dump_json(),
             )
             execution_id = execution.id 
+            final_response.execution_id = execution_id
             return final_response
-        except Exception:
-            pass
+        except Exception as e:
+            raise HTTPException(str(e))
 
-        return SQLGeneratorResponse(
-            success=True,
-            sql=sql,
-            formatted_sql=formatted_sql,
-            query_type=SQLGeneratorService._detect_query_type(sql),
-            tables=SQLGeneratorService._extract_tables(sql),
-            complexity=SQLGeneratorService._estimate_complexity(sql),
-            execution_cost=SQLGeneratorService._estimate_execution_cost(sql),
-            execution_id=execution_id,
-        )
-        
     @staticmethod
     def _validate_request(request) -> None:
         """
@@ -1114,9 +1105,9 @@ class SQLGeneratorService:
         try:
             response = await gateway.generate(
                 LLMRequest(
-                    prompt=prompt,
+                    prompt=final_prompt,
                     temperature=0.2,
-                    max_output_tokens=3000,
+                    max_output_tokens=4000,
                     tool_slug="sql_generator",
                     response_schema=SQLGeneratorLLMResponse,  
                 )
@@ -1124,11 +1115,16 @@ class SQLGeneratorService:
             
             if not response or not response.text:
                 raise RuntimeError("Empty response from LLM")
-
-            if not isinstance(response.text, dict):
+            parsed = response.text
+            if isinstance(parsed, str):
+                try:
+                    parsed = json.loads(parsed)
+                except Exception as e:
+                    raise ValueError(f"Failed to parse JSON: {parsed}")
+            if not isinstance(parsed, dict):
                 raise RuntimeError("Invalid structured response from LLM")
 
-            return SQLGeneratorLLMResponse(**response.text)
+            return SQLGeneratorLLMResponse(**parsed)
             
         except Exception as e:
             raise RuntimeError(f"Failed to generate SQL: {e}") from e
@@ -1142,10 +1138,10 @@ class SQLGeneratorService:
         return """
 You are an expert SQL engineer.
 
-Generate ONLY valid SQL.
+Generate ONLY valid SQL in JSON Format.
 
 Rules:
-- Return SQL only.
+- Return SQL only in json format.
 - Do not include explanations.
 - Do not use markdown.
 - Do not wrap the SQL inside ``` blocks.
@@ -1155,6 +1151,25 @@ Rules:
 - Never invent columns.
 - Prefer explicit column names over SELECT *.
 - Generate clean, formatted SQL.
+IMPORTANT:
+- Return ONLY valid JSON
+- Do NOT include explanations
+- Do NOT include markdown
+- Do NOT include any text before or after JSON
+- If you cannot generate SQL, still return valid JSON with empty fields
+Return EXACTLY this JSON:
+
+{
+  "sql": "string",
+  "query_type": string",
+  "tables": [strings],
+  "complexity": "string",
+  "execution_cost": {
+      "label": "low, medium or high",
+      "score": "0-100",
+      "factors": [strings]
+  }
+}
 """.strip()
 
     @staticmethod
