@@ -324,14 +324,31 @@ button {
    ============================================================ */
 .panel {
   background: var(--surface-0);
-  backdrop-filter: blur(20px);
+  position: relative;
+  isolation: auto;
   overflow: visible;
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-0);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-sm);
   padding: var(--space-4) var(--space-4);;
   transition: border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Make sure panel children sit above the pseudo-element */
+.panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .panel:hover {
@@ -556,7 +573,6 @@ button {
 .custom-select {
   position: relative;
   outline: none;
-  z-index: 9999;
 }
 
 .custom-select-trigger {

@@ -4,7 +4,6 @@ from PIL import Image, UnidentifiedImageError, ImageOps
 from io import BytesIO
 from app.services.LLM_Gateway.llm_config import gateway
 from app.router_llm.gateway import LLMRequest
-from google.genai import types
 from app.services.tool_executor import ExecutionService
 from app.services.tool_service import ToolService
 from sqlalchemy.orm import Session
@@ -337,14 +336,10 @@ Do not include markdown or extra text.
         
     @staticmethod
     def _upload_image(image_bytes: bytes, mime_type: str):
-        """
-        Upload the processed image using LLM.
-        """
-        try:
-            return types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
-
-        except Exception as e:
-            raise RuntimeError(f"Failed to upload image: {e}") from e
+        return {
+            "bytes": image_bytes,
+            "mime_type": mime_type,
+        }
         
     @staticmethod
     async def _generate_explanation(
@@ -357,19 +352,24 @@ Do not include markdown or extra text.
                     prompt=prompt,
                     files=[uploaded_image],
                     temperature=0.3,
-                    max_output_tokens=2000,
+                    max_output_tokens=4000,
                     tool_slug="screenshot_explainer",
-                    response_schema=ScreenshotExplainerLLMResponse
+                    response_schema=ScreenshotExplainerLLMResponse,
                 )
             )
 
             if not response or not response.text:
                 raise RuntimeError("Empty response from LLM")
-
-            if not isinstance(response.text, dict):
+            parsed = response.text
+            if isinstance(parsed, str):
+                try:
+                    parsed = json.loads(parsed)
+                except Exception as e:
+                    raise ValueError(f"Failed to parse JSON: {parsed}")
+            if not isinstance(parsed, dict):
                 raise RuntimeError("Invalid structured response")
 
-            return ScreenshotExplainerLLMResponse(**response.text)
+            return ScreenshotExplainerLLMResponse(**parsed)
 
         except Exception as e:
             raise RuntimeError(f"Gemini explanation failed: {e}")
@@ -442,8 +442,7 @@ Do not include markdown or extra text.
 
         final = ScreenshotExplainerResponse(
             title=data.title,
-            explanation=data.explanation
+            explanation=data.explanation,
+            execution_id=execution_id
         )
-
-        final.execution_id = execution_id
         return final

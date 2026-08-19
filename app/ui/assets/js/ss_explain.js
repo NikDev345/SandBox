@@ -265,34 +265,48 @@
   });
 
   /* ============================================================
-     6. CUSTOM DROPDOWN (ACTION SELECT)
-     ============================================================ */
+  /* ============================================================
+   6. CUSTOM DROPDOWN (ACTION SELECT)
+   ============================================================ */
   const menuItems = Array.from(actionMenu.querySelectorAll("li"));
+  let menuOpen = false;
+
+  function getMenuPosition() {
+    const rect = actionTrigger.getBoundingClientRect();
+    return {
+      top: rect.bottom + window.scrollY + 8,
+      left: rect.left + window.scrollX,
+      width: rect.width,
+    };
+  }
 
   function openMenu() {
-  actionMenu.hidden = false;
-  actionSelect.classList.add("open");
-  actionSelect.setAttribute("aria-expanded", "true");
+    const pos = getMenuPosition();
+    actionMenu.style.position = "absolute";
+    actionMenu.style.top = `${pos.top}px`;
+    actionMenu.style.left = `${pos.left}px`;
+    actionMenu.style.width = `${pos.width}px`;
+    actionMenu.style.zIndex = "99999";
+    actionMenu.style.margin = "0";
+    document.body.appendChild(actionMenu);
+    actionMenu.hidden = false;
+    menuOpen = true;
+    actionSelect.classList.add("open");
+    actionSelect.setAttribute("aria-expanded", "true");
+  }
 
-  // Blur everything except the dropdown panel's select widget
-  document.querySelectorAll(
-    ".upload-panel, .explain-section, #customActionWrap, #loadingCard, #resultCard, .app-header, .app-footer"
-  ).forEach(el => el.classList.add("dropdown-blurred"));
-}
-
-function closeMenu() {
-  actionMenu.hidden = true;
-  actionSelect.classList.remove("open");
-  actionSelect.setAttribute("aria-expanded", "false");
-
-  document.querySelectorAll(
-    ".upload-panel, .explain-section, #customActionWrap, #loadingCard, #resultCard, .app-header, .app-footer"
-  ).forEach(el => el.classList.remove("dropdown-blurred"));
-}
+  function closeMenu() {
+    if (!menuOpen) return;
+    actionMenu.hidden = true;
+    menuOpen = false;
+    actionSelect.appendChild(actionMenu);
+    actionSelect.classList.remove("open");
+    actionSelect.setAttribute("aria-expanded", "false");
+  }
 
   function toggleMenu() {
-    if (actionMenu.hidden) openMenu();
-    else closeMenu();
+    if (menuOpen) closeMenu();
+    else openMenu();
   }
 
   function selectAction(item) {
@@ -320,18 +334,19 @@ function closeMenu() {
   });
 
   menuItems.forEach((item) => {
-    item.addEventListener("click", () => selectAction(item));
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      selectAction(item);
+    });
   });
 
   actionSelect.addEventListener("keydown", (e) => {
-    const openNow = !actionMenu.hidden;
-
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       toggleMenu();
-    } else if (e.key === "Escape" && openNow) {
+    } else if (e.key === "Escape" && menuOpen) {
       closeMenu();
-    } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && openNow) {
+    } else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && menuOpen) {
       e.preventDefault();
       const currentIndex = menuItems.findIndex((li) => li.classList.contains("hovered"));
       let nextIndex;
@@ -344,16 +359,20 @@ function closeMenu() {
       }
       menuItems.forEach((li, i) => li.classList.toggle("hovered", i === nextIndex));
       menuItems[nextIndex].scrollIntoView({ block: "nearest" });
-    } else if (e.key === "Enter" && openNow) {
+    } else if (e.key === "Enter" && menuOpen) {
       const hovered = menuItems.find((li) => li.classList.contains("hovered"));
       if (hovered) selectAction(hovered);
     }
   });
 
-  document.addEventListener("click", (e) => {
-    if (!actionSelect.contains(e.target)) closeMenu();
+  // Use mousedown instead of click so it fires before focus shifts,
+  // and check against both the trigger and the teleported menu
+  document.addEventListener("mousedown", (e) => {
+    if (!menuOpen) return;
+    if (actionSelect.contains(e.target)) return;
+    if (actionMenu.contains(e.target)) return;
+    closeMenu();
   });
-
   /* ============================================================
      7. CUSTOM ACTION TEXTAREA + WORD COUNTER
      ============================================================ */

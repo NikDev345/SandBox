@@ -17,6 +17,15 @@ class GeminiClient:
         contents = []
         if request.system_prompt:
             contents.append(types.Part.from_text(text=request.system_prompt))
+        if request.files:
+            for file in request.files:
+                contents.append(
+                    types.Part.from_bytes(
+                        data=file["bytes"],
+                        mime_type=file["mime_type"]
+                    )
+                )
+
         contents.append(types.Part.from_text(text=request.prompt))
         
         config = types.GenerateContentConfig(
@@ -74,10 +83,21 @@ class OpenAIClient:
                 "role": "system",
                 "content": request.system_prompt
             })
-        messages.append({
-            "role": "user",
-            "content": request.prompt
-        })
+        if request.files:
+            content = []
+            for file in request.files:
+                import base64
+                b64 = base64.b64encode(file["bytes"]).decode()
+                content.append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{file['mime_type']};base64,{b64}"
+                    }
+                })
+            content.append({"type": "text", "text": request.prompt})
+            messages.append({"role": "user", "content": content})
+        else:
+            messages.append({"role": "user", "content": request.prompt})
         if request.response_schema:
             schema_json = request.response_schema.model_json_schema()
 

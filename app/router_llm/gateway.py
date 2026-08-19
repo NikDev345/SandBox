@@ -34,7 +34,7 @@ class LLMRequest(BaseModel):
 
     prompt: str
     system_prompt: str | None = None
-
+    files: Optional[list[dict]] = None
     # Model override allowed (optional)
     model: str | None = None
 
