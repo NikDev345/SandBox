@@ -41,16 +41,16 @@ class QuizFormatter:
 
             options = [
                 QuizOption(
-                    id=option["id"],
+                    id=option.get("id") or f"opt_{index}_{i+1}",
                     text=option["text"],
                 )
-                for option in item.get("options", [])
+                for i, option in enumerate(item.get("options", []))
             ]
 
             question = QuizQuestion(
-                id=item.get("id", str(index)),
+                id=item.get("id") or str(index),
                 question=item["question"],
-                question_type=item["question_type"].lower(),
+                question_type=item.get("question_type", "mcq").lower(),
                 options=options,
                 correct_answers=item.get(
                     "correct_answers",
@@ -61,7 +61,6 @@ class QuizFormatter:
                 difficulty=item.get("difficulty", "medium").lower(),
                 marks=item.get("marks", 1),
             )
-
             questions.append(question)
 
         return QuizResponse(

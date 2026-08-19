@@ -77,35 +77,45 @@ class QuizGeneratorService:
                 prompt=prompt,
                 tool_slug="quiz_generator",
                 temperature=0.5,
-                max_output_tokens=8000,
+                max_output_tokens=15000,
                 response_schema=QuizLLMResponse, 
             )
         )
-
-        response_json = result.text
 
         # --------------------------------------------------
         # Format Response
         # --------------------------------------------------
         if not result or not result.text:
             raise RuntimeError("Empty response from LLM")
-
-        if not isinstance(result.text, dict):
+        
+        parsed = result.text
+        if isinstance(parsed, str):
+            try:
+                parsed = json.loads(parsed)
+            except Exception as e:
+                raise RuntimeError("Cannot parse: " + str(e))
+        if not isinstance(parsed, dict):
             raise RuntimeError("Invalid structured response")
 
-        llm_data = QuizLLMResponse(**result.text)
+        llm_data = QuizLLMResponse(**parsed)
         if not llm_data.questions:
             raise RuntimeError("LLM returned empty quiz")
-        response = QuizFormatter.format(llm_data.model_dump())
+        formatted = QuizFormatter.format(llm_data.model_dump())
 
         # --------------------------------------------------
         # Validate AI Response
         # --------------------------------------------------
 
-        QuizValidator.validate_response(
-            response,
-            request,
-        )
+        warning = None
+        actual = len(formatted.questions)
+        expected = request.settings.question_count
+        if actual != expected:
+            warning = f"Requested {expected} questions but {actual} were generated."
+
+        try:
+            QuizValidator.validate_response(formatted, request)
+        except RuntimeError as e:
+            raise RuntimeError(f"Quiz generation failed: {e}")
         
         tool = ToolService.get_tool_by_slug(
                 db=db,
@@ -119,10 +129,15 @@ class QuizGeneratorService:
                 user_id=user['sub'],
                 tool_id=tool_id,
                 user_input=request.model_dump_json(),
-                output=json.dumps(response.model_dump()),
+                output=json.dumps(formatted.model_dump()),
             )
             execution_id = execution.id
         except Exception:
             pass
-        response.execution_id = execution_id
-        return response
+        return QuizResponse(
+            success=True,
+            metadata=formatted.metadata,
+            questions=formatted.questions,
+            warning=warning,
+            execution_id=execution_id,
+        )
