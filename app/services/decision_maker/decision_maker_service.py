@@ -73,7 +73,7 @@ class DecisionMakerService:
                 LLMRequest(
                     prompt=prompt,
                     temperature=0.4,
-                    max_output_tokens=2000,
+                    max_output_tokens=20000,
                     tool_slug="decision_maker",
                     response_schema=DecisionLLMResponse
                 )
@@ -81,11 +81,21 @@ class DecisionMakerService:
             
             if not llm_response or not llm_response.text:
                 raise ValueError("Empty response from LLM")
-    
-            if not isinstance(llm_response.text, dict):
+            
+            parsed = llm_response.text
+
+            # convert string → dict
+            if isinstance(parsed, str):
+                try:
+                    parsed = json.loads(parsed)
+                except Exception as e:
+                    raise ValueError(f"Failed to parse JSON: {parsed}")
+
+            # validate final type
+            if not isinstance(parsed, dict):
                 raise ValueError("Invalid structured response")
-    
-            data = DecisionLLMResponse(**llm_response.text)
+
+            data = DecisionLLMResponse(**parsed)
             
             tool = ToolService.get_tool_by_slug(
                     db=db,

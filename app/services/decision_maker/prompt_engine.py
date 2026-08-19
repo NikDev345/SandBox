@@ -65,7 +65,7 @@ class PromptEngine:
             ]
         )
 
-        return f"""
+        prompt = f"""
 You are an expert decision analyst.
 
 Your job is NOT to simply choose an option.
@@ -107,31 +107,37 @@ Additional Context:
 {context}
 
 ----------------------------------------------------
-
-Return ONLY valid JSON:
-
-{
-  "summary": "...",
-  "recommendation": {
-    "selected_option": "...",
-    "confidence": 0-100,
-    "reasoning": "..."
-  },
-  "analysis": [
-    {
-      "option": "...",
-      "pros": [],
-      "cons": [],
-      "risks": [],
-      "score": 0
-    }
-  ],
-  "key_factors": [],
-  "final_advice": "...",
-  "disclaimer": "..."
-}
-
-Rules:
-- No markdown
-- No explanation outside JSON
 """
+
+        prompt += """
+        Return ONLY valid JSON:
+
+        {
+        "summary": "...",
+        "recommendation": {
+            "selected_option": "...",
+            "confidence": 0,
+            "reasoning": "..."
+        },
+        "analysis": [
+            {
+            "option": "...",
+            "pros": [],
+            "cons": [],
+            "risks": [],
+            "score": 0
+            }
+        ],
+        "key_factors": [],
+        "final_advice": "...",
+        "disclaimer": "..."
+        }
+
+        Rules:
+        - No markdown
+        - every point should be of max 7-8 words. every points in factors, explaination, reasons, risks, pro
+            cons, advice and everything should be from 7-9 words maximum STRICTLY
+        - No explanation outside JSON
+        """
+
+        return prompt
