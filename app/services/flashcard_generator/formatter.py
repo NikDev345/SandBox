@@ -49,18 +49,14 @@ class FlashcardGeneratorFormatter:
             )
 
             flashcard = Flashcard(
-                id=item.get("id", str(index)),
+                id=str(item.get("id") or index),
                 front=item["front"],
                 back=item["back"],
                 card_type=item.get(
-                    "card_type",
-                    settings.card_type,
-                ),
+                    "card_type") or settings.card_type,
                 difficulty=item.get(
-                    "difficulty",
-                    settings.difficulty,
-                ),
-                category=item.get("category", "General"),
+                    "difficulty") or settings.difficulty,
+                category=item.get("category") or "general",
                 tags=tags if isinstance(tags, list) else [],
                 keywords=keywords if isinstance(keywords, list) else [],
                 example=(
@@ -89,14 +85,11 @@ class FlashcardGeneratorFormatter:
             total_cards=len(flashcards),
             estimated_study_time_minutes=max(1, len(flashcards) * 2),
             difficulty=FlashcardDifficulty(
-                data.get("difficulty", settings.difficulty)
-            ),
+                data.get("difficulty") or settings.difficulty),
             card_type=FlashcardType(
-                data.get("card_type", settings.card_type)
-            ),
+                data.get("card_type") or settings.card_type),
             language=FlashcardLanguage(
-                data.get("language", settings.language)
-            ),
+                data.get("language") or settings.language),
             categories=categories,
             total_keywords=sum(
                 len(flashcard.keywords)

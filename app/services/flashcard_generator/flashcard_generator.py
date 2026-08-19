@@ -81,15 +81,20 @@ class FlashcardGeneratorService:
 
         if not llm_response or not llm_response.text:
             raise RuntimeError("Empty response from LLM")
-
-        if not isinstance(llm_response.text, dict):
+        parsed = llm_response.text
+        if isinstance(parsed, str):
+            try:
+                parsed = json.loads(parsed)
+            except Exception as e:
+                raise RuntimeError("Cannot parse " + str(e))
+        if not isinstance(parsed, dict):
             raise RuntimeError("Invalid structured response")
 
         # ====================================================
         # PARSE STRUCTURED OUTPUT
         # ====================================================
         try:
-            data = FlashcardGeneratorLLMResponse(**llm_response.text)
+            data = FlashcardGeneratorLLMResponse(**parsed)
         except ValidationError as e:
             raise RuntimeError(f"Invalid AI response format: {e}")
 
