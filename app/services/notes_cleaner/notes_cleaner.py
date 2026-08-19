@@ -177,11 +177,16 @@ class NotesCleaner:
                     cache=False,
                 )
             )
-
-            if not result or not isinstance(result.text, dict):
+            parsed = result.text
+            if isinstance(parsed, str):
+                try:
+                    parsed = json.loads (parsed)
+                except Exception as e:
+                    raise RuntimeError("Cannot parse: " + e)
+            if not result or not isinstance(parsed, dict):
                 raise RuntimeError("Invalid structured response")
 
-            data = NotesCleanerLLMResponse(**result.text)
+            data = NotesCleanerLLMResponse(**parsed)
             return data.cleaned_notes.strip()
         except Exception as e:
             raise ValueError(f"API Failed: {e}") from e
@@ -211,17 +216,19 @@ class NotesCleaner:
         Your task:
 
         • Remove duplicated headings
-
         • Make formatting consistent
-
         • Improve document flow
-
         • Do not rewrite unnecessarily
-
         • Do not remove information
 
         Return only the final cleaned notes.
         
+        Return ONLY valid JSON:
+        {{
+            "cleaned_notes": "string"
+        }}
+        Do not wrap in markdown.
+
         Document:
         {response}
         """
@@ -238,11 +245,22 @@ class NotesCleaner:
                 )
             )
 
-            if not result or not isinstance(result.text, dict):
+            if not result or not result.text:
+                raise RuntimeError("Empty response from LLM")
+
+            parsed = result.text
+            if isinstance(parsed, str):
+                try:
+                    parsed = json.loads(parsed)
+                except Exception as e:
+                    raise RuntimeError(f"Cannot parse JSON: {e}")
+
+            if not isinstance(parsed, dict):
                 raise RuntimeError("Invalid structured response")
 
-            data = NotesCleanerLLMResponse(**result.text)
+            data = NotesCleanerLLMResponse(**parsed)
             return data.cleaned_notes.strip()
+
         except Exception as e:
             raise ValueError(f"API Failed: {e}") from e
         
@@ -308,9 +326,9 @@ class NotesCleaner:
                     "length": len(final_text),
                 })
             )
-            execution_id = execution.id 
+            response.execution_id = execution.id 
         except Exception:
             pass
         
-        response.execution_id = execution_id   
+        # response.execution_id = execution_id   
         return response
