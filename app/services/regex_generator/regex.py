@@ -13,6 +13,7 @@ class Regex:
         "match the word",
         "match word",
         "exact word",
+        "exact keyword",
         "exact text",
         "literal string",
         "match string",
@@ -28,6 +29,7 @@ class Regex:
         r"match\s+the\s+word\s+(.+)$",
         r"match\s+word\s+(.+)$",
         r"exact\s+word\s+(.+)$",
+        r"exact\s+keyword\s+(.+)$",
         r"exact\s+text\s+(.+)$",
         r"literal\s+string\s+(.+)$",
         r"match\s+string\s+(.+)$",
@@ -280,11 +282,19 @@ class Regex:
 
             if not response or not response.text:
                 raise RuntimeError("Empty response from LLM")
+            
+            parsed = response.text
+            
+            if isinstance(parsed, str):
+                try:
+                    parsed = json.loads(parsed)
+                except Exception as e:
+                    raise RuntimeError("Cannot parse", str(e))
 
-            if not isinstance(response.text, dict):
+            if not isinstance(parsed, dict):
                 raise RuntimeError("Invalid structured response")
 
-            data = RegexLLMResponse(**response.text)
+            data = RegexLLMResponse(**parsed)
 
             return RegexGeneratorResponse(
                 regex=data.regex,
@@ -331,6 +341,11 @@ class Regex:
             match = re.search(pattern, prompt)
             if match:
                 return match.group(1).strip()
+
+        #fallback: take last word(s)
+        parts = prompt.split()
+        if len(parts) >= 2:
+            return " ".join(parts[-2:])
 
         raise ValueError("Unable to extract literal text.")
     
