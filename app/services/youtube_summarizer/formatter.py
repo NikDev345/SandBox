@@ -1,6 +1,7 @@
 from app.models.youtube_summarizer import (
     TimelineItem,
     YouTubeSummaryResponse,
+    YouTubeSummaryLLMResponse
 )
 
 
@@ -11,7 +12,7 @@ class YouTubeSummaryFormatter:
 
     @staticmethod
     def format(
-        data: dict,
+        data: YouTubeSummaryLLMResponse,
         processing_time: float,
     ) -> YouTubeSummaryResponse:
         """
@@ -19,36 +20,24 @@ class YouTubeSummaryFormatter:
         YouTubeSummaryResponse.
         """
 
-        if not isinstance(data, dict):
+        if not isinstance(data, YouTubeSummaryLLMResponse):
             raise ValueError("Invalid Gemini response.")
 
-        timeline = []
-
-        for item in data["timeline"]:
-
-            timeline.append(
-                TimelineItem(
-                    title=item.get("title", ""),
-                    summary=item.get("summary", ""),
-                )
+        timeline = [
+            TimelineItem(
+                title=item.title,
+                summary=item.summary,
             )
+            for item in (data.timeline or [])
+        ]
 
         return YouTubeSummaryResponse(
             success=True,
-            summary=data.get("summary", ""),
-            key_points=data.get("key_points", []),
+            summary=data.summary or "",
+            key_points=data.key_points or [],
             timeline=timeline,
-            important_quotes=data.get(
-                "important_quotes",
-                [],
-            ),
-            action_items=data.get(
-                "action_items",
-                [],
-            ),
-            keywords=data.get(
-                "keywords",
-                [],
-            ),
+            important_quotes=data.important_quotes or [],
+            action_items=data.action_items or [],
+            keywords=data.keywords or [],
             processing_time=processing_time,
         )

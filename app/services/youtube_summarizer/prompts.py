@@ -87,6 +87,8 @@ Return exactly this schema:
         "string"
     ]
 }
+for summary: max word count should be 30-40
+for key_points, timeline, important_quotes, action_items and keywords: max 3-4 points with 8-9 words each.
 """
 
 

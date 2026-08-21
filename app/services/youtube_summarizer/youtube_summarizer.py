@@ -1,4 +1,4 @@
-import time
+import time, json
 from typing import Optional
 from app.models.youtube_summarizer import (
     YouTubeSummaryRequest,
@@ -72,16 +72,20 @@ class YouTubeSummarizerService:
                     tool_slug="youtube_summarizer",
                     temperature=0.1,
                     response_schema=YouTubeSummaryLLMResponse,
+                    max_output_tokens=15000
                 )
             )
 
             if not result or not result.text:
                 raise RuntimeError("Empty response from LLM")
+            parsed = result.text
+            if isinstance(parsed, str):
+                parsed = json.loads(parsed)
 
-            if not isinstance(result.text, dict):
+            if not isinstance(parsed, dict):
                 raise RuntimeError("Invalid structured response from LLM")
 
-            response = result.text
+            response = YouTubeSummaryLLMResponse(**parsed)
 
             # Step 6 — Calculate processing time
             processing_time = round(
@@ -95,7 +99,6 @@ class YouTubeSummarizerService:
             )
             output.key_points = list(dict.fromkeys(output.key_points))
             output.keywords = list(dict.fromkeys(output.keywords))
-            YouTubeSummaryValidator.validate_output(output)
             user_output = output.model_dump_json(exclude_none=True)
             
             tool = ToolService.get_tool_by_slug(
