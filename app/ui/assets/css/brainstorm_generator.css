@@ -14,6 +14,43 @@
    - small dark/light contrast safety nets
    ============================================================ */
 
+/* ── INPUT FIELD BORDERS (visible on dark background) ── */
+
+.brn-tool .form-input,
+.brn-tool .form-select,
+.brn-tool .form-textarea {
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: var(--radius-md);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color var(--dur-base) var(--ease), 
+              box-shadow var(--dur-base) var(--ease),
+              background var(--dur-base) var(--ease);
+}
+
+.brn-tool .form-input:hover,
+.brn-tool .form-select:hover,
+.brn-tool .form-textarea:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.brn-tool .form-input:focus,
+.brn-tool .form-select:focus,
+.brn-tool .form-textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.brn-tool .form-input::placeholder,
+.brn-tool .form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
 .brn-tool {
   display: flex;
   flex-direction: column;
@@ -1320,4 +1357,123 @@
   .brn-hero-copy {
     gap: var(--space-3);
   }
+}
+
+.brn-loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
+}
+
+.brn-loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  border-radius: var(--radius-2xl);
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+}
+
+.brn-loader-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+}
+
+.brn-loader {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--surface-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: brnSpin 0.8s linear infinite;
+}
+
+@keyframes brnSpin {
+  to { transform: rotate(360deg); }
+}
+
+.brn-loading-title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semi);
+  color: var(--text);
+  margin: 0;
+}
+
+.brn-loading-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.brn-loading-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  text-align: left;
+}
+
+.brn-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: color var(--dur-base) var(--ease), background var(--dur-base) var(--ease);
+}
+
+.brn-step--active {
+  color: var(--text);
+  background: var(--surface-1);
+}
+
+.brn-step-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-1);
+  flex-shrink: 0;
+}
+
+.brn-step--active .brn-step-icon {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.form-textarea-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.form-textarea-wrapper .form-textarea {
+  width: 100%;
+  padding-bottom: 2rem; /* room for counter */
+}
+
+.char-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+.brn-result-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-2);
 }

@@ -17,6 +17,8 @@ def add_shared_assets(
         "/assets/css/animations.css",
         "/assets/css/buttons.css",
         "/assets/css/layout.css",
+        "/assets/css/cards.css",
+        "/assets/css/glass.css",
     ]
 
     # Tool pages
@@ -61,10 +63,6 @@ def add_shared_assets(
         for src in base_js + extra_js
     )
 
-
-    ui.add_head_html(
-        css_tags + "\n" + js_tags
-    )
 
     ui.add_head_html(css_tags + "\n" + js_tags)
     ui.add_head_html(f"""

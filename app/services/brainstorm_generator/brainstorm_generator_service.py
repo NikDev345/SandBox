@@ -54,10 +54,11 @@ class BrainstormGeneratorService:
 
         if not llm_response or not llm_response.text:
             raise ValueError("LLM returned empty response")
-        
+        parsed = llm_response.text
+        if isinstance(parsed, str):
+            parsed = json.loads(parsed)
         response = BrainstormResponse(
-            **llm_response.text,
-            execution_id=execution_id
+            **parsed,
         )
         # Step 4: Format & validate response
         user_input = request.model_dump_json()
