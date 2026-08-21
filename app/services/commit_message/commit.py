@@ -147,11 +147,11 @@ class CommitMessageGenerator:
 
             Return ONLY valid JSON:
 
-            {
+            {{
             "suggestions": [
-                {"message": "string"}
+                {{"message": "string"}}
             ]
-            }
+            }}
 
             Rules:
             - Exactly {suggestions} items
@@ -183,11 +183,15 @@ class CommitMessageGenerator:
 
         if not llm_response or not llm_response.text:
             raise RuntimeError("Empty response from LLM")
+        
+        parsed = llm_response.text
+        if isinstance(parsed, str):
+            parsed = json.loads(parsed)
 
-        if not isinstance(llm_response.text, dict):
+        if not isinstance(parsed, dict):
             raise RuntimeError("Invalid structured response")
 
-        data = CommitLLMResponse(**llm_response.text)
+        data = CommitLLMResponse(**parsed)
 
         if len(data.suggestions) < expected_count:
             raise RuntimeError("LLM returned fewer suggestions than expected")
