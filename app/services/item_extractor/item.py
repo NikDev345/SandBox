@@ -259,10 +259,13 @@ class ActionItemService:
             )
 
             response = llm_response.text
+            if isinstance(response, str):
+                try:
+                    response = json.loads(response)
+                except Exception as e:
+                    raise ValueError(f"Failed to parse JSON: {e}")
             if not isinstance(response, dict):
                 raise ValueError("Invalid structured response")
-            if not response:
-                raise ValueError("The AI returned an empty response.")
             return response
         except Exception as e:
             raise ValueError(f"Failed to generate response: {e}") from e
@@ -319,15 +322,12 @@ class ActionItemService:
 
         prompt = ActionItemService._build_prompt(candidate_sentences)
 
-        llm_response = await ActionItemService._call_ai(prompt)
+        data_dict = await ActionItemService._call_ai(prompt)
 
-        if not llm_response or not llm_response.text:
+        if not data_dict:
             raise RuntimeError("Empty response from LLM")
 
-        if not isinstance(llm_response.text, dict):
-            raise RuntimeError("Invalid structured response")
-
-        data = ActionItemExtractorLLMResponse(**llm_response.text)
+        data = ActionItemExtractorLLMResponse(**data_dict)
 
         action_items = data.action_items
 
