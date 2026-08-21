@@ -448,11 +448,15 @@ class CodeReview:
 
         if not llm_response or not llm_response.text:
             raise ValueError("LLM returned empty response")
+        
+        parsed = llm_response.text
+        if isinstance(parsed, str):
+            parsed = json.loads(parsed)
 
-        if not isinstance(llm_response.text, dict):
+        if not isinstance(parsed, dict):
             raise ValueError("Invalid structured response")
 
-        return AIReviewResult(**llm_response.text)
+        return AIReviewResult(**parsed)
         
     @staticmethod
     async def generate_review(
